@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   classTextSubtitle,
   readerDetails,
+  thresholdOptions,
+  heatColor,
+  lookupsByToken,
 } from "../../../../src/teacher/myClassesPage/cohortsPage/classTextLines";
 
 describe("classTextSubtitle", () => {
@@ -25,5 +28,24 @@ describe("readerDetails", () => {
 
   it("still says something for a student who only opened it", () => {
     expect(readerDetails({ reading_completion: 0, reading_seconds: 0, translations: 0 })).toBe("opened it");
+  });
+});
+
+describe("heatmap helpers", () => {
+  it("offers only the thresholds some word reaches", () => {
+    expect(thresholdOptions(4)).toEqual([1, 2, 3]);
+    expect(thresholdOptions(15)).toEqual([1, 2, 3, 5, 10]);
+  });
+
+  it("goes from green for one student to red for the most looked-up", () => {
+    expect(heatColor(1, 15)).toBe("hsla(120, 85%, 50%, 0.25)");
+    expect(heatColor(15, 15)).toBe("hsla(0, 85%, 50%, 0.60)");
+    expect(heatColor(1, 1)).toBe("hsla(120, 85%, 50%, 0.25)");
+  });
+
+  it("indexes lookups by token", () => {
+    const map = lookupsByToken([{ sent_i: 0, token_i: 2, students: [7, 9] }]);
+    expect(map.get("0:2")).toEqual([7, 9]);
+    expect(lookupsByToken(undefined).size).toBe(0);
   });
 });

@@ -10,11 +10,13 @@ import { setTitle } from "../../../assorted/setTitle";
 import * as c from "../../../components/ColumnWidth.sc";
 import { classTextSubtitle, readerDetails, studentsLabel } from "./classTextLines";
 import { SectionLabel } from "./ClassTexts.sc";
+import ClassTextHeatmap from "./ClassTextHeatmap";
 import * as s from "./ClassText.sc";
 
 /**
- * One text, as the whole class read it: the words they looked up, the ones
- * most students needed first, then who read it.
+ * One text, as the whole class read it: the text coloured by how many
+ * students looked each word up, the same words as a list, the ones most
+ * students needed first, then who read it.
  *
  * For the teachers who give a class one text at a time: a word half the class
  * translated is one to go over in the lesson. Each reader opens onto their own
@@ -25,6 +27,8 @@ export default function ClassText() {
   const { cohortID, articleID } = useParams();
   const [info, setInfo] = useState(null);
   const [failed, setFailed] = useState(false);
+  // "looked up by at least N students": filters the heatmap and the word list alike
+  const [threshold, setThreshold] = useState(1);
 
   setTitle("Class Text");
 
@@ -51,9 +55,12 @@ export default function ClassText() {
 
       {info.words.length > 0 && (
         <s.Section>
+          <SectionLabel>The text, coloured by how many looked each word up</SectionLabel>
+          <ClassTextHeatmap info={info} threshold={threshold} setThreshold={setThreshold} />
+
           <SectionLabel>Words they looked up</SectionLabel>
           <s.WordList>
-            {info.words.map((word) => (
+            {info.words.filter((word) => word.students.length >= threshold).map((word) => (
               <WordRow key={word.word} word={word} />
             ))}
           </s.WordList>
