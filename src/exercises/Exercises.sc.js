@@ -41,6 +41,12 @@ const ExForm = styled.div`
   min-height: 500px;
   padding-bottom: 1rem;
 
+  /* With the phone keyboard up only ~half the screen is left; stretching
+     the card would push the sentence above the fold. */
+  &.softKeyboardOpen {
+    min-height: 0;
+  }
+
   box-sizing: border-box; // to ensure that padding does not expand width!
 
   .bottomInput {

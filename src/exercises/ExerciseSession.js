@@ -20,6 +20,7 @@ import useExerciseSession from "../hooks/useExerciseSession";
 import DigitalTimer from "../components/DigitalTimer";
 
 import useScreenWidth from "../hooks/useScreenWidth";
+import useSoftKeyboardOpen from "../hooks/useSoftKeyboardOpen";
 import { NarrowColumn } from "../components/ColumnWidth.sc";
 import useSubSessionTimer from "../hooks/useSubSessionTimer";
 import { APIContext } from "../contexts/APIContext";
@@ -38,6 +39,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const { userDetails, userPreferences } = useContext(UserContext);
   const { setContextualInfo } = useFeedbackContext();
   const history = useHistory();
+  const isSoftKeyboardOpen = useSoftKeyboardOpen();
 
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -479,7 +481,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             />
           </div>
         )}
-        <s.ExForm>
+        <s.ExForm className={isSoftKeyboardOpen ? "softKeyboardOpen" : undefined}>
           <CurrentExerciseComponent
             key={currentIndex}
             bookmarksToStudy={currentBookmarksToStudy}
