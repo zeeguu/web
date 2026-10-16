@@ -11,7 +11,8 @@ import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/Virt
 import { UserContext } from "../../contexts/UserContext";
 
 import { getExpressionlength, countCommonWords } from "../../utils/text/expressions";
-import { HINT, WRONG } from "../ExerciseConstants";
+import { HINT, WRONG, ALTERNATIVE } from "../ExerciseConstants";
+import { classifyTypedAnswer, OTHER_WORD } from "../utils/typedAnswer";
 
 // Check localStorage for keyboard collapsed state
 const getInitialKeyboardCollapsed = () => {
@@ -34,6 +35,8 @@ export default function BottomInput({
   exerciseBookmark,
   notifyOfUserAttempt,
   isL1Answer,
+  judgeAnswer,
+  isChecking = false,
 }) {
   const { userDetails } = useContext(UserContext);
   const [currentInput, setCurrentInput] = useState("");
@@ -50,8 +53,11 @@ export default function BottomInput({
   const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
   const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
+  const answerLanguageCode = isL1Answer ? exerciseBookmark.to_lang : exerciseBookmark.from_lang;
   // Forms of one word are listed only in translations ("твій/твоя" for "your").
-  const answers = isL1Answer ? acceptedAnswers(solutionText) : [normalizeAnswer(solutionText)];
+  const answers = isL1Answer
+    ? acceptedAnswers(solutionText, answerLanguageCode)
+    : [normalizeAnswer(solutionText, answerLanguageCode)];
 
   // Words in the answer form the learner is closest to ("he did" of
   // "he did / he made"); set on each check.
@@ -59,8 +65,6 @@ export default function BottomInput({
   const isWrongOrder = isIncorrect && correctWordCountInInput === solutionWordCount;
 
   const isPartOfExpressionCorrect = correctWordCountInInput >= 1 && solutionWordCount > 1 && isIncorrect;
-
-  const answerLanguageCode = isL1Answer ? exerciseBookmark.to_lang : exerciseBookmark.from_lang;
 
   const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
   const showVirtualKeyboard = needsVirtualKeyboard(answerLanguageCode, userDetails?.id);
@@ -130,7 +134,7 @@ export default function BottomInput({
     if (input === "") return false;
 
     // Auto-submit only for perfect matches - no typo tolerance
-    return answers.includes(normalizeAnswer(input));
+    return answers.includes(normalizeAnswer(input, answerLanguageCode));
   }
 
   // The accepted answer nearest to what was typed, so that the feedback
@@ -141,13 +145,14 @@ export default function BottomInput({
     return [answers[best], distances[best]];
   }
 
-  function checkResult() {
+  async function checkResult() {
+    if (isChecking) return;
     if (currentInput === "") {
       setFeedbackMessage("");
       return;
     }
 
-    let normalizedInput = normalizeAnswer(currentInput);
+    let normalizedInput = normalizeAnswer(currentInput, answerLanguageCode);
     let [normalizedAnswer, levDistance] = closestAnswer(normalizedInput);
 
     let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
@@ -157,6 +162,24 @@ export default function BottomInput({
       setIsCorrect(true);
       setIsIncorrect(false);
       return;
+    }
+
+    // Another word: translations have synonyms ("consult" for "slå op").
+    // Ask before calling it wrong; a misspelling of the expected answer or
+    // the learned word itself (typed in the wrong language) is not worth it.
+    if (
+      judgeAnswer &&
+      normalizedInput !== normalizedLearningWord &&
+      classifyTypedAnswer(normalizedInput, normalizedAnswer) === OTHER_WORD
+    ) {
+      const verdict = await judgeAnswer(currentInput);
+      if (!verdict) return; // the exercise ended or moved on meanwhile
+      if (verdict.relation === "SYNONYM") {
+        handleCorrectAnswer(exerciseBookmark, true, ALTERNATIVE);
+        setIsCorrect(true);
+        setIsIncorrect(false);
+        return;
+      }
     }
     let totalWordsCorrect = countCommonWords(normalizedInput, normalizedAnswer);
     let answerWordCount = getExpressionlength(normalizedAnswer);
@@ -257,7 +280,9 @@ export default function BottomInput({
           <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
             {strings.hint}
           </s.LeftFeedbackButton>
-          <s.RightFeedbackButton onClick={checkResult}>{strings.check}</s.RightFeedbackButton>
+          <s.RightFeedbackButton onClick={checkResult} disabled={isChecking}>
+            {strings.check}
+          </s.RightFeedbackButton>
         </div>
 
         {/* Virtual Keyboard - shown for non-Roman alphabets */}

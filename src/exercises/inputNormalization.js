@@ -10,8 +10,17 @@ function normalizeCase(x) {
   return x.trim().toUpperCase();
 }
 
-function normalizeAnswer(x) {
-  return removePunctuation(removeAccents(normalizeCase(x)));
+// English glosses of verbs come with and without the infinitive "to" ("to
+// look up", "look up"), and the source word ("slå op") rarely tells which:
+// either is right. Only a leading "to" with something after it, so "listen
+// to" keeps its "to" and the gloss "to" (Danish "til") stays a word.
+function withoutInfinitiveTo(normalized, languageCode) {
+  return languageCode === "en" && normalized.startsWith("TO ") ? normalized.slice(3).trim() : normalized;
+}
+
+// languageCode: the language the answer is typed in, for its own conventions.
+function normalizeAnswer(x, languageCode) {
+  return withoutInfinitiveTo(removePunctuation(removeAccents(normalizeCase(x))), languageCode);
 }
 
 // The normalized answers a typed translation may match. Most translations
@@ -19,9 +28,9 @@ function normalizeAnswer(x) {
 // "your", "αυτοί/αυτές/αυτά" for "they"): the source doesn't say which
 // gender or number, so any one form is right. The API keeps such lists and
 // reduces real alternatives to one (single_translation.py).
-function acceptedAnswers(solution) {
-  const whole = normalizeAnswer(solution);
-  const forms = solution.split("/").map(normalizeAnswer);
+function acceptedAnswers(solution, languageCode) {
+  const whole = normalizeAnswer(solution, languageCode);
+  const forms = solution.split("/").map((form) => normalizeAnswer(form, languageCode));
   if (forms.length < 2 || forms.some((f) => f === "")) return [whole];
   return [whole, ...forms];
 }

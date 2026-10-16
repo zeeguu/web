@@ -10,6 +10,8 @@ import ContextWithExchange from "../../components/ContextWithExchange.js";
 import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
 import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
+import { useAnswerJudge } from "../../utils/useAnswerJudge.js";
+import AnswerNote from "../../components/AnswerNote.js";
 
 // The user has to translate the L2 word in bold to their L1.
 // This tests the user's active knowledge.
@@ -35,6 +37,13 @@ export default function TranslateL2toL1({
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
   const [translatedWords, setTranslatedWords] = useState([]);
+
+  // Another translation the learner typed ("consult" for "slå op"), asked about.
+  const { isChecking, note: answerNote, judge } = useAnswerJudge(
+    (typed, signal) => api.judgeTranslationAlternative(exerciseBookmark.id, typed, signal),
+    isExerciseOver,
+    [reload, exerciseBookmark],
+  );
 
   useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
 
@@ -88,8 +97,11 @@ export default function TranslateL2toL1({
           exerciseBookmark={exerciseBookmark}
           notifyOfUserAttempt={notifyOfUserAttempt}
           isL1Answer={true}
+          judgeAnswer={judge}
+          isChecking={isChecking}
         />
       )}
+      <AnswerNote isChecking={isChecking} note={answerNote} expected={exerciseBookmark.to} isTranslation />
     </s.Exercise>
   );
 }

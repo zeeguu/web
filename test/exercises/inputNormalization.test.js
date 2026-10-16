@@ -21,3 +21,25 @@ describe("acceptedAnswers", () => {
     expect(acceptedAnswers("24/7")).toEqual([normalizeAnswer("24/7")]);
   });
 });
+
+describe("the English infinitive 'to'", () => {
+  const typed = (answer) => normalizeAnswer(answer, "en");
+
+  it("is optional on either side", () => {
+    expect(acceptedAnswers("to look up", "en")).toContain(typed("look up"));
+    expect(acceptedAnswers("look up", "en")).toContain(typed("To look up"));
+  });
+
+  it("only counts at the start", () => {
+    expect(acceptedAnswers("listen to", "en")).not.toContain(typed("listen"));
+  });
+
+  it("is a word of its own when nothing follows", () => {
+    expect(acceptedAnswers("to", "en")).toEqual(["TO"]);
+  });
+
+  it("is only English", () => {
+    expect(acceptedAnswers("to", "da")).toEqual(["TO"]);
+    expect(normalizeAnswer("to ting", "da")).toBe("TO TING");
+  });
+});
