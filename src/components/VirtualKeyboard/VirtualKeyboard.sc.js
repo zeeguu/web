@@ -43,7 +43,7 @@ export const KeyboardTitle = styled.h3`
   font-weight: 600;
 `;
 
-export const CollapseButton = styled.button`
+export const CollapseButton = styled.button.attrs({ type: "button" })`
   background: none;
   border: none;
   font-size: 1.2em;
@@ -110,7 +110,7 @@ export const SpecialKeysRow = styled.div`
   gap: 8px;
 `;
 
-export const ExpandButton = styled.button`
+export const ExpandButton = styled.button.attrs({ type: "button" })`
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 3px;
@@ -166,7 +166,7 @@ export const AccentRow = styled(KeyRow)`
   border-bottom: 1px solid var(--border-light);
 `;
 
-export const Key = styled.button`
+export const Key = styled.button.attrs({ type: "button" })`
   /* 9 keys per row, with gaps: calc((100% - 8 * 2px) / 9) */
   width: calc((100% - 8 * 2px) / 9);
   height: 42px;
