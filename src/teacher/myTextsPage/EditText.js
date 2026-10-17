@@ -20,6 +20,7 @@ import RewritingIndicator from "./RewritingIndicator";
 import ImportFromLink from "./ImportFromLink";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import { detectLanguageFromText, languageNames } from "../../utils/languageDetection";
+import { getHighestCefrLevel } from "../../utils/misc/articleDifficulty";
 
 export default function EditText() {
   const api = useContext(APIContext);
@@ -309,7 +310,9 @@ export default function EditText() {
     if (articleState.assessment_method === "llm_simplified" && articleState.cefr_level) {
       api.resolveCEFR(
         id,
-        articleState.cefr_level,
+        // A teacher level is a single one: an in-between rewrite ("B1/B2") is
+        // stored as its harder end, which is how a compound level reads anyway
+        getHighestCefrLevel(articleState.cefr_level),
         () => {},
         (error) => console.error("Failed to persist adapted CEFR level:", error),
       );

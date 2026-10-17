@@ -1,25 +1,12 @@
 import React from "react";
 import * as s from "./AdjustLevelBar.sc";
-
-const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
-
-// Levels strictly easier than the given one. A compound level like "B1/B2" is
-// normalised to its harder end so we never offer a target that isn't simpler.
-function easierLevelsThan(level) {
-  if (!level) return [];
-  const hardestIdx = String(level)
-    .split("/")
-    .map((tok) => CEFR_LEVELS.indexOf(tok.trim()))
-    .reduce((max, idx) => Math.max(max, idx), -1);
-  if (hardestIdx <= 0) return []; // unknown, or already A1 — nothing easier
-  return CEFR_LEVELS.slice(0, hardestIdx);
-}
+import { isInBetweenLevel, rewriteTargets } from "./rewriteTargets";
 
 /**
  * "Rewrite to make easier" bar for the teacher text editor.
  *
  * Presentational: it renders one button per reachable level (every level below
- * the original, plus the original itself) and reports clicks via onPick. The
+ * the original, the in-between level just below it, plus the original itself) and reports clicks via onPick. The
  * parent (EditText) owns the original text, the per-level cache and the
  * generating state, and always regenerates from the original — so any level is
  * reachable at any time, and levels already generated switch instantly.
@@ -39,7 +26,7 @@ export default function AdjustLevelBar({
   onPick, // (level) => void
 }) {
   const languageMissing = !language || language === "default";
-  const easierTargets = easierLevelsThan(originalLevel);
+  const easierTargets = rewriteTargets(originalLevel);
 
   // Nothing simpler to offer (unknown level, or the original is already A1).
   if (easierTargets.length === 0) return null;
@@ -63,6 +50,11 @@ export default function AdjustLevelBar({
         $dimmed={dimmed}
         $barDisabled={barDisabled}
         onClick={() => onPick(level)}
+        title={
+          isInBetweenLevel(level)
+            ? `Between ${level.replace("/", " and ")}: a lighter rewrite than ${level.split("/")[0]}`
+            : undefined
+        }
       >
         {level}
         {isBusy && <s.BlinkingGreenDot>•</s.BlinkingGreenDot>}
