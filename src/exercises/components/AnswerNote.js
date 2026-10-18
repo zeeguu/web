@@ -36,13 +36,22 @@ export default function AnswerNote({ isChecking, note, expected, isTranslation =
   }
   if (!note) return null;
 
-  const leads = isTranslation
-    ? { alternative: strings.alsoRightTranslation, nearMiss: strings.closeButTranslation }
-    : { alternative: strings.alsoRightPractising, nearMiss: strings.understoodButPractising };
+  const explanation = note.explanation && <> {note.explanation}</>;
+  if (isTranslation) {
+    // The input is gone once the exercise ends, so say what was typed.
+    const line = note.kind === "alternative" ? strings.alsoRightTranslation : strings.closeButTranslation;
+    return (
+      <AnswerLine>
+        {strings.formatString(line, <strong>{note.typed.trim()}</strong>, <strong>{removePunctuation(expected)}</strong>)}
+        {explanation}
+      </AnswerLine>
+    );
+  }
+
+  const lead = note.kind === "alternative" ? strings.alsoRightPractising : strings.understoodButPractising;
   return (
     <AnswerLine>
-      {leads[note.kind]} <strong>{removePunctuation(expected)}</strong>.
-      {note.explanation && <> {note.explanation}</>}
+      {lead} <strong>{removePunctuation(expected)}</strong>.{explanation}
     </AnswerLine>
   );
 }
