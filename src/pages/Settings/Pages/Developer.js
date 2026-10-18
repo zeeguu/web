@@ -52,6 +52,7 @@ export default function Developer() {
           <Button onClick={handleClearOnboardingMessages}>Clear onboarding message table</Button>
           <Button onClick={() => openApiPage("/status")}>Server health</Button>
           <Button onClick={() => openApiPage("/user_stats/dashboard")}>Admin dashboard</Button>
+          <Button onClick={() => openApiPage("/crawl_stats/dashboard")}>Crawl stats</Button>
           <Button onClick={handleCopySession}>Copy session (for widget)</Button>
         </ButtonContainer>
         {status && <p style={{ marginTop: "1em" }}>{status}</p>}
