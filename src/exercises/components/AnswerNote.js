@@ -36,24 +36,26 @@ export default function AnswerNote({ isChecking, note, expected, isTranslation =
   }
   if (!note) return null;
 
-  const explanation = note.explanation && <> {note.explanation}</>;
-  if (isTranslation) {
-    // The input is gone once the exercise ends, so say what was typed.
-    const line = note.kind === "alternative" ? strings.alsoRightTranslation : strings.closeButTranslation;
-    return (
-      <AnswerLine>
-        {strings.formatString(line, <strong>{note.typed.trim()}</strong>, <strong>{removePunctuation(expected)}</strong>)}
-        {explanation}
-      </AnswerLine>
-    );
-  }
-
-  const lead = note.kind === "alternative" ? strings.alsoRightPractising : strings.understoodButPractising;
+  // Once the exercise ends, what was typed is no longer on screen (the input
+  // goes, the cloze blank shows the expected word), so the line says it.
+  const lines = isTranslation
+    ? { alternative: strings.alsoRightTranslation, nearMiss: strings.closeButTranslation }
+    : { alternative: strings.alsoRightPractising, nearMiss: strings.understoodButPractising };
   return (
     <AnswerLine>
-      {lead} <strong>{removePunctuation(expected)}</strong>.{explanation}
+      {withBoldParts(lines[note.kind], note.typed.trim(), removePunctuation(expected))}
+      {note.explanation && <> {note.explanation}</>}
     </AnswerLine>
   );
+}
+
+// A string with {0}, {1}, ... in it, those filled in bold. (The app's
+// strings.formatString turns elements into "[object Object]".)
+function withBoldParts(template, ...parts) {
+  return template.split(/(\{\d\})/).map((piece, i) => {
+    const placeholder = piece.match(/^\{(\d)\}$/);
+    return placeholder ? <strong key={i}>{parts[placeholder[1]]}</strong> : piece;
+  });
 }
 
 // One line under the sentence about an answer that was another word than the
