@@ -13,6 +13,9 @@ export class Word extends Item {
     this.translation = null;
     this.total_tokens = 1;
     if (bookmark) {
+      // The meaning's origin as stored, possibly in another case than this
+      // occurrence (see matchTranslationCase).
+      this.origin = bookmark.origin;
       if (bookmark.is_mwe) {
         this.translation = bookmark.translation;
         this.bookmark_id = bookmark.id;
@@ -65,6 +68,8 @@ export class Word extends Item {
 
   updateTranslation(translation, service_name, bookmark_id, competing_translations = null, disagreement = false, alternatives = null) {
     this.translation = translation;
+    // A fresh translation is of this occurrence, not of a stored origin.
+    this.origin = null;
     this.service_name = service_name;
     this.bookmark_id = bookmark_id;
     this.competing_translations = competing_translations;
