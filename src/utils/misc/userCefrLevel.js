@@ -64,8 +64,8 @@ export function shouldShowLanguageChoice(
   const userNumeric = getUserCefrLevel(userDetails, articleLanguage);
   const articleOrd = cefrOrdinal(articleCefrLevel);
   if (!articleOrd || userNumeric == null) return true;
-  // A0 reads A1 texts (see numericToCefr): an A1 article is already at their level.
-  return articleOrd > Math.max(userNumeric, 1);
+  // Compared as the level the user reads at (A0 reads A1, see numericToCefr).
+  return articleOrd > cefrOrdinal(numericToCefr(userNumeric));
 }
 
 /**
@@ -78,4 +78,15 @@ export function shouldShowLanguageChoice(
  */
 export function numericToCefr(numericLevel) {
   return NUMERIC_TO_CEFR[numericLevel] || "B1";
+}
+
+/**
+ * The level to explain a word at, from what onboarding stored in localStorage:
+ * the level as a number in a string ("0".."6"), or nothing. Sent as is, the
+ * API got "3" where it expects "B1". A1 when nothing was stored.
+ */
+export function explanationCefr(storedLevel) {
+  return storedLevel === undefined || storedLevel === null || storedLevel === ""
+    ? "A1"
+    : numericToCefr(storedLevel);
 }

@@ -2,6 +2,7 @@ import { useContext, useRef, useState } from "react";
 import { APIContext } from "../../contexts/APIContext";
 import ExplanationModal from "../../reader/ExplanationModal";
 import * as s from "./Exercise.sc";
+import { explanationCefr } from "../../utils/misc/userCefrLevel";
 
 /**
  * Explain for the word being practiced, the same Explain the reader offers.
@@ -42,7 +43,7 @@ export default function ExplainWordButton({ bookmark }) {
         bookmark.to_lang,
         selection,
         context,
-        localStorage.learned_cefr_level || "A1",
+        explanationCefr(localStorage.learned_cefr_level),
       )
       .then((result) => {
         if (isStale()) return;

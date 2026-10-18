@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   cefrLevelFieldValue,
+  explanationCefr,
   numericToCefr,
   shouldShowLanguageChoice,
 } from "../../src/utils/misc/userCefrLevel";
@@ -55,5 +56,17 @@ describe("A0", () => {
   it("comes from an A0 link", () => {
     expect(levelValueFromCefr("A0")).toBe("0");
     expect(levelValueFromCefr("A2")).toBe("2");
+  });
+});
+
+describe("explanationCefr", () => {
+  it("sends a CEFR level, not the stored number", () => {
+    expect(explanationCefr("3")).toBe("B1");
+    expect(explanationCefr("0")).toBe("A1");
+  });
+
+  it("is A1 when onboarding stored nothing", () => {
+    expect(explanationCefr(undefined)).toBe("A1");
+    expect(explanationCefr("")).toBe("A1");
   });
 });
