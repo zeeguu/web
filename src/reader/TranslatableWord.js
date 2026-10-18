@@ -6,6 +6,7 @@ import redirect from "../utils/routing/routing";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import EditBookmarkModal from "../words/EditBookmarkModal";
 import ExplanationModal from "./ExplanationModal";
+import { matchTranslationCase } from "./translationCase";
 
 
 export default function TranslatableWord({
@@ -489,7 +490,7 @@ export default function TranslatableWord({
           <z-tran chosen={word.translation} translation0={word.translation} ref={refToTranslation}>
             <span className="translationContainer">
               <span className="translation" onClick={(e) => toggleAlterMenu(e, word)}>
-                {word.translation}
+                {matchTranslationCase(word.word, word.origin, word.translation)}
               </span>
               {!readOnly && (
                 <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
