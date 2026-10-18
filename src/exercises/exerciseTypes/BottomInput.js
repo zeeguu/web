@@ -11,7 +11,8 @@ import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/Virt
 import { UserContext } from "../../contexts/UserContext";
 
 import { getExpressionlength, countCommonWords } from "../../utils/text/expressions";
-import { HINT, WRONG } from "../ExerciseConstants";
+import { HINT, WRONG, ALTERNATIVE } from "../ExerciseConstants";
+import { classifyTypedAnswer, OTHER_WORD } from "../utils/typedAnswer";
 
 // Check localStorage for keyboard collapsed state
 const getInitialKeyboardCollapsed = () => {
@@ -34,6 +35,8 @@ export default function BottomInput({
   exerciseBookmark,
   notifyOfUserAttempt,
   isL1Answer,
+  judgeAnswer,
+  isChecking = false,
 }) {
   const { userDetails } = useContext(UserContext);
   const [currentInput, setCurrentInput] = useState("");
@@ -142,7 +145,8 @@ export default function BottomInput({
     return [answers[best], distances[best]];
   }
 
-  function checkResult() {
+  async function checkResult() {
+    if (isChecking) return;
     if (currentInput === "") {
       setFeedbackMessage("");
       return;
@@ -158,6 +162,24 @@ export default function BottomInput({
       setIsCorrect(true);
       setIsIncorrect(false);
       return;
+    }
+
+    // Another word: translations have synonyms ("consult" for "slå op").
+    // Ask before calling it wrong; a misspelling of the expected answer or
+    // the learned word itself (typed in the wrong language) is not worth it.
+    if (
+      judgeAnswer &&
+      normalizedInput !== normalizedLearningWord &&
+      classifyTypedAnswer(normalizedInput, normalizedAnswer) === OTHER_WORD
+    ) {
+      const verdict = await judgeAnswer(currentInput);
+      if (!verdict) return; // the exercise ended or moved on meanwhile
+      if (verdict.relation === "SYNONYM") {
+        handleCorrectAnswer(exerciseBookmark, true, ALTERNATIVE);
+        setIsCorrect(true);
+        setIsIncorrect(false);
+        return;
+      }
     }
     let totalWordsCorrect = countCommonWords(normalizedInput, normalizedAnswer);
     let answerWordCount = getExpressionlength(normalizedAnswer);
@@ -258,7 +280,9 @@ export default function BottomInput({
           <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
             {strings.hint}
           </s.LeftFeedbackButton>
-          <s.RightFeedbackButton onClick={checkResult}>{strings.check}</s.RightFeedbackButton>
+          <s.RightFeedbackButton onClick={checkResult} disabled={isChecking}>
+            {strings.check}
+          </s.RightFeedbackButton>
         </div>
 
         {/* Virtual Keyboard - shown for non-Roman alphabets */}

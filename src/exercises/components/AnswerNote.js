@@ -10,9 +10,10 @@ import { removePunctuation } from "../../utils/text/preprocessing";
 const SHOW_THINKING_AFTER_MS = 400;
 
 // What the API's judge said about an answer other than the expected one
-// (see useAnswerJudge), as one line under the exercise. `expected` is what
-// the exercise wanted.
-export default function AnswerNote({ isChecking, note, expected }) {
+// (see useAnswerJudge), as one line under the exercise.
+// `expected` is what the exercise wanted; `isTranslation` says whether the
+// learner typed the word they are learning (cloze) or its translation.
+export default function AnswerNote({ isChecking, note, expected, isTranslation = false }) {
   const [showThinking, setShowThinking] = useState(false);
 
   useEffect(() => {
@@ -35,7 +36,9 @@ export default function AnswerNote({ isChecking, note, expected }) {
   }
   if (!note) return null;
 
-  const leads = { alternative: strings.alsoRightPractising, nearMiss: strings.understoodButPractising };
+  const leads = isTranslation
+    ? { alternative: strings.alsoRightTranslation, nearMiss: strings.closeButTranslation }
+    : { alternative: strings.alsoRightPractising, nearMiss: strings.understoodButPractising };
   return (
     <AnswerLine>
       {leads[note.kind]} <strong>{removePunctuation(expected)}</strong>.
