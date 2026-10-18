@@ -14,8 +14,9 @@ const NUMERIC_TO_CEFR = {
 };
 
 /**
- * Read the user's CEFR level (1-6) for a given language code from the
- * userDetails object. Returns undefined when the level isn't set.
+ * Read the user's CEFR level (0-6, 0 is A0) for a given language code from the
+ * userDetails object. Returns undefined or null when the level isn't set --
+ * never test it with `if (level)`, which drops A0.
  *
  * userDetails stores per-language CEFR under `<lang>_cefr_level` keys
  * (e.g. `de_cefr_level`, `en_cefr_level`).
@@ -27,7 +28,7 @@ export function getUserCefrLevel(userDetails, languageCode) {
 
 /**
  * The value the CEFR field should hold for a language: the user's stored level
- * for *that* language, as a CEFR_LEVELS value (the strings "1".."6"), or "" when
+ * for *that* language, as a CEFR_LEVELS value (the strings "0".."6"), or "" when
  * they have no level for it yet.
  *
  * Levels are stored per language, so this has to be re-read whenever the chosen
@@ -63,15 +64,17 @@ export function shouldShowLanguageChoice(
   const userNumeric = getUserCefrLevel(userDetails, articleLanguage);
   const articleOrd = cefrOrdinal(articleCefrLevel);
   if (!articleOrd || userNumeric == null) return true;
-  return articleOrd > userNumeric;
+  // A0 reads A1 texts (see numericToCefr): an A1 article is already at their level.
+  return articleOrd > Math.max(userNumeric, 1);
 }
 
 /**
- * Convert numeric CEFR level to string.
- * User settings store levels as 1-6, API expects "A1"-"C2".
+ * Convert a stored level to the CEFR string to pick texts by.
+ * User settings store levels as 0-6 (0 is A0), the API expects "A1"-"C2".
  *
- * @param {number|string} numericLevel - Level as number (1-6)
- * @returns {string} CEFR level string (A1-C2), defaults to B1
+ * @param {number|string} numericLevel - Level as number (0-6)
+ * @returns {string} CEFR level string (A1-C2), defaults to B1 for anything
+ *   else, including no level at all
  */
 export function numericToCefr(numericLevel) {
   return NUMERIC_TO_CEFR[numericLevel] || "B1";

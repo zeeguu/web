@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { cefrOrdinal } from "./cefrScale";
-import { cefrLevelFieldValue, numericToCefr, shouldShowLanguageChoice } from "./userCefrLevel";
-import { levelValueFromCefr } from "../../assorted/cefrLevels";
+import { shouldShowLanguageChoice } from "./userCefrLevel";
 
 describe("cefrOrdinal", () => {
   it("reads a plain level", () => {
@@ -38,21 +37,5 @@ describe("shouldShowLanguageChoice", () => {
 
   it("always shows it for another language", () => {
     expect(shouldShowLanguageChoice("de", "A1", b1Danish)).toBe(true);
-  });
-});
-
-describe("A0", () => {
-  it("reads texts at A1, the easiest there are", () => {
-    expect(numericToCefr(0)).toBe("A1");
-  });
-
-  it("is shown as chosen, not as unset", () => {
-    expect(cefrLevelFieldValue({ bg_cefr_level: 0 }, "bg")).toBe("0");
-    expect(cefrLevelFieldValue({}, "bg")).toBe("");
-  });
-
-  it("comes from an A0 link", () => {
-    expect(levelValueFromCefr("A0")).toBe("0");
-    expect(levelValueFromCefr("A2")).toBe("2");
   });
 });

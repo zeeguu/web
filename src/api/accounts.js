@@ -135,10 +135,8 @@ Zeeguu_API.prototype.addAnonUser = function (uuid, password, invite_code, langua
   if (languagePrefs?.native_language) {
     body += `&native_language_code=${languagePrefs.native_language}`;
   }
-  // Any chosen level, including 0 (A0): `if (level)` would drop it.
-  const level = languagePrefs?.learned_cefr_level;
-  if (level !== undefined && level !== null && level !== "") {
-    body += `&learned_cefr_level=${level}`;
+  if (languagePrefs?.learned_cefr_level) {
+    body += `&learned_cefr_level=${languagePrefs.learned_cefr_level}`;
   }
 
   return fetch(url, {
