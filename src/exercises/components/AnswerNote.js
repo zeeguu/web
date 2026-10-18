@@ -36,15 +36,26 @@ export default function AnswerNote({ isChecking, note, expected, isTranslation =
   }
   if (!note) return null;
 
-  const leads = isTranslation
+  // Once the exercise ends, what was typed is no longer on screen (the input
+  // goes, the cloze blank shows the expected word), so the line says it.
+  const lines = isTranslation
     ? { alternative: strings.alsoRightTranslation, nearMiss: strings.closeButTranslation }
     : { alternative: strings.alsoRightPractising, nearMiss: strings.understoodButPractising };
   return (
     <AnswerLine>
-      {leads[note.kind]} <strong>{removePunctuation(expected)}</strong>.
+      {withBoldParts(lines[note.kind], note.typed.trim(), removePunctuation(expected))}
       {note.explanation && <> {note.explanation}</>}
     </AnswerLine>
   );
+}
+
+// A string with {0}, {1}, ... in it, those filled in bold. (The app's
+// strings.formatString turns elements into "[object Object]".)
+function withBoldParts(template, ...parts) {
+  return template.split(/(\{\d\})/).map((piece, i) => {
+    const placeholder = piece.match(/^\{(\d)\}$/);
+    return placeholder ? <strong key={i}>{parts[placeholder[1]]}</strong> : piece;
+  });
 }
 
 // One line under the sentence about an answer that was another word than the

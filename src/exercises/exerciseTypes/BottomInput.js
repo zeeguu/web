@@ -280,9 +280,9 @@ export default function BottomInput({
           <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
             {strings.hint}
           </s.LeftFeedbackButton>
-          <s.RightFeedbackButton onClick={checkResult} disabled={isChecking}>
-            {strings.check}
-          </s.RightFeedbackButton>
+          {/* Not disabled while the API is asked: a disabled FeedbackButton is
+              struck through (the used Hint). checkResult ignores the press. */}
+          <s.RightFeedbackButton onClick={checkResult}>{strings.check}</s.RightFeedbackButton>
         </div>
 
         {/* Virtual Keyboard - shown for non-Roman alphabets */}

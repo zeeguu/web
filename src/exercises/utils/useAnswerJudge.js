@@ -45,9 +45,9 @@ export function useAnswerJudge(askApi, isExerciseOver, resetOn) {
     request.current = null;
     setIsChecking(false);
     if (verdict.relation === "SYNONYM") {
-      setNote({ kind: "alternative" });
+      setNote({ kind: "alternative", typed });
     } else if (verdict.relation === "NEAR_SYNONYM_NOT_IDIOMATIC") {
-      setNote({ kind: "nearMiss", explanation: verdict.explanation });
+      setNote({ kind: "nearMiss", typed, explanation: verdict.explanation });
     }
     return verdict;
   }
