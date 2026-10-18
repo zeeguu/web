@@ -50,8 +50,11 @@ export default function BottomInput({
   const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
   const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
+  const answerLanguageCode = isL1Answer ? exerciseBookmark.to_lang : exerciseBookmark.from_lang;
   // Forms of one word are listed only in translations ("твій/твоя" for "your").
-  const answers = isL1Answer ? acceptedAnswers(solutionText) : [normalizeAnswer(solutionText)];
+  const answers = isL1Answer
+    ? acceptedAnswers(solutionText, answerLanguageCode)
+    : [normalizeAnswer(solutionText, answerLanguageCode)];
 
   // Words in the answer form the learner is closest to ("he did" of
   // "he did / he made"); set on each check.
@@ -59,8 +62,6 @@ export default function BottomInput({
   const isWrongOrder = isIncorrect && correctWordCountInInput === solutionWordCount;
 
   const isPartOfExpressionCorrect = correctWordCountInInput >= 1 && solutionWordCount > 1 && isIncorrect;
-
-  const answerLanguageCode = isL1Answer ? exerciseBookmark.to_lang : exerciseBookmark.from_lang;
 
   const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
   const showVirtualKeyboard = needsVirtualKeyboard(answerLanguageCode, userDetails?.id);
@@ -130,7 +131,7 @@ export default function BottomInput({
     if (input === "") return false;
 
     // Auto-submit only for perfect matches - no typo tolerance
-    return answers.includes(normalizeAnswer(input));
+    return answers.includes(normalizeAnswer(input, answerLanguageCode));
   }
 
   // The accepted answer nearest to what was typed, so that the feedback
@@ -147,7 +148,7 @@ export default function BottomInput({
       return;
     }
 
-    let normalizedInput = normalizeAnswer(currentInput);
+    let normalizedInput = normalizeAnswer(currentInput, answerLanguageCode);
     let [normalizedAnswer, levDistance] = closestAnswer(normalizedInput);
 
     let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
