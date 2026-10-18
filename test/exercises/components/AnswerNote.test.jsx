@@ -9,7 +9,7 @@ describe("AnswerNote", () => {
     const { container } = render(
       <AnswerNote note={{ kind: "alternative", typed: " consult " }} expected="to look up" isTranslation />,
     );
-    expect(container.textContent).toBe("consult is also right. The translation we use is to look up.");
+    expect(container.textContent).toBe("consult is also right. Your saved translation is to look up.");
   });
 
   it("adds the judge's explanation to a near miss", () => {
