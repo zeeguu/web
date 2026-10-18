@@ -1,7 +1,10 @@
 import { cefrOrdinal } from "./cefrScale";
 
-// Convert numeric level (1-6) to CEFR string (A1-C2)
+// Convert a stored level (0-6) to the CEFR string to pick texts by (A1-C2).
+// 0 is A0, and reads as A1: nothing is written below A1. Only the audio
+// lessons go below it, and the API decides that on its own.
 const NUMERIC_TO_CEFR = {
+  0: "A1",
   1: "A1",
   2: "A2",
   3: "B1",
