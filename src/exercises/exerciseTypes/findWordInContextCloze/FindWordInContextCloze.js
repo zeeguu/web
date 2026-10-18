@@ -1,6 +1,4 @@
-import { useState, useEffect, useContext, useRef } from "react";
-import styled from "styled-components";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 
 import strings from "../../../i18n/definitions.js";
@@ -15,6 +13,8 @@ import { useCorrectionBeforeReveal } from "../../utils/useCorrectionBeforeReveal
 import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
 import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 import { classifyTypedAnswer, EXACT, OTHER_WORD } from "../../utils/typedAnswer.js";
+import { useAnswerJudge } from "../../utils/useAnswerJudge.js";
+import AnswerNote from "../../components/AnswerNote.js";
 import { ALTERNATIVE } from "../../ExerciseConstants.js";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
@@ -42,26 +42,12 @@ export default function FindWordInContextCloze({
   const [inputValue, setInputValue] = useState("");
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
   const [correction, correctThenReveal] = useCorrectionBeforeReveal([reload, exerciseBookmark, isExerciseOver]);
-  // While the API judges another word the learner typed ("tænker" for "synes").
-  const [isChecking, setIsChecking] = useState(false);
-  // What the API said about it, kept under the sentence after the reveal.
-  const [answerNote, setAnswerNote] = useState(null);
-  // The judge request in flight. Aborted when the exercise ends some other
-  // way (Show solution), moves on, or unmounts (ExerciseSession remounts
-  // each exercise), so a late verdict never lands on the wrong screen.
-  const judgeRequest = useRef(null);
-
-  function abortJudge() {
-    judgeRequest.current?.abort();
-    judgeRequest.current = null;
-    setIsChecking(false);
-  }
-
-  useEffect(() => () => judgeRequest.current?.abort(), []);
-
-  useEffect(() => {
-    if (isExerciseOver) abortJudge();
-  }, [isExerciseOver]);
+  // Another word the learner typed ("tænker" for "synes"), asked about.
+  const { isChecking, note: answerNote, judge } = useAnswerJudge(
+    (typed, signal) => api.judgeClozeAlternative(exerciseBookmark.id, typed, signal),
+    isExerciseOver,
+    [reload, exerciseBookmark],
+  );
 
   useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
 
@@ -75,10 +61,8 @@ export default function FindWordInContextCloze({
   });
 
   useEffect(() => {
-    abortJudge();
     setInputValue("");
     setIsCorrectAnswer(false);
-    setAnswerNote(null);
   }, [reload, exerciseBookmark]);
 
   if (!interactiveText) {
@@ -122,22 +106,13 @@ export default function FindWordInContextCloze({
 
     // Another word: the prompt is a translation, and other words may fit it
     // ("thinks" -> synes, tænker, mener). Ask before calling it wrong.
-    const request = new AbortController();
-    judgeRequest.current = request;
-    setIsChecking(true);
-    const verdict = await api.judgeClozeAlternative(exerciseBookmark.id, value, request.signal);
-    if (request.signal.aborted) return; // the exercise ended or moved on meanwhile
-    judgeRequest.current = null;
-    setIsChecking(false);
+    const verdict = await judge(value);
+    if (!verdict) return; // the exercise ended or moved on meanwhile
 
     if (verdict.relation === "SYNONYM") {
-      setAnswerNote({ kind: "alternative" });
       // On the shared-exercise page notifyCorrectAnswer ignores the outcome
       // and this simply counts as correct.
       notifyCorrectAnswer(exerciseBookmark, true, ALTERNATIVE);
-    } else if (verdict.relation === "NEAR_SYNONYM_NOT_IDIOMATIC") {
-      setAnswerNote({ kind: "nearMiss", explanation: verdict.explanation });
-      answerWasWrong(value);
     } else {
       answerWasWrong(value);
     }
@@ -174,51 +149,3 @@ export default function FindWordInContextCloze({
     </s.Exercise>
   );
 }
-
-// A verdict already stored for this meaning comes back in a database round
-// trip; only an actual LLM call (1-3 s) outlasts this, so only that shows the
-// spinner instead of flashing it on every other word.
-const SHOW_THINKING_AFTER_MS = 400;
-
-function AnswerNote({ isChecking, note, expected }) {
-  const [showThinking, setShowThinking] = useState(false);
-
-  useEffect(() => {
-    if (!isChecking) return;
-    const timer = setTimeout(() => setShowThinking(true), SHOW_THINKING_AFTER_MS);
-    return () => {
-      clearTimeout(timer);
-      setShowThinking(false);
-    };
-  }, [isChecking]);
-
-  if (isChecking) {
-    if (!showThinking) return null;
-    return (
-      <AnswerLine>
-        <CircularProgress size={14} sx={{ color: "var(--text-secondary)", verticalAlign: "-2px", marginRight: "0.5em" }} />
-        {strings.checkingAnswer}
-      </AnswerLine>
-    );
-  }
-  if (!note) return null;
-
-  const lead = note.kind === "alternative" ? strings.alsoRightPractising : strings.understoodButPractising;
-  return (
-    <AnswerLine>
-      {lead} <strong>{removePunctuation(expected)}</strong>.
-      {note.explanation && <> {note.explanation}</>}
-    </AnswerLine>
-  );
-}
-
-// One line under the sentence about an answer that was another word than the
-// expected one. Local to this exercise: the FullWidth*Msg boxes are
-// page-level messages, too heavy for a line inside the exercise card.
-const AnswerLine = styled.p`
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 0.95em;
-  max-width: 32em;
-  margin: 1em auto 0 auto;
-`;
