@@ -25,15 +25,21 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         return shield(for: webDomain.domain)
     }
 
+    // The rules and today's progress, from the ledger the app keeps (Aiki.swift).
+    private static func deal() -> String {
+        let learned = Aiki.loadLedger().learnedToday(Date()) / 60
+        let goal = Aiki.dailyGoalSeconds / 60
+        return "Each minute you learn in Zeeguu unlocks \(Aiki.minutesEarnedPerMinute) minutes here. "
+            + "Learn \(goal) minutes today and it's free for the rest of the day.\n\nToday: \(learned) of \(goal) minutes."
+    }
+
     private func shield(for name: String?) -> ShieldConfiguration {
         let zeeguuOrange = UIColor(red: 1.0, green: 0xbb / 255.0, blue: 0x54 / 255.0, alpha: 1)
         return ShieldConfiguration(
             backgroundBlurStyle: .systemMaterial,
             icon: UIImage(named: "ZeeguuShieldIcon"),
             title: ShieldConfiguration.Label(text: "\(name ?? "This app") is paused", color: .label),
-            subtitle: ShieldConfiguration.Label(
-                text: "You turned on Aiki mode. Open Zeeguu and learn a little instead.",
-                color: .secondaryLabel),
+            subtitle: ShieldConfiguration.Label(text: Self.deal(), color: .secondaryLabel),
             primaryButtonLabel: ShieldConfiguration.Label(text: "OK", color: .black),
             primaryButtonBackgroundColor: zeeguuOrange
         )

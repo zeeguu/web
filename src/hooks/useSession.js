@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import useShadowRef from "./useShadowRef";
+import { reportLearningSeconds } from "../components/nativeShield";
 
 // Lifecycle primitive: owns the session id and the cleanup-on-sessionKey
 // effect. Knows nothing about HTTP, time models, or session types — those
@@ -7,14 +8,7 @@ import useShadowRef from "./useShadowRef";
 // the getCurrentDuration getter. Activity strategies (useDomActivitySession,
 // useListeningSession) compose this primitive with their own activity model.
 
-export default function useSession({
-  sessionKey,
-  label,
-  apiCreate,
-  apiUpdate,
-  apiEnd,
-  getCurrentDuration,
-}) {
+export default function useSession({ sessionKey, label, apiCreate, apiUpdate, apiEnd, getCurrentDuration }) {
   const [sessionId, setSessionId] = useState(null);
   const sessionIdRef = useRef(null);
   useEffect(() => {
@@ -22,6 +16,18 @@ export default function useSession({
   }, [sessionId]);
 
   const lastUploadTimeRef = useRef(0);
+
+  // Aiki mode earns breaks from learning time, so each report passes on the
+  // seconds added since the previous one.
+  const reportedDurationRef = useRef(0);
+  const reportLearning = useCallback(
+    (duration) => {
+      reportLearningSeconds(label, duration - reportedDurationRef.current);
+      reportedDurationRef.current = duration;
+    },
+    [label],
+  );
+  const reportLearningRef = useShadowRef(reportLearning);
 
   // Shadow-refs so the cleanup effect can read the latest values without
   // listing them in its dep array (which would re-run it constantly because
@@ -45,19 +51,23 @@ export default function useSession({
     if (now - lastUploadTimeRef.current < 5000) return;
     if (sessionIdRef.current && apiUpdate) {
       lastUploadTimeRef.current = now;
-      apiUpdate(sessionIdRef.current, getCurrentDurationRef.current());
+      const duration = getCurrentDurationRef.current();
+      apiUpdate(sessionIdRef.current, duration);
+      reportLearning(duration);
     }
-  }, [apiUpdate, getCurrentDurationRef]);
+  }, [apiUpdate, getCurrentDurationRef, reportLearning]);
 
   const end = useCallback(() => {
     if (!sessionIdRef.current || !apiEnd) return;
     const duration = getCurrentDurationRef.current();
     console.log(`Ending ${label} session:`, sessionIdRef.current, "duration:", duration, "seconds");
     apiEnd(sessionIdRef.current, duration);
+    reportLearning(duration);
+    reportedDurationRef.current = 0;
     sessionIdRef.current = null;
     setSessionId(null);
     lastUploadTimeRef.current = 0;
-  }, [apiEnd, label, getCurrentDurationRef]);
+  }, [apiEnd, label, getCurrentDurationRef, reportLearning]);
 
   // The shared lifecycle: end any active session on unmount or when
   // sessionKey changes. This is the *single* place lifecycle bugs need
@@ -76,7 +86,9 @@ export default function useSession({
           ")",
         );
         apiEndRef.current(sessionIdRef.current, duration);
+        reportLearningRef.current(duration);
       }
+      reportedDurationRef.current = 0;
       sessionIdRef.current = null;
       setSessionId(null);
       lastUploadTimeRef.current = 0;

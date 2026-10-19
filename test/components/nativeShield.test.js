@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { aikiStep, describePicked, pickedCount } from "../../src/components/nativeShield";
+import { aikiStep, countsAsLearning, describePicked, pickedCount } from "../../src/components/nativeShield";
 
 describe("aikiStep", () => {
   it("is unsupported off iOS 16 or before the status is known", () => {
@@ -35,5 +35,20 @@ describe("describePicked", () => {
   it("counts everything picked", () => {
     expect(pickedCount({ apps: 2, categories: 1, webDomains: 1 })).toBe(4);
     expect(pickedCount(undefined)).toBe(0);
+  });
+});
+
+describe("countsAsLearning", () => {
+  it("counts reading, exercises and listening, not browsing or watching", () => {
+    expect(countsAsLearning("reading", 10)).toBe(true);
+    expect(countsAsLearning("exercise", 10)).toBe(true);
+    expect(countsAsLearning("listening", 10)).toBe(true);
+    expect(countsAsLearning("browsing", 10)).toBe(false);
+    expect(countsAsLearning("watching", 10)).toBe(false);
+  });
+
+  it("ignores time that did not move forward", () => {
+    expect(countsAsLearning("reading", 0)).toBe(false);
+    expect(countsAsLearning("reading", -5)).toBe(false);
   });
 });

@@ -10,6 +10,19 @@ export function nativeShieldAvailable() {
   return Capacitor.getPlatform() === "ios" && Capacitor.isPluginAvailable("ZeeguuShield");
 }
 
+// Session labels (see hooks/use*Session.js) whose time earns Aiki breaks:
+// reading, exercises and audio lessons; not browsing the feed or videos.
+const LEARNING_SESSIONS = ["reading", "exercise", "listening"];
+
+export function countsAsLearning(label, seconds) {
+  return LEARNING_SESSIONS.includes(label) && seconds > 0;
+}
+
+export function reportLearningSeconds(label, seconds) {
+  if (!countsAsLearning(label, seconds) || !nativeShieldAvailable()) return;
+  ZeeguuShield.addLearningSeconds({ seconds: Math.round(seconds) }).catch(() => {});
+}
+
 // Which setup step a learner is at, from ZeeguuShield.getStatus().
 export function aikiStep(status) {
   if (!status || !status.supported) return "unsupported";

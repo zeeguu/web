@@ -12,8 +12,7 @@ import ManagedSettings
 /// apps they are, only opaque tokens, which we keep on the device. While the
 /// shield is on, opening one of those apps shows Apple's shield screen instead.
 ///
-/// Spike scope: authorize, pick apps, shield on/off. The branded shield and the
-/// earn-a-break timing come later (docs/future-work/anti-procrastination-mode.md).
+/// Learning in Zeeguu earns breaks from the shield; the rules live in Aiki.swift.
 @objc(ZeeguuShieldPlugin)
 public class ZeeguuShieldPlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "ZeeguuShieldPlugin"
@@ -23,11 +22,9 @@ public class ZeeguuShieldPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "requestAuthorization", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "presentAppPicker", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "applyShield", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "removeShield", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "removeShield", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "addLearningSeconds", returnType: CAPPluginReturnPromise)
     ]
-
-    private static let selectionKey = "zeeguuShield.selection"
-    private static let activeKey = "zeeguuShield.active"
 
     private func unsupported(_ call: CAPPluginCall) -> Bool {
         if #available(iOS 16.0, *) { return false }
@@ -40,10 +37,20 @@ public class ZeeguuShieldPlugin: CAPPlugin, CAPBridgedPlugin {
             call.resolve(["supported": false])
             return
         }
-        var result = Self.describe(Self.loadSelection())
+        let now = Date()
+        // Catch up in case a break ended while the monitor was late.
+        Aiki.sync(now: now)
+        let ledger = Aiki.loadLedger()
+        var result = Self.describe(Aiki.loadSelection())
         result["supported"] = true
         result["authorization"] = Self.describe(AuthorizationCenter.shared.authorizationStatus)
-        result["shieldActive"] = UserDefaults.standard.bool(forKey: Self.activeKey)
+        result["shieldActive"] = ledger.enabled
+        result["learnedSecondsToday"] = ledger.learnedToday(now)
+        result["dailyGoalSeconds"] = Aiki.dailyGoalSeconds
+        result["freeToday"] = ledger.freeToday(now)
+        if ledger.onBreak(now), let end = ledger.breakUntil {
+            result["breakUntil"] = Int(end.timeIntervalSince1970 * 1000)
+        }
         call.resolve(result)
     }
 
@@ -71,15 +78,14 @@ public class ZeeguuShieldPlugin: CAPPlugin, CAPBridgedPlugin {
                 call.reject("Screen Time access not granted", "NOT_AUTHORIZED")
                 return
             }
-            let picker = PickerView(initial: Self.loadSelection() ?? FamilyActivitySelection()) { picked in
+            let picker = PickerView(initial: Aiki.loadSelection() ?? FamilyActivitySelection()) { picked in
                 self.bridge?.viewController?.dismiss(animated: true)
                 guard let picked = picked else {
                     call.resolve(["cancelled": true])
                     return
                 }
-                Self.saveSelection(picked)
-                // Picking new apps while shielded should shield the new ones.
-                if UserDefaults.standard.bool(forKey: Self.activeKey) { Self.shield(picked) }
+                Aiki.saveSelection(picked)
+                Aiki.sync()
                 call.resolve(Self.describe(picked))
             }
             self.bridge?.viewController?.present(UIHostingController(rootView: picker), animated: true)
@@ -88,44 +94,38 @@ public class ZeeguuShieldPlugin: CAPPlugin, CAPBridgedPlugin {
 
     @objc func applyShield(_ call: CAPPluginCall) {
         guard #available(iOS 16.0, *) else { _ = unsupported(call); return }
-        guard let selection = Self.loadSelection() else {
+        guard Aiki.loadSelection() != nil else {
             call.reject("No apps picked yet", "NO_SELECTION")
             return
         }
-        Self.shield(selection)
-        UserDefaults.standard.set(true, forKey: Self.activeKey)
+        setEnabled(true)
         call.resolve()
     }
 
     @objc func removeShield(_ call: CAPPluginCall) {
         guard #available(iOS 16.0, *) else { _ = unsupported(call); return }
-        ManagedSettingsStore().clearAllSettings()
-        UserDefaults.standard.set(false, forKey: Self.activeKey)
+        setEnabled(false)
+        call.resolve()
+    }
+
+    @objc func addLearningSeconds(_ call: CAPPluginCall) {
+        guard #available(iOS 16.0, *) else { _ = unsupported(call); return }
+        var ledger = Aiki.loadLedger()
+        ledger.addLearning(seconds: call.getInt("seconds") ?? 0, now: Date())
+        Aiki.saveLedger(ledger)
+        Aiki.sync()
         call.resolve()
     }
 
     // MARK: - Helpers
 
     @available(iOS 16.0, *)
-    private static func shield(_ selection: FamilyActivitySelection) {
-        let store = ManagedSettingsStore()
-        store.shield.applications = selection.applicationTokens.isEmpty ? nil : selection.applicationTokens
-        store.shield.applicationCategories = selection.categoryTokens.isEmpty
-            ? nil : .specific(selection.categoryTokens)
-        store.shield.webDomains = selection.webDomainTokens.isEmpty ? nil : selection.webDomainTokens
-    }
-
-    @available(iOS 16.0, *)
-    private static func loadSelection() -> FamilyActivitySelection? {
-        guard let data = UserDefaults.standard.data(forKey: selectionKey) else { return nil }
-        return try? JSONDecoder().decode(FamilyActivitySelection.self, from: data)
-    }
-
-    @available(iOS 16.0, *)
-    private static func saveSelection(_ selection: FamilyActivitySelection) {
-        if let data = try? JSONEncoder().encode(selection) {
-            UserDefaults.standard.set(data, forKey: selectionKey)
-        }
+    private func setEnabled(_ on: Bool) {
+        var ledger = Aiki.loadLedger()
+        ledger.enabled = on
+        Aiki.saveLedger(ledger)
+        Aiki.setDailyMonitoring(on)
+        Aiki.sync()
     }
 
     @available(iOS 16.0, *)
