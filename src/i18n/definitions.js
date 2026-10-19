@@ -583,6 +583,7 @@ let strings = new LocalizedStrings(
       translateL2toL1Headline: "Translate the highlighted word",
       translateWhatYouHearHeadline: "Translate the word you hear",
       multipleChoiceL2toL1Headline: "Select the correct translation of the highlighted word",
+      listenChooseMeaningHeadline: "Listen, and choose what it means",
       clickWordInContextHeadline: "Click on the translation of the word below in the text",
       multipleChoiceContextHeadline: "Choose the context that fits the word",
 
@@ -1028,6 +1029,7 @@ let strings = new LocalizedStrings(
       lengthWithCapital: "Længde",
       levelWithCapital: "Sværhed",
       articles: "Læs",
+      listenChooseMeaningHeadline: "Lyt, og vælg hvad det betyder",
       noFeedAtA0Title: "Ingen nyheder på A0",
       noFeedAtA0Message: "Der er ikke noget nyhedsfeed på niveau A0. Vi anbefaler, at du bruger lydlektionerne indtil videre.",
       goToAudioLessons: "Gå til lydlektionerne",

@@ -10,6 +10,7 @@ export const EXERCISE_TYPES = {
   translateWhatYouHear: "Translate_What_You_Hear",
   clickWordInContext: "Click_L1W_in_L2T",
   findWordInContext: "Recognize_L1W_in_L2T",
+  listenChooseMeaning: "Listen_L2W_choose_L1W",
 
   isMultiBookmarkExercise: function (exerciseType) {
     return [this.multipleChoice, this.multipleChoiceContext, this.match].includes(exerciseType);

@@ -10,10 +10,10 @@ import { CORRECT, SOLUTION, WRONG } from "./ExerciseConstants";
 import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { pushDrillVocab } from "../assorted/drillCache";
-import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
+import { assignBookmarksToExercises, assignBookmarksToA0Exercises } from "./assignBookmarksToExercises";
 import NextNavigation from "./exerciseTypes/NextNavigation";
 import { SpeechContext } from "../contexts/SpeechContext";
-import { A0_SEQUENCE, EXTENDED_SEQUENCE, EXTENDED_SEQUENCE_NO_AUDIO } from "./exerciseSequenceTypes";
+import { EXTENDED_SEQUENCE, EXTENDED_SEQUENCE_NO_AUDIO } from "./exerciseSequenceTypes";
 import { isA0Learner } from "../utils/misc/userCefrLevel";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import useShadowRef from "../hooks/useShadowRef";
@@ -161,9 +161,16 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       return;
     }
 
-    let exerciseSequenceType = getExerciseSequenceType();
-
-    let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequenceType);
+    // A0: they know their words only by ear, so every exercise is listening,
+    // and none asks them to type (see assignBookmarksToA0Exercises).
+    let exerciseSession = isA0Learner(userDetails)
+      ? assignBookmarksToA0Exercises(bookmarks)
+      : assignBookmarksToExercises(bookmarks, getExerciseSequenceType());
+    if (exerciseSession.length === 0) {
+      setIsOutOfWordsToday(true);
+      setIsSessionLoading(false);
+      return;
+    }
     setFullExerciseProgression(exerciseSession);
 
     setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
@@ -231,9 +238,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function getExerciseSequenceType() {
-    // A0: listening only, no typing -- whatever the audio setting says, since
-    // these learners know their words only by ear.
-    if (isA0Learner(userDetails)) return A0_SEQUENCE;
     return SessionStorage.isAudioExercisesEnabled() ? EXTENDED_SEQUENCE : EXTENDED_SEQUENCE_NO_AUDIO;
   }
 

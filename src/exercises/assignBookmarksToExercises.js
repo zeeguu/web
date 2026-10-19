@@ -1,3 +1,4 @@
+import ListenChooseMeaning from "./exerciseTypes/listenChooseMeaning/ListenChooseMeaning";
 import { removeAllMatchingItemFromList } from "../utils/basic/arrays";
 import shuffle from "../assorted/fisherYatesShuffle";
 
@@ -154,4 +155,29 @@ function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
   return assignBookmarksToLevels(bookmarks, exerciseTypesList);
 }
 
-export { assignBookmarksToExercises };
+/*
+  For learners at A0, who know their words only by ear: every word gets
+  ListenChooseMeaning (hear it, pick its meaning out of three), whatever its
+  level. The two wrong meanings are those of other words in the session, with
+  different meanings. A word that cannot get two -- a session of one or two
+  words -- waits for a session with more. Words from one lesson often share a
+  dialogue line, so contexts are not required to differ, unlike the sequences
+  above: the context is only shown after the answer.
+*/
+function assignBookmarksToA0Exercises(bookmarks) {
+  const exercises = [];
+  for (const bookmark of bookmarks) {
+    const distractors = shuffle(bookmarks.filter((other) => other !== bookmark && other.to !== bookmark.to));
+    const twoDifferent = [];
+    for (const other of distractors) {
+      if (twoDifferent.length === 2) break;
+      if (!twoDifferent.some((chosen) => chosen.to === other.to)) twoDifferent.push(other);
+    }
+    if (twoDifferent.length === 2) {
+      exercises.push({ type: ListenChooseMeaning, bookmarks: [bookmark, ...twoDifferent] });
+    }
+  }
+  return exercises;
+}
+
+export { assignBookmarksToExercises, assignBookmarksToA0Exercises };

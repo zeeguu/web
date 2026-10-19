@@ -1,0 +1,114 @@
+import { useState, useEffect, useContext } from "react";
+import * as s from "../Exercise.sc.js";
+import SpeakButton from "../SpeakButton.js";
+import MultipleChoicesInput from "../multipleChoice/MultipleChoicesInput.js";
+import LoadingAnimation from "../../../components/LoadingAnimation";
+import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
+import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
+import strings from "../../../i18n/definitions.js";
+import shuffle from "../../../assorted/fisherYatesShuffle";
+import { removePunctuation } from "../../../utils/text/preprocessing";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
+import { APIContext } from "../../../contexts/APIContext.js";
+import ContextWithExchange from "../../components/ContextWithExchange.js";
+import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
+
+// For learners at A0, who know their words only by ear: they hear the word and
+// pick what it means, out of three meanings in their own language. Nothing in
+// the language being learned is written until they have answered; then the
+// word is shown in the dialogue line it came from -- the first time they see
+// it spelled. Plays whatever the audio-exercises setting says: listening is
+// the exercise.
+
+const EXERCISE_TYPE = EXERCISE_TYPES.listenChooseMeaning;
+
+export default function ListenChooseMeaning({
+  bookmarksToStudy,
+  notifyCorrectAnswer,
+  notifyIncorrectAnswer,
+  setExerciseType,
+  reload,
+  setIsCorrect,
+  isExerciseOver,
+  resetSubSessionTimer,
+  bookmarkProgressBar,
+  onExampleUpdated,
+  onExerciseLoaded,
+}) {
+  const api = useContext(APIContext);
+  const speech = useContext(SpeechContext);
+  const exerciseBookmark = bookmarksToStudy[0];
+  const [incorrectAnswer, setIncorrectAnswer] = useState("");
+  const [buttonOptions, setButtonOptions] = useState(null);
+  const [translatedWords, setTranslatedWords] = useState([]);
+
+  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
+
+  const interactiveText = useInteractiveTextForBookmark({
+    bookmark: exerciseBookmark,
+    api,
+    speech,
+    exerciseType: EXERCISE_TYPE,
+    reload,
+    onExerciseLoaded,
+  });
+
+  useEffect(() => {
+    if (!interactiveText) return;
+    setButtonOptions(shuffle(bookmarksToStudy.slice(0, 3).map((b) => removePunctuation(b.to))));
+    speech.speakOut(exerciseBookmark.from);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [interactiveText]);
+
+  function notifyChoiceSelection(selectedChoice) {
+    if (selectedChoice === removePunctuation(exerciseBookmark.to)) {
+      notifyCorrectAnswer(exerciseBookmark);
+    } else {
+      setIncorrectAnswer(selectedChoice);
+      notifyIncorrectAnswer(exerciseBookmark);
+      setIsCorrect(false);
+    }
+  }
+
+  if (!interactiveText || !buttonOptions) {
+    return <LoadingAnimation />;
+  }
+
+  return (
+    <s.Exercise className="multipleChoice">
+      <ExerciseInstructionHeader headline={strings.listenChooseMeaningHeadline} isExerciseOver={isExerciseOver} />
+
+      {!isExerciseOver && (
+        <s.CenteredWordRow style={{ margin: "1.5em 0" }}>
+          <SpeakButton bookmarkToStudy={exerciseBookmark} styling="large" />
+        </s.CenteredWordRow>
+      )}
+
+      {isExerciseOver && (
+        <ContextWithExchange
+          exerciseBookmark={exerciseBookmark}
+          interactiveText={interactiveText}
+          translatedWords={translatedWords}
+          setTranslatedWords={setTranslatedWords}
+          isExerciseOver={isExerciseOver}
+          onExampleUpdated={onExampleUpdated}
+          translating={false}
+          pronouncing={true}
+          highlightExpression={exerciseBookmark.from}
+        />
+      )}
+
+      {isExerciseOver && bookmarkProgressBar && <s.RevealedProgressBar>{bookmarkProgressBar}</s.RevealedProgressBar>}
+
+      {!isExerciseOver && (
+        <MultipleChoicesInput
+          buttonOptions={buttonOptions}
+          notifyChoiceSelection={notifyChoiceSelection}
+          incorrectAnswer={incorrectAnswer}
+          setIncorrectAnswer={setIncorrectAnswer}
+        />
+      )}
+    </s.Exercise>
+  );
+}

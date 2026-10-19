@@ -1,32 +1,25 @@
 import { describe, it, expect } from "vitest";
-import { A0_SEQUENCE } from "../../src/exercises/exerciseSequenceTypes";
-import { assignBookmarksToExercises } from "../../src/exercises/assignBookmarksToExercises";
-import MultipleChoiceAudio from "../../src/exercises/exerciseTypes/multipleChoiceAudio/MultipleChoiceAudio";
-import ClickWordInContext from "../../src/exercises/exerciseTypes/wordInContextExercises/ClickWordInContext";
+import { assignBookmarksToA0Exercises } from "../../src/exercises/assignBookmarksToExercises";
+import ListenChooseMeaning from "../../src/exercises/exerciseTypes/listenChooseMeaning/ListenChooseMeaning";
 
-// A0 learners know their words only by ear: every exercise is one where they
-// listen or tap, never one where they type.
-const bookmark = (id, level, context) => ({ id, level, context, to: `t${id}` });
+// A0 learners know their words only by ear: every word gets "listen and choose
+// what it means", never an exercise where they read or type the word.
+const word = (id, to, context = "En kaffe, tak.") => ({ id, to, context, level: 1 });
 
-describe("A0 exercise sequence", () => {
-  it("has a listening exercise and a one-word fallback at every level", () => {
-    for (const level of [1, 2, 3, 4]) {
-      const atLevel = A0_SEQUENCE.filter((e) => e.level === level);
-      expect(atLevel.map((e) => e.type)).toEqual([MultipleChoiceAudio, ClickWordInContext]);
-      expect(atLevel.some((e) => e.requiredBookmarks === 1)).toBe(true);
+describe("A0 exercises", () => {
+  it("give every word a listening exercise, even when they share a dialogue line", () => {
+    const words = [word(1, "coffee"), word(2, "thanks"), word(3, "a"), word(4, "hello", "Hej!")];
+    const session = assignBookmarksToA0Exercises(words);
+    expect(session.map((e) => e.bookmarks[0].id)).toEqual([1, 2, 3, 4]);
+    for (const exercise of session) {
+      expect(exercise.type).toBe(ListenChooseMeaning);
+      expect(new Set(exercise.bookmarks.map((b) => b.to)).size).toBe(3);
     }
   });
 
-  it("gives every word an exercise, with no typing", () => {
-    const words = [
-      bookmark(1, 1, "Hej! Hvad vil du have?"),
-      bookmark(2, 1, "En kaffe, tak."),
-      bookmark(3, 1, "Værsgo."),
-      bookmark(4, 3, "Tak skal du have."),
-    ];
-    const session = assignBookmarksToExercises([...words], A0_SEQUENCE);
-    const exercised = new Set(session.flatMap((e) => e.bookmarks.map((b) => b.id)));
-    expect(exercised).toEqual(new Set([1, 2, 3, 4]));
-    for (const e of session) expect([MultipleChoiceAudio, ClickWordInContext]).toContain(e.type);
+  it("wait when there are not two other meanings to choose among", () => {
+    expect(assignBookmarksToA0Exercises([word(1, "coffee"), word(2, "thanks")])).toEqual([]);
+    // Two words, one meaning: still only two different meanings in the session.
+    expect(assignBookmarksToA0Exercises([word(1, "coffee"), word(2, "coffee"), word(3, "thanks")])).toEqual([]);
   });
 });

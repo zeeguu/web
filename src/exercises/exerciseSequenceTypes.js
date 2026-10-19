@@ -162,17 +162,6 @@ let EXTENDED_SEQUENCE_NO_AUDIO = [
   EX_MultipleChoice,
 ];
 
-// For learners at A0, who know their words only by ear and should not have to
-// write yet: hear the word and pick it (at every level, so every word gets it),
-// and, when there are not three different words to choose among, tap the word
-// in the dialogue line it came from. Neither asks them to type. Not validated
-// like the sequences above: it leaves out the exercises that need typing on
-// purpose.
-let A0_SEQUENCE = [1, 2, 3, 4].flatMap((level) => [
-  { ...EX_MultipleChoiceAudio, level },
-  { ...EX_ClickWordInContext, level },
-]);
-
 let ALL_EXERCISES = [
   EX_Match,
   EX_MultipleChoice,
@@ -193,7 +182,6 @@ export {
   EXERCISE_TYPES_TIAGO,
   EXTENDED_SEQUENCE,
   EXTENDED_SEQUENCE_NO_AUDIO,
-  A0_SEQUENCE,
   DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
   AUDIO_EXERCISES,
