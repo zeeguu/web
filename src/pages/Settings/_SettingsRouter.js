@@ -15,6 +15,7 @@ import ActivityTimer from "./Pages/ActivityTimer";
 import NotificationSettings from "./Pages/NotificationSettings";
 import Labs from "./Pages/Labs";
 import Developer from "./Pages/Developer";
+import AikiMode from "./Pages/AikiMode";
 
 export default function SettingsRouter({ setUser }) {
   return (
@@ -48,6 +49,8 @@ export default function SettingsRouter({ setUser }) {
       <PrivateRoute path="/account_settings/labs" component={Labs} />
 
       <PrivateRoute path="/account_settings/developer" component={Developer} />
+
+      <PrivateRoute path="/account_settings/aiki" component={AikiMode} />
     </Switch>
   );
 }
