@@ -63,7 +63,8 @@ export function shouldShowLanguageChoice(
 
   const userNumeric = getUserCefrLevel(userDetails, articleLanguage);
   const articleOrd = cefrOrdinal(articleCefrLevel);
-  if (!articleOrd || userNumeric == null) return true;
+  // A stored level that is not one of 0..6 is as good as none: ask.
+  if (!articleOrd || !(userNumeric in NUMERIC_TO_CEFR)) return true;
   // Compared as the level the user reads at (A0 reads A1, see numericToCefr).
   return articleOrd > cefrOrdinal(numericToCefr(userNumeric));
 }
@@ -86,6 +87,9 @@ export function numericToCefr(numericLevel) {
  * API got "3" where it expects "B1". A1 when nothing was stored.
  */
 export function explanationCefr(storedLevel) {
-  // localStorage holds strings, so "0" (A0) is truthy here.
-  return storedLevel ? numericToCefr(storedLevel) : "A1";
+  if (!storedLevel) return "A1"; // localStorage holds strings, so "0" (A0) is truthy
+  // A browser may still hold a CEFR code from before; it is already what the
+  // API wants.
+  if (cefrOrdinal(storedLevel)) return storedLevel;
+  return numericToCefr(storedLevel);
 }
