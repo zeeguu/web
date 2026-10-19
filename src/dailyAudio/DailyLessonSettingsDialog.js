@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Dialog } from "../components/DialogWrapper";
 import SuggestionSelector, { pillToBackend, backendToPill } from "./SuggestionSelector";
 import { BannerButton } from "./SharedLessonView.sc";
 import { SubtleTextButton } from "./LessonView.sc";
 import { zeeguuOrange } from "../components/colors";
+import { UserContext } from "../contexts/UserContext";
+import { isA0Learner } from "../utils/misc/userCefrLevel";
 
 /**
  * Setup / "Change daily topic" dialog. Hosts the lesson-type selector and
@@ -25,10 +27,16 @@ export default function DailyLessonSettingsDialog({
   onTurnOff,
   onDismiss,
 }) {
+  // At A0 every lesson is a situation the learner learns to get through (see
+  // future-work/a0-audio-lessons.md in the docs repo): no Vocabulary, no Topic.
+  const { userDetails } = useContext(UserContext);
+  const a0 = isA0Learner(userDetails);
+  const types = a0 ? ["situation"] : undefined;
+
   // The primary button is always meaningful: with no pending change it's a
   // neutral "Close" that just dismisses; once the user edits something it
   // morphs into the active orange "Save settings". No dead greyed-out slab.
-  const [pillType, setPillType] = useState(initialType ? backendToPill(initialType) : "topic");
+  const [pillType, setPillType] = useState(a0 ? "situation" : initialType ? backendToPill(initialType) : "topic");
   // Per-type subject so switching pills — or to Vocabulary and back — never
   // clobbers what was typed for Topic vs Situation.
   const [subjectByType, setSubjectByType] = useState(() => ({
@@ -39,6 +47,7 @@ export default function DailyLessonSettingsDialog({
 
   // Vocabulary needs enough study words; disable the pill when there aren't.
   useEffect(() => {
+    if (a0) return;
     api.checkDailyLessonFeasibility(
       (data) => {
         setAutoDisabled(!data.feasible);
@@ -46,7 +55,7 @@ export default function DailyLessonSettingsDialog({
       },
       () => setAutoDisabled(false),
     );
-  }, [api]);
+  }, [api, a0]);
 
   const needsSubject = pillType === "topic" || pillType === "situation";
   const currentSubject = needsSubject ? subjectByType[pillType] : "";
@@ -114,7 +123,9 @@ export default function DailyLessonSettingsDialog({
       {/* Section heading, not a dialog title: it names what the pills below
           control. Future settings (frequency, delivery time…) become their own
           labeled sections stacked below — or tabs — without rewording this. */}
-      <h2 style={{ margin: "0 0 16px", fontSize: "1.25rem", color: zeeguuOrange }}>Daily lesson type</h2>
+      <h2 style={{ margin: "0 0 16px", fontSize: "1.25rem", color: zeeguuOrange }}>
+        {a0 ? "Daily situation" : "Daily lesson type"}
+      </h2>
 
       <SuggestionSelector
         suggestionType={pillType}
@@ -122,6 +133,8 @@ export default function DailyLessonSettingsDialog({
         suggestion={currentSubject}
         setSuggestion={setCurrentSubject}
         autoDisabled={autoDisabled}
+        types={types}
+        placeholder={a0 ? "A situation to get through — e.g. ordering a coffee, buying a train ticket" : undefined}
       />
 
       <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>

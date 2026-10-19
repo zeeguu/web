@@ -43,6 +43,8 @@ export default function SuggestionSelector({
   suggestion,
   setSuggestion,
   autoDisabled,
+  types = Object.keys(SUGGESTION_TYPES),
+  placeholder,
 }) {
   const selectType = (key) => {
     if (suggestionType === key) return;
@@ -53,20 +55,23 @@ export default function SuggestionSelector({
 
   return (
     <SuggestionWrapper>
-      <PillRow role="radiogroup" aria-label="Daily lesson type">
-        {Object.entries(SUGGESTION_TYPES).map(([key, { label }]) => (
-          <SelectablePill
-            key={key}
-            type="button"
-            $selected={suggestionType === key}
-            role="radio"
-            aria-checked={suggestionType === key}
-            onClick={() => selectType(key)}
-          >
-            {label}
-          </SelectablePill>
-        ))}
-      </PillRow>
+      {/* With a single type there is nothing to choose: no pills. */}
+      {types.length > 1 && (
+        <PillRow role="radiogroup" aria-label="Daily lesson type">
+          {types.map((key) => (
+            <SelectablePill
+              key={key}
+              type="button"
+              $selected={suggestionType === key}
+              role="radio"
+              aria-checked={suggestionType === key}
+              onClick={() => selectType(key)}
+            >
+              {SUGGESTION_TYPES[key].label}
+            </SelectablePill>
+          ))}
+        </PillRow>
+      )}
 
       {/* Vocabulary has no subject to type, so it shows the one explanatory
           line in place of the input. Topic/Situation show only the input — its
@@ -93,7 +98,7 @@ export default function SuggestionSelector({
       ) : (
         <InputArea>
           <ClearableInput
-            placeholder={SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
+            placeholder={placeholder || SUGGESTION_TYPES[suggestionType]?.placeholder || ""}
             maxLength={MAX_SUGGESTION_LENGTH}
             value={suggestion}
             onChange={(e) => setSuggestion(e.target.value.replace(/\n/g, " "))}
