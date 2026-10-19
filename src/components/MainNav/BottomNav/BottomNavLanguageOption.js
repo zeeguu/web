@@ -3,7 +3,7 @@ import { UserContext } from "../../../contexts/UserContext";
 import LanguageModal from "../LanguageModal";
 import BottomNavOption from "./BottomNavOption";
 import NavIcon from "../NavIcon";
-import navLanguages from "../navLanguages";
+import { knownLanguageName } from "../../../utils/misc/languageCodeToName";
 
 export default function BottomNavLanguageOption() {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
@@ -11,7 +11,7 @@ export default function BottomNavLanguageOption() {
 
   const currentLearnedLanguage = useMemo(() => {
     const languageCode = userDetails.learned_language;
-    const languageName = navLanguages[languageCode];
+    const languageName = knownLanguageName(languageCode);
     return languageName || "Language";
   }, [userDetails.learned_language]);
 

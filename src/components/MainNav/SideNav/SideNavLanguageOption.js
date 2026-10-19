@@ -4,7 +4,7 @@ import { APIContext } from "../../../contexts/APIContext";
 import LanguageModal from "../LanguageModal";
 import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
-import navLanguages from "../navLanguages";
+import { knownLanguageName } from "../../../utils/misc/languageCodeToName";
 import { CEFR_LEVELS } from "../../../assorted/cefrLevels";
 import { getUserCefrLevel } from "../../../utils/misc/userCefrLevel";
 import LocalStorage from "../../../assorted/LocalStorage";
@@ -45,7 +45,7 @@ export default function SideNavLanguageOption({ screenWidth }) {
 
   const currentLearnedLanguage = useMemo(() => {
     const languageCode = userDetails.learned_language;
-    const languageName = navLanguages[languageCode];
+    const languageName = knownLanguageName(languageCode);
     return languageName || "Language";
   }, [userDetails.learned_language]);
 

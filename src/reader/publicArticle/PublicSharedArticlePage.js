@@ -12,7 +12,6 @@ import ChoiceModal from "../../components/modal_shared/ChoiceModal";
 import Button from "../../pages/_pages_shared/Button.sc";
 import { zeeguuOrange } from "../../components/colors";
 import LocalStorage from "../../assorted/LocalStorage";
-import { languageNames } from "../../utils/languageDetection";
 import { languageName } from "../../utils/misc/languageCodeToName";
 import { setTitle } from "../../assorted/setTitle";
 import { TranslatableText } from "../TranslatableText";
@@ -137,7 +136,8 @@ const LevelPills = styled.div`
   margin: 0.4rem 0 1rem;
 `;
 
-const SUPPORTED_TARGETS = Object.keys(languageNames);
+// The languages a visitor can have the article's words translated into.
+const SUPPORTED_TARGETS = ["el", "de", "es", "fr", "nl", "en", "it", "zh-CN", "da", "tr", "ar", "so", "ku", "sv", "ru"];
 
 // Account-less reading of a shared article: the whole text, a handful of free
 // word translations, then an invitation to sign up or get the app. The article
@@ -334,7 +334,7 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
 
   const targetOptions = SUPPORTED_TARGETS.filter((c) => c !== article.language).map((c) => (
     <option key={c} value={c}>
-      {languageNames[c]}
+      {languageName(c)}
     </option>
   ));
 

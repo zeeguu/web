@@ -1,9 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
 import OutOfWordsMessage from "../../../src/exercises/OutOfWordsMessage";
 import { APIContext } from "../../../src/contexts/APIContext";
 import { UserContext } from "../../../src/contexts/UserContext";
+import LocalStorage from "../../../src/assorted/LocalStorage";
 
 /**
  * Which message a learner with nothing left to practise sees. The words are
@@ -11,6 +12,9 @@ import { UserContext } from "../../../src/contexts/UserContext";
  * Danish words saved, was congratulated for practising everything due.
  */
 describe("OutOfWordsMessage", () => {
+  // Stubbed: newer Node ships its own global localStorage, which shadows jsdom's.
+  beforeEach(() => vi.spyOn(LocalStorage, "getLanguageNames").mockReturnValue({ bg: "Bulgarian" }));
+
   function renderWith(countResult) {
     const api = {
       getCountOfAllScheduledUserWords: (callback, options) => {

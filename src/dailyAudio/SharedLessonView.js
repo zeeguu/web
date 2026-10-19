@@ -8,7 +8,7 @@ import * as s from "../components/ColumnWidth.sc";
 import { LessonWrapper } from "./LessonView.sc";
 import { LessonCard, HeaderRow, ShareNote, BannerButton } from "./SharedLessonView.sc";
 import LessonPlayerCard from "./LessonPlayerCard";
-import { languageNames } from "../utils/languageDetection";
+import { languageName } from "../utils/misc/languageCodeToName";
 import useListeningSession from "../hooks/useListeningSession";
 
 // Module-scope so it survives the AppLayout remount that fires when
@@ -95,7 +95,7 @@ export default function SharedLessonView() {
     );
   }
 
-  const lessonLangName = languageNames[lessonLang] || lessonLang;
+  const lessonLangName = languageName(lessonLang);
   const isActiveLanguage = userDetails?.learned_language === lessonLang;
   const titleText = lessonData.title || "Shared Audio Lesson";
 

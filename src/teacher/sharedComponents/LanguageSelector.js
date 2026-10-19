@@ -60,20 +60,3 @@ export function LanguageSelector(props) {
     </Fragment>
   );
 }
-
-export const languageMap = {
-  German: "de",
-  Spanish: "es",
-  French: "fr",
-  Dutch: "nl",
-  English: "en",
-  Italian: "it",
-  Chinese: "zh-CN",
-  Danish: "da",
-  Turkish: "tr",
-  Arabic: "ar",
-  Somali: "so",
-  Kurdish: "ku",
-  Swedish: "sv",
-  Russian: "ru",
-};

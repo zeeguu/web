@@ -19,7 +19,8 @@ import AdjustLevelBar from "./AdjustLevelBar";
 import RewritingIndicator from "./RewritingIndicator";
 import ImportFromLink from "./ImportFromLink";
 import LoadingAnimation from "../../components/LoadingAnimation";
-import { detectLanguageFromText, languageNames } from "../../utils/languageDetection";
+import { detectLanguageFromText } from "../../utils/languageDetection";
+import { languageName } from "../../utils/misc/languageCodeToName";
 
 export default function EditText() {
   const api = useContext(APIContext);
@@ -191,8 +192,7 @@ export default function EditText() {
       const detectedLanguage = detectLanguageFromText(event.target.value);
       if (detectedLanguage) {
         newState.language_code = detectedLanguage;
-        const languageName = languageNames[detectedLanguage] || detectedLanguage;
-        toast.info(`Language automatically detected: ${languageName}. You can change it if needed.`);
+        toast.info(`Language automatically detected: ${languageName(detectedLanguage)}. You can change it if needed.`);
       }
     }
 

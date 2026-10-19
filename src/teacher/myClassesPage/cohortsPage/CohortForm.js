@@ -8,10 +8,8 @@ import {
   CohortNameTextField,
   InviteCodeTextField,
 } from "./CohortFormInputFields";
-import {
-  languageMap,
-  LanguageSelector,
-} from "../../sharedComponents/LanguageSelector";
+import { LanguageSelector } from "../../sharedComponents/LanguageSelector";
+import { languageCodeFromName } from "../../../utils/misc/languageCodeToName";
 import {
   StyledButton,
   PopupButtonWrapper,
@@ -38,7 +36,7 @@ const CohortForm = ({
     id: cohort ? cohort.id : "",
     cohort_name: cohort ? cohort.name : "",
     invite_code: cohort ? cohort.inv_code : "",
-    language_code: cohort ? languageMap[cohort.language_name] : "default",
+    language_code: cohort ? languageCodeFromName(cohort.language_name) : "default",
     only_classroom_texts: cohort ? !!cohort.only_classroom_texts : false,
     // Absent on classes fetched from an API that predates the field: those
     // classes behave as if it were on.
