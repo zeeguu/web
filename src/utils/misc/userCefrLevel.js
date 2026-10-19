@@ -93,3 +93,12 @@ export function explanationCefr(storedLevel) {
   if (cefrOrdinal(storedLevel)) return storedLevel;
   return numericToCefr(storedLevel);
 }
+
+/**
+ * Is the user at A0 ("Don't know anything") in the language they are learning?
+ * Compared as a string: the level arrives as the number 0, and `if (!level)`
+ * would mistake A0 for no level at all.
+ */
+export function isA0Learner(userDetails) {
+  return String(getUserCefrLevel(userDetails, userDetails?.learned_language)) === "0";
+}
