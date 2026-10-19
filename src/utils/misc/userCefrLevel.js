@@ -86,7 +86,6 @@ export function numericToCefr(numericLevel) {
  * API got "3" where it expects "B1". A1 when nothing was stored.
  */
 export function explanationCefr(storedLevel) {
-  return storedLevel === undefined || storedLevel === null || storedLevel === ""
-    ? "A1"
-    : numericToCefr(storedLevel);
+  // localStorage holds strings, so "0" (A0) is truthy here.
+  return storedLevel ? numericToCefr(storedLevel) : "A1";
 }

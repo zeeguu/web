@@ -1,3 +1,4 @@
+import LocalStorage from "../../assorted/LocalStorage";
 import { useContext, useRef, useState } from "react";
 import { APIContext } from "../../contexts/APIContext";
 import ExplanationModal from "../../reader/ExplanationModal";
@@ -43,7 +44,7 @@ export default function ExplainWordButton({ bookmark }) {
         bookmark.to_lang,
         selection,
         context,
-        explanationCefr(localStorage.learned_cefr_level),
+        explanationCefr(LocalStorage.getLearnedCefrLevel()),
       )
       .then((result) => {
         if (isStale()) return;
