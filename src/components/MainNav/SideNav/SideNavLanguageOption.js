@@ -4,7 +4,7 @@ import { APIContext } from "../../../contexts/APIContext";
 import LanguageModal from "../LanguageModal";
 import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
-import navLanguages from "../navLanguages";
+import { knownLanguageName } from "../../../utils/misc/languageCodeToName";
 import { CEFR_LEVELS } from "../../../assorted/cefrLevels";
 import { getUserCefrLevel } from "../../../utils/misc/userCefrLevel";
 import LocalStorage from "../../../assorted/LocalStorage";
@@ -43,11 +43,9 @@ export default function SideNavLanguageOption({ screenWidth }) {
   const { userDetails, setUserDetails } = useContext(UserContext);
   const api = useContext(APIContext);
 
-  const currentLearnedLanguage = useMemo(() => {
-    const languageCode = userDetails.learned_language;
-    const languageName = navLanguages[languageCode];
-    return languageName || "Language";
-  }, [userDetails.learned_language]);
+  // Not memoized on the language code: on a first launch the names arrive from
+  // the API after this first renders, and the re-render must pick them up.
+  const currentLearnedLanguage = knownLanguageName(userDetails.learned_language) || "Language";
 
   const currentCefrLevel = useMemo(() => {
     const cefrLevel = getUserCefrLevel(userDetails, userDetails.learned_language);

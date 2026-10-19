@@ -8,7 +8,7 @@ import AndroidIcon from "@mui/icons-material/Android";
 import { APIContext } from "../contexts/APIContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 import LessonPlayerCard from "./LessonPlayerCard";
-import { languageNames } from "../utils/languageDetection";
+import { languageName } from "../utils/misc/languageCodeToName";
 import Button from "../pages/_pages_shared/Button.sc";
 import { zeeguuOrange } from "../components/colors";
 
@@ -82,7 +82,7 @@ export default function PublicSharedLessonPage() {
     body = <LoadingAnimation />;
   } else {
     const lessonLang = lessonData.language_code;
-    const lessonLangName = languageNames[lessonLang] || lessonLang;
+    const lessonLangName = languageName(lessonLang);
     const titleText = lessonData.title || "Shared Audio Lesson";
     const metadata = (
       <>

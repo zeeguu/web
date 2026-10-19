@@ -4,7 +4,7 @@ import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { normalizeAnswer, acceptedAnswers } from "../inputNormalization";
 import Pluralize from "../../utils/text/pluralize";
-import { LANGUAGE_CODE_TO_NAME } from "../../utils/misc/languageCodeToName";
+import { languageName } from "../../utils/misc/languageCodeToName";
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts";
 import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard";
 import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/VirtualKeyboard/SpecialCharacterBar";
@@ -66,7 +66,7 @@ export default function BottomInput({
 
   const isPartOfExpressionCorrect = correctWordCountInInput >= 1 && solutionWordCount > 1 && isIncorrect;
 
-  const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
+  const inputLanguageName = languageName(answerLanguageCode);
   const showVirtualKeyboard = needsVirtualKeyboard(answerLanguageCode, userDetails?.id);
   const suppressOSKeyboard = showVirtualKeyboard && !isKeyboardCollapsed;
 

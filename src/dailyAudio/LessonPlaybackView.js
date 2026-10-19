@@ -7,7 +7,7 @@ import { successGreen } from "../components/colors";
 import { AUDIO_STATUS } from "./AudioLessonConstants";
 import { LessonWrapper, LessonTitle, LessonMetadata, CompletionCheck, SubtleTextButton, LessonActions } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
-import { languageNames } from "../utils/languageDetection";
+import { knownLanguageName } from "../utils/misc/languageCodeToName";
 import ShareLessonButton from "./ShareLessonButton";
 
 export default function LessonPlaybackView({
@@ -55,7 +55,7 @@ export default function LessonPlaybackView({
           }
           language={userDetails?.learned_language}
           title={lessonData.title || "Daily Audio Lesson"}
-          artist={`${languageNames[userDetails?.learned_language] || "Zeeguu"} Audio Lesson`}
+          artist={`${knownLanguageName(userDetails?.learned_language) || "Zeeguu"} Audio Lesson`}
           onPlay={() => {
             if (lessonData.lesson_id) {
               api.updateLessonState(lessonData.lesson_id, "resume");

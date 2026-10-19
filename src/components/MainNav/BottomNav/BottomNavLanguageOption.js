@@ -1,28 +1,25 @@
-import { useState, useMemo, useContext } from "react";
+import { useState, useContext } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import LanguageModal from "../LanguageModal";
 import BottomNavOption from "./BottomNavOption";
 import NavIcon from "../NavIcon";
-import navLanguages from "../navLanguages";
+import { knownLanguageName } from "../../../utils/misc/languageCodeToName";
 
 export default function BottomNavLanguageOption() {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const { userDetails } = useContext(UserContext);
 
-  const currentLearnedLanguage = useMemo(() => {
-    const languageCode = userDetails.learned_language;
-    const languageName = navLanguages[languageCode];
-    return languageName || "Language";
-  }, [userDetails.learned_language]);
+  // Not memoized on the language code: on a first launch the names arrive from
+  // the API after this first renders, and the re-render must pick them up.
+  const currentLearnedLanguage = knownLanguageName(userDetails.learned_language) || "Language";
 
-  const languageDisplayed = currentLearnedLanguage || "Language";
   return (
     <>
       <BottomNavOption
         ariaHasPopup={"dialog"}
-        ariaLabel={`Change language (currently: ${languageDisplayed})`}
+        ariaLabel={`Change language (currently: ${currentLearnedLanguage})`}
         icon={<NavIcon name="language" />}
-        text={languageDisplayed}
+        text={currentLearnedLanguage}
         onClick={(e) => {
           e.stopPropagation();
           setShowLanguageModal(!showLanguageModal);

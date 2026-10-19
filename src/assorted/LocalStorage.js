@@ -38,6 +38,7 @@ const LocalStorage = {
     SelectedFeedTopic: "selected_feed_topic",
     DailyFeedbackLastShown: "daily_feedback_last_shown",
     InviteCode: "invite_code",
+    LanguageNames: "language_names",
     ContextSwipeHintCount: "context_swipe_hint_count",
     // Keep in sync with index.html inline theme script
     ThemePreference: "zeeguu-theme-preference",
@@ -456,6 +457,20 @@ const LocalStorage = {
 
   incrementContextSwipeHintCount: function () {
     localStorage[this.Keys.ContextSwipeHintCount] = this.getContextSwipeHintCount() + 1;
+  },
+
+  // { code: name } for every language the API knows, saved from
+  // /system_languages at startup (see languageName()).
+  setLanguageNames: function (names) {
+    localStorage[this.Keys.LanguageNames] = JSON.stringify(names);
+  },
+
+  getLanguageNames: function () {
+    try {
+      return JSON.parse(localStorage[this.Keys.LanguageNames]) || {};
+    } catch (e) {
+      return {};
+    }
   },
 };
 

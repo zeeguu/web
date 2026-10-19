@@ -130,6 +130,8 @@ function App() {
   useEffect(() => {
     api.getSystemLanguages((languages) => {
       setSystemLanguages(languages);
+      const all = [...languages.learnable_languages, ...languages.native_languages];
+      LocalStorage.setLanguageNames(Object.fromEntries(all.map((l) => [l.code, l.name])));
     });
   }, [api]);
 
