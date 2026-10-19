@@ -36,7 +36,9 @@ const CohortForm = ({
     id: cohort ? cohort.id : "",
     cohort_name: cohort ? cohort.name : "",
     invite_code: cohort ? cohort.inv_code : "",
-    language_code: cohort ? languageCodeFromName(cohort.language_name) : "default",
+    // "default" when the class's language has no known name, so the form asks
+    // for one instead of saving the class without a language.
+    language_code: (cohort && languageCodeFromName(cohort.language_name)) || "default",
     only_classroom_texts: cohort ? !!cohort.only_classroom_texts : false,
     // Absent on classes fetched from an API that predates the field: those
     // classes behave as if it were on.

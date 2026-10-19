@@ -13,14 +13,13 @@ export default function BottomNavLanguageOption() {
   // the API after this first renders, and the re-render must pick them up.
   const currentLearnedLanguage = knownLanguageName(userDetails.learned_language) || "Language";
 
-  const languageDisplayed = currentLearnedLanguage || "Language";
   return (
     <>
       <BottomNavOption
         ariaHasPopup={"dialog"}
-        ariaLabel={`Change language (currently: ${languageDisplayed})`}
+        ariaLabel={`Change language (currently: ${currentLearnedLanguage})`}
         icon={<NavIcon name="language" />}
-        text={languageDisplayed}
+        text={currentLearnedLanguage}
         onClick={(e) => {
           e.stopPropagation();
           setShowLanguageModal(!showLanguageModal);
