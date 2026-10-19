@@ -1,29 +1,18 @@
-Smartere øvelser, en ny profilside og mere til lærere.
+Start et sprog fra nul, og mere retfærdige øvelser.
+
+Start fra nul
+- Et nyt niveau til dig, der aldrig har lært sproget: "Kan ingenting endnu".
+- På dette niveau starter dine lydlektioner helt fra begyndelsen, og dine øvelser er kun lytning: hør et ord og vælg, hvad det betyder, uden at skulle skrive noget.
+- Når du vælger en daglig situation, kan du sige, om du taler som mand, kvinde eller begge dele, og lektionens dialog bliver skrevet til dig.
+- I stedet for et nyhedsfeed, du endnu ikke kan læse, viser forsiden dig vej til lydlektionerne. Feedet kommer tilbage på A1.
 
 Øvelser
-- Forklar findes nu også i øvelserne.
-- Når du skriver en oversættelse, tæller alle ordets listede former som rigtige.
-- I skriv-selv-udfyldningsøvelser bliver et forkert svar fulgt af rettelsen, læst højt.
-- Svar på flere ord bliver nu blanket rigtigt ud i sætninger, der starter midt i.
-- Eksempelsætninger viser, når der er flere at se, med et swipe-tip på touchskærme.
-- Ord, du allerede kender godt, rykker hurtigere frem i niveaubjælken, og det fejres, når de er lært.
+- Hvis du i en udfyldningsøvelse skriver et andet ord, der også passer i sætningen, bliver det tjekket, før det markeres som forkert.
+- Når du skriver en oversættelse, der er anderledes end den gemte, bliver den også tjekket, og rigtige svar tæller.
+- "to look up" og "look up" er nu det samme svar.
+- Efter et svar fortæller en kort linje, hvad du skrev, og hvordan det passer med din gemte oversættelse.
+- Når du trykker Enter i et svarfelt, skriver det ikke længere det første bogstav fra skærmtastaturet.
+- Oversættelser følger nu store og små bogstaver i det ord, de står over.
 
-Feed og læsning
-- En historie, som flere medier dækker, viser nu dem alle side om side.
-- Delte resuméer lader dig skifte niveau og tilmelde dig på det niveau, du valgte.
-
-Profil og indstillinger
-- Indstillinger ligger nu bag din profil, og du ændrer din avatar på profilsiden.
-- Indstillingerne for den daglige lektion vises, selv før din første lektion kommer.
-- Alle elever kan nu slette en daglig lektion.
-
-Historik
-- Ord fra en browsersession vises under den artikel, de kom fra.
-- Ord, du har øvet siden, er markeret.
-
-Til lærere
-- En ny side for hver klassetekst viser de ord, klassen slog op i den.
-- Læsesessioner viser en fokusstribe over, hvornår eleven var aktiv.
-- En kompakt elevtabel og en mere overskuelig klasseside.
-- Tilføj tekst åbner editoren med det samme.
-- Når du åbner en elevs tekst, bliver siden ikke længere blank.
+Konto
+- Når du vil ændre din e-mail, får du nu en kode på den nye adresse, som du bekræfter med.

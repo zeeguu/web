@@ -1,0 +1,18 @@
+Inizia una lingua da zero, ed esercizi più giusti.
+
+Partire da zero
+- Un nuovo livello per chi non ha mai studiato la lingua: "Non so ancora niente".
+- A questo livello le tue lezioni audio partono dall'inizio e i tuoi esercizi sono solo di ascolto: ascolta una parola e scegli cosa significa, senza scrivere nulla.
+- Quando scegli una situazione del giorno, puoi dire se parli come uomo, donna o indifferente, e il dialogo della lezione viene scritto per te.
+- Invece di un feed di notizie che non puoi ancora leggere, la pagina iniziale ti indirizza alle lezioni audio. Il feed torna dal livello A1.
+
+Esercizi
+- Negli esercizi a completamento, se scrivi un'altra parola che va bene nella frase, viene controllata prima di essere segnata come sbagliata.
+- Quando scrivi una traduzione diversa da quella salvata, viene controllata anche quella, e le risposte giuste contano.
+- "to look up" e "look up" ora sono la stessa risposta.
+- Dopo una risposta, una breve riga ti dice cosa hai scritto e come si confronta con la tua traduzione salvata.
+- Premere Invio in un campo di risposta non scrive più la prima lettera della tastiera sullo schermo.
+- Le traduzioni ora seguono le maiuscole e minuscole della parola sopra cui appaiono.
+
+Account
+- Per cambiare la tua e-mail, ora ricevi un codice al nuovo indirizzo per confermarla.

@@ -1,29 +1,18 @@
-Smarter exercises, a new profile page, and more for teachers.
+Start a language from zero, and fairer exercises.
+
+Starting from zero
+- A new level for learners who have never studied the language: "Don't know anything".
+- At this level your audio lessons start from the very beginning, and your exercises are listening only: hear a word and choose what it means, with nothing to type.
+- When you pick a daily situation, you can say whether you speak as a man, a woman, or either, and the lesson's dialogue is written for you.
+- Instead of a news feed you cannot read yet, the home page points you to the audio lessons. The feed comes back at A1.
 
 Exercises
-- Explain is now available in exercises too.
-- When typing a translation, any listed form of the word counts as right.
-- In typed cloze exercises, a wrong answer is followed by its correction read aloud.
-- Multi-word answers are blanked correctly in sentences that start mid-way.
-- Example sentences show when there are more to see, with a swipe hint on touch screens.
-- Words you already know well move faster through the level bar, with a celebration when they are learned.
+- In cloze exercises, if you type another word that also fits the sentence, it is checked before being marked wrong.
+- When you type a translation that differs from the saved one, it is checked too, and correct answers count.
+- "to look up" and "look up" are now the same answer.
+- After an answer, a short line tells you what you typed and how it compares with your saved translation.
+- Pressing Enter in an answer field no longer types the first letter of the on-screen keyboard.
+- Translations now match the capitalisation of the word they sit over.
 
-Feed and reading
-- A story covered by several outlets now lists them all as equals.
-- Shared summaries let you switch level and sign up at the level you chose.
-
-Profile and settings
-- Settings now sit behind your profile, and you edit your avatar on the profile page.
-- Daily lesson settings are shown even before your first lesson arrives.
-- Every learner can now delete a daily lesson.
-
-History
-- Words from a browsing session appear under the article they came from.
-- Words you have practised since are marked.
-
-For teachers
-- A new page for each class text shows the words the class looked up in it.
-- Reading sessions show a focus strip of when the student was active.
-- A compact student table and a cleaner class page.
-- Add Text opens the editor straight away.
-- Opening a student's text no longer shows a blank page.
+Account
+- To change your email, you now get a code at the new address to confirm it.
