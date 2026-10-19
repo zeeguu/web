@@ -1,4 +1,4 @@
-import { useState, useMemo, useContext } from "react";
+import { useState, useContext } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import LanguageModal from "../LanguageModal";
 import BottomNavOption from "./BottomNavOption";
@@ -9,11 +9,9 @@ export default function BottomNavLanguageOption() {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const { userDetails } = useContext(UserContext);
 
-  const currentLearnedLanguage = useMemo(() => {
-    const languageCode = userDetails.learned_language;
-    const languageName = knownLanguageName(languageCode);
-    return languageName || "Language";
-  }, [userDetails.learned_language]);
+  // Not memoized on the language code: on a first launch the names arrive from
+  // the API after this first renders, and the re-render must pick them up.
+  const currentLearnedLanguage = knownLanguageName(userDetails.learned_language) || "Language";
 
   const languageDisplayed = currentLearnedLanguage || "Language";
   return (
