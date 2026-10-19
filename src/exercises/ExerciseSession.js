@@ -13,7 +13,8 @@ import { pushDrillVocab } from "../assorted/drillCache";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 import NextNavigation from "./exerciseTypes/NextNavigation";
 import { SpeechContext } from "../contexts/SpeechContext";
-import { EXTENDED_SEQUENCE, EXTENDED_SEQUENCE_NO_AUDIO } from "./exerciseSequenceTypes";
+import { A0_SEQUENCE, EXTENDED_SEQUENCE, EXTENDED_SEQUENCE_NO_AUDIO } from "./exerciseSequenceTypes";
+import { isA0Learner } from "../utils/misc/userCefrLevel";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import useShadowRef from "../hooks/useShadowRef";
 import useExerciseSession from "../hooks/useExerciseSession";
@@ -230,6 +231,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function getExerciseSequenceType() {
+    // A0: listening only, no typing -- whatever the audio setting says, since
+    // these learners know their words only by ear.
+    if (isA0Learner(userDetails)) return A0_SEQUENCE;
     return SessionStorage.isAudioExercisesEnabled() ? EXTENDED_SEQUENCE : EXTENDED_SEQUENCE_NO_AUDIO;
   }
 
