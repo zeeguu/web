@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   cefrLevelFieldValue,
   explanationCefr,
+  isA0Learner,
   numericToCefr,
   shouldShowLanguageChoice,
 } from "../../src/utils/misc/userCefrLevel";
@@ -115,5 +116,18 @@ describe("shouldShowLanguageChoice", () => {
 
   it("always shows it for another language", () => {
     expect(shouldShowLanguageChoice("de", "A1", b1Danish)).toBe(true);
+  });
+});
+
+describe("isA0Learner", () => {
+  it("is true at A0, in the language being learned", () => {
+    expect(isA0Learner({ learned_language: "bg", bg_cefr_level: 0 })).toBe(true);
+    expect(isA0Learner({ learned_language: "da", bg_cefr_level: 0, da_cefr_level: 3 })).toBe(false);
+  });
+
+  it("is false with no level, which is not A0", () => {
+    expect(isA0Learner({ learned_language: "bg", bg_cefr_level: null })).toBe(false);
+    expect(isA0Learner({ learned_language: "bg" })).toBe(false);
+    expect(isA0Learner(undefined)).toBe(false);
   });
 });

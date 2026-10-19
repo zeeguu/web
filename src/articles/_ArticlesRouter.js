@@ -32,6 +32,8 @@ import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 import useBrowsingSession from "../hooks/useBrowsingSession";
 import useTabbedRoute from "../hooks/useTabbedRoute";
 import { UserContext } from "../contexts/UserContext";
+import { isA0Learner } from "../utils/misc/userCefrLevel";
+import NoFeedAtA0 from "./NoFeedAtA0";
 import useTranslationOnboarding from "../hooks/useTranslationOnboarding";
 import TranslationOnboardingPopup from "../pages/onboarding/notifications/TranslationOnboardingPopup";
 
@@ -42,6 +44,13 @@ const READ_TAB_PATHS = [
   "/articles/classroom",
   "/articles/shared",
 ];
+
+// At A0 there is no news feed: see NoFeedAtA0. Decided here rather than inside
+// ArticleListBrowser, whose hooks must all run on every render.
+function HomeFeed(props) {
+  const { userDetails } = useContext(UserContext);
+  return isA0Learner(userDetails) ? <NoFeedAtA0 /> : <ArticleListBrowser {...props} />;
+}
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
@@ -156,7 +165,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
           <PrivateRoute
             path="/articles"
             exact
-            component={ArticleListBrowser}
+            component={HomeFeed}
             hasExtension={hasExtension}
             isChrome={isChrome}
           />
