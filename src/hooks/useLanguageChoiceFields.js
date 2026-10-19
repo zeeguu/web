@@ -14,7 +14,7 @@ import { NonEmptyValidator, Validator } from "../utils/ValidatorRule/Validator";
  * account-creation payload, settings PUTs them onto the user. What is shared is
  * the questions and their validation, so the two cannot drift apart again.
  *
- * The level is held as a CEFR_LEVELS value -- the strings "1".."6", which is what
+ * The level is held as a CEFR_LEVELS value -- the strings "0".."6" (0 is A0), which is what
  * CefrLevelSelector compares against. Callers that persist a number convert at
  * their own boundary.
  */

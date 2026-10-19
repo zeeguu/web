@@ -704,6 +704,8 @@ let strings = new LocalizedStrings(
       checkIfInviteCodeIsValid: "Something went wrong. Please check that the invite code is valid and try again.",
 
       //CEFR_LEVELS
+      knowsNothing: "Don't know anything",
+      knowsNothingDescription: "Has never learned the language: lessons start from zero",
       beginner: "Beginner",
       elementary: "Elementary",
       intermediate: "Intermediate",
@@ -1492,6 +1494,8 @@ let strings = new LocalizedStrings(
       checkIfInviteCodeIsValid: "Noget gik galt. Tjek venligst at invitationskoden er korrekt og prøv igen.",
 
       //CEFR_LEVELS
+      knowsNothing: "Kan ingenting endnu",
+      knowsNothingDescription: "Har aldrig lært sproget: lektionerne starter fra bunden",
       beginner: "Begynder",
       elementary: "Basis",
       intermediate: "Øvet",
