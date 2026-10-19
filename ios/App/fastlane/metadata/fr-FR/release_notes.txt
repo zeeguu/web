@@ -1,0 +1,18 @@
+Commence une langue de zéro, et des exercices plus justes.
+
+Commencer de zéro
+- Un nouveau niveau pour ceux qui n'ont jamais appris la langue : "Je n'y connais rien".
+- À ce niveau, tes leçons audio partent du tout début et tes exercices sont uniquement à l'écoute : écoute un mot et choisis ce qu'il veut dire, sans rien taper.
+- Quand tu choisis une situation du jour, tu peux indiquer si tu parles en tant qu'homme, femme ou peu importe, et le dialogue de la leçon est écrit pour toi.
+- Au lieu d'un fil d'actualités que tu ne peux pas encore lire, la page d'accueil te dirige vers les leçons audio. Le fil revient au niveau A1.
+
+Exercices
+- Dans les exercices à trous, si tu tapes un autre mot qui convient aussi à la phrase, il est vérifié avant d'être compté faux.
+- Quand tu tapes une traduction différente de celle enregistrée, elle est vérifiée aussi, et les bonnes réponses comptent.
+- "to look up" et "look up" sont maintenant la même réponse.
+- Après une réponse, une courte ligne t'indique ce que tu as tapé et comment cela se compare à ta traduction enregistrée.
+- Appuyer sur Entrée dans un champ de réponse ne tape plus la première lettre du clavier à l'écran.
+- Les traductions respectent maintenant les majuscules et minuscules du mot au-dessus duquel elles apparaissent.
+
+Compte
+- Pour changer ton e-mail, tu reçois maintenant un code à la nouvelle adresse pour la confirmer.

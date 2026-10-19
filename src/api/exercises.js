@@ -24,8 +24,8 @@ Zeeguu_API.prototype.getAllScheduledUserWords = function (isWithTokens, callback
   else this._getJSON(endpoint, callback);
 };
 
-Zeeguu_API.prototype.getCountOfAllScheduledUserWords = function (callback) {
-  this._getJSON(`count_of_all_scheduled_user_words`, callback);
+Zeeguu_API.prototype.getCountOfAllScheduledUserWords = function (callback, options) {
+  this._getJSON(`count_of_all_scheduled_user_words`, callback, options);
 };
 
 // User Words recommended to be studied today
@@ -132,17 +132,17 @@ Zeeguu_API.prototype.fetchAndSortContexts = async function (exerciseBookmark) {
   ];
 };
 
-// Whether a word typed into a cloze, other than the expected one, also fits.
-// Resolves to {relation, explanation}; relation is SYNONYM,
+// Whether an answer typed for a bookmark, other than the expected one, is
+// also right. Resolves to {relation, explanation}; relation is SYNONYM,
 // NEAR_SYNONYM_NOT_IDIOMATIC, NOT_SYNONYM, or UNKNOWN when the API could not
 // tell in time (the server gives up after 6s; we stop waiting a bit later).
 // `signal` lets the caller abandon the request (the exercise ended meanwhile).
-Zeeguu_API.prototype.judgeClozeAlternative = async function (bookmarkId, typed, signal, timeoutMs = 8000) {
+async function judgeTypedAnswer(api, endpoint, bookmarkId, typed, signal, timeoutMs) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   signal?.addEventListener("abort", () => controller.abort());
   try {
-    const response = await fetch(this._appendSessionToUrl("judge_cloze_alternative"), {
+    const response = await fetch(api._appendSessionToUrl(endpoint), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ bookmark_id: bookmarkId, typed }),
@@ -155,6 +155,16 @@ Zeeguu_API.prototype.judgeClozeAlternative = async function (bookmarkId, typed, 
   } finally {
     clearTimeout(timer);
   }
+}
+
+// A word typed into a cloze ("tænker" where it expected "synes").
+Zeeguu_API.prototype.judgeClozeAlternative = function (bookmarkId, typed, signal, timeoutMs = 8000) {
+  return judgeTypedAnswer(this, "judge_cloze_alternative", bookmarkId, typed, signal, timeoutMs);
+};
+
+// A translation typed for the word ("consult" where it expected "look up").
+Zeeguu_API.prototype.judgeTranslationAlternative = function (bookmarkId, typed, signal, timeoutMs = 8000) {
+  return judgeTypedAnswer(this, "judge_translation_alternative", bookmarkId, typed, signal, timeoutMs);
 };
 
 Zeeguu_API.prototype.setPreferredBookmark = function (userWordId, bookmarkId) {

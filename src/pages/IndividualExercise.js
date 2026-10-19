@@ -13,6 +13,7 @@ import MultipleChoice from "../exercises/exerciseTypes/multipleChoice/MultipleCh
 import TranslateL2toL1 from "../exercises/exerciseTypes/translateL2toL1/TranslateL2toL1";
 import MultipleChoiceContext from "../exercises/exerciseTypes/multipleChoiceContext/MultipleChoiceContext";
 import MultipleChoiceL2toL1 from "../exercises/exerciseTypes/multipleChoiceL2toL1/MultipleChoiceL2toL1";
+import ListenChooseMeaning from "../exercises/exerciseTypes/listenChooseMeaning/ListenChooseMeaning";
 import FindWordInContextCloze from "../exercises/exerciseTypes/findWordInContextCloze/FindWordInContextCloze";
 import Match from "../exercises/exerciseTypes/match/Match";
 import SpellWhatYouHear from "../exercises/exerciseTypes/spellWhatYouHear/SpellWhatYouHear";
@@ -54,6 +55,7 @@ const EXERCISE_COMPONENTS = {
   TranslateL2toL1: TranslateL2toL1,
   MultipleChoiceContext: MultipleChoiceContext,
   MultipleChoiceL2toL1: MultipleChoiceL2toL1,
+  ListenChooseMeaning: ListenChooseMeaning,
   FindWordInContextCloze: FindWordInContextCloze,
   Match: Match,
   SpellWhatYouHear: SpellWhatYouHear,
@@ -205,7 +207,7 @@ export default function IndividualExercise() {
 
     // Fall back to creating multiple bookmarks with different translations
     // For MultipleChoiceL2toL1, we need bookmarks with different 'to' values
-    if (exerciseType === "MultipleChoiceL2toL1" && bookmark) {
+    if ((exerciseType === "MultipleChoiceL2toL1" || exerciseType === "ListenChooseMeaning") && bookmark) {
       return [
         bookmark,
         { ...bookmark, id: (bookmark.id || 1) + 1, to: "wrong_option_1" },
@@ -323,7 +325,9 @@ export default function IndividualExercise() {
 
   // Determine which bookmark set to use
   const bookmarksToUse =
-    exerciseType === "Match" || exerciseType === "MultipleChoiceL2toL1" || exerciseType === "MultipleChoiceContext" ? multipleBookmarks : [bookmark];
+    ["Match", "MultipleChoiceL2toL1", "MultipleChoiceContext", "ListenChooseMeaning"].includes(exerciseType)
+      ? multipleBookmarks
+      : [bookmark];
 
   return (
     <APIContext.Provider value={api}>

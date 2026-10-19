@@ -1,3 +1,5 @@
+import LocalStorage from "../assorted/LocalStorage";
+import { explanationCefr } from "../utils/misc/userCefrLevel";
 import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
 import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
@@ -229,7 +231,7 @@ export default class InteractiveText {
         localStorage.native_language,
         selection,
         context,
-        localStorage.learned_cefr_level || "A1",
+        explanationCefr(LocalStorage.getLearnedCefrLevel()),
       )
       .then((result) => {
         if (!result?.explanation) {

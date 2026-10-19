@@ -9,6 +9,7 @@ import ReadingSettings from "./Pages/ReadingSettings";
 import ExerciseTypePreferences from "./Pages/AudioAndPronunciation";
 import MyClassrooms from "./Pages/MyClassrooms/MyClassrooms";
 import DeleteAccount from "./Pages/DeleteAccount";
+import ChangeEmail from "./Pages/ChangeEmail";
 import ExerciseSchedulingPreferences from "./Pages/ExerciseSchedulingPreferences";
 import ActivityTimer from "./Pages/ActivityTimer";
 import NotificationSettings from "./Pages/NotificationSettings";
@@ -22,6 +23,8 @@ export default function SettingsRouter({ setUser }) {
       <PrivateRoute exact path="/account_settings" setUser={setUser} component={Settings} />
 
       <PrivateRoute path="/account_settings/profile_details" setUser={setUser} component={ProfileDetails} />
+
+      <PrivateRoute path="/account_settings/change_email" component={ChangeEmail} />
 
       <PrivateRoute path="/account_settings/language_settings" setUser={setUser} component={LanguageSettings} />
 

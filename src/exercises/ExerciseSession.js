@@ -10,10 +10,11 @@ import { CORRECT, SOLUTION, WRONG } from "./ExerciseConstants";
 import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { pushDrillVocab } from "../assorted/drillCache";
-import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
+import { assignBookmarksToExercises, assignBookmarksToA0Exercises } from "./assignBookmarksToExercises";
 import NextNavigation from "./exerciseTypes/NextNavigation";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { EXTENDED_SEQUENCE, EXTENDED_SEQUENCE_NO_AUDIO } from "./exerciseSequenceTypes";
+import { isA0Learner } from "../utils/misc/userCefrLevel";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import useShadowRef from "../hooks/useShadowRef";
 import useExerciseSession from "../hooks/useExerciseSession";
@@ -36,6 +37,10 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
   const { userDetails, userPreferences } = useContext(UserContext);
+  // Read when the session is built, not when the page mounted: the exercises
+  // are fetched after mount, and the profile may only have arrived since.
+  const isA0Ref = useRef(false);
+  isA0Ref.current = isA0Learner(userDetails);
   const { setContextualInfo } = useFeedbackContext();
   const history = useHistory();
 
@@ -152,17 +157,36 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     getBookmarksAndAssignThemToExercises(gen);
   }
 
+  // The last fetched bookmarks and how the session was built from them, so it
+  // can be built again if the profile arrives after them and says A0.
+  const fetchedRef = useRef(null);
+  useEffect(() => {
+    const fetched = fetchedRef.current;
+    if (!fetched || fetched.builtAsA0 === isA0Ref.current) return;
+    if (currentIndexRef.current > 0) return; // already practising: leave it
+    initializeExercisesForBookmarks(fetched.bookmarks, fetched.gen);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isA0Ref.current]);
+
   function initializeExercisesForBookmarks(bookmarks, gen) {
     if (gen !== initGenRef.current) return; // stale: a newer init has superseded this one
+    fetchedRef.current = { bookmarks, gen, builtAsA0: isA0Ref.current };
     if (bookmarks.length === 0) {
       setIsOutOfWordsToday(true);
       setIsSessionLoading(false); // No exercises to load
       return;
     }
 
-    let exerciseSequenceType = getExerciseSequenceType();
-
-    let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequenceType);
+    // A0: they know their words only by ear, so every exercise is listening,
+    // and none asks them to type (see assignBookmarksToA0Exercises).
+    let exerciseSession = isA0Ref.current
+      ? assignBookmarksToA0Exercises(bookmarks)
+      : assignBookmarksToExercises(bookmarks, getExerciseSequenceType());
+    if (exerciseSession.length === 0) {
+      setIsOutOfWordsToday(true);
+      setIsSessionLoading(false);
+      return;
+    }
     setFullExerciseProgression(exerciseSession);
 
     setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
@@ -267,8 +291,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }, [currentExerciseType, selectedExerciseBookmark, currentBookmarksToStudy, setContextualInfo]);
 
   if (isOutOfWordsToday) {
-    const hasAnyWords = (userDetails?.bookmark_count || 0) > 0;
-    return <OutOfWordsMessage hasAnyWords={hasAnyWords} />;
+    return <OutOfWordsMessage />;
   }
 
   // Show loading screen until session is created and bookmarks are loaded

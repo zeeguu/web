@@ -18,6 +18,7 @@ export default function InputField({
   inputRef,
   inputMode,
   autoComplete,
+  readOnly,
 }) {
   return (
     <s.FieldLabelContainer>
@@ -37,6 +38,7 @@ export default function InputField({
           ref={inputRef}
           inputMode={inputMode}
           autoComplete={autoComplete}
+          readOnly={readOnly}
         />
         {children}
       </s.InputWrapper>

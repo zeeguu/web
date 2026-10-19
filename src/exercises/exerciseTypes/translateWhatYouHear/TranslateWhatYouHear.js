@@ -12,6 +12,8 @@ import ClozeContextWithExchange from "../../components/ClozeContextWithExchange.
 import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
 import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
+import { useAnswerJudge } from "../../utils/useAnswerJudge.js";
+import AnswerNote from "../../components/AnswerNote.js";
 
 // The user has to translate the word they hear into their L1.
 // This tests the user's passive knowledge.
@@ -38,6 +40,13 @@ export default function TranslateWhatYouHear({
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
+
+  // Another translation the learner typed ("consult" for "slå op"), asked about.
+  const { isChecking, note: answerNote, judge } = useAnswerJudge(
+    (typed, signal) => api.judgeTranslationAlternative(exerciseBookmark.id, typed, signal),
+    isExerciseOver,
+    [reload, exerciseBookmark],
+  );
 
   useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
 
@@ -110,8 +119,11 @@ export default function TranslateWhatYouHear({
           exerciseBookmark={exerciseBookmark}
           notifyOfUserAttempt={notifyOfUserAttempt}
           isL1Answer={true}
+          judgeAnswer={judge}
+          isChecking={isChecking}
         />
       )}
+      <AnswerNote isChecking={isChecking} note={answerNote} expected={exerciseBookmark.to} isTranslation />
     </s.Exercise>
   );
 }
