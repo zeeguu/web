@@ -3,7 +3,7 @@ import { UserContext } from "../../../contexts/UserContext";
 import { APIContext } from "../../../contexts/APIContext";
 import LanguageModal from "../LanguageModal";
 import NavOption from "../NavOption";
-import NavIcon from "../NavIcon";
+import NavLanguageFlag from "../NavLanguageFlag";
 import { knownLanguageName } from "../../../utils/misc/languageCodeToName";
 import { CEFR_LEVELS } from "../../../assorted/cefrLevels";
 import { getUserCefrLevel } from "../../../utils/misc/userCefrLevel";
@@ -99,7 +99,7 @@ export default function SideNavLanguageOption({ screenWidth }) {
       <NavOption
         ariaHasPopup={"dialog"}
         ariaLabel={`Change language (currently: ${languageDisplayed} ${currentCefrLevel})`}
-        icon={<NavIcon name={"language"} />}
+        icon={<NavLanguageFlag languageCode={userDetails.learned_language} />}
         text={
           <LanguageContainer>
             <LanguageName onClick={handleLanguageNameClick}>

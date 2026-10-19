@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import LanguageModal from "../LanguageModal";
 import BottomNavOption from "./BottomNavOption";
-import NavIcon from "../NavIcon";
+import NavLanguageFlag from "../NavLanguageFlag";
 import { knownLanguageName } from "../../../utils/misc/languageCodeToName";
 
 export default function BottomNavLanguageOption() {
@@ -18,7 +18,7 @@ export default function BottomNavLanguageOption() {
       <BottomNavOption
         ariaHasPopup={"dialog"}
         ariaLabel={`Change language (currently: ${currentLearnedLanguage})`}
-        icon={<NavIcon name="language" />}
+        icon={<NavLanguageFlag languageCode={userDetails.learned_language} />}
         text={currentLearnedLanguage}
         onClick={(e) => {
           e.stopPropagation();
