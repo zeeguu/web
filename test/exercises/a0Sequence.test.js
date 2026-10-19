@@ -4,7 +4,8 @@ import ListenChooseMeaning from "../../src/exercises/exerciseTypes/listenChooseM
 
 // A0 learners know their words only by ear: every word gets "listen and choose
 // what it means", never an exercise where they read or type the word.
-const word = (id, to, context = "En kaffe, tak.") => ({ id, to, context, level: 1 });
+// Each word its own spoken form: the same spoken word is never a wrong option.
+const word = (id, to, context = "En kaffe, tak.") => ({ id, from: `w${id}`, to, context, level: 1 });
 
 describe("A0 exercises", () => {
   it("give every word a listening exercise, even when they share a dialogue line", () => {
