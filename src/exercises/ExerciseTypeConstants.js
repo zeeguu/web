@@ -16,12 +16,8 @@ export const EXERCISE_TYPES = {
     return [this.multipleChoice, this.multipleChoiceContext, this.match].includes(exerciseType);
   },
   isAudioExercise: function (exerciseType) {
-    return [
-      this.multipleChoiceAudio,
-      this.spellWhatYouHear,
-      this.translateWhatYouHear,
-      this.listenChooseMeaning,
-    ].includes(exerciseType);
+    // Not listenChooseMeaning: see why in its component.
+    return [this.multipleChoiceAudio, this.spellWhatYouHear, this.translateWhatYouHear].includes(exerciseType);
   },
 };
 

@@ -11,7 +11,6 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
-import SessionStorage from "../../../assorted/SessionStorage.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
 import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 
@@ -19,9 +18,12 @@ import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeade
 // pick what it means, out of three meanings in their own language. Nothing in
 // the language being learned is written until they have answered; then the
 // word is shown in the dialogue line it came from -- the first time they see
-// it spelled. An audio exercise: with audio exercises off it steps aside, as
-// the others do, and offers "can't use audio right now" like them -- at A0
-// that means no exercises for now, since listening is all there is.
+// it spelled.
+//
+// It plays whatever the audio-exercises setting says, and does not offer
+// "can't use audio right now" (it is not in EXERCISE_TYPES.isAudioExercise):
+// at A0 it is the only exercise, so stepping aside would leave an empty
+// session. A learner who cannot listen now simply leaves the session.
 
 const EXERCISE_TYPE = EXERCISE_TYPES.listenChooseMeaning;
 
@@ -34,7 +36,6 @@ export default function ListenChooseMeaning({
   setIsCorrect,
   isExerciseOver,
   resetSubSessionTimer,
-  moveToNextExercise,
   bookmarkProgressBar,
   onExampleUpdated,
   onExerciseLoaded,
@@ -59,20 +60,18 @@ export default function ListenChooseMeaning({
 
   // Not waiting for interactiveText: the written context is only shown after
   // the answer, so the exercise must not hang on it.
+  // Keyed on the word, not the bookmark object: changing the example after the
+  // answer replaces the object, and must not replay the word or reshuffle.
   useEffect(() => {
-    if (!SessionStorage.isAudioExercisesEnabled()) {
-      moveToNextExercise();
-      return;
-    }
-    setButtonOptions(shuffle(bookmarksToStudy.slice(0, 3).map((b) => removePunctuation(b.to))));
+    setButtonOptions(shuffle(bookmarksToStudy.slice(0, 3).map((b) => removePunctuation(b.to || ""))));
     // The browser may refuse to play before the user has interacted with the
     // page; the button below plays it again.
     Promise.resolve(speech.speakOut(exerciseBookmark.from)).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reload, exerciseBookmark]);
+  }, [reload, exerciseBookmark.id]);
 
   function notifyChoiceSelection(selectedChoice) {
-    if (selectedChoice === removePunctuation(exerciseBookmark.to)) {
+    if (selectedChoice === removePunctuation(exerciseBookmark.to || "")) {
       notifyCorrectAnswer(exerciseBookmark);
     } else {
       setIncorrectAnswer(selectedChoice);

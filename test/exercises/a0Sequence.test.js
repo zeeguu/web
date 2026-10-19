@@ -33,3 +33,18 @@ describe("A0 exercise meanings", () => {
     }
   });
 });
+
+describe("A0 exercise wrong options", () => {
+  it("are never another meaning of the same word", () => {
+    const words = [
+      { id: 1, from: "tak", to: "thanks", context: "Tak." },
+      { id: 2, from: "tak", to: "thank you", context: "Tak skal du have." },
+      { id: 3, from: "kaffe", to: "coffee", context: "En kaffe." },
+      { id: 4, from: "hej", to: "hello", context: "Hej!" },
+    ];
+    for (const exercise of assignBookmarksToA0Exercises(words)) {
+      const [asked, ...wrong] = exercise.bookmarks;
+      for (const option of wrong) expect(option.from).not.toBe(asked.from);
+    }
+  });
+});

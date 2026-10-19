@@ -168,12 +168,18 @@ function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
 // Meanings as the learner sees them on the buttons: "coffee" and "Coffee."
 // are one answer, not two.
 const shownMeaning = (bookmark) => removePunctuation(bookmark.to || "").trim().toLowerCase();
+// The word as heard: another saved meaning of the same word ("tak" as "thanks"
+// and as "thank you") is not a wrong answer to it.
+const heardWord = (bookmark) => removePunctuation(bookmark.from || "").trim().toLowerCase();
 
 function assignBookmarksToA0Exercises(bookmarks) {
   const exercises = [];
   for (const bookmark of bookmarks) {
     const meaning = shownMeaning(bookmark);
-    const distractors = shuffle(bookmarks.filter((other) => shownMeaning(other) !== meaning));
+    const word = heardWord(bookmark);
+    const distractors = shuffle(
+      bookmarks.filter((other) => shownMeaning(other) !== meaning && heardWord(other) !== word),
+    );
     const twoDifferent = [];
     for (const other of distractors) {
       if (twoDifferent.length === 2) break;

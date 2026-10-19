@@ -157,8 +157,20 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     getBookmarksAndAssignThemToExercises(gen);
   }
 
+  // The last fetched bookmarks and how the session was built from them, so it
+  // can be built again if the profile arrives after them and says A0.
+  const fetchedRef = useRef(null);
+  useEffect(() => {
+    const fetched = fetchedRef.current;
+    if (!fetched || fetched.builtAsA0 === isA0Ref.current) return;
+    if (currentIndexRef.current > 0) return; // already practising: leave it
+    initializeExercisesForBookmarks(fetched.bookmarks, fetched.gen);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isA0Ref.current]);
+
   function initializeExercisesForBookmarks(bookmarks, gen) {
     if (gen !== initGenRef.current) return; // stale: a newer init has superseded this one
+    fetchedRef.current = { bookmarks, gen, builtAsA0: isA0Ref.current };
     if (bookmarks.length === 0) {
       setIsOutOfWordsToday(true);
       setIsSessionLoading(false); // No exercises to load
