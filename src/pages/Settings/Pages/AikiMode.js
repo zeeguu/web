@@ -1,0 +1,143 @@
+import { useEffect, useState } from "react";
+import CardPage from "../../_pages_shared/CardPage";
+import Main from "../../_pages_shared/Main.sc";
+import Button from "../../_pages_shared/Button.sc";
+import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
+import FullWidthInfoMsg from "../../../components/FullWidthInfoMsg.sc";
+import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
+import { setTitle } from "../../../assorted/setTitle";
+import { SectionHeading, SectionDescription } from "./FeedPreferences.sc";
+import { AikiCard } from "./AikiMode.sc";
+import {
+  ZeeguuShield,
+  aikiStep,
+  describePicked,
+  nativeShieldAvailable,
+  pickedCount,
+} from "../../../components/nativeShield";
+
+// Aiki mode: pause the apps a learner finds distracting (iOS only). Setup is
+// split into steps on purpose: right after Screen Time access is granted,
+// Apple's picker can show its categories with no apps in them, and the pause
+// between the two steps gives iOS time to fill the list.
+export default function AikiMode() {
+  const [status, setStatus] = useState(null);
+  const [nothingPicked, setNothingPicked] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setTitle("Aiki mode");
+    refresh();
+  }, []);
+
+  function refresh() {
+    if (!nativeShieldAvailable()) {
+      setStatus({ supported: false });
+      return Promise.resolve();
+    }
+    return ZeeguuShield.getStatus().then(setStatus);
+  }
+
+  async function run(action) {
+    setError(null);
+    try {
+      await action();
+    } catch (e) {
+      setError(e.message);
+    }
+    await refresh();
+  }
+
+  function handleAuthorize() {
+    run(() => ZeeguuShield.requestAuthorization());
+  }
+
+  function handlePick() {
+    run(async () => {
+      const picked = await ZeeguuShield.presentAppPicker();
+      if (picked.cancelled) return;
+      setNothingPicked(pickedCount(picked) === 0);
+      // Choosing apps the first time means wanting them paused.
+      if (pickedCount(picked) > 0 && !status.shieldActive) await ZeeguuShield.applyShield();
+    });
+  }
+
+  function handleToggleShield() {
+    run(() => (status.shieldActive ? ZeeguuShield.removeShield() : ZeeguuShield.applyShield()));
+  }
+
+  const step = aikiStep(status);
+
+  return (
+    <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
+      <SettingsPageHeader title="Aiki mode" />
+      <Main>
+        <AikiCard>
+          <SectionDescription>
+            Aiki mode pauses the apps that distract you. When you open one of them, your phone shows a screen that stops
+            you, so you can spend that moment learning in Zeeguu instead. You can turn it off here at any time.
+          </SectionDescription>
+        </AikiCard>
+
+        {step === "unsupported" && status && (
+          <FullWidthInfoMsg>Aiki mode needs the Zeeguu iPhone app on iOS 16 or newer.</FullWidthInfoMsg>
+        )}
+
+        {step === "authorize" && (
+          <AikiCard>
+            <SectionHeading>1. Allow Screen Time access</SectionHeading>
+            <SectionDescription>
+              Zeeguu uses Screen Time to pause apps. We never see which apps you choose: your phone keeps that to
+              itself.
+            </SectionDescription>
+            <Button className={"small"} onClick={handleAuthorize} style={{ marginTop: "1rem" }}>
+              Allow access
+            </Button>
+          </AikiCard>
+        )}
+
+        {step === "pick" && (
+          <AikiCard>
+            <SectionHeading>2. Choose the apps that distract you</SectionHeading>
+            <SectionDescription>
+              Tip: tick <b>Social</b> to cover Instagram, TikTok, X and the rest at once. Or open a category to choose
+              single apps.
+            </SectionDescription>
+            <Button className={"small"} onClick={handlePick} style={{ marginTop: "1rem" }}>
+              Choose apps
+            </Button>
+          </AikiCard>
+        )}
+
+        {step === "ready" && (
+          <AikiCard>
+            <SectionHeading>{status.shieldActive ? "Aiki mode is on" : "Aiki mode is off"}</SectionHeading>
+            <SectionDescription>
+              {status.shieldActive
+                ? "The apps you chose are paused. Opening one shows a screen that stops you."
+                : "The apps you chose open as usual."}
+            </SectionDescription>
+            <Button className={"small"} onClick={handleToggleShield} style={{ marginTop: "1rem" }}>
+              {status.shieldActive ? "Turn off" : "Turn on"}
+            </Button>
+            <SectionDescription style={{ marginTop: "1.5rem", color: "var(--text-secondary)" }}>
+              You chose {describePicked(status)}.{" "}
+              <Button className={"small grey"} onClick={handlePick}>
+                Change
+              </Button>
+            </SectionDescription>
+          </AikiCard>
+        )}
+
+        {nothingPicked && (
+          <FullWidthInfoMsg>
+            No apps were chosen. If the list was empty, wait a moment and open it again. Still empty? On your phone,
+            turn on Settings → Screen Time → App & Website Activity.
+          </FullWidthInfoMsg>
+        )}
+
+        {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
+      </Main>
+    </CardPage>
+  );
+}

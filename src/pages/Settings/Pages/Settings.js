@@ -14,6 +14,7 @@ import LocalStorage from "../../../assorted/LocalStorage";
 import { APP_VERSION } from "../../../appVersion";
 import DarkModeToggle from "../ThemeToggle/DarkModeToggle";
 import ScienceIcon from "@mui/icons-material/ScienceOutlined";
+import { nativeShieldAvailable } from "../../../components/nativeShield";
 
 import * as s from "./Settings.sc";
 
@@ -86,6 +87,13 @@ export default function Settings() {
           <SettingsItem path={"/account_settings/exercise_types"}>Audio & Pronunciation</SettingsItem>
           <SettingsItem path={"/account_settings/exercise_scheduling"}>Scheduling</SettingsItem>
         </ListOfSettingsItems>
+
+        {/* iOS only: pausing other apps needs Apple's Screen Time API. */}
+        {nativeShieldAvailable() && (
+          <ListOfSettingsItems header={"Aiki mode"}>
+            <SettingsItem path={"/account_settings/aiki"}>Pause distracting apps</SettingsItem>
+          </ListOfSettingsItems>
+        )}
 
         <ListOfSettingsItems header={"Display"}>
           <SettingsItem path={"/account_settings/display"}>Activity Timer</SettingsItem>
