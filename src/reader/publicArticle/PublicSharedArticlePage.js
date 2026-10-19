@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Capacitor } from "@capacitor/core";
 
 import { APIContext } from "../../contexts/APIContext";
+import { SystemLanguagesContext } from "../../contexts/SystemLanguagesContext";
 import useFunnelStep from "../../hooks/useFunnelStep";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import KioskLayout from "../../kiosk/KioskLayout";
@@ -136,9 +137,6 @@ const LevelPills = styled.div`
   margin: 0.4rem 0 1rem;
 `;
 
-// The languages a visitor can have the article's words translated into.
-const SUPPORTED_TARGETS = ["el", "de", "es", "fr", "nl", "en", "it", "zh-CN", "da", "tr", "ar", "so", "ku", "sv", "ru"];
-
 // Account-less reading of a shared article: the whole text, a handful of free
 // word translations, then an invitation to sign up or get the app. The article
 // analogue of PublicSharedLessonPage; see the API's endpoints/public_article.py.
@@ -151,6 +149,13 @@ const SUPPORTED_TARGETS = ["el", "de", "es", "fr", "nl", "en", "it", "zh-CN", "d
 export default function PublicSharedArticlePage({ link, view = "article", level = null }) {
   const isSummary = view === "summary";
   const api = useContext(APIContext);
+  // A visitor can have the words translated into any native language the API
+  // offers. Read through a ref at tap time, like the target, because the list
+  // can arrive after the text is built.
+  const { sortedSystemLanguages } = useContext(SystemLanguagesContext);
+  const targetLanguages = sortedSystemLanguages?.native_languages || [];
+  const targetCodesRef = useRef([]);
+  targetCodesRef.current = targetLanguages.map((l) => l.code);
   const history = useHistory();
   const isNativeApp = Capacitor.isNativePlatform();
   useFunnelStep(isSummary ? "shared_summary" : "shared_article");
@@ -212,17 +217,17 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
       remaining: () => meterRef.current.remaining(),
       onBlocked: (reason) => setWall(reason),
     };
-    const suggestion = pickTranslationTarget(
-      navigator.languages || [navigator.language],
-      article.language,
-      SUPPORTED_TARGETS,
-    );
     const common = {
       api,
       link,
       language: article.language,
       getTargetLanguage: () => targetRef.current,
       askTarget: (onChosen, onCancelled) => {
+        const suggestion = pickTranslationTarget(
+          navigator.languages || [navigator.language],
+          article.language,
+          targetCodesRef.current,
+        );
         setDraftTarget(suggestion || "");
         setAskingTarget({ onChosen, onCancelled });
       },
@@ -332,11 +337,13 @@ export default function PublicSharedArticlePage({ link, view = "article", level 
 
   const articleLanguageName = languageName(article.language);
 
-  const targetOptions = SUPPORTED_TARGETS.filter((c) => c !== article.language).map((c) => (
-    <option key={c} value={c}>
-      {languageName(c)}
-    </option>
-  ));
+  const targetOptions = targetLanguages
+    .filter((l) => l.code !== article.language)
+    .map((l) => (
+      <option key={l.code} value={l.code}>
+        {l.name}
+      </option>
+    ));
 
   const wordsLeft = `${remaining} ${remaining === 1 ? "word" : "words"} left`;
   let hint;
