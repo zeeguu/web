@@ -15,7 +15,10 @@ export default function OutOfWordsMessage() {
   const [scheduledWordCount, setScheduledWordCount] = useState();
   useEffect(() => {
     setScheduledWordCount();
-    api.getCountOfAllScheduledUserWords((count) => setScheduledWordCount(count));
+    // If the count fails, show the "all practiced" message, not a blank page.
+    api.getCountOfAllScheduledUserWords((count) => setScheduledWordCount(count), {
+      onError: () => setScheduledWordCount(null),
+    });
   }, [api, learnedLanguage]);
 
   if (scheduledWordCount === undefined) return null;

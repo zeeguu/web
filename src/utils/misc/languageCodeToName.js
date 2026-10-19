@@ -29,6 +29,7 @@ export const LANGUAGE_CODE_TO_NAME = {
   ta: "Tamil",
   bn: "Bengali",
   el: "Greek",
+  bg: "Bulgarian",
 };
 
 /**
