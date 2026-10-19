@@ -195,6 +195,16 @@ Zeeguu_API.prototype.resendVerificationCode = function (onSuccess, onError) {
   this._post("resend_verification_code", "", onSuccess, onError);
 };
 
+// Changing a logged-in user's email: a code goes to the new address, and the
+// password is asked for on both steps (see the API's _email_change_error).
+Zeeguu_API.prototype.requestEmailChange = function (newEmail, password, onSuccess, onError) {
+  this._post("request_email_change", qs.stringify({ new_email: newEmail, password }), onSuccess, onError);
+};
+
+Zeeguu_API.prototype.confirmEmailChange = function (newEmail, password, code, onSuccess, onError) {
+  this._post("confirm_email_change", qs.stringify({ new_email: newEmail, password, code }), onSuccess, onError);
+};
+
 Zeeguu_API.prototype.requestEmailVerification = function (email, onSuccess, onError) {
   this._post("request_email_verification", qs.stringify({ email }), onSuccess, onError);
 };

@@ -17,7 +17,7 @@ import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
 import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import useFormField from "../../../hooks/useFormField";
-import { EmailValidator, NonEmptyOrWhitespaceOnlyValidator } from "../../../utils/ValidatorRule/Validator";
+import { NonEmptyOrWhitespaceOnlyValidator } from "../../../utils/ValidatorRule/Validator";
 import validateRules from "../../../assorted/validateRules";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import FullWidthConfirmMsg from "../../../components/FullWidthConfirmMsg.sc";
@@ -30,6 +30,7 @@ export default function ProfileDetails() {
   const fallbackRedirectPath = isGamificationEnabled ? "/profile" : "/account_settings";
   const redirectPath = ["/profile", "/account_settings"].includes(state.from) ? state.from : fallbackRedirectPath;
   const successfullyChangedPassword = "passwordChanged" in state ? state.passwordChanged : false;
+  const successfullyChangedEmail = "emailChanged" in state ? state.emailChanged : false;
   const [errorMessage, setErrorMessage] = useState("");
   const { userDetails, setUserDetails } = useContext(UserContext);
   const history = useHistory();
@@ -45,10 +46,6 @@ export default function ProfileDetails() {
     "",
     NonEmptyOrWhitespaceOnlyValidator("Please provide a username."),
   );
-  const [email, setEmail, validateEmail, isEmailValid, emailErrorMessage] = useFormField("", [
-    NonEmptyOrWhitespaceOnlyValidator("Please provide an email."),
-    EmailValidator,
-  ]);
 
   useEffect(() => {
     setTitle(strings.profileDetails);
@@ -59,7 +56,6 @@ export default function ProfileDetails() {
     if (isPageMounted.current) {
       setDisplayName(userDetails.name);
       setUsername(userDetails.username);
-      setEmail(userDetails.email);
     }
 
     return () => {
@@ -71,12 +67,11 @@ export default function ProfileDetails() {
   function handleSave(e) {
     e.preventDefault();
     setErrorMessage("");
-    if (!validateRules([validateDisplayName, validateUsername, validateEmail])) return;
+    if (!validateRules([validateDisplayName, validateUsername])) return;
 
     const updatedFormValues = {
       name: displayName.trim(),
       username: username.trim(),
-      email: email.trim(),
     };
     const payload = {
       ...userDetails,
@@ -109,6 +104,7 @@ export default function ProfileDetails() {
             <FullWidthConfirmMsg>Password changed successfully!</FullWidthConfirmMsg>
           </>
         )}
+        {successfullyChangedEmail && <FullWidthConfirmMsg>Email changed to {userDetails.email}.</FullWidthConfirmMsg>}
       </SettingsPageHeader>
       <Main>
         <Form>
@@ -145,19 +141,19 @@ export default function ProfileDetails() {
               label={strings.email}
               id={"email"}
               name={"email"}
-              placeholder={strings.emailPlaceholder}
-              value={email}
-              isError={!isEmailValid}
-              errorMessage={emailErrorMessage}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
+              value={userDetails.email}
+              readOnly
+              helperText={
+                <Link to={{ pathname: "/account_settings/change_email", state: { from: redirectPath } }}>
+                  Change email
+                </Link>
+              }
             />
 
             <Link
               to={{
                 pathname: "/reset_pass",
-                state: { profileEmail: email },
+                state: { profileEmail: userDetails.email },
               }}
             >
               Change password
@@ -170,7 +166,6 @@ export default function ProfileDetails() {
           </ButtonContainer>
         </Form>
       </Main>
-
     </CardPage>
   );
 }

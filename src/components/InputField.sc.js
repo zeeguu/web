@@ -41,6 +41,11 @@ const Input = styled.input`
     border: 1.5px solid ${zeeguuRed};
   }
 
+  &[readonly] {
+    color: var(--text-secondary);
+    background-color: var(--hover-bg);
+  }
+
   input:focus {
     outline: transparent;
     border: 1.5px solid ${zeeguuOrange};
