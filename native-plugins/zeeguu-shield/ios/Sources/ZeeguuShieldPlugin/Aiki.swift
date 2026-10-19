@@ -1,5 +1,4 @@
 import Foundation
-import Security
 import FamilyControls
 import ManagedSettings
 import DeviceActivity
@@ -14,10 +13,10 @@ import DeviceActivity
 
 @available(iOS 16.0, *)
 public enum Aiki {
-    // Shared with the extensions through the keychain rather than an App Group:
-    // every team provisioning profile allows the team's keychain groups, so
-    // nothing needs registering in the developer portal.
-    static let keychainGroup = "E9Y43LYCSK.org.zeeguu.shared"
+    // Shared with the extensions through an App Group. Not the keychain: the
+    // shield extension gets errSecNotAvailable (-25291) from it.
+    static let appGroup = "group.org.zeeguu.app"
+    static var defaults: UserDefaults { UserDefaults(suiteName: appGroup) ?? .standard }
     public static let minutesEarnedPerMinute = 5
     public static let dailyGoalSeconds = 15 * 60
 
@@ -79,30 +78,9 @@ public enum Aiki {
         if let data = try? JSONEncoder().encode(selection) { write("selection", data) }
     }
 
-    private static func query(_ key: String) -> [String: Any] {
-        [kSecClass as String: kSecClassGenericPassword,
-         kSecAttrService as String: "org.zeeguu.aiki",
-         kSecAttrAccount as String: key,
-         kSecAttrAccessGroup as String: keychainGroup]
-    }
+    private static func read(_ key: String) -> Data? { defaults.data(forKey: key) }
 
-    private static func read(_ key: String) -> Data? {
-        var q = query(key)
-        q[kSecReturnData as String] = true
-        var result: AnyObject?
-        guard SecItemCopyMatching(q as CFDictionary, &result) == errSecSuccess else { return nil }
-        return result as? Data
-    }
-
-    // Readable after the first unlock: the monitor runs at midnight, often
-    // with the phone locked.
-    private static func write(_ key: String, _ data: Data) {
-        let attributes: [String: Any] = [kSecValueData as String: data,
-                                         kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock]
-        if SecItemUpdate(query(key) as CFDictionary, attributes as CFDictionary) == errSecItemNotFound {
-            SecItemAdd(query(key).merging(attributes) { $1 } as CFDictionary, nil)
-        }
-    }
+    private static func write(_ key: String, _ data: Data) { defaults.set(data, forKey: key) }
 
     static func dayString(_ date: Date) -> String {
         let c = Calendar.current.dateComponents([.year, .month, .day], from: date)

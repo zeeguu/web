@@ -7,7 +7,7 @@ import FullWidthInfoMsg from "../../../components/FullWidthInfoMsg.sc";
 import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
 import { setTitle } from "../../../assorted/setTitle";
 import { SectionHeading, SectionDescription } from "./FeedPreferences.sc";
-import { AikiCard } from "./AikiMode.sc";
+import { AikiCard, AikiState, ChangeLink } from "./AikiMode.sc";
 import {
   ZeeguuShield,
   aikiStep,
@@ -74,8 +74,8 @@ export default function AikiMode() {
       <Main>
         <AikiCard>
           <SectionDescription>
-            Aiki mode pauses the apps that distract you. When you open one of them, your phone shows a screen that stops
-            you, so you can spend that moment learning in Zeeguu instead. You can turn it off here at any time.
+            Aiki mode pauses the apps that distract you. Each minute you learn in Zeeguu unlocks them for 5 minutes;
+            learn 15 minutes and they're free until tomorrow.
           </SectionDescription>
         </AikiCard>
 
@@ -111,21 +111,16 @@ export default function AikiMode() {
 
         {step === "ready" && (
           <AikiCard>
-            <SectionHeading>{status.shieldActive ? "Aiki mode is on" : "Aiki mode is off"}</SectionHeading>
-            <SectionDescription>
-              {status.shieldActive
-                ? "The apps you chose are paused. Opening one shows a screen that stops you."
-                : "The apps you chose open as usual."}
+            <SectionHeading>
+              Aiki mode is <AikiState $on={status.shieldActive}>{status.shieldActive ? "on" : "off"}</AikiState>
+            </SectionHeading>
+            <SectionDescription style={{ color: "var(--text-secondary)" }}>
+              {status.shieldActive ? "Paused" : "Chosen"}: {describePicked(status)}.{" "}
+              <ChangeLink onClick={handlePick}>Change</ChangeLink>
             </SectionDescription>
-            <Button className={"small"} onClick={handleToggleShield} style={{ marginTop: "1rem" }}>
+            <Button className={"small"} onClick={handleToggleShield} style={{ marginTop: "1.5rem" }}>
               {status.shieldActive ? "Turn off" : "Turn on"}
             </Button>
-            <SectionDescription style={{ marginTop: "1.5rem", color: "var(--text-secondary)" }}>
-              You chose {describePicked(status)}.{" "}
-              <Button className={"small grey"} onClick={handlePick}>
-                Change
-              </Button>
-            </SectionDescription>
           </AikiCard>
         )}
 
