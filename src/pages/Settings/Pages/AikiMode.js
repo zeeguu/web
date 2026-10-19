@@ -24,6 +24,7 @@ export default function AikiMode() {
   const [status, setStatus] = useState(null);
   const [nothingPicked, setNothingPicked] = useState(false);
   const [error, setError] = useState(null);
+  const [statusFailed, setStatusFailed] = useState(false);
 
   useEffect(() => {
     setTitle("Aiki mode");
@@ -35,7 +36,15 @@ export default function AikiMode() {
       setStatus({ supported: false });
       return Promise.resolve();
     }
-    return ZeeguuShield.getStatus().then(setStatus);
+    // Once, the native call never answered and the page stayed blank; give up
+    // after a few seconds and offer to try again.
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 5000));
+    return Promise.race([ZeeguuShield.getStatus(), timeout])
+      .then((s) => {
+        setStatusFailed(false);
+        setStatus(s);
+      })
+      .catch(() => setStatusFailed(true));
   }
 
   async function run(action) {
@@ -78,6 +87,15 @@ export default function AikiMode() {
             learn 15 minutes and they're free until tomorrow.
           </SectionDescription>
         </AikiCard>
+
+        {!status && statusFailed && (
+          <AikiCard>
+            <FullWidthErrorMsg>Couldn't read Aiki mode's status.</FullWidthErrorMsg>
+            <Button className={"small"} onClick={refresh} style={{ marginTop: "1rem" }}>
+              Try again
+            </Button>
+          </AikiCard>
+        )}
 
         {step === "unsupported" && status && (
           <FullWidthInfoMsg>Aiki mode needs the Zeeguu iPhone app on iOS 16 or newer.</FullWidthInfoMsg>
