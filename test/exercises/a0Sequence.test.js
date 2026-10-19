@@ -23,3 +23,13 @@ describe("A0 exercises", () => {
     expect(assignBookmarksToA0Exercises([word(1, "coffee"), word(2, "coffee"), word(3, "thanks")])).toEqual([]);
   });
 });
+
+describe("A0 exercise meanings", () => {
+  it("treat meanings that differ only in punctuation or case as one", () => {
+    const words = [word(1, "coffee"), word(2, "Coffee."), word(3, "thanks"), word(4, "hello")];
+    for (const exercise of assignBookmarksToA0Exercises(words)) {
+      const shown = exercise.bookmarks.map((b) => b.to.replace(/[.]/g, "").toLowerCase());
+      expect(new Set(shown).size).toBe(3);
+    }
+  });
+});

@@ -1,4 +1,5 @@
 import ListenChooseMeaning from "./exerciseTypes/listenChooseMeaning/ListenChooseMeaning";
+import { removePunctuation } from "../utils/text/preprocessing";
 import { removeAllMatchingItemFromList } from "../utils/basic/arrays";
 import shuffle from "../assorted/fisherYatesShuffle";
 
@@ -164,14 +165,19 @@ function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
   dialogue line, so contexts are not required to differ, unlike the sequences
   above: the context is only shown after the answer.
 */
+// Meanings as the learner sees them on the buttons: "coffee" and "Coffee."
+// are one answer, not two.
+const shownMeaning = (bookmark) => removePunctuation(bookmark.to || "").trim().toLowerCase();
+
 function assignBookmarksToA0Exercises(bookmarks) {
   const exercises = [];
   for (const bookmark of bookmarks) {
-    const distractors = shuffle(bookmarks.filter((other) => other !== bookmark && other.to !== bookmark.to));
+    const meaning = shownMeaning(bookmark);
+    const distractors = shuffle(bookmarks.filter((other) => shownMeaning(other) !== meaning));
     const twoDifferent = [];
     for (const other of distractors) {
       if (twoDifferent.length === 2) break;
-      if (!twoDifferent.some((chosen) => chosen.to === other.to)) twoDifferent.push(other);
+      if (!twoDifferent.some((chosen) => shownMeaning(chosen) === shownMeaning(other))) twoDifferent.push(other);
     }
     if (twoDifferent.length === 2) {
       exercises.push({ type: ListenChooseMeaning, bookmarks: [bookmark, ...twoDifferent] });

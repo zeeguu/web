@@ -37,6 +37,10 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
   const { userDetails, userPreferences } = useContext(UserContext);
+  // Read when the session is built, not when the page mounted: the exercises
+  // are fetched after mount, and the profile may only have arrived since.
+  const isA0Ref = useRef(false);
+  isA0Ref.current = isA0Learner(userDetails);
   const { setContextualInfo } = useFeedbackContext();
   const history = useHistory();
 
@@ -163,7 +167,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
     // A0: they know their words only by ear, so every exercise is listening,
     // and none asks them to type (see assignBookmarksToA0Exercises).
-    let exerciseSession = isA0Learner(userDetails)
+    let exerciseSession = isA0Ref.current
       ? assignBookmarksToA0Exercises(bookmarks)
       : assignBookmarksToExercises(bookmarks, getExerciseSequenceType());
     if (exerciseSession.length === 0) {
