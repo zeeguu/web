@@ -24,8 +24,8 @@ Zeeguu_API.prototype.getAllScheduledUserWords = function (isWithTokens, callback
   else this._getJSON(endpoint, callback);
 };
 
-Zeeguu_API.prototype.getCountOfAllScheduledUserWords = function (callback) {
-  this._getJSON(`count_of_all_scheduled_user_words`, callback);
+Zeeguu_API.prototype.getCountOfAllScheduledUserWords = function (callback, options) {
+  this._getJSON(`count_of_all_scheduled_user_words`, callback, options);
 };
 
 // User Words recommended to be studied today
