@@ -16,7 +16,12 @@ Zeeguu_API.prototype.getUserLanguages = function (callback) {
 Zeeguu_API.prototype.saveUserDetails = function (user_details, setErrorMessage, onSuccess) {
   this.apiLog(this._appendSessionToUrl("user_settings"));
 
-  this._post(`user_settings`, qs.stringify(user_details), onSuccess, setErrorMessage);
+  // Callers post the whole user-details object back. Leave email out: the API
+  // refuses a changed address here (that goes through confirmEmailChange), and
+  // a copy gone stale after a change on another device would fail every save.
+  // eslint-disable-next-line no-unused-vars
+  const { email, ...settings } = user_details;
+  this._post(`user_settings`, qs.stringify(settings), onSuccess, setErrorMessage);
 };
 
 Zeeguu_API.prototype.modifyCEFRlevel = function (languageID, cefrLevel, onSuccess, onError) {
