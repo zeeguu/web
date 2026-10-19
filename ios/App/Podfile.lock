@@ -1,9 +1,9 @@
 PODS:
-  - Capacitor (7.4.4):
+  - Capacitor (7.6.9):
     - CapacitorCordova
   - CapacitorApp (7.1.1):
     - Capacitor
-  - CapacitorCordova (7.4.4)
+  - CapacitorCordova (7.6.9)
   - CapacitorDevice (7.0.5):
     - Capacitor
   - CapacitorNetwork (7.0.4):
@@ -44,9 +44,9 @@ EXTERNAL SOURCES:
     :path: "../../native-plugins/zeeguu-audio"
 
 SPEC CHECKSUMS:
-  Capacitor: 358dd1c3fdd71d969547b17e159fd8a7736cb45f
+  Capacitor: 46067d1c8df89760dbed78780d436327d588c726
   CapacitorApp: 63b237168fc869e758481dba283315a85743ee78
-  CapacitorCordova: bf648a636f3c153f652d312ae145fb508b6ffced
+  CapacitorCordova: 2080fc0d6bfbc9dcc0e6d88e77fa624190d343ca
   CapacitorDevice: ba96f933a2cb5dcdc68187503d48f7b5aa11ba9e
   CapacitorNetwork: b719d692a8d1310da8d26d6648d3aa1ef1e100e1
   CapacitorPreferences: 913eef88272c13eb6445b21e51fe8ef6635412cc
