@@ -8,6 +8,10 @@ import Foundation
 class AikiMonitorExtension: DeviceActivityMonitor {
     override func intervalDidStart(for activity: DeviceActivityName) {
         super.intervalDidStart(for: activity)
+        // Only midnight matters. A break's interval starts in the past, so iOS
+        // reports its start as soon as sync() schedules it; syncing again here
+        // would schedule it again, and wake us again.
+        guard activity == Aiki.dailyActivity else { return }
         Aiki.sync()
     }
 
