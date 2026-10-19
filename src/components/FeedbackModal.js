@@ -59,7 +59,8 @@ export default function FeedbackModal({
   function onSubmit(e) {
     e.preventDefault();
     let payload = {
-      message: prefixMsg ? prefixMsg + " - " + feedbackMessage : feedbackMessage,
+      message: feedbackMessage,
+      origin: prefixMsg,
       feedbackComponentName: FEEDBACK_CODES[feedbackComponentSelected],
       currentUrl: contextualInfo?.url || window.location.href,
       isMobile: isMobile,
