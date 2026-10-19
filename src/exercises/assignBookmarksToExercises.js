@@ -1,3 +1,5 @@
+import ListenChooseMeaning from "./exerciseTypes/listenChooseMeaning/ListenChooseMeaning";
+import { removePunctuation } from "../utils/text/preprocessing";
 import { removeAllMatchingItemFromList } from "../utils/basic/arrays";
 import shuffle from "../assorted/fisherYatesShuffle";
 
@@ -154,4 +156,40 @@ function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
   return assignBookmarksToLevels(bookmarks, exerciseTypesList);
 }
 
-export { assignBookmarksToExercises };
+/*
+  For learners at A0, who know their words only by ear: every word gets
+  ListenChooseMeaning (hear it, pick its meaning out of three), whatever its
+  level. The two wrong meanings are those of other words in the session, with
+  different meanings. A word that cannot get two -- a session of one or two
+  words -- waits for a session with more. Words from one lesson often share a
+  dialogue line, so contexts are not required to differ, unlike the sequences
+  above: the context is only shown after the answer.
+*/
+// Meanings as the learner sees them on the buttons: "coffee" and "Coffee."
+// are one answer, not two.
+const shownMeaning = (bookmark) => removePunctuation(bookmark.to || "").trim().toLowerCase();
+// The word as heard: another saved meaning of the same word ("tak" as "thanks"
+// and as "thank you") is not a wrong answer to it.
+const heardWord = (bookmark) => removePunctuation(bookmark.from || "").trim().toLowerCase();
+
+function assignBookmarksToA0Exercises(bookmarks) {
+  const exercises = [];
+  for (const bookmark of bookmarks) {
+    const meaning = shownMeaning(bookmark);
+    const word = heardWord(bookmark);
+    const distractors = shuffle(
+      bookmarks.filter((other) => shownMeaning(other) !== meaning && heardWord(other) !== word),
+    );
+    const twoDifferent = [];
+    for (const other of distractors) {
+      if (twoDifferent.length === 2) break;
+      if (!twoDifferent.some((chosen) => shownMeaning(chosen) === shownMeaning(other))) twoDifferent.push(other);
+    }
+    if (twoDifferent.length === 2) {
+      exercises.push({ type: ListenChooseMeaning, bookmarks: [bookmark, ...twoDifferent] });
+    }
+  }
+  return exercises;
+}
+
+export { assignBookmarksToExercises, assignBookmarksToA0Exercises };
