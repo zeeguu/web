@@ -17,6 +17,7 @@ def capacitor_pods
   pod 'CapacitorPreferences', :path => '../../node_modules/@capacitor/preferences'
   pod 'CapacitorSplashScreen', :path => '../../node_modules/@capacitor/splash-screen'
   pod 'ZeeguuAudio', :path => '../../native-plugins/zeeguu-audio'
+  pod 'ZeeguuShield', :path => '../../native-plugins/zeeguu-shield'
 end
 
 target 'App' do

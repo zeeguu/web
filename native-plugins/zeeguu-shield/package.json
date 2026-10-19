@@ -1,0 +1,16 @@
+{
+  "name": "zeeguu-shield",
+  "version": "1.0.0",
+  "description": "Shield distracting apps on iOS (Screen Time API) for Zeeguu's Aiki mode",
+  "license": "MIT",
+  "author": "Zeeguu",
+  "private": true,
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    }
+  },
+  "peerDependencies": {
+    "@capacitor/core": ">=7.0.0"
+  }
+}

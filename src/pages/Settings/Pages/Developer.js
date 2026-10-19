@@ -6,6 +6,7 @@ import Button from "../../_pages_shared/Button.sc";
 import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
 import { setTitle } from "../../../assorted/setTitle";
+import { ZeeguuShield, nativeShieldAvailable } from "../../../components/nativeShield";
 
 export default function Developer() {
   const api = useContext(APIContext);
@@ -44,6 +45,18 @@ export default function Developer() {
     }
   }
 
+  // Aiki mode spike: exercise the native shield plugin by hand on a device.
+  async function shieldStep(step) {
+    setStatus(null);
+    try {
+      const result = await step();
+      const state = await ZeeguuShield.getStatus();
+      setStatus(`Shield: ${JSON.stringify({ ...result, ...state })}`);
+    } catch (e) {
+      setStatus(`Shield failed: ${e.message}`);
+    }
+  }
+
   return (
     <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <SettingsPageHeader title="Developer" />
@@ -55,6 +68,14 @@ export default function Developer() {
           <Button onClick={() => openApiPage("/crawl_stats/dashboard")}>Crawl stats</Button>
           <Button onClick={handleCopySession}>Copy session (for widget)</Button>
         </ButtonContainer>
+        {nativeShieldAvailable() && (
+          <ButtonContainer>
+            <Button onClick={() => shieldStep(() => ZeeguuShield.requestAuthorization())}>Shield: authorize</Button>
+            <Button onClick={() => shieldStep(() => ZeeguuShield.presentAppPicker())}>Shield: pick apps</Button>
+            <Button onClick={() => shieldStep(() => ZeeguuShield.applyShield())}>Shield: on</Button>
+            <Button onClick={() => shieldStep(() => ZeeguuShield.removeShield())}>Shield: off</Button>
+          </ButtonContainer>
+        )}
         {status && <p style={{ marginTop: "1em" }}>{status}</p>}
       </Main>
     </CardPage>

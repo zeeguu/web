@@ -14,6 +14,8 @@ PODS:
     - Capacitor
   - ZeeguuAudio (1.0.0):
     - Capacitor
+  - ZeeguuShield (1.0.0):
+    - Capacitor
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
@@ -24,6 +26,7 @@ DEPENDENCIES:
   - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - ZeeguuAudio (from `../../native-plugins/zeeguu-audio`)
+  - ZeeguuShield (from `../../native-plugins/zeeguu-shield`)
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -42,6 +45,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/splash-screen"
   ZeeguuAudio:
     :path: "../../native-plugins/zeeguu-audio"
+  ZeeguuShield:
+    :path: "../../native-plugins/zeeguu-shield"
 
 SPEC CHECKSUMS:
   Capacitor: 358dd1c3fdd71d969547b17e159fd8a7736cb45f
@@ -52,7 +57,8 @@ SPEC CHECKSUMS:
   CapacitorPreferences: 913eef88272c13eb6445b21e51fe8ef6635412cc
   CapacitorSplashScreen: e388b8e0ed0e982a9d3a40417f478e7a018a8763
   ZeeguuAudio: ead02f5aeca180cd719ed0890682bdcda3e6e8ad
+  ZeeguuShield: 96b0414da84602678a57db2d0ad0172da8d1538f
 
-PODFILE CHECKSUM: 921838618e7a031c4d2732c18ca3a5a2f20ee753
+PODFILE CHECKSUM: 4c9ca433681074879d81c3e4c9d8b81ad7f44d3c
 
 COCOAPODS: 1.16.2
