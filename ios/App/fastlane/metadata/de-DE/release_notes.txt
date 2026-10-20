@@ -1,18 +1,18 @@
-Fang eine Sprache bei null an, und fairere Übungen.
+Aiki-Modus: Pausiere ablenkende Apps und verdiene dir Pausen durch Lernen.
 
-Bei null anfangen
-- Ein neues Niveau für alle, die die Sprache noch nie gelernt haben: "Ich kann noch gar nichts".
-- Auf diesem Niveau beginnen deine Audiolektionen ganz von vorn, und deine Übungen sind reine Hörübungen: Hör ein Wort und wähle, was es bedeutet, ohne etwas zu tippen.
-- Wenn du eine tägliche Situation auswählst, kannst du angeben, ob du als Mann, als Frau oder egal sprichst, und der Dialog der Lektion wird für dich geschrieben.
-- Statt eines Newsfeeds, den du noch nicht lesen kannst, führt dich die Startseite zu den Audiolektionen. Ab A1 ist der Feed wieder da.
+Aiki-Modus
+- Neu in den Einstellungen: Wähle die Apps, die dich ablenken, und Zeeguu pausiert sie für dich.
+- Jede Minute, die du in Zeeguu lernst, schaltet ein paar Minuten in deinen pausierten Apps frei. Erreichst du dein Tagesziel, bleiben sie für den Rest des Tages offen.
+- Eine pausierte App zeigt einen Zeeguu-Bildschirm mit deinem Fortschritt: die heutigen Minuten, ein Block pro Minute.
+
+Sprache wechseln
+- Das Menü zeigt jetzt die Flagge der Sprache, die du lernst.
+- Beim Wechseln dreht sich auf der Flagge ein Ladesymbol, bis die Änderung gespeichert ist, und die App wechselt erst dann zur neuen Sprache.
+- Direkt nach einem Wechsel wählen die Übungen jetzt Wörter in der neuen Sprache und sprechen sie mit der richtigen Stimme.
 
 Übungen
-- Wenn du in einer Lückentext-Übung ein anderes Wort tippst, das auch in den Satz passt, wird es geprüft, bevor es als falsch gilt.
-- Wenn du eine Übersetzung tippst, die von der gespeicherten abweicht, wird sie ebenfalls geprüft, und richtige Antworten zählen.
-- "to look up" und "look up" sind jetzt dieselbe Antwort.
-- Nach einer Antwort zeigt dir eine kurze Zeile, was du getippt hast und wie es zu deiner gespeicherten Übersetzung passt.
-- Enter in einem Antwortfeld tippt nicht mehr den ersten Buchstaben der Bildschirmtastatur.
-- Übersetzungen übernehmen jetzt die Groß- und Kleinschreibung des Wortes, über dem sie stehen.
+- Die Übung bleibt sichtbar, während die Tastatur offen ist.
+- Wenn du keine Wörter mehr zum Üben hast, zählt die Meldung jetzt nur die Wörter in der Sprache, die du lernst.
 
-Konto
-- Wenn du deine E-Mail-Adresse änderst, bekommst du jetzt einen Code an die neue Adresse, mit dem du sie bestätigst.
+Geteilte Artikel
+- Ein geteilter Artikel kann jetzt in jede Sprache übersetzt werden, die Zeeguu unterstützt.

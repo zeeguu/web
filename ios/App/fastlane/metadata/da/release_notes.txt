@@ -1,18 +1,18 @@
-Start et sprog fra nul, og mere retfærdige øvelser.
+Aiki-tilstand: sæt forstyrrende apps på pause, og optjen pauser ved at lære.
 
-Start fra nul
-- Et nyt niveau til dig, der aldrig har lært sproget: "Kan ingenting endnu".
-- På dette niveau starter dine lydlektioner helt fra begyndelsen, og dine øvelser er kun lytning: hør et ord og vælg, hvad det betyder, uden at skulle skrive noget.
-- Når du vælger en daglig situation, kan du sige, om du taler som mand, kvinde eller begge dele, og lektionens dialog bliver skrevet til dig.
-- I stedet for et nyhedsfeed, du endnu ikke kan læse, viser forsiden dig vej til lydlektionerne. Feedet kommer tilbage på A1.
+Aiki-tilstand
+- Nyt under Indstillinger: vælg de apps, der forstyrrer dig, og Zeeguu sætter dem på pause for dig.
+- Hvert minut, du lærer i Zeeguu, låser et par minutter op i dine apps på pause. Når du når dit daglige mål, er de åbne resten af dagen.
+- En app på pause viser en Zeeguu-skærm med dine fremskridt: dagens minutter, en blok pr. minut.
+
+Skift af sprog
+- Menuen viser nu flaget for det sprog, du lærer.
+- Når du skifter, viser flaget et hjul, indtil ændringen er gemt, og appen skifter først til det nye sprog, når den er.
+- Lige efter et skift vælger øvelserne nu ord på det nye sprog og læser dem op med den rigtige stemme.
 
 Øvelser
-- Hvis du i en udfyldningsøvelse skriver et andet ord, der også passer i sætningen, bliver det tjekket, før det markeres som forkert.
-- Når du skriver en oversættelse, der er anderledes end den gemte, bliver den også tjekket, og rigtige svar tæller.
-- "to look up" og "look up" er nu det samme svar.
-- Efter et svar fortæller en kort linje, hvad du skrev, og hvordan det passer med din gemte oversættelse.
-- Når du trykker Enter i et svarfelt, skriver det ikke længere det første bogstav fra skærmtastaturet.
-- Oversættelser følger nu store og små bogstaver i det ord, de står over.
+- Øvelsen bliver på skærmen, mens tastaturet er åbent.
+- Når du ikke har flere ord at øve, tæller beskeden nu kun ordene på det sprog, du lærer.
 
-Konto
-- Når du vil ændre din e-mail, får du nu en kode på den nye adresse, som du bekræfter med.
+Delte artikler
+- En delt artikel kan nu oversættes til alle de sprog, Zeeguu understøtter.

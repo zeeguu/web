@@ -1,18 +1,18 @@
-Inizia una lingua da zero, ed esercizi più giusti.
+Modalità Aiki: metti in pausa le app che ti distraggono e guadagna pause imparando.
 
-Partire da zero
-- Un nuovo livello per chi non ha mai studiato la lingua: "Non so ancora niente".
-- A questo livello le tue lezioni audio partono dall'inizio e i tuoi esercizi sono solo di ascolto: ascolta una parola e scegli cosa significa, senza scrivere nulla.
-- Quando scegli una situazione del giorno, puoi dire se parli come uomo, donna o indifferente, e il dialogo della lezione viene scritto per te.
-- Invece di un feed di notizie che non puoi ancora leggere, la pagina iniziale ti indirizza alle lezioni audio. Il feed torna dal livello A1.
+Modalità Aiki
+- Novità nelle Impostazioni: scegli le app che ti distraggono e Zeeguu le mette in pausa per te.
+- Ogni minuto che impari su Zeeguu sblocca qualche minuto nelle app in pausa. Raggiungi il tuo obiettivo giornaliero e restano aperte per il resto della giornata.
+- Un'app in pausa mostra una schermata di Zeeguu con i tuoi progressi: i minuti di oggi, un blocco per minuto.
+
+Cambiare lingua
+- Il menu ora mostra la bandiera della lingua che stai imparando.
+- Quando cambi lingua, sulla bandiera gira un indicatore finché la modifica non è salvata, e solo allora l'app passa alla nuova lingua.
+- Subito dopo un cambio, gli esercizi ora scelgono parole nella nuova lingua e le leggono con la voce giusta.
 
 Esercizi
-- Negli esercizi a completamento, se scrivi un'altra parola che va bene nella frase, viene controllata prima di essere segnata come sbagliata.
-- Quando scrivi una traduzione diversa da quella salvata, viene controllata anche quella, e le risposte giuste contano.
-- "to look up" e "look up" ora sono la stessa risposta.
-- Dopo una risposta, una breve riga ti dice cosa hai scritto e come si confronta con la tua traduzione salvata.
-- Premere Invio in un campo di risposta non scrive più la prima lettera della tastiera sullo schermo.
-- Le traduzioni ora seguono le maiuscole e minuscole della parola sopra cui appaiono.
+- L'esercizio resta visibile mentre la tastiera è aperta.
+- Quando non hai più parole da ripassare, il messaggio ora conta solo le parole della lingua che stai imparando.
 
-Account
-- Per cambiare la tua e-mail, ora ricevi un codice al nuovo indirizzo per confermarla.
+Articoli condivisi
+- Un articolo condiviso ora può essere tradotto in tutte le lingue supportate da Zeeguu.

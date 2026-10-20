@@ -1,18 +1,18 @@
-Start a language from zero, and fairer exercises.
+Aiki mode: pause distracting apps, and earn breaks by learning.
 
-Starting from zero
-- A new level for learners who have never studied the language: "Don't know anything".
-- At this level your audio lessons start from the very beginning, and your exercises are listening only: hear a word and choose what it means, with nothing to type.
-- When you pick a daily situation, you can say whether you speak as a man, a woman, or either, and the lesson's dialogue is written for you.
-- Instead of a news feed you cannot read yet, the home page points you to the audio lessons. The feed comes back at A1.
+Aiki mode
+- New in Settings: choose the apps that distract you, and Zeeguu pauses them for you.
+- Each minute you learn in Zeeguu unlocks a few minutes in your paused apps. Reach your daily goal and they stay open for the rest of the day.
+- A paused app shows a Zeeguu screen with your progress: today's minutes, one block per minute.
+
+Switching languages
+- The menu now shows the flag of the language you are learning.
+- When you switch, a spinner shows on the flag until the change is saved, and the app only moves to the new language once it is.
+- Right after a switch, exercises now pick words in the new language and read them in the right voice.
 
 Exercises
-- In cloze exercises, if you type another word that also fits the sentence, it is checked before being marked wrong.
-- When you type a translation that differs from the saved one, it is checked too, and correct answers count.
-- "to look up" and "look up" are now the same answer.
-- After an answer, a short line tells you what you typed and how it compares with your saved translation.
-- Pressing Enter in an answer field no longer types the first letter of the on-screen keyboard.
-- Translations now match the capitalisation of the word they sit over.
+- The exercise stays in view while the keyboard is open.
+- When you have no words left to practise, the message now counts only the words in the language you are learning.
 
-Account
-- To change your email, you now get a code at the new address to confirm it.
+Shared articles
+- A shared article can now be translated into any language Zeeguu supports.
