@@ -9,6 +9,7 @@ import { needsVirtualKeyboard } from "../../utils/misc/languageScripts";
 import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard";
 import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/VirtualKeyboard/SpecialCharacterBar";
 import { UserContext } from "../../contexts/UserContext";
+import useSoftKeyboardOpen from "../../hooks/useSoftKeyboardOpen";
 
 import { getExpressionlength, countCommonWords } from "../../utils/text/expressions";
 import { HINT, WRONG, ALTERNATIVE } from "../ExerciseConstants";
@@ -50,6 +51,7 @@ export default function BottomInput({
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(getInitialKeyboardCollapsed);
   const inputRef = useRef(null);
+  const isSoftKeyboardOpen = useSoftKeyboardOpen();
   const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
   const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
@@ -216,7 +218,7 @@ export default function BottomInput({
   const InputField = isIncorrect ? s.AnimatedInput : s.Input;
   return (
     <>
-      <div style={{ marginTop: "3em", marginBottom: "1em" }}>
+      <div style={{ marginTop: isSoftKeyboardOpen ? "1em" : "3em", marginBottom: "1em" }}>
         {/* Input field - centered */}
         <div
           style={{

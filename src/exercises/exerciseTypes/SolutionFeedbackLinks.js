@@ -2,6 +2,7 @@ import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { toast } from "react-toastify";
 import useScreenWidth from "../../hooks/useScreenWidth";
+import useSoftKeyboardOpen from "../../hooks/useSoftKeyboardOpen";
 import DisableAudioSession from "./DisableAudioSession";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 import SessionStorage from "../../assorted/SessionStorage";
@@ -22,6 +23,7 @@ export default function SolutionFeedbackLinks({
   isReported,
 }) {
   const { isMobile } = useScreenWidth();
+  const isSoftKeyboardOpen = useSoftKeyboardOpen();
 
   function handleIKnowThisWord() {
     if (onWordRemovedFromExercises && exerciseBookmark) {
@@ -29,6 +31,10 @@ export default function SolutionFeedbackLinks({
       toast.success(`"${exerciseBookmark.from}" removed from practice`);
     }
   }
+
+  // While typing, these links sit under the keyboard and only push the
+  // sentence off screen. They come back as soon as the keyboard closes.
+  if (isSoftKeyboardOpen && !isExerciseOver) return null;
 
   return (
     <>
