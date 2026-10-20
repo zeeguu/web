@@ -6,6 +6,7 @@ import useGuardedLanguageSwitch from "../hooks/useGuardedLanguageSwitch";
 import { streakFireOrange, lightPurple } from "./colors";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import CircularProgress from "@mui/material/CircularProgress";
 import styled, { keyframes } from "styled-components";
 import { playStreakChime } from "../utils/chimes";
 
@@ -14,6 +15,8 @@ const POLL_SLOW_MS = 60_000;
 const ITEM_WIDTH_PX = 75; // approximate width of one language item
 const MORE_BUTTON_PX = 30;
 const BAR_GAP_PX = 6;
+// A switch waits for the server to save it; only a slow one shows a spinner.
+const SPINNER_DELAY_MS = 300;
 
 const pulse = keyframes`
   0% { transform: scale(1); }
@@ -78,6 +81,17 @@ const Flag = styled.img`
   border: 1px solid var(--streak-banner-border);
 `;
 
+// Takes the flag's place, at the flag's size, so the bar does not shift.
+const FlagSpinner = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.3rem;
+  height: 1.3rem;
+`;
+
+const spinnerSx = { color: "var(--streak-banner-text)" };
+
 const StreakNumber = styled.span`
   font-weight: 700;
   font-size: 0.85rem;
@@ -121,6 +135,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
   const [languageStreaks, setLanguageStreaks] = useState([]);
   const [justPracticed, setJustPracticed] = useState({});
   const [switchingTo, setSwitchingTo] = useState(null);
+  const [showSpinner, setShowSpinner] = useState(false);
   const [maxSlots, setMaxSlots] = useState(4);
   const prevPracticedRef = useRef({});
   const intervalRef = useRef(null);
@@ -185,6 +200,13 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
     return () => clearInterval(intervalRef.current);
   }, [api, userDetails.learned_language]);
 
+  useEffect(() => {
+    setShowSpinner(false);
+    if (!switchingTo) return;
+    const timer = setTimeout(() => setShowSpinner(true), SPINNER_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [switchingTo]);
+
   if (languageStreaks.length === 0) return null;
 
   const currentCode = switchingTo || userDetails.learned_language;
@@ -226,10 +248,16 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
                 boxShadow: isActive && visible.length > 1 ? `inset 0 0 0 1.5px ${lightPurple}` : "none",
               }}
             >
-              <Flag
-                src={`/static/flags-new/${lang.code}.svg`}
-                alt={lang.language}
-              />
+              {showSpinner && lang.code === switchingTo ? (
+                <FlagSpinner role="status" aria-label={`Switching to ${lang.language}`}>
+                  <CircularProgress size="1rem" thickness={5} sx={spinnerSx} />
+                </FlagSpinner>
+              ) : (
+                <Flag
+                  src={`/static/flags-new/${lang.code}.svg`}
+                  alt={lang.language}
+                />
+              )}
               {(lang.daily_streak >= 1 || isActive) && (
                 <>
                   <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />

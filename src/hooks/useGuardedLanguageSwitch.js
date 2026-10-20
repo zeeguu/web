@@ -42,14 +42,13 @@ export default function useGuardedLanguageSwitch() {
       return;
     }
     if (!willConfirm) {
-      // Navigate before mutating userDetails so the summary page doesn't
+      // Navigate as the language is applied, so the summary page doesn't
       // re-render with the new language's data layered over the previous
       // session's stats; ExerciseSession mounts straight into its loading
-      // state and then fetches against the already-switched language.
-      if (location.pathname === EXERCISES_SUMMARY_PATH) {
-        history.push("/exercises");
-      }
-      switchLanguage(api, userDetails, setUserDetails, langCode, onDone);
+      // state and then fetches for the switched language.
+      const leaveSummary =
+        location.pathname === EXERCISES_SUMMARY_PATH ? () => history.push("/exercises") : undefined;
+      switchLanguage(api, userDetails, setUserDetails, langCode, onDone, leaveSummary);
       return;
     }
     setPending({ langCode, onDone });

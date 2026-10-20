@@ -32,10 +32,8 @@ export default function ClassroomArticles() {
 
   // The feed is filtered by learned language, so switching language (from the
   // sidebar, or the "Switch to …" buttons in the empty state) must refetch.
-  // Keyed on the whole userDetails, not learned_language: switchLanguage sets
-  // the new language optimistically before the server has saved it, and only
-  // the later fresh userDetails is safe to fetch against. The ignore flag
-  // drops a response from an earlier run that lands after a later one.
+  // The ignore flag drops a response from an earlier run that lands after a
+  // later one.
   useEffect(() => {
     let ignore = false;
     setArticleList(null);
