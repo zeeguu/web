@@ -19,7 +19,7 @@ export default function useExercisesCounterNotification() {
   }, [path, userDetails.learned_language]);
 
   function updateExercisesCounter() {
-    api.getCountOfBookmarksRecommendedForPractice((scheduledBookmarksCount) => {
+    api.getCountOfBookmarksRecommendedForPractice(userDetails.learned_language, (scheduledBookmarksCount) => {
       setTotalExercisesInPipeline(scheduledBookmarksCount);
 
       setHasExerciseNotification(scheduledBookmarksCount >= 1);

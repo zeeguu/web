@@ -224,7 +224,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         initializeExercisesForBookmarks(bookmarks, gen);
       });
     } else {
-      api.getBookmarksRecommendedForPractice((bookmarks) => initializeExercisesForBookmarks(bookmarks, gen));
+      api.getBookmarksRecommendedForPractice(userDetails?.learned_language, (bookmarks) => initializeExercisesForBookmarks(bookmarks, gen));
       setTitle("Zeeguu: Vocabulary Exercises (𝄂𝄂—𝄂𝄂)", "");
     }
   }
@@ -316,7 +316,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
     if (newIndex === fullExerciseProgression.length) {
       // Navigate to the summary page with session data
-      api.getCountOfBookmarksRecommendedForPractice((bookmarkCount) => {
+      api.getCountOfBookmarksRecommendedForPractice(userDetails?.learned_language, (bookmarkCount) => {
         history.push("/exercises/summary", {
           articleID,
           isOutOfWordsToday: bookmarkCount === 0,

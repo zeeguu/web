@@ -28,13 +28,19 @@ Zeeguu_API.prototype.getCountOfAllScheduledUserWords = function (callback, optio
   this._getJSON(`count_of_all_scheduled_user_words`, callback, options);
 };
 
-// User Words recommended to be studied today
-Zeeguu_API.prototype.getCountOfUserWordsRecommendedForPractice = function (callback) {
-  this._getJSON(`count_of_user_words_recommended_for_practice`, callback);
+// User Words recommended to be studied today. `lang` names the language the
+// client is showing: right after a language switch the server may not have
+// saved it yet, and would otherwise answer for the previous one.
+function languageQuery(lang) {
+  return lang ? `?language=${encodeURIComponent(lang)}` : "";
+}
+
+Zeeguu_API.prototype.getCountOfUserWordsRecommendedForPractice = function (lang, callback) {
+  this._getJSON(`count_of_user_words_recommended_for_practice${languageQuery(lang)}`, callback);
 };
 
-Zeeguu_API.prototype.getUserWordsRecommendedForPractice = function (callback) {
-  this._getJSON(`user_words_recommended_for_practice`, callback);
+Zeeguu_API.prototype.getUserWordsRecommendedForPractice = function (lang, callback) {
+  this._getJSON(`user_words_recommended_for_practice${languageQuery(lang)}`, callback);
 };
 
 Zeeguu_API.prototype.getNextWordDueTime = function (callback) {
@@ -54,12 +60,12 @@ Zeeguu_API.prototype.getCountOfAllScheduledWords = function (callback) {
   return this.getCountOfAllScheduledUserWords(callback);
 };
 
-Zeeguu_API.prototype.getCountOfBookmarksRecommendedForPractice = function (callback) {
-  return this.getCountOfUserWordsRecommendedForPractice(callback);
+Zeeguu_API.prototype.getCountOfBookmarksRecommendedForPractice = function (lang, callback) {
+  return this.getCountOfUserWordsRecommendedForPractice(lang, callback);
 };
 
-Zeeguu_API.prototype.getBookmarksRecommendedForPractice = function (callback) {
-  return this.getUserWordsRecommendedForPractice(callback);
+Zeeguu_API.prototype.getBookmarksRecommendedForPractice = function (lang, callback) {
+  return this.getUserWordsRecommendedForPractice(lang, callback);
 };
 
 Zeeguu_API.prototype.getBookmarksNextInLearning = function (callback) {

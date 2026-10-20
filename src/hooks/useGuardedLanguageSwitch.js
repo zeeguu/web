@@ -45,7 +45,8 @@ export default function useGuardedLanguageSwitch() {
       // Navigate before mutating userDetails so the summary page doesn't
       // re-render with the new language's data layered over the previous
       // session's stats; ExerciseSession mounts straight into its loading
-      // state and then fetches against the already-switched language.
+      // state and then fetches for the already-switched language (it names
+      // it in the request, so it doesn't matter that the save is in flight).
       if (location.pathname === EXERCISES_SUMMARY_PATH) {
         history.push("/exercises");
       }
