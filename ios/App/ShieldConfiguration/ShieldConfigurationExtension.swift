@@ -26,19 +26,12 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     }
 
     // The rules and today's progress, from the ledger the app keeps (Aiki.swift).
-    private static func deal() -> String {
+    // The leading newline separates the text from the title.
+    private static func deal(for name: String) -> String {
         let learned = Aiki.loadLedger().learnedToday(Date()) / 60
-        let goal = Aiki.dailyGoalSeconds / 60
-        return "Each minute you learn in Zeeguu unlocks \(Aiki.minutesEarnedPerMinute) minutes here. "
-            + "Learn \(goal) minutes today and it's free for the rest of the day.\n\n"
-            + progressBar(learned, of: goal) + "\nToday: \(learned) of \(goal) minutes."
-    }
-
-    // The shield only takes text, so the bar is drawn with characters: one
-    // block per minute.
-    private static func progressBar(_ done: Int, of total: Int) -> String {
-        let filled = min(max(done, 0), total)
-        return String(repeating: "▰", count: filled) + String(repeating: "▱", count: total - filled)
+        let soFar = learned == 0 ? "" : " Today: \(learned) \(learned == 1 ? "minute" : "minutes") so far."
+        return "\nLearn for at least 1 minute in Zeeguu to unlock \(name) for \(Aiki.minutesEarnedPerMinute).\n\n"
+            + "\(Aiki.dailyGoalSeconds / 60) minutes a day unlocks it completely.\(soFar)"
     }
 
     private func shield(for name: String?) -> ShieldConfiguration {
@@ -47,7 +40,7 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             backgroundBlurStyle: .systemMaterial,
             icon: UIImage(named: "ZeeguuShieldIcon"),
             title: ShieldConfiguration.Label(text: "\(name ?? "This app") is paused", color: .label),
-            subtitle: ShieldConfiguration.Label(text: Self.deal(), color: .secondaryLabel),
+            subtitle: ShieldConfiguration.Label(text: Self.deal(for: name ?? "it"), color: .secondaryLabel),
             primaryButtonLabel: ShieldConfiguration.Label(text: "OK", color: .black),
             primaryButtonBackgroundColor: zeeguuOrange
         )
