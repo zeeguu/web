@@ -1,0 +1,3 @@
+A test account for a beginner Spanish learner. It contains words at various progress levels, allowing you to see the different exercise types. You can definitely try other languages with this account, but you will need to practice for a few days before the higher-level exercises are unlocked.
+
+Screen Time: the app includes an optional feature, "Aiki mode", built on Family Controls (individual authorization), ManagedSettings and DeviceActivity. It lets learners pause apps they find distracting; time spent learning in Zeeguu unlocks them. To reach it: tap the profile avatar (top right) > Settings > Aiki mode > "Pause distracting apps" > "Allow access" > "Choose apps". Turn it off on the same page with "Turn off". Requires iOS 16+.
