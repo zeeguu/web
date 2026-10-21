@@ -6,8 +6,8 @@ import { APIContext } from "../contexts/APIContext";
 import { SharedArticlesContext } from "../contexts/SharedArticlesContext";
 import { MetaStrip, MetaItem, MetaTag } from "../components/MetaStrip.sc";
 import { articleSourceLabel, aiProvenanceLabel } from "../utils/misc/articleHelpers";
-import { topicIconFor } from "../utils/misc/topicIcon";
 
+import ArticleThumbnail from "./ArticleThumbnail";
 import * as s from "./SavedArticleRow.sc";
 import { Row, Title, UnreadDot } from "./SharedArticleRow.sc";
 
@@ -26,7 +26,6 @@ export default function SharedArticleRow({ share }) {
 
   const article = share.article || {};
   const unread = !share.read;
-  const PlaceholderIcon = topicIconFor(article.topics_list);
   const sourceDomain = articleSourceLabel(article);
   const aiLabel = aiProvenanceLabel(article);
 
@@ -79,15 +78,7 @@ export default function SharedArticleRow({ share }) {
 
   return (
     <Row onClick={handleOpen} onKeyDown={handleKeyDown} role="button" tabIndex={0}>
-      <s.ThumbnailWrap>
-        {article.img_url ? (
-          <s.Thumbnail src={article.img_url} alt="" loading="lazy" decoding="async" />
-        ) : (
-          <s.Placeholder>
-            <PlaceholderIcon style={{ fontSize: 32 }} />
-          </s.Placeholder>
-        )}
-      </s.ThumbnailWrap>
+      <ArticleThumbnail article={article} />
       <s.Content>
         <Title $unread={unread}>
           {article.title || "Untitled article"}
