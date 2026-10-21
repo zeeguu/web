@@ -31,7 +31,7 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         let left = Aiki.dailyGoalSeconds / 60 - learned
         let complete = learned == 0
             ? "\(left) minutes a day unlocks it completely."
-            : "\(left) more \(left == 1 ? "minute" : "minutes") to unlock it completely."
+            : "\(left) more \(left == 1 ? "minute" : "minutes") to unlock completely today!"
         return "\nLearn for at least 1 minute in Zeeguu to unlock \(name) for \(Aiki.minutesEarnedPerMinute).\n\n"
             + complete
     }
