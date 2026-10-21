@@ -28,9 +28,12 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     // The leading newline separates the text from the title.
     private static func deal(for name: String) -> String {
         let learned = Aiki.loadLedger().learnedToday(Date()) / 60
-        let soFar = learned == 0 ? "" : " Today: \(learned) \(learned == 1 ? "minute" : "minutes") so far."
+        let left = Aiki.dailyGoalSeconds / 60 - learned
+        let complete = learned == 0
+            ? "\(left) minutes a day unlocks it completely."
+            : "\(left) more \(left == 1 ? "minute" : "minutes") to unlock it completely."
         return "\nLearn for at least 1 minute in Zeeguu to unlock \(name) for \(Aiki.minutesEarnedPerMinute).\n\n"
-            + "\(Aiki.dailyGoalSeconds / 60) minutes a day unlocks it completely.\(soFar)"
+            + complete
     }
 
     private func shield(for name: String?) -> ShieldConfiguration {
