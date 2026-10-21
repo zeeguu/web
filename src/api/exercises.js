@@ -33,6 +33,10 @@ Zeeguu_API.prototype.getCountOfUserWordsRecommendedForPractice = function (callb
   this._getJSON(`count_of_user_words_recommended_for_practice`, callback);
 };
 
+Zeeguu_API.prototype.getCountOfUserWordsRecommendedForPracticePromise = function () {
+  return this._getJSONPromise(`count_of_user_words_recommended_for_practice`);
+};
+
 Zeeguu_API.prototype.getUserWordsRecommendedForPractice = function (callback) {
   this._getJSON(`user_words_recommended_for_practice`, callback);
 };

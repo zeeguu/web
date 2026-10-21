@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		08C836052F633C5D006FF09E /* ShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 08C835FB2F633C5D006FF09E /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6BC836052F633C5D006FF09E /* AikiMonitor.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6BC835FB2F633C5D006FF09E /* AikiMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7DC836052F633C5D006FF09E /* ShieldAction.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7DC835FB2F633C5D006FF09E /* ShieldAction.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5AC836052F633C5D006FF09E /* ShieldConfiguration.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5AC835FB2F633C5D006FF09E /* ShieldConfiguration.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
@@ -20,6 +21,7 @@
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
 		7C0A1E000000000000000100 /* Aiki.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A1E0000000000000000F1 /* Aiki.swift */; };
 		7C0A1E000000000000000101 /* Aiki.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A1E0000000000000000F1 /* Aiki.swift */; };
+		7C0A1E000000000000000102 /* Aiki.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A1E0000000000000000F1 /* Aiki.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +38,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6BC835FA2F633C5D006FF09E;
 			remoteInfo = AikiMonitor;
+		};
+		7DC836032F633C5D006FF09E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7DC835FA2F633C5D006FF09E;
+			remoteInfo = ShieldAction;
 		};
 		5AC836032F633C5D006FF09E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -55,6 +64,7 @@
 			files = (
 				08C836052F633C5D006FF09E /* ShareExtension.appex in Embed Foundation Extensions */,
 				6BC836052F633C5D006FF09E /* AikiMonitor.appex in Embed Foundation Extensions */,
+				7DC836052F633C5D006FF09E /* ShieldAction.appex in Embed Foundation Extensions */,
 				5AC836052F633C5D006FF09E /* ShieldConfiguration.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -65,6 +75,7 @@
 /* Begin PBXFileReference section */
 		08C835FB2F633C5D006FF09E /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6BC835FB2F633C5D006FF09E /* AikiMonitor.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AikiMonitor.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DC835FB2F633C5D006FF09E /* ShieldAction.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldAction.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		5AC835FB2F633C5D006FF09E /* ShieldConfiguration.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldConfiguration.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A2B3C4D5E6F7890AABBCCDD /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
@@ -97,6 +108,13 @@
 			);
 			target = 6BC835FA2F633C5D006FF09E /* AikiMonitor */;
 		};
+		7DC836092F633C5D006FF09E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 7DC835FA2F633C5D006FF09E /* ShieldAction */;
+		};
 		5AC836092F633C5D006FF09E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -109,6 +127,7 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		08C835FC2F633C5D006FF09E /* ShareExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (08C836092F633C5D006FF09E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ShareExtension; sourceTree = "<group>"; };
 		6BC835FC2F633C5D006FF09E /* AikiMonitor */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6BC836092F633C5D006FF09E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = AikiMonitor; sourceTree = "<group>"; };
+		7DC835FC2F633C5D006FF09E /* ShieldAction */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (7DC836092F633C5D006FF09E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ShieldAction; sourceTree = "<group>"; };
 		5AC835FC2F633C5D006FF09E /* ShieldConfiguration */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (5AC836092F633C5D006FF09E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ShieldConfiguration; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -121,6 +140,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6BC835F82F633C5D006FF09E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7DC835F82F633C5D006FF09E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -160,6 +186,7 @@
 				7C0A1E0000000000000000F1 /* Aiki.swift */,
 				08C835FC2F633C5D006FF09E /* ShareExtension */,
 				6BC835FC2F633C5D006FF09E /* AikiMonitor */,
+				7DC835FC2F633C5D006FF09E /* ShieldAction */,
 				5AC835FC2F633C5D006FF09E /* ShieldConfiguration */,
 				504EC3051FED79650016851F /* Products */,
 				7F8756D8B27F46E3366F6CEA /* Pods */,
@@ -173,6 +200,7 @@
 				504EC3041FED79650016851F /* App.app */,
 				08C835FB2F633C5D006FF09E /* ShareExtension.appex */,
 				6BC835FB2F633C5D006FF09E /* AikiMonitor.appex */,
+				7DC835FB2F633C5D006FF09E /* ShieldAction.appex */,
 				5AC835FB2F633C5D006FF09E /* ShieldConfiguration.appex */,
 			);
 			name = Products;
@@ -250,6 +278,28 @@
 			productReference = 6BC835FB2F633C5D006FF09E /* AikiMonitor.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		7DC835FA2F633C5D006FF09E /* ShieldAction */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7DC8360A2F633C5D006FF09E /* Build configuration list for PBXNativeTarget "ShieldAction" */;
+			buildPhases = (
+				7DC835F72F633C5D006FF09E /* Sources */,
+				7DC835F82F633C5D006FF09E /* Frameworks */,
+				7DC835F92F633C5D006FF09E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				7DC835FC2F633C5D006FF09E /* ShieldAction */,
+			);
+			name = ShieldAction;
+			packageProductDependencies = (
+			);
+			productName = ShieldAction;
+			productReference = 7DC835FB2F633C5D006FF09E /* ShieldAction.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		5AC835FA2F633C5D006FF09E /* ShieldConfiguration */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5AC8360A2F633C5D006FF09E /* Build configuration list for PBXNativeTarget "ShieldConfiguration" */;
@@ -288,6 +338,7 @@
 			dependencies = (
 				08C836042F633C5D006FF09E /* PBXTargetDependency */,
 				6BC836042F633C5D006FF09E /* PBXTargetDependency */,
+				7DC836042F633C5D006FF09E /* PBXTargetDependency */,
 				5AC836042F633C5D006FF09E /* PBXTargetDependency */,
 			);
 			name = App;
@@ -309,6 +360,9 @@
 						CreatedOnToolsVersion = 26.3;
 					};
 					6BC835FA2F633C5D006FF09E = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					7DC835FA2F633C5D006FF09E = {
 						CreatedOnToolsVersion = 26.3;
 					};
 					5AC835FA2F633C5D006FF09E = {
@@ -338,6 +392,7 @@
 				504EC3031FED79650016851F /* App */,
 				08C835FA2F633C5D006FF09E /* ShareExtension */,
 				6BC835FA2F633C5D006FF09E /* AikiMonitor */,
+				7DC835FA2F633C5D006FF09E /* ShieldAction */,
 				5AC835FA2F633C5D006FF09E /* ShieldConfiguration */,
 			);
 		};
@@ -352,6 +407,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6BC835F92F633C5D006FF09E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7DC835F92F633C5D006FF09E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -432,6 +494,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7DC835F72F633C5D006FF09E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C0A1E000000000000000102 /* Aiki.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5AC835F72F633C5D006FF09E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -460,6 +530,11 @@
 			isa = PBXTargetDependency;
 			target = 6BC835FA2F633C5D006FF09E /* AikiMonitor */;
 			targetProxy = 6BC836032F633C5D006FF09E /* PBXContainerItemProxy */;
+		};
+		7DC836042F633C5D006FF09E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7DC835FA2F633C5D006FF09E /* ShieldAction */;
+			targetProxy = 7DC836032F633C5D006FF09E /* PBXContainerItemProxy */;
 		};
 		5AC836042F633C5D006FF09E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -564,6 +639,50 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app.AikiMonitor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7DC836072F633C5D006FF09E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = ShieldAction/ShieldAction.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 123;
+				DEVELOPMENT_TEAM = E9Y43LYCSK;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShieldAction/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShieldAction;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.3.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app.ShieldAction;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -693,6 +812,48 @@
 				MARKETING_VERSION = 1.3.15;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app.AikiMonitor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		7DC836082F633C5D006FF09E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = ShieldAction/ShieldAction.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 123;
+				DEVELOPMENT_TEAM = E9Y43LYCSK;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShieldAction/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShieldAction;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.3.15;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app.ShieldAction;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -932,6 +1093,15 @@
 			buildConfigurations = (
 				6BC836072F633C5D006FF09E /* Debug */,
 				6BC836082F633C5D006FF09E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7DC8360A2F633C5D006FF09E /* Build configuration list for PBXNativeTarget "ShieldAction" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7DC836072F633C5D006FF09E /* Debug */,
+				7DC836082F633C5D006FF09E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

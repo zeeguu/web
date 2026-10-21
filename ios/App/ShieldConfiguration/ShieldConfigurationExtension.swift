@@ -5,9 +5,8 @@ import UIKit
 /// The screen iOS shows instead of an app the learner paused with Aiki mode.
 ///
 /// Apple only lets us set its text, colours, icon and button labels. The
-/// button cannot open Zeeguu (there is no supported API for that), so the
-/// text has to say what to do; without a Shield Action extension the button
-/// just closes the shield.
+/// button cannot open Zeeguu itself; ShieldAction handles the press, leaving
+/// a note for the app to open /aiki and a notification that opens it.
 class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     override func configuration(shielding application: Application) -> ShieldConfiguration {
         return shield(for: application.localizedDisplayName)
@@ -41,7 +40,7 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             icon: UIImage(named: "ZeeguuShieldIcon"),
             title: ShieldConfiguration.Label(text: "\(name ?? "This app") is paused", color: .label),
             subtitle: ShieldConfiguration.Label(text: Self.deal(for: name ?? "it"), color: .secondaryLabel),
-            primaryButtonLabel: ShieldConfiguration.Label(text: "OK", color: .black),
+            primaryButtonLabel: ShieldConfiguration.Label(text: "Learn in Zeeguu", color: .black),
             primaryButtonBackgroundColor: zeeguuOrange
         )
     }

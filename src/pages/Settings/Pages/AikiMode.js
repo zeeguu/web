@@ -83,7 +83,7 @@ export default function AikiMode() {
       <Main>
         <AikiCard>
           <SectionDescription>
-            Aiki mode pauses the apps that distract you. Each minute you learn in Zeeguu unlocks them for 5 minutes;
+            Aiki mode pauses the apps that distract you. A minute of learning in Zeeguu unlocks them for the next 5 minutes;
             learn 15 minutes and they're free until tomorrow.
           </SectionDescription>
         </AikiCard>

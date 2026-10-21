@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import useShadowRef from "./useShadowRef";
 import { reportLearningSeconds } from "../components/nativeShield";
+import { trackLiveSession } from "../aiki/aikiMinute";
 
 // Lifecycle primitive: owns the session id and the cleanup-on-sessionKey
 // effect. Knows nothing about HTTP, time models, or session types — those
@@ -98,6 +99,15 @@ export default function useSession({ sessionKey, label, apiCreate, apiUpdate, ap
     // can read the latest versions without re-running on every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionKey, label]);
+
+  // Lets the Aiki minute bar count the seconds not reported yet.
+  useEffect(() => {
+    if (!sessionId) return;
+    // Zero once ended: end() clears the id before the re-render unregisters this.
+    return trackLiveSession(label, () =>
+      sessionIdRef.current ? getCurrentDurationRef.current() - reportedDurationRef.current : 0,
+    );
+  }, [sessionId, label, getCurrentDurationRef]);
 
   const getSessionId = useCallback(() => sessionIdRef.current, []);
 
