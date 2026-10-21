@@ -8,8 +8,9 @@ import DeviceActivity
 // when a break ends). The extensions compile this same file, so it must not
 // depend on Capacitor.
 //
-// Rules: every minute of learning today earns 5 minutes in the paused apps;
-// 15 minutes of learning frees them for the rest of the day.
+// Rules: a minute of learning unlocks the paused apps for the next 5 minutes,
+// counted from that minute, so a break never runs out while the learner is
+// still learning; 15 minutes of learning frees them for the rest of the day.
 
 @available(iOS 16.0, *)
 public enum Aiki {
@@ -42,7 +43,7 @@ public enum Aiki {
             enabled && !freeToday(now) && !onBreak(now)
         }
 
-        /// Counts learning time, turning each newly completed minute into a break.
+        /// Counts learning time; each newly completed minute restarts the break.
         public mutating func addLearning(seconds: Int, now: Date) {
             if !isToday(now) {
                 day = Aiki.dayString(now)
@@ -54,8 +55,8 @@ public enum Aiki {
             let newMinutes = learnedSeconds / 60 - minutesConverted
             guard newMinutes > 0 else { return }
             minutesConverted += newMinutes
-            let from = max(breakUntil ?? now, now)
-            breakUntil = from.addingTimeInterval(TimeInterval(newMinutes * Aiki.minutesEarnedPerMinute * 60))
+            let fiveFromNow = now.addingTimeInterval(TimeInterval(Aiki.minutesEarnedPerMinute * 60))
+            breakUntil = max(breakUntil ?? fiveFromNow, fiveFromNow)
         }
     }
 
@@ -81,6 +82,24 @@ public enum Aiki {
     private static func read(_ key: String) -> Data? { defaults.data(forKey: key) }
 
     private static func write(_ key: String, _ data: Data) { defaults.set(data, forKey: key) }
+
+    // MARK: - Opening Zeeguu on /aiki
+
+    // Left by ShieldAction when the learner chooses to learn. The app takes it
+    // when it next starts or comes back, and opens /aiki if it is this recent,
+    // so an old press does not hijack a later visit.
+    static let openAikiKey = "openAikiAt"
+    static let openAikiMaxAge: TimeInterval = 10 * 60
+
+    public static func requestOpenAiki(now: Date = Date()) {
+        defaults.set(now.timeIntervalSince1970, forKey: openAikiKey)
+    }
+
+    public static func takeOpenAikiRequest(now: Date = Date()) -> Bool {
+        let at = defaults.double(forKey: openAikiKey)
+        defaults.removeObject(forKey: openAikiKey)
+        return at > 0 && now.timeIntervalSince1970 - at < openAikiMaxAge
+    }
 
     static func dayString(_ date: Date) -> String {
         let c = Calendar.current.dateComponents([.year, .month, .day], from: date)

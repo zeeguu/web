@@ -700,9 +700,7 @@ export default function TodayAudio() {
           minHeight: "calc(100dvh - 3rem - 5.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom))",
         }}
       >
-        <div style={{ fontSize: "2.5rem" }} aria-hidden>
-          🎧
-        </div>
+        <img src="/static/images/elephants/headphones.png" alt="" style={{ height: "120px" }} />
         <h2 style={{ color: zeeguuOrange, margin: "8px 0" }}>{heading}</h2>
         <p style={{ color: "var(--text-secondary)", maxWidth: "300px", marginBottom: "24px" }}>{body}</p>
         <BannerButton onClick={primaryAction} style={{ padding: "12px 24px", fontSize: "1rem" }}>

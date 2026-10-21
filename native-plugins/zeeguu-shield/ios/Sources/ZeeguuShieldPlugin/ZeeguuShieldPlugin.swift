@@ -1,4 +1,5 @@
 import Foundation
+import UserNotifications
 import SwiftUI
 import UIKit
 import Capacitor
@@ -23,7 +24,8 @@ public class ZeeguuShieldPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "presentAppPicker", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "applyShield", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "removeShield", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "addLearningSeconds", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "addLearningSeconds", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "takeOpenAikiRequest", returnType: CAPPluginReturnPromise)
     ]
 
     private func unsupported(_ call: CAPPluginCall) -> Bool {
@@ -44,13 +46,7 @@ public class ZeeguuShieldPlugin: CAPPlugin, CAPBridgedPlugin {
         var result = Self.describe(Aiki.loadSelection())
         result["supported"] = true
         result["authorization"] = Self.describe(AuthorizationCenter.shared.authorizationStatus)
-        result["shieldActive"] = ledger.enabled
-        result["learnedSecondsToday"] = ledger.learnedToday(now)
-        result["dailyGoalSeconds"] = Aiki.dailyGoalSeconds
-        result["freeToday"] = ledger.freeToday(now)
-        if ledger.onBreak(now), let end = ledger.breakUntil {
-            result["breakUntil"] = Int(end.timeIntervalSince1970 * 1000)
-        }
+        result.merge(Self.describe(ledger, now: now)) { _, new in new }
         call.resolve(result)
     }
 
@@ -99,6 +95,8 @@ public class ZeeguuShieldPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
         setEnabled(true)
+        // The shield's "Learn in Zeeguu" posts a notification to open the app.
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
         call.resolve()
     }
 
@@ -111,13 +109,36 @@ public class ZeeguuShieldPlugin: CAPPlugin, CAPBridgedPlugin {
     @objc func addLearningSeconds(_ call: CAPPluginCall) {
         guard #available(iOS 16.0, *) else { _ = unsupported(call); return }
         var ledger = Aiki.loadLedger()
-        ledger.addLearning(seconds: call.getInt("seconds") ?? 0, now: Date())
+        let now = Date()
+        ledger.addLearning(seconds: call.getInt("seconds") ?? 0, now: now)
         Aiki.saveLedger(ledger)
-        Aiki.sync()
-        call.resolve()
+        Aiki.sync(now: now)
+        // The ledger's state after the report, so the app can tell the
+        // learner about a break only once the ledger has granted it.
+        call.resolve(Self.describe(ledger, now: now))
+    }
+
+    /// Whether the learner just pressed "Learn in Zeeguu" on the shield.
+    @objc func takeOpenAikiRequest(_ call: CAPPluginCall) {
+        guard #available(iOS 16.0, *) else { call.resolve(["open": false]); return }
+        call.resolve(["open": Aiki.takeOpenAikiRequest()])
     }
 
     // MARK: - Helpers
+
+    @available(iOS 16.0, *)
+    private static func describe(_ ledger: Aiki.Ledger, now: Date) -> [String: Any] {
+        var result: [String: Any] = [
+            "shieldActive": ledger.enabled,
+            "learnedSecondsToday": ledger.learnedToday(now),
+            "dailyGoalSeconds": Aiki.dailyGoalSeconds,
+            "freeToday": ledger.freeToday(now),
+        ]
+        if ledger.onBreak(now), let end = ledger.breakUntil {
+            result["breakUntil"] = Int(end.timeIntervalSince1970 * 1000)
+        }
+        return result
+    }
 
     @available(iOS 16.0, *)
     private func setEnabled(_ on: Bool) {

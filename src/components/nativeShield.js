@@ -14,13 +14,38 @@ export function nativeShieldAvailable() {
 // reading, exercises and audio lessons; not browsing the feed or videos.
 const LEARNING_SESSIONS = ["reading", "exercise", "listening"];
 
+export function isLearningSession(label) {
+  return LEARNING_SESSIONS.includes(label);
+}
+
 export function countsAsLearning(label, seconds) {
-  return LEARNING_SESSIONS.includes(label) && seconds > 0;
+  return isLearningSession(label) && seconds > 0;
+}
+
+// Each report resolves with the ledger's state after it (older app builds
+// resolve with nothing); aiki/aikiMinute.js listens to tell the learner.
+const ledgerListeners = new Set();
+let secondsInFlight = 0; // sent, but the ledger has not answered yet
+
+export function onLedgerUpdate(listener) {
+  ledgerListeners.add(listener);
+  return () => ledgerListeners.delete(listener);
+}
+
+export function learningSecondsInFlight() {
+  return secondsInFlight;
 }
 
 export function reportLearningSeconds(label, seconds) {
   if (!countsAsLearning(label, seconds) || !nativeShieldAvailable()) return;
-  ZeeguuShield.addLearningSeconds({ seconds: Math.round(seconds) }).catch(() => {});
+  const rounded = Math.round(seconds);
+  secondsInFlight += rounded;
+  ZeeguuShield.addLearningSeconds({ seconds: rounded })
+    .then((ledger) => {
+      secondsInFlight -= rounded;
+      if (ledger) ledgerListeners.forEach((listener) => listener(ledger));
+    })
+    .catch(() => (secondsInFlight -= rounded));
 }
 
 // Which setup step a learner is at, from ZeeguuShield.getStatus().

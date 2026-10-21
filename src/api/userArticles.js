@@ -133,6 +133,11 @@ Zeeguu_API.prototype.getCachedRecommendedArticles = function () {
   return this.getCached("user_articles/foryou");
 };
 
+// Articles left partway through, among the last `sessions` read, most recent first.
+Zeeguu_API.prototype.getUnfinishedArticlesPromise = function (sessions) {
+  return this._getJSONPromise(`get_unfinished_user_reading_sessions/${sessions}`);
+};
+
 Zeeguu_API.prototype.getSavedUserArticles = function (page, callback) {
   this._getJSON(`user_articles/saved/${page}`, (articles) => {
     // sometimes we get duplicates from the server

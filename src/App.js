@@ -28,6 +28,8 @@ import { Capacitor } from "@capacitor/core";
 
 import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
+import AikiMinuteBar from "./aiki/AikiMinuteBar";
+import useOpenAikiOnRequest from "./aiki/useOpenAikiOnRequest";
 import useExtensionCommunication from "./hooks/useExtensionCommunication";
 import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
@@ -67,6 +69,7 @@ function generateUUID() {
 function LocationTrackingWrapper({ children }) {
   useLocationTracker();
   useDeepLinkHandler();
+  useOpenAikiOnRequest();
   return children;
 }
 
@@ -468,6 +471,7 @@ function App() {
                           open={moreTranslationsModal.open}
                           handleCancel={moreTranslationsModal.close}
                         />
+                        <AikiMinuteBar />
                         <ToastContainer
                           position="bottom-right"
                           autoClose={2000}
