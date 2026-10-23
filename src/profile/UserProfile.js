@@ -225,7 +225,6 @@ export default function UserProfile() {
             activeLanguages={activeLanguages}
             onOpenLanguagesModal={() => setLanguagesModalOpen(true)}
             onEditAvatar={() => setAvatarPickerOpen(true)}
-            onOpenSettings={() => history.push("/account_settings")}
             friendActionHandlers={friendActionHandlers}
             isPendingFriendAction={isPendingFriendAction}
           />

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { orange500, streakFireOrange } from "../components/colors";
+import { streakFireOrange } from "../components/colors";
 
 export const HeaderCard = styled.div`
   position: relative;
@@ -80,32 +80,6 @@ export const HeaderCard = styled.div`
   .label {
     font-weight: 600;
     color: var(--text-secondary);
-  }
-`;
-
-export const SettingsButton = styled.button`
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  border: none;
-  background: var(--streak-banner-border);
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    background: var(--streak-banner-hover);
-    color: ${orange500};
-  }
-
-  @media (max-width: 768px) {
-    top: 0.75rem;
-    right: 0.75rem;
   }
 `;
 

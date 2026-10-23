@@ -106,17 +106,7 @@ const ProfileAvatarButton = styled.button`
 const TopBarActions = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-`;
-
-const SettingsIconButton = styled.button`
-  background: none;
-  border: none;
-  padding: 0.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  color: var(--streak-banner-text);
+  gap: 0.2rem;
 `;
 
 const TopBarNavAvatar = styled(AvatarBackground)`
@@ -125,4 +115,4 @@ const TopBarNavAvatar = styled(AvatarBackground)`
   padding: 2px;
 `;
 
-export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer, DailyFeedbackLink, ProfileAvatarButton, TopBarNavAvatar, TopBarActions, SettingsIconButton };
+export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer, DailyFeedbackLink, ProfileAvatarButton, TopBarNavAvatar, TopBarActions };

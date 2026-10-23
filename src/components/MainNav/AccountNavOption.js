@@ -7,7 +7,7 @@ import { UserContext } from "../../contexts/UserContext";
 import NavOption from "./NavOption";
 import NavigationOptions, { isNavOptionActive } from "./navigationOptions";
 import strings from "../../i18n/definitions";
-import { isDesktopScreenWidth } from "./screenSize";
+import { isDesktopScreenWidth, isMediumScreenWidth } from "./screenSize";
 
 import { AvatarBackground, AvatarImage } from "../../profile/UserProfile.sc";
 import {
@@ -70,8 +70,10 @@ export default function AccountNavOption({ screenWidth, onNavigate = () => {} })
     isNavOptionActive(NavigationOptions.profile.linkTo, path) ||
     isNavOptionActive(NavigationOptions.settings.linkTo, path);
 
-  // The collapsed sidebar has no room beside the avatar.
+  // The collapsed sidebar has no room beside the avatar: Settings gets its
+  // own icon row there instead.
   const showGear = isDesktopScreenWidth(screenWidth);
+  const showSettingsRow = isMediumScreenWidth(screenWidth);
 
   useEffect(() => {
     setAvatarCharacterId(validatedAvatarCharacterId(userDetails.user_avatar?.image_name));
@@ -80,35 +82,38 @@ export default function AccountNavOption({ screenWidth, onNavigate = () => {} })
   }, [userDetails]);
 
   return (
-    <NavOption
-      overflowEnabled={true}
-      className={showGear ? "withTrailing" : undefined}
-      linkTo={linkTo}
-      isActive={isActive}
-      onClick={onNavigate}
-      icon={
-        <NavAvatar $backgroundColor={avatarBackgroundColor} $isActive={isActive}>
-          <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
-        </NavAvatar>
-      }
-      text={
-        <Username style={{ color: isActive ? avatarCharacterColor : undefined }}>
-          {userDetails?.username || strings.titleOwnProfile}
-        </Username>
-      }
-      screenWidth={screenWidth}
-      trailing={
-        showGear && (
-          <SettingsGear to={NavigationOptions.settings.linkTo} aria-label={strings.settings} title={strings.settings}>
-            <SettingsRoundedIcon fontSize="small" />
-          </SettingsGear>
-        )
-      }
-      notification={
-        (hasBadgeNotification || hasFriendRequestNotification) && (
-          <NotificationIcon position={"top"} text={totalNumberOfBadges + friendRequestCount} />
-        )
-      }
-    />
+    <>
+      <NavOption
+        overflowEnabled={true}
+        className={showGear ? "withTrailing" : undefined}
+        linkTo={linkTo}
+        isActive={isActive}
+        onClick={onNavigate}
+        icon={
+          <NavAvatar $backgroundColor={avatarBackgroundColor} $isActive={isActive}>
+            <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+          </NavAvatar>
+        }
+        text={
+          <Username style={{ color: isActive ? avatarCharacterColor : undefined }}>
+            {userDetails?.username || strings.titleOwnProfile}
+          </Username>
+        }
+        screenWidth={screenWidth}
+        trailing={
+          showGear && (
+            <SettingsGear to={NavigationOptions.settings.linkTo} aria-label={strings.settings} title={strings.settings}>
+              <SettingsRoundedIcon fontSize="small" />
+            </SettingsGear>
+          )
+        }
+        notification={
+          (hasBadgeNotification || hasFriendRequestNotification) && (
+            <NotificationIcon position={"top"} text={totalNumberOfBadges + friendRequestCount} />
+          )
+        }
+      />
+      {showSettingsRow && <NavOption {...NavigationOptions.settings} currentPath={path} screenWidth={screenWidth} />}
+    </>
   );
 }

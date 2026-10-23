@@ -16,7 +16,7 @@ import { BadgeCounterContext } from "../contexts/BadgeCounterContext";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import NotificationIcon from "./NotificationIcon";
 import Feature from "../features/Feature";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import SettingsIconButton from "./Icons/SettingsIconButton";
 import strings from "../i18n/definitions";
 
 export default function TopBar() {
@@ -85,9 +85,7 @@ export default function TopBar() {
         )}
         <LanguageStreakBar onMultipleLanguages={setHasStreakBar} onOpenModal={openLanguageModal} />
         <s.TopBarActions>
-          <s.SettingsIconButton onClick={() => history.push("/account_settings")} aria-label={strings.settings}>
-            <SettingsRoundedIcon />
-          </s.SettingsIconButton>
+          <SettingsIconButton onClick={() => history.push("/account_settings")} title={strings.settings} />
           {Feature.has_gamification() && (
             <s.ProfileAvatarButton onClick={handleProfileClick} aria-label="Go to profile">
               <s.TopBarNavAvatar $backgroundColor={avatarBackgroundColor}>
