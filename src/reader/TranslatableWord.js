@@ -28,6 +28,8 @@ export default function TranslatableWord({
   setHighlightSolutionExpression,
 }) {
   const [showingAlterMenu, setShowingAlterMenu] = useState(false);
+  // True while the lazy alternatives fetch (see openAlterMenu) is in flight.
+  const [loadingAlternatives, setLoadingAlternatives] = useState(false);
   // Null until Explain is tapped. The selection and sentence are kept alongside
   // the text so the modal can show what was actually asked -- and so they
   // survive the menu closing underneath it.
@@ -146,11 +148,20 @@ export default function TranslatableWord({
     // guards against re-firing if the user closes and reopens the menu.
     if (!word.alternatives?.length && !word._lazyAlternativesFetched) {
       word._lazyAlternativesFetched = true;
-      interactiveText.fetchAlternatives(
-        word,
-        () => wordUpdated(word),
-        () => wordUpdated(word),
-      );
+      setLoadingAlternatives(true);
+      // A request that never settles must not leave "Checking translators…"
+      // up for good; alternatives arriving after this still show, and the
+      // next open asks again.
+      const giveUp = setTimeout(() => {
+        setLoadingAlternatives(false);
+        word._lazyAlternativesFetched = false;
+      }, 8000);
+      const done = () => {
+        clearTimeout(giveUp);
+        setLoadingAlternatives(false);
+        wordUpdated(word);
+      };
+      interactiveText.fetchAlternatives(word, done, done);
     }
   }
 
@@ -532,6 +543,7 @@ export default function TranslatableWord({
           {showingAlterMenu && (
             <AlterMenu
               word={word}
+              loadingAlternatives={loadingAlternatives}
               setShowingAlternatives={setShowingAlterMenu}
               selectAlternative={selectAlternative}
               editTranslation={openTranslationEditor}

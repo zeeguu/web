@@ -1,14 +1,17 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
-import { almostBlack, zeeguuDarkRed, zeeguuLightYellow, zeeguuVeryLightYellow } from "../components/colors";
+import { almostBlack, zeeguuLightYellow, zeeguuVeryLightYellow } from "../components/colors";
+
+const growIn = keyframes`
+  from { grid-template-rows: 0fr; opacity: 0; }
+  to { grid-template-rows: 1fr; opacity: 1; }
+`;
 
 const AlterMenuSC = styled.div`
   --altermenu-bg: ${zeeguuVeryLightYellow};
   --altermenu-text: ${almostBlack};
   --altermenu-border: ${zeeguuLightYellow};
   --altermenu-source-text: rgb(240, 204, 160);
-  --altermenu-action-text: ${zeeguuDarkRed};
-  --altermenu-action-border: ${zeeguuDarkRed};
   --altermenu-link-text: hsl(216, 100%, 48%);
   --altermenu-header-bg: ${zeeguuLightYellow};
   --altermenu-header-text: #01345d;
@@ -19,8 +22,6 @@ const AlterMenuSC = styled.div`
     --altermenu-text: rgb(255, 240, 220);
     --altermenu-border: rgb(90, 70, 40);
     --altermenu-source-text: rgb(160, 130, 90);
-    --altermenu-action-text: #ff7a7a;
-    --altermenu-action-border: rgb(120, 60, 60);
     --altermenu-link-text: hsl(216, 100%, 74%);
     --altermenu-header-bg: rgb(70, 55, 35);
     --altermenu-header-text: #ffcc66;
@@ -28,6 +29,7 @@ const AlterMenuSC = styled.div`
   }
 
   font-size: 0.8em;
+  font-weight: 500;
   z-index: 1000;
   text-align: left;
 
@@ -48,7 +50,6 @@ const AlterMenuSC = styled.div`
     cursor: pointer;
     margin-top: 0.4em;
     margin-left: 0.8em;
-    font-weight: 600;
 
     &:hover {
       filter: brightness(90%);
@@ -76,27 +77,53 @@ const AlterMenuSC = styled.div`
     }
   }
 
+  /* The actions' own gap never changes; the list carries the extra space
+   * as padding, so it grows in with the list's animation. */
   .actionsSection {
-    margin-top: 1em;
+    margin-top: 0.4em;
+  }
+
+  /* A one-row grid, so the row can animate from 0fr to its real height. */
+  .alternativesList {
+    display: grid;
+    grid-template-rows: 1fr;
+  }
+
+  .alternativesRows {
+    min-height: 0;
+    overflow: hidden;
+
+    /* Extra space before the actions, as content so it is clipped (and
+     * grows in) with the rows rather than appearing at once. */
+    &::after {
+      content: "";
+      display: block;
+      height: 0.6em;
+    }
+  }
+
+  /* Alternatives that arrive while the menu is open slide in, so the
+   * actions below ease down instead of jumping from under the finger. */
+  .alternativesList.growIn {
+    animation: ${growIn} 300ms ease-out;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
   }
 
   .removeLink,
   .neutralLink {
     margin-top: 0.5em;
     cursor: pointer;
-
-    &:hover {
-      filter: brightness(110%);
-    }
-  }
-
-  .removeLink {
-    color: var(--altermenu-action-text);
-  }
-
-  .neutralLink {
     color: var(--altermenu-text);
     opacity: 0.7;
+
+    @media (hover: hover) {
+      &:hover {
+        filter: brightness(110%);
+      }
+    }
   }
 
   .altermenuSourceLabel {
