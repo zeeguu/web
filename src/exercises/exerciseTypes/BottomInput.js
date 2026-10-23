@@ -211,7 +211,8 @@ export default function BottomInput({
       updatedMessageToAPI = WRONG;
       handleIncorrectAnswer(exerciseBookmark);
     }
-    notifyOfUserAttempt(updatedMessageToAPI, exerciseBookmark, currentInput);
+    // The learned word typed in the wrong language is not a wrong meaning
+    notifyOfUserAttempt(updatedMessageToAPI, exerciseBookmark, userUsedWrongLang ? undefined : currentInput);
     setIsIncorrect(true);
   }
 

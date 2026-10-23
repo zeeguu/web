@@ -250,8 +250,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   function handleUserAttempt(message, bookmarkToUpdate, wrongAnswer) {
     if (message === "" || !bookmarkToUpdate) return "";
-    if (wrongAnswer?.trim()) {
-      const answers = wrongAnswersRef.current[bookmarkToUpdate.id] || [];
+    // The same answer checked twice in a row is one attempt, not two
+    const answers = wrongAnswersRef.current[bookmarkToUpdate.id] || [];
+    if (wrongAnswer?.trim() && answers[answers.length - 1] !== wrongAnswer.trim()) {
       wrongAnswersRef.current[bookmarkToUpdate.id] = [...answers, wrongAnswer.trim()];
     }
     let _newExerciseMessageToAPI = { ...exerciseMessageForAPI };
