@@ -7,10 +7,7 @@ const OptionShared = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Six tabs (five plus More) share the bar: 4rem each where there is room,
-     and an equal share of the bar's width (minus its 1rem of side padding,
-     see BottomNav.sc) on narrower phones, where 6 x 4rem would overflow. */
-  width: min(4rem, calc((100vw - 1rem) / 6));
+  width: 4rem;
   height: 3rem;
   gap: 0.2rem;
   font-weight: 700;
