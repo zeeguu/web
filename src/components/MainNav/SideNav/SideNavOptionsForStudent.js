@@ -45,9 +45,9 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
         notification={<DailyAudioNotificationDot status={dailyAudioStatus} sidebar />}
       />
 
-      <NavOption {...NavigationOptions.translate} currentPath={path} screenWidth={screenWidth} />
-
       <NavOption {...NavigationOptions.myWords} currentPath={path} screenWidth={screenWidth} />
+
+      <NavOption {...NavigationOptions.translate} currentPath={path} screenWidth={screenWidth} />
 
       <NavOption {...NavigationOptions.myActivity} currentPath={path} screenWidth={screenWidth} />
 

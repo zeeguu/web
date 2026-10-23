@@ -1,7 +1,7 @@
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import FitnessCenterRoundedIcon from "@mui/icons-material/FitnessCenterRounded";
-import TranslateRoundedIcon from "@mui/icons-material/TranslateRounded";
+import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import BusinessCenterRoundedIcon from "@mui/icons-material/BusinessCenterRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
@@ -48,7 +48,8 @@ const iconProps = {
     myTexts: <ChromeReaderModeRoundedIcon />,
     studentSite: <SchoolRoundedIcon />,
     more: <MoreHorizRoundedIcon />,
-    translate: <TranslateRoundedIcon {...iconProps} />,
+    // Speech bubbles rather than the 文A glyph: that one is Language Settings'.
+    translate: <ForumRoundedIcon {...iconProps} />,
     language: <LanguageRoundedIcon {...iconProps} />,
     headerArticles: <ArticleIcon {...iconProps} />,
     headerStreak: <LocalFireDepartmentIcon {...iconProps}/>,

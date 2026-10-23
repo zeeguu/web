@@ -45,8 +45,6 @@ export default function MoreOptionsPanel({
         <s.MoreOptionsList>
           {isOnStudentSide && (
             <>
-              <NavOption {...NavigationOptions.myWords} currentPath={currentPath} onClick={handleHideMoreOptions} />
-
               <NavOption {...NavigationOptions.myActivity} currentPath={currentPath} onClick={handleHideMoreOptions} />
 
               {Feature.verbal_flashcards() && hasSupportedVerbalFlashcardsLearnedLanguage(userDetails) && (
