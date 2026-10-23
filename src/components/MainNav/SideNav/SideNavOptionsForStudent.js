@@ -7,8 +7,6 @@ import NavigationOptions from "../navigationOptions";
 import NotificationIcon from "../../NotificationIcon";
 import DailyAudioNotificationDot from "../../DailyAudioNotificationDot";
 import { ExercisesCounterContext } from "../../../exercises/ExercisesCounterContext";
-import Feature from "../../../features/Feature";
-import { hasSupportedVerbalFlashcardsLearnedLanguage } from "../../../verbalFlashcards/verbalFlashcardsAvailability";
 
 export default function SideNavOptionsForStudent({ screenWidth }) {
   const { userDetails } = useContext(UserContext);
@@ -29,14 +27,6 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
           hasExerciseNotification && <NotificationIcon position={"top"} text={totalExercisesInPipeline} />
         }
       />
-        
-      {Feature.verbal_flashcards() && hasSupportedVerbalFlashcardsLearnedLanguage(userDetails) && (
-        <NavOption
-          {...NavigationOptions.verbalFlashcards}
-          currentPath={path}
-          screenWidth={screenWidth}
-        />
-      )}
 
       <NavOption
         {...NavigationOptions.dailyAudio}

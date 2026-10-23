@@ -8,7 +8,6 @@ import NavOption from "../NavOption";
 import * as s from "./MoreOptionsPanel.sc";
 import AccountNavOption from "../AccountNavOption";
 import Feature from "../../../features/Feature";
-import { hasSupportedVerbalFlashcardsLearnedLanguage } from "../../../verbalFlashcards/verbalFlashcardsAvailability";
 
 export default function MoreOptionsPanel({
   overlayTransition,
@@ -48,14 +47,6 @@ export default function MoreOptionsPanel({
               <NavOption {...NavigationOptions.myWords} currentPath={currentPath} onClick={handleHideMoreOptions} />
 
               <NavOption {...NavigationOptions.myActivity} currentPath={currentPath} onClick={handleHideMoreOptions} />
-
-              {Feature.verbal_flashcards() && hasSupportedVerbalFlashcardsLearnedLanguage(userDetails) && (
-                <NavOption
-                  {...NavigationOptions.verbalFlashcards}
-                  currentPath={currentPath}
-                  onClick={handleHideMoreOptions}
-                />
-              )}
 
               {userDetails.is_teacher && (
                 <NavOption
