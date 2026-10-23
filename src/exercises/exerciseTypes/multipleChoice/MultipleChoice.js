@@ -69,7 +69,7 @@ export default function MultipleChoice({
     } else {
       setIsCorrect(false);
       setIncorrectAnswer(selectedChoice);
-      notifyIncorrectAnswer(exerciseBookmark);
+      notifyIncorrectAnswer(exerciseBookmark, selectedChoice);
     }
   }
 

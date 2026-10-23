@@ -84,7 +84,7 @@ export default function MultipleChoiceL2toL1({
       notifyCorrectAnswer(exerciseBookmark);
     } else {
       setIncorrectAnswer(selectedChoice);
-      notifyIncorrectAnswer(exerciseBookmark);
+      notifyIncorrectAnswer(exerciseBookmark, selectedChoice);
       setIsCorrect(false);
     }
   }

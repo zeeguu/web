@@ -89,7 +89,7 @@ export default function FindWordInContextCloze({
   // text to notifyOfUserAttempt, which appends outcome codes, so the outcome
   // went to the API as e.g. "tænkerW".)
   function answerWasWrong(value) {
-    correctThenReveal(value, () => notifyIncorrectAnswer(exerciseBookmark));
+    correctThenReveal(value, () => notifyIncorrectAnswer(exerciseBookmark, value));
   }
 
   async function handleInputSubmit(value) {

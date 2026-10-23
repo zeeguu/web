@@ -95,6 +95,7 @@ Zeeguu_API.prototype.uploadExerciseFinalizedData = function (
   user_word_id,
   exerciseSessionId,
   other_feedback,
+  wrong_answers,
 ) {
   let payload = {
     outcome: exercise_outcome,
@@ -104,6 +105,8 @@ Zeeguu_API.prototype.uploadExerciseFinalizedData = function (
     other_feedback: other_feedback,
     session_id: exerciseSessionId,
   };
+  // What was typed or picked in each wrong attempt, in order
+  if (wrong_answers?.length) payload.wrong_answers = JSON.stringify(wrong_answers);
   this._post(`report_exercise_outcome`, qs.stringify(payload));
 };
 
