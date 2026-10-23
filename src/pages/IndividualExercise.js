@@ -273,7 +273,7 @@ export default function IndividualExercise() {
   };
 
   const goToMoreExercises = () => {
-    window.location.href = "/exercises";
+    window.location.href = "/practice";
   };
 
   // Show loading state when fetching bookmark data

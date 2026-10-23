@@ -9,7 +9,7 @@ import { languageName } from "../utils/misc/languageCodeToName";
 
 // The reader: /read/article?id=… (in-app) and /read/<link> (article links).
 const READER_PATH_PREFIX = "/read/";
-const EXERCISES_SUMMARY_PATH = "/exercises/summary";
+const EXERCISES_SUMMARY_PATH = "/practice/summary";
 
 /**
  * Switches the user's learning language, but if the user is currently reading
@@ -47,7 +47,7 @@ export default function useGuardedLanguageSwitch() {
       // session's stats; ExerciseSession mounts straight into its loading
       // state and then fetches for the switched language.
       const leaveSummary =
-        location.pathname === EXERCISES_SUMMARY_PATH ? () => history.push("/exercises") : undefined;
+        location.pathname === EXERCISES_SUMMARY_PATH ? () => history.push("/practice") : undefined;
       switchLanguage(api, userDetails, setUserDetails, langCode, onDone, leaveSummary);
       return;
     }

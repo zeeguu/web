@@ -26,7 +26,7 @@ describe("LanguageStreakBar while switching", () => {
     };
     const userDetails = { learned_language: "da" };
     render(
-      <MemoryRouter initialEntries={["/exercises"]}>
+      <MemoryRouter initialEntries={["/practice"]}>
         <APIContext.Provider value={api}>
           <UserContext.Provider value={{ userDetails, setUserDetails: () => {} }}>
             <LanguageStreakBar />

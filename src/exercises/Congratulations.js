@@ -51,7 +51,7 @@ export default function Congratulations({
   // Redirect to exercises if no session data (user navigated directly)
   useEffect(() => {
     if (!location.state) {
-      history.replace("/exercises");
+      history.replace("/practice");
     }
   }, [location.state, history]);
 

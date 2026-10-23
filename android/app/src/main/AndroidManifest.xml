@@ -51,6 +51,16 @@
                 <data
                     android:scheme="https"
                     android:host="zeeguu.org"
+                    android:pathPrefix="/practice" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="zeeguu.org"
                     android:pathPrefix="/shared-lesson" />
             </intent-filter>
 

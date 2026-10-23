@@ -319,7 +319,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (newIndex === fullExerciseProgression.length) {
       // Navigate to the summary page with session data
       api.getCountOfBookmarksRecommendedForPractice((bookmarkCount) => {
-        history.push("/exercises/summary", {
+        history.push("/practice/summary", {
           articleID,
           isOutOfWordsToday: bookmarkCount === 0,
           totalPracticedBookmarksInSession: totalPracticedBookmarksInSession,
