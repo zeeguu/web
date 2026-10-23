@@ -91,6 +91,9 @@ const OptionLabel = styled.label`
     $variant === "card" &&
     css`
       width: 100%;
+      /* The padding and border go inside the 100%, or the card overflows its
+         column by both. */
+      box-sizing: border-box;
       min-width: 0;
       height: auto;
       justify-content: flex-start;
