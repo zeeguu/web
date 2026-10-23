@@ -47,6 +47,11 @@ const Zeeguu_API = class {
     return `${lang}:${variety}:${endpoint}`;
   }
 
+  // The endpoint part of a cache key: `${lang}:${variety}:${endpoint}`.
+  _endpointOf(key) {
+    return key.split(":").slice(2).join(":");
+  }
+
   getCached(endpoint) {
     const cached = this._cache.get(this._cacheKey(endpoint));
     if (cached && Date.now() - cached.time < CACHE_TTL) {
@@ -61,12 +66,10 @@ const Zeeguu_API = class {
   // original).
   invalidateCache(endpointPrefix) {
     for (const key of this._cache.keys()) {
-      // Keys are `${lang}:${variety}:${endpoint}` (see _cacheKey) — match
-      // against the endpoint part. Slicing after the first colon only (as this
-      // did before the variety was added) left `${variety}:` in front, so no
-      // key ever matched and nothing was invalidated.
-      const endpoint = key.split(":").slice(2).join(":");
-      if (endpoint.startsWith(endpointPrefix)) {
+      // Match against the endpoint part. Slicing after the first colon only
+      // (as this did before the variety was added) left `${variety}:` in
+      // front, so no key ever matched and nothing was invalidated.
+      if (this._endpointOf(key).startsWith(endpointPrefix)) {
         this._cache.delete(key);
       }
     }
@@ -79,8 +82,7 @@ const Zeeguu_API = class {
   // cached response, holding its own copy of the article, hence the sweep.
   forgetArticleTokens(articleId) {
     for (const [key, cached] of this._cache) {
-      const endpoint = key.split(":").slice(2).join(":");
-      if (!endpoint.startsWith("user_articles/") || !Array.isArray(cached.data)) continue;
+      if (!this._endpointOf(key).startsWith("user_articles/") || !Array.isArray(cached.data)) continue;
       for (const article of cached.data) {
         if (article?.id !== articleId) continue;
         delete article.interactiveSummary;

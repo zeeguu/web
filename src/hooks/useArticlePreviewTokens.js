@@ -64,7 +64,9 @@ export default function useArticlePreviewTokens(article, { enabled = true, prefe
     if (preloaded) {
       processSummaryData(preloaded);
     } else {
-      api.getArticleSummaryInfo(article.id, processSummaryData);
+      // On failure the card shows plain text, and the next enable (the
+      // overlay reopening) tries again instead of waiting on this request.
+      api.getArticleSummaryInfo(article.id, processSummaryData, () => setIsTokenizing(false));
     }
 
     function processSummaryData(summaryData) {
