@@ -54,8 +54,8 @@ export default function AikiPage() {
 
   return (
     <PaddedNarrowColumn>
-      <PageTitle>Earn your minutes</PageTitle>
-      <Subtitle>A minute of learning unlocks your paused apps for 5 minutes.</Subtitle>
+      <PageTitle>Learn for one minute</PageTitle>
+      <Subtitle>to unlock your paused apps for 5 minutes.</Subtitle>
       {choices.map((choice) => (
         <ChoiceRow key={choice.kind} choice={choice} />
       ))}

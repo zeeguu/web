@@ -24,16 +24,16 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         return shield(for: webDomain.domain)
     }
 
-    // The rules and today's progress, from the ledger the app keeps (Aiki.swift).
-    // The leading newline separates the text from the title.
+    // An invitation and today's countdown, from the ledger the app keeps (Aiki.swift).
+    // The rules themselves are on the /aiki page. The leading newline separates
+    // the text from the title.
     private static func deal(for name: String) -> String {
         let learned = Aiki.loadLedger().learnedToday(Date()) / 60
         let left = Aiki.dailyGoalSeconds / 60 - learned
-        let complete = learned == 0
-            ? "\(left) minutes a day unlocks it completely."
-            : "\(left) more \(left == 1 ? "minute" : "minutes") to unlock completely today!"
-        return "\nLearn for at least 1 minute in Zeeguu to unlock \(name) for \(Aiki.minutesEarnedPerMinute).\n\n"
-            + complete
+        let countdown = learned == 0
+            ? ""
+            : "\n\n\(left) more \(left == 1 ? "minute" : "minutes") to unlock completely today!"
+        return "\nLearn a bit in Zeeguu to unlock \(name)." + countdown
     }
 
     private func shield(for name: String?) -> ShieldConfiguration {
