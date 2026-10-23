@@ -54,7 +54,10 @@ export default class InteractiveText {
     // Might be worth to store a flag to keep track of wether or not the
     // bookmark / text are part of the content or stand by themselves.
     this.previousBookmarks = previousBookmarks;
-    this.paragraphs = tokenizedParagraphs;
+    // A copy, because restoration and fusion write onto the tokens, and the
+    // caller's may be shared: the feed caches its response, and every preview
+    // built from it would inherit the last one's fusions and bookmarks.
+    this.paragraphs = structuredClone(tokenizedParagraphs);
     updateTokensWithBookmarks(this.previousBookmarks, this.paragraphs);
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
       (sent) => new LinkedWordList(sent),
