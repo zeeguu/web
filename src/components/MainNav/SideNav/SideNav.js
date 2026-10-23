@@ -40,10 +40,10 @@ export default function SideNav({ screenWidth }) {
 
       <s.BottomSection $screenWidth={screenWidth}>
         <s.NavList>
+          <FeedbackButton screenWidth={screenWidth} />
           {isOnStudentSide && !path?.includes("/read") && (
             <SideNavLanguageOption screenWidth={screenWidth} />
           )}
-          <FeedbackButton screenWidth={screenWidth} />
         </s.NavList>
         <AccountNavOption screenWidth={screenWidth} />
         {isOnStudentSide && <SideNavProgressStats screenWidth={screenWidth} />}
