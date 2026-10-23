@@ -1,18 +1,21 @@
-Mode Aiki : mets en pause les applis qui te distraient, et gagne des pauses en apprenant.
+Une navigation plus claire dans l'appli, et des traductions plus fiables dans ton fil.
+
+Navigation
+- La barre du bas affiche maintenant Read, Practice, Listen, Translate et More. My Words et My Activity se trouvent sous More.
+- Les Réglages ont leur propre bouton dans la barre du haut, à côté de ton profil.
+- Les Réglages sont organisés en cinq groupes, chaque élément avec une icône, pour que tu trouves plus vite ce que tu cherches.
+- Le profil et les Réglages ont une flèche de retour, et tu peux glisser pour revenir en arrière.
 
 Mode Aiki
-- Nouveau dans les Réglages : choisis les applis qui te distraient, et Zeeguu les met en pause pour toi.
-- Chaque minute passée à apprendre dans Zeeguu débloque quelques minutes dans tes applis en pause. Atteins ton objectif du jour et elles restent ouvertes jusqu'au soir.
-- Une appli en pause affiche un écran Zeeguu avec ta progression : les minutes du jour, un bloc par minute.
+- Quand tu ouvres une appli en pause, Zeeguu t'invite à apprendre un peu et t'indique combien de minutes il reste avant que tes applis soient débloquées pour le reste de la journée.
+- Une nouvelle page te propose quoi faire ensuite : pratiquer tes mots, continuer ta lecture ou écouter la leçon du jour.
+- Le mode Aiki se trouve maintenant sous Distraction Interception dans les Réglages, avec une courte note sur l'origine du nom.
 
-Changer de langue
-- Le menu affiche maintenant le drapeau de la langue que tu apprends.
-- Quand tu changes de langue, un indicateur tourne sur le drapeau jusqu'à ce que le changement soit enregistré, et l'appli ne passe à la nouvelle langue qu'à ce moment-là.
-- Juste après un changement, les exercices choisissent maintenant des mots dans la nouvelle langue et les lisent avec la bonne voix.
+Traductions
+- Le menu de traduction est plus calme et plus facile à lire. Les alternatives apparaissent en glissant dès qu'elles arrivent, et sont redemandées si les traducteurs ont été lents.
+- Corrigé : traduire une expression de plusieurs mots dans le résumé d'un article pouvait faire disparaître certains de ses mots.
+- Corrigé : une traduction ajoutée ou supprimée dans le fil pouvait être annulée après un passage dans les Réglages.
 
-Exercices
-- L'exercice reste visible quand le clavier est ouvert.
-- Quand tu n'as plus de mots à pratiquer, le message ne compte plus que les mots de la langue que tu apprends.
-
-Articles partagés
-- Un article partagé peut maintenant être traduit dans toutes les langues que Zeeguu propose.
+Petites corrections
+- L'aperçu d'article sur le téléphone est plus épuré, avec une poignée pour le faire glisser.
+- Les options de Feed view dans les Réglages ne dépassent plus de l'écran.

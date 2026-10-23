@@ -1,18 +1,21 @@
-Aiki-Modus: Pausiere ablenkende Apps und verdiene dir Pausen durch Lernen.
+Eine klarere Navigation durch die App und zuverlässigere Übersetzungen in deinem Feed.
+
+Navigation
+- Die untere Leiste zeigt jetzt Read, Practice, Listen, Translate und More. My Words und My Activity findest du unter More.
+- Die Einstellungen haben einen eigenen Knopf in der oberen Leiste, neben deinem Profil.
+- Die Einstellungen sind in fünf Gruppen geordnet, jeder Eintrag mit einem Symbol, damit du schneller findest, was du suchst.
+- Profil und Einstellungen haben einen Zurück-Pfeil, und du kannst zurückwischen.
 
 Aiki-Modus
-- Neu in den Einstellungen: Wähle die Apps, die dich ablenken, und Zeeguu pausiert sie für dich.
-- Jede Minute, die du in Zeeguu lernst, schaltet ein paar Minuten in deinen pausierten Apps frei. Erreichst du dein Tagesziel, bleiben sie für den Rest des Tages offen.
-- Eine pausierte App zeigt einen Zeeguu-Bildschirm mit deinem Fortschritt: die heutigen Minuten, ein Block pro Minute.
+- Wenn du eine pausierte App öffnest, lädt Zeeguu dich ein, ein bisschen zu lernen, und zeigt, wie viele Minuten noch fehlen, bis deine Apps für den Rest des Tages frei sind.
+- Eine neue Seite zeigt, was du als Nächstes tun kannst: deine Wörter üben, weiterlesen oder die heutige Lektion hören.
+- Der Aiki-Modus liegt jetzt unter Distraction Interception in den Einstellungen, mit einer kurzen Erklärung, woher der Name kommt.
 
-Sprache wechseln
-- Das Menü zeigt jetzt die Flagge der Sprache, die du lernst.
-- Beim Wechseln dreht sich auf der Flagge ein Ladesymbol, bis die Änderung gespeichert ist, und die App wechselt erst dann zur neuen Sprache.
-- Direkt nach einem Wechsel wählen die Übungen jetzt Wörter in der neuen Sprache und sprechen sie mit der richtigen Stimme.
+Übersetzungen
+- Das Übersetzungsmenü ist ruhiger und leichter zu lesen. Alternativen gleiten herein, sobald sie da sind, und werden erneut geladen, wenn die Übersetzer langsam waren.
+- Behoben: Beim Übersetzen eines Ausdrucks aus mehreren Wörtern in einer Artikelzusammenfassung konnten einige seiner Wörter verschwinden.
+- Behoben: Eine Übersetzung, die du im Feed hinzugefügt oder entfernt hast, konnte nach einem Besuch der Einstellungen rückgängig gemacht werden.
 
-Übungen
-- Die Übung bleibt sichtbar, während die Tastatur offen ist.
-- Wenn du keine Wörter mehr zum Üben hast, zählt die Meldung jetzt nur die Wörter in der Sprache, die du lernst.
-
-Geteilte Artikel
-- Ein geteilter Artikel kann jetzt in jede Sprache übersetzt werden, die Zeeguu unterstützt.
+Kleinere Korrekturen
+- Die Artikelvorschau auf dem Handy ist aufgeräumter, mit einem Griff zum Wegwischen.
+- Die Optionen unter Feed view in den Einstellungen ragen nicht mehr über den Bildschirmrand hinaus.

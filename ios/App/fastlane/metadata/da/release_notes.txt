@@ -1,18 +1,21 @@
-Aiki-tilstand: sæt forstyrrende apps på pause, og optjen pauser ved at lære.
+En klarere vej rundt i appen, og mere pålidelige oversættelser i dit feed.
+
+Rundt i appen
+- Bundlinjen er nu Læs, Øv, Lyt, Oversæt og More. Mine ord og Min aktivitet ligger under More.
+- Indstillinger har sin egen knap i toplinjen, ved siden af din profil.
+- Indstillinger er delt op i fem grupper, og hvert punkt har et ikon, så det er nemmere at finde det, du leder efter.
+- Profil og Indstillinger har en tilbagepil, og du kan swipe tilbage.
 
 Aiki-tilstand
-- Nyt under Indstillinger: vælg de apps, der forstyrrer dig, og Zeeguu sætter dem på pause for dig.
-- Hvert minut, du lærer i Zeeguu, låser et par minutter op i dine apps på pause. Når du når dit daglige mål, er de åbne resten af dagen.
-- En app på pause viser en Zeeguu-skærm med dine fremskridt: dagens minutter, en blok pr. minut.
+- Når du åbner en app på pause, inviterer Zeeguu dig til at lære lidt og viser, hvor mange minutter der er tilbage, før dine apps er åbne resten af dagen.
+- En ny side viser, hvad du kan gøre nu: øve dine ord, læse videre eller lytte til dagens lektion.
+- Aiki-tilstand ligger nu under Distraction Interception i Indstillinger, med en kort forklaring på, hvor navnet kommer fra.
 
-Skift af sprog
-- Menuen viser nu flaget for det sprog, du lærer.
-- Når du skifter, viser flaget et hjul, indtil ændringen er gemt, og appen skifter først til det nye sprog, når den er.
-- Lige efter et skift vælger øvelserne nu ord på det nye sprog og læser dem op med den rigtige stemme.
+Oversættelser
+- Oversættelsesmenuen er roligere og nemmere at læse. Alternativerne glider ind, når de kommer, og hentes igen, hvis oversætterne var langsomme.
+- Rettet: når du oversatte et udtryk på flere ord i et artikelresumé, kunne nogle af ordene forsvinde.
+- Rettet: en oversættelse, du tilføjede eller fjernede i feedet, kunne blive fortrudt, efter du havde været i Indstillinger.
 
-Øvelser
-- Øvelsen bliver på skærmen, mens tastaturet er åbent.
-- Når du ikke har flere ord at øve, tæller beskeden nu kun ordene på det sprog, du lærer.
-
-Delte artikler
-- En delt artikel kan nu oversættes til alle de sprog, Zeeguu understøtter.
+Mindre rettelser
+- Artikelvisningen på telefonen er mere enkel, med et håndtag til at swipe den væk.
+- Valgene under Feedvisning i Indstillinger går ikke længere ud over skærmen.

@@ -591,7 +591,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.3.15;
+				MARKETING_VERSION = 1.3.16;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app.ShareExtension;
@@ -635,7 +635,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.3.15;
+				MARKETING_VERSION = 1.3.16;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app.AikiMonitor;
@@ -679,7 +679,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.3.15;
+				MARKETING_VERSION = 1.3.16;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app.ShieldAction;
@@ -723,7 +723,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.3.15;
+				MARKETING_VERSION = 1.3.16;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app.ShieldConfiguration;
@@ -767,7 +767,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.3.15;
+				MARKETING_VERSION = 1.3.16;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -809,7 +809,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.3.15;
+				MARKETING_VERSION = 1.3.16;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app.AikiMonitor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -851,7 +851,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.3.15;
+				MARKETING_VERSION = 1.3.16;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app.ShieldAction;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -893,7 +893,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.3.15;
+				MARKETING_VERSION = 1.3.16;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app.ShieldConfiguration;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1039,7 +1039,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.15;
+				MARKETING_VERSION = 1.3.16;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1066,7 +1066,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.15;
+				MARKETING_VERSION = 1.3.16;
 				PRODUCT_BUNDLE_IDENTIFIER = org.zeeguu.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

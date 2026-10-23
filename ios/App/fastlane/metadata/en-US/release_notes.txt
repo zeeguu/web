@@ -1,18 +1,21 @@
-Aiki mode: pause distracting apps, and earn breaks by learning.
+A clearer way around the app, and more reliable translations in your feed.
+
+Getting around
+- The bottom bar is now Read, Practice, Listen, Translate and More. My Words and My Activity are under More.
+- Settings has its own button in the top bar, next to your profile.
+- Settings is organized into five groups, each item with an icon, so it is easier to find what you need.
+- Profile and Settings have a back arrow, and you can swipe back.
 
 Aiki mode
-- New in Settings: choose the apps that distract you, and Zeeguu pauses them for you.
-- Each minute you learn in Zeeguu unlocks a few minutes in your paused apps. Reach your daily goal and they stay open for the rest of the day.
-- A paused app shows a Zeeguu screen with your progress: today's minutes, one block per minute.
+- When you open a paused app, Zeeguu invites you to learn a bit, and shows how many minutes are left until your apps unlock for the rest of the day.
+- A new page shows what you can do next: practice your words, continue reading, or listen to today's lesson.
+- Aiki mode now lives under Distraction Interception in Settings, with a short note on where the name comes from.
 
-Switching languages
-- The menu now shows the flag of the language you are learning.
-- When you switch, a spinner shows on the flag until the change is saved, and the app only moves to the new language once it is.
-- Right after a switch, exercises now pick words in the new language and read them in the right voice.
+Translations
+- The translation menu is calmer and easier to read. Alternatives slide in when they arrive, and are fetched again if the translators were slow.
+- Fixed: translating a multi-word expression in an article summary could make some of its words disappear.
+- Fixed: a translation you added or removed in the feed could be undone after visiting Settings.
 
-Exercises
-- The exercise stays in view while the keyboard is open.
-- When you have no words left to practise, the message now counts only the words in the language you are learning.
-
-Shared articles
-- A shared article can now be translated into any language Zeeguu supports.
+Smaller fixes
+- The article preview on the phone is cleaner, with a handle to swipe it away.
+- The Feed view options in Settings no longer run off the screen.
