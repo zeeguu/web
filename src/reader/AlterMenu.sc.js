@@ -119,8 +119,10 @@ const AlterMenuSC = styled.div`
     color: var(--altermenu-text);
     opacity: 0.7;
 
-    &:hover {
-      filter: brightness(110%);
+    @media (hover: hover) {
+      &:hover {
+        filter: brightness(110%);
+      }
     }
   }
 

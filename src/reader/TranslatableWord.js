@@ -150,8 +150,12 @@ export default function TranslatableWord({
       word._lazyAlternativesFetched = true;
       setLoadingAlternatives(true);
       // A request that never settles must not leave "Checking translators…"
-      // up for good; alternatives arriving after this still show.
-      const giveUp = setTimeout(() => setLoadingAlternatives(false), 8000);
+      // up for good; alternatives arriving after this still show, and the
+      // next open asks again.
+      const giveUp = setTimeout(() => {
+        setLoadingAlternatives(false);
+        word._lazyAlternativesFetched = false;
+      }, 8000);
       const done = () => {
         clearTimeout(giveUp);
         setLoadingAlternatives(false);
