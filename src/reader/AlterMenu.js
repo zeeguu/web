@@ -69,6 +69,7 @@ export default function AlterMenu({
   deleteTranslation,
   ungroupMwe,
   explainSelection,
+  loadingAlternatives = false,
 }) {
   const refToAlterMenu = useRef(null);
 
@@ -124,8 +125,6 @@ export default function AlterMenu({
 
   const { list: filteredAlternatives, allAgreedWithPrimary } = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
-  // Set by TranslatableWord while the lazy alternatives fetch is in flight.
-  const loadingAlternatives = !!word._alternativesLoading;
   // Opened before the alternatives were there: they will be inserted above
   // the actions, so animate them in rather than shoving the actions down.
   const [alternativesArriveLate] = useState(loadingAlternatives);
@@ -173,7 +172,7 @@ export default function AlterMenu({
 
   // Reposition only when something that can change menu dimensions changes;
   // otherwise re-runs on every keystroke in the input force a reflow.
-  useLayoutEffect(placeMenu, [hasAlternatives, filteredAlternatives.length]);
+  useLayoutEffect(placeMenu, [hasAlternatives, filteredAlternatives.length, loadingAlternatives]);
 
   let headerLabel;
   if (loadingAlternatives) {
@@ -202,16 +201,18 @@ export default function AlterMenu({
           className={alternativesArriveLate ? "alternativesList growIn" : "alternativesList"}
           onAnimationEnd={placeMenu}
         >
-          {filteredAlternatives.map((each, index) => (
-            <div
-              key={`${each.translation}-${each.source}-${index}`}
-              onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
-              className="additionalTrans"
-            >
-              {each.translation}
-              <div className="altermenuSourceLabel">{shortenSource(each)}</div>
-            </div>
-          ))}
+          <div className="alternativesRows">
+            {filteredAlternatives.map((each, index) => (
+              <div
+                key={`${each.translation}-${each.source}-${index}`}
+                onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
+                className="additionalTrans"
+              >
+                {each.translation}
+                <div className="altermenuSourceLabel">{shortenSource(each)}</div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
       <div className="actionsSection">

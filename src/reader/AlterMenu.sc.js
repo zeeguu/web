@@ -3,8 +3,8 @@ import styled, { keyframes } from "styled-components";
 import { almostBlack, zeeguuLightYellow, zeeguuVeryLightYellow } from "../components/colors";
 
 const growIn = keyframes`
-  from { max-height: 0; opacity: 0; }
-  to { max-height: 60em; opacity: 1; }
+  from { grid-template-rows: 0fr; opacity: 0; }
+  to { grid-template-rows: 1fr; opacity: 1; }
 `;
 
 const AlterMenuSC = styled.div`
@@ -83,14 +83,28 @@ const AlterMenuSC = styled.div`
     margin-top: 0.4em;
   }
 
+  /* A one-row grid, so the row can animate from 0fr to its real height. */
   .alternativesList {
-    padding-bottom: 0.6em;
+    display: grid;
+    grid-template-rows: 1fr;
+  }
+
+  .alternativesRows {
+    min-height: 0;
+    overflow: hidden;
+
+    /* Extra space before the actions, as content so it is clipped (and
+     * grows in) with the rows rather than appearing at once. */
+    &::after {
+      content: "";
+      display: block;
+      height: 0.6em;
+    }
   }
 
   /* Alternatives that arrive while the menu is open slide in, so the
    * actions below ease down instead of jumping from under the finger. */
   .alternativesList.growIn {
-    overflow: hidden;
     animation: ${growIn} 300ms ease-out;
 
     @media (prefers-reduced-motion: reduce) {
