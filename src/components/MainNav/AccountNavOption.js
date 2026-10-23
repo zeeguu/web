@@ -32,7 +32,7 @@ const Username = styled.div`
   max-width: 100%;
 `;
 
-// The username row at the bottom of the nav, followed on the sidebar by a
+// The username row at the bottom of the nav, preceded on the sidebar by a
 // Settings row (the phone has a gear in the top bar instead). Log out is at
 // the bottom of Settings.
 export default function AccountNavOption({ screenWidth, onNavigate = () => {} }) {
@@ -64,6 +64,7 @@ export default function AccountNavOption({ screenWidth, onNavigate = () => {} })
 
   return (
     <>
+      {showSettingsRow && <NavOption {...NavigationOptions.settings} currentPath={path} screenWidth={screenWidth} />}
       <NavOption
         overflowEnabled={true}
         linkTo={linkTo}
@@ -86,7 +87,6 @@ export default function AccountNavOption({ screenWidth, onNavigate = () => {} })
           )
         }
       />
-      {showSettingsRow && <NavOption {...NavigationOptions.settings} currentPath={path} screenWidth={screenWidth} />}
     </>
   );
 }
