@@ -3,9 +3,9 @@ import InteractiveText from "../../src/reader/InteractiveText";
 
 /**
  * The tokens a caller hands over may be shared: the feed caches its response
- * and builds every summary preview from it. Restoration and fusion write onto
- * tokens, so building on the caller's own carried one build's fusions and
- * bookmarks into the next -- words vanished, deleted translations came back.
+ * and builds every summary preview from it. Restoration, fusion and ungrouping
+ * write onto tokens, so building on the caller's own would carry one build's
+ * changes into the next -- words vanished, MWEs came back half-grouped.
  */
 
 const tok = (text, token_i, extra = {}) => ({ text, token_i, sent_i: 0, paragraph_i: 0, ...extra });
@@ -24,7 +24,7 @@ const build = (paragraphs, previousBookmarks = []) =>
     zeeguuSpeech: { language: "da" },
   });
 
-const words = (it) => it.getParagraphs()[0].getWords().map((w) => w.word);
+const words = (text) => text.getParagraphs()[0].getWords();
 
 const bookmark = {
   id: 7,
@@ -39,21 +39,23 @@ const bookmark = {
 };
 
 describe("InteractiveText builds on its own copy of the tokens", () => {
-  it("a collapsed MWE does not reach the next build", () => {
+  it("leaves the caller's tokens as they were after restoring a bookmark", () => {
     const cached = [[sentence()]];
-    const first = build(cached);
-    first.getParagraphs()[0].getWords()[1].fuseMWEPartners(first.api);
-    expect(words(first)).toContain("en finsk satellit");
+    const before = JSON.stringify(cached);
 
-    expect(words(build(cached))).toEqual(["fra", "en", "finsk", "satellit", "i", "rummet", "."]);
+    const text = build(cached, [bookmark]);
+
+    expect(words(text).map((w) => w.word)).toContain("i rummet");
+    expect(JSON.stringify(cached)).toBe(before);
   });
 
-  it("a restored bookmark does not reach the next build", () => {
+  it("does not carry an ungrouped MWE into the next build half-grouped", () => {
     const cached = [[sentence()]];
-    expect(words(build(cached, [bookmark]))).toContain("i rummet");
+    const first = build(cached);
+    const finsk = words(first)[2];
+    finsk.splitAndClearMWE();
 
-    // Rebuilt without the bookmark (deleted since): the words come back plain.
-    expect(words(build(cached))).toEqual(["fra", "en", "finsk", "satellit", "i", "rummet", "."]);
-    expect(cached[0][0][4].bookmark).toBeUndefined();
+    const rebuilt = words(build(cached));
+    expect(rebuilt.slice(1, 4).map((w) => w.token.mwe_group_id)).toEqual(["g1", "g1", "g1"]);
   });
 });
