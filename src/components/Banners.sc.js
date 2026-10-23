@@ -102,10 +102,27 @@ const ProfileAvatarButton = styled.button`
   flex-shrink: 0;
 `;
 
+// Settings and profile sit together on the right, within thumb reach.
+const TopBarActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+`;
+
+const SettingsIconButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: var(--streak-banner-text);
+`;
+
 const TopBarNavAvatar = styled(AvatarBackground)`
   width: 1.8rem;
   height: 1.8rem;
   padding: 2px;
 `;
 
-export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer, DailyFeedbackLink, ProfileAvatarButton, TopBarNavAvatar };
+export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer, DailyFeedbackLink, ProfileAvatarButton, TopBarNavAvatar, TopBarActions, SettingsIconButton };

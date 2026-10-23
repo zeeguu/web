@@ -16,6 +16,8 @@ import { BadgeCounterContext } from "../contexts/BadgeCounterContext";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import NotificationIcon from "./NotificationIcon";
 import Feature from "../features/Feature";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import strings from "../i18n/definitions";
 
 export default function TopBar() {
   const { userDetails } = useContext(UserContext);
@@ -43,10 +45,7 @@ export default function TopBar() {
     if (!element) return;
 
     const publishHeight = () =>
-      document.documentElement.style.setProperty(
-        "--top-bar-height",
-        `${element.offsetHeight}px`,
-      );
+      document.documentElement.style.setProperty("--top-bar-height", `${element.offsetHeight}px`);
 
     publishHeight();
     const observer = new ResizeObserver(publishHeight);
@@ -78,37 +77,34 @@ export default function TopBar() {
 
   return (
     <>
-      <s.TopBarContainer
-        ref={barRef}
-        className={scrollDirection === "down" ? "header--hidden" : ""}
-      >
+      <s.TopBarContainer ref={barRef} className={scrollDirection === "down" ? "header--hidden" : ""}>
         {hasStreakBar === false && (
           <s.FlagButton onClick={openLanguageModal} aria-label="Change language">
             <s.FlagImage src={`/static/flags-new/${userDetails?.learned_language}.svg`} alt="" />
           </s.FlagButton>
         )}
-        <LanguageStreakBar
-          onMultipleLanguages={setHasStreakBar}
-          onOpenModal={openLanguageModal}
-        />
-        {Feature.has_gamification() && (
-          <s.ProfileAvatarButton
-            onClick={handleProfileClick}
-            aria-label="Go to profile"
-          >
-            <s.TopBarNavAvatar $backgroundColor={avatarBackgroundColor}>
-              <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
-            </s.TopBarNavAvatar>
-            {(hasBadgeNotification || hasFriendRequestNotification) && (
-              <NotificationIcon position={"top-absolute"} style={{top: 0, right: 0}} text={totalNumberOfBadges + friendRequestCount} />
-            )}
-          </s.ProfileAvatarButton>
-        )}
+        <LanguageStreakBar onMultipleLanguages={setHasStreakBar} onOpenModal={openLanguageModal} />
+        <s.TopBarActions>
+          <s.SettingsIconButton onClick={() => history.push("/account_settings")} aria-label={strings.settings}>
+            <SettingsRoundedIcon />
+          </s.SettingsIconButton>
+          {Feature.has_gamification() && (
+            <s.ProfileAvatarButton onClick={handleProfileClick} aria-label="Go to profile">
+              <s.TopBarNavAvatar $backgroundColor={avatarBackgroundColor}>
+                <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+              </s.TopBarNavAvatar>
+              {(hasBadgeNotification || hasFriendRequestNotification) && (
+                <NotificationIcon
+                  position={"top-absolute"}
+                  style={{ top: 0, right: 0 }}
+                  text={totalNumberOfBadges + friendRequestCount}
+                />
+              )}
+            </s.ProfileAvatarButton>
+          )}
+        </s.TopBarActions>
       </s.TopBarContainer>
-      <LanguageModal
-        open={showLanguageModal}
-        setOpen={closeLanguageModal}
-      />
+      <LanguageModal open={showLanguageModal} setOpen={closeLanguageModal} />
     </>
   );
 }
