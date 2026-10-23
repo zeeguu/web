@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { List } from "linked-list";
-import { Word } from "./LinkedWordListClass";
+import LinkedWordList, { Word } from "./LinkedWordListClass";
 
 /**
  * What a fusion must preserve.
@@ -222,5 +222,24 @@ describe("seams mark the joins the learner made", () => {
 
     expect(left.bookmark_id).toBeUndefined();
     expect(left.translation).toBeNull();
+  });
+});
+
+describe("collapsing an MWE leaves the tokens alone", () => {
+  // The tokens are shared: the feed caches its response, and every preview
+  // built from it reads the same token objects. Marking the collapsed partners
+  // on their tokens made the next build skip them while the head came back
+  // untranslated -- "meter fra en finsk satellit." reopened as "meter fra en ."
+  it("a rebuild from the same tokens still has every word", () => {
+    const g = { mwe_group_id: "g1" };
+    const sentence = [tok("fra", 0), tok("en", 1, g), tok("finsk", 2, g), tok("satellit", 3, g), tok(".", 4)];
+
+    const first = new LinkedWordList([sentence]);
+    const head = first.getWords()[1];
+    head.fuseMWEPartners(api());
+    expect(first.getWords().map((w) => w.word)).toEqual(["fra", "en finsk satellit", "."]);
+
+    const rebuilt = new LinkedWordList([sentence]);
+    expect(rebuilt.getWords().map((w) => w.word)).toEqual(["fra", "en", "finsk", "satellit", "."]);
   });
 });

@@ -432,7 +432,7 @@ export default function TranslatableWord({
   // Don't render words that have been fused into an MWE (marked for skip)
   // This prevents duplication during loading animation when fuseMWEPartners
   // has already run but the component is still mounted
-  if (word.token?.skipRender) {
+  if (word.skipRender) {
     return null;
   }
 
