@@ -35,9 +35,9 @@ export default function Settings() {
     // back arrow sit in the same place when you move between them.
     <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <s.StyledWrapper>
-        {/* Settings is opened from the profile page, so back leads there. A
-            guest has no profile, so for them it is the previous page. */}
-        <SettingsPageHeader title={strings.settings} redirectLink={isAnonymous ? undefined : "/profile"} />
+        {/* Settings opens from the profile, the top bar or the sidebar, so
+            back returns to wherever the learner came from. */}
+        <SettingsPageHeader title={strings.settings} />
 
         {isAnonymous && (
           <ListOfSettingsItems header="Guest Account">

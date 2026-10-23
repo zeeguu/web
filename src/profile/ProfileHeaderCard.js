@@ -1,6 +1,4 @@
 import EditIcon from "@mui/icons-material/Edit";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import strings from "../i18n/definitions";
 import {
   AVATAR_IMAGE_MAP,
   validatedAvatarBackgroundColor,
@@ -25,7 +23,6 @@ export function ProfileHeaderCard({
   activeLanguages,
   onOpenLanguagesModal,
   onEditAvatar,
-  onOpenSettings,
   friendActionHandlers,
   isPendingFriendAction,
 }) {
@@ -41,14 +38,6 @@ export function ProfileHeaderCard({
 
   return (
     <s.HeaderCard>
-      {/* Name, username and email are edited from Settings, so the corner
-          button leads there; only the avatar is edited from this card. */}
-      {isOwnProfile && (
-        <s.SettingsButton onClick={onOpenSettings} aria-label={strings.settings} title={strings.settings}>
-          <SettingsRoundedIcon sx={{ fontSize: "1.1rem" }} />
-        </s.SettingsButton>
-      )}
-
       <AvatarBackground
         className={isOwnProfile ? "clickable" : undefined}
         onClick={isOwnProfile ? onEditAvatar : undefined}
