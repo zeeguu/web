@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { setTitle } from "../assorted/setTitle";
 import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
@@ -11,7 +10,7 @@ import Badges from "../badges/Badges";
 import * as s from "./UserProfile.sc";
 import { BadgeCounterContext } from "../contexts/BadgeCounterContext";
 import LoadingAnimation from "../components/LoadingAnimation";
-import Button from "../pages/_pages_shared/Button.sc";
+import BackArrow from "../pages/Settings/SharedComponents/BackArrow";
 import Leaderboards from "../leaderboards/Leaderboards";
 import useFriendActions from "../hooks/useFriendActions";
 import { ProfileHeaderCard } from "./ProfileHeaderCard";
@@ -196,18 +195,11 @@ export default function UserProfile() {
 
   return (
     <s.ProfileWrapper>
-      {!isOwnProfile && (
-        <s.BackNavigation>
-          <Button
-            type={"button"}
-            className={"small"}
-            onClick={() => (history.length > 1 ? history.goBack() : history.push("/articles"))}
-          >
-            <ArrowBackIcon sx={{ fontSize: "1.2rem" }} />
-            <span>Back</span>
-          </Button>
-        </s.BackNavigation>
-      )}
+      {/* Like Settings: tap the arrow or swipe right to go back. Opened
+          directly there is no history, so it falls back to the feed. */}
+      <s.BackNavigation>
+        <BackArrow func={() => (history.length > 1 ? history.goBack() : history.push("/articles"))} />
+      </s.BackNavigation>
 
       {loadingProfileDetails && (
         <LoadingAnimation delay={0}>
