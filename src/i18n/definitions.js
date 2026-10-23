@@ -22,7 +22,7 @@ let strings = new LocalizedStrings(
       settings: "Settings",
       more: "More",
       wordHistoryTitle: "Word Translation History",
-      exercises: "Exercise",
+      exercises: "Practice",
       verbalFlashcards: "Train speech",
       verbalFlashcardsTitle: "Verbal Flashcards",
       verbalFlashcardsLowNoise: "Low Noise (Indoor)",
