@@ -1,4 +1,5 @@
 import { useState } from "react";
+import strings from "../i18n/definitions";
 import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
 import FeedbackModal from "./FeedbackModal";
 import NavOption from "./MainNav/NavOption";
@@ -24,7 +25,7 @@ export default function FeedbackButton({ screenWidth }) {
         ariaHasPopup={"dialog"}
         icon={<FeedbackRoundedIcon />}
         screenWidth={screenWidth}
-        text={"Give Feedback"}
+        text={strings.feedback}
         onClick={(e) => {
           e.stopPropagation();
           setShowFeedbackModal(!showFeedbackModal);

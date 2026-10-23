@@ -590,6 +590,7 @@ let strings = new LocalizedStrings(
       //FeedbackButtons
       dontShowThisWordAgain: "Don't show this word again",
       dontShowThisWordAgainAlert: "Please type your feedback before submitting.",
+      feedback: "Feedback",
       giveFeedback: "Give Feedback",
       giveFeedbackAlert: "Please type your feedback before submitting.",
       selectWords: "Select the word(s):",
@@ -1445,6 +1446,7 @@ let strings = new LocalizedStrings(
       matchWordWithTranslation: "Match hvert ord med dets oversættelse",
 
       //FeedbackButtons
+      feedback: "Feedback",
       giveFeedback: "Giv feedback",
       giveFeedbackAlert: "Indtast din feedback inden du sender.",
       selectWords: "Vælg ordet/ordene:",
