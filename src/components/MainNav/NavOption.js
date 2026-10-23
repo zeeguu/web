@@ -17,7 +17,6 @@ export default function NavOption({
   ariaLabel,
   overflowEnabled = false,
   isActive: isActiveOverride,
-  trailing = null,
 }) {
   const Component = linkTo ? s.RouterLink : s.OptionButton;
   // Lets an option be active beyond its own link: the account row stays lit in Settings too.
@@ -48,7 +47,6 @@ export default function NavOption({
           {!isCollapsed && notification && React.cloneElement(notification, { isActive })}
         </s.OptionContentWrapper>
       </Component>
-      {trailing}
     </s.NavOption>
   );
 }
