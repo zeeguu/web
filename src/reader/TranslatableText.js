@@ -148,6 +148,7 @@ export function TranslatableText({
     setTranslationCount(translationCount + 1);
     updateMweGroupsWithTranslations();
     if (updateBookmarks) updateBookmarks();
+    interactiveText.onBookmarksChanged?.();
   }
 
   function renderWordJSX(word) {

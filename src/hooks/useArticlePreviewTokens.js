@@ -24,6 +24,25 @@ import { BrowsingSessionContext } from "../contexts/BrowsingSessionContext";
 // it's opened by an explicit tap, so one request is affordable, and it's the
 // surface where losing your own translations is most visible. The inline card
 // stays on the bundled payload — one request per card would undo the batching.
+//
+// The bundled payload is part of the cached feed response and carries the
+// learner's past bookmarks. Once they translate, delete or ungroup something on
+// a card, the bundle no longer matches the server, and a card rebuilt from it
+// (back from Settings, say) would undo the change. So the texts built here
+// tell the API to forget this article's bundle: its next build fetches the
+// tokens, one request, and the rest of the feed stays cached.
+
+// The bundled payload to build from, or null when the server must be asked.
+// A bundled title with no bundled summary is complete enough when there is no
+// summary to tokenize, or when the caller only shows the title -- fetching then
+// would cost one request per card.
+export function bundledPayload(article, { preferFresh = false, titleOnly = false } = {}) {
+  const summaryBundledOrUnneeded = !!article.interactiveSummary || !article.summary || titleOnly;
+  return !preferFresh && article.interactiveTitle && summaryBundledOrUnneeded
+    ? { tokenized_summary: article.interactiveSummary, tokenized_title: article.interactiveTitle }
+    : null;
+}
+
 export default function useArticlePreviewTokens(article, { enabled = true, preferFresh = false, titleOnly = false } = {}) {
   const api = useContext(APIContext);
   const getBrowsingSessionId = useContext(BrowsingSessionContext);
@@ -38,19 +57,16 @@ export default function useArticlePreviewTokens(article, { enabled = true, prefe
     setIsTokenizing(true);
 
     // The feed bundles both payloads per card, so the request below is a
-    // fallback. A bundled title with no bundled summary is complete enough
-    // when there is no summary to tokenize, or when the caller only shows
-    // the title — fetching then would cost one request per card.
-    const summaryBundledOrUnneeded = !!article.interactiveSummary || !article.summary || titleOnly;
-    const preloaded =
-      !preferFresh && article.interactiveTitle && summaryBundledOrUnneeded
-        ? { tokenized_summary: article.interactiveSummary, tokenized_title: article.interactiveTitle }
-        : null;
+    // fallback.
+    const preloaded = bundledPayload(article, { preferFresh, titleOnly });
+    const onBookmarksChanged = () => api.forgetArticleTokens(article.id);
 
     if (preloaded) {
       processSummaryData(preloaded);
     } else {
-      api.getArticleSummaryInfo(article.id, processSummaryData);
+      // On failure the card shows plain text, and the next enable (the
+      // overlay reopening) tries again instead of waiting on this request.
+      api.getArticleSummaryInfo(article.id, processSummaryData, () => setIsTokenizing(false));
     }
 
     function processSummaryData(summaryData) {
@@ -66,6 +82,7 @@ export default function useArticlePreviewTokens(article, { enabled = true, prefe
             zeeguuSpeech,
             contextIdentifier: summaryData.tokenized_summary.context_identifier,
             getBrowsingSessionId,
+            onBookmarksChanged,
           }),
         );
       }
@@ -81,6 +98,7 @@ export default function useArticlePreviewTokens(article, { enabled = true, prefe
             zeeguuSpeech,
             contextIdentifier: summaryData.tokenized_title.context_identifier,
             getBrowsingSessionId,
+            onBookmarksChanged,
           }),
         );
       }

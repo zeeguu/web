@@ -306,8 +306,8 @@ Zeeguu_API.prototype.getArticleInfoWithProgress = function (articleID, onProgres
   return () => eventSource.close();
 };
 
-Zeeguu_API.prototype.getArticleSummaryInfo = function (articleID, callback) {
-  this._getJSON(`user_article_summary?article_id=${articleID}`, callback);
+Zeeguu_API.prototype.getArticleSummaryInfo = function (articleID, callback, onError) {
+  this._getJSON(`user_article_summary?article_id=${articleID}`, callback, { onError });
 };
 
 Zeeguu_API.prototype.setArticleInfo = function (articleInfo, callback) {
