@@ -175,25 +175,24 @@ export default function AlterMenu({
   // otherwise re-runs on every keystroke in the input force a reflow.
   useLayoutEffect(placeMenu, [hasAlternatives, filteredAlternatives.length]);
 
-  let header = null;
+  let headerLabel;
   if (loadingAlternatives) {
-    header = <div className="menuHeader" style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Checking translators…</div>;
+    headerLabel = "Checking translators…";
   } else if (word.disagreement) {
-    header = (
-      <div className="menuHeader" style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>
+    headerLabel = (
+      <>
         <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1, borderBottom: "none" }}>🤖🥊</span>{" "}
         Translators disagree
-      </div>
+      </>
     );
   } else if (hasAlternatives) {
-    header = <div className="menuHeader" style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Alternatives</div>;
+    headerLabel = "Alternatives";
   } else if (allAgreedWithPrimary) {
-    header = (
-      <div className="menuHeader" style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>All translators agree</div>
-    );
+    headerLabel = "All translators agree";
   } else {
-    header = <div className="menuHeader" style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>No alternatives</div>;
+    headerLabel = "No alternatives";
   }
+  const header = <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>{headerLabel}</div>;
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>

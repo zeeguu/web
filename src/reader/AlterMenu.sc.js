@@ -1,10 +1,10 @@
 import styled, { keyframes } from "styled-components";
 
-import { almostBlack, zeeguuDarkRed, zeeguuLightYellow, zeeguuVeryLightYellow } from "../components/colors";
+import { almostBlack, zeeguuLightYellow, zeeguuVeryLightYellow } from "../components/colors";
 
 const growIn = keyframes`
   from { max-height: 0; opacity: 0; }
-  to { max-height: 20em; opacity: 1; }
+  to { max-height: 60em; opacity: 1; }
 `;
 
 const AlterMenuSC = styled.div`
@@ -12,7 +12,6 @@ const AlterMenuSC = styled.div`
   --altermenu-text: ${almostBlack};
   --altermenu-border: ${zeeguuLightYellow};
   --altermenu-source-text: rgb(240, 204, 160);
-  --altermenu-action-border: ${zeeguuDarkRed};
   --altermenu-link-text: hsl(216, 100%, 48%);
   --altermenu-header-bg: ${zeeguuLightYellow};
   --altermenu-header-text: #01345d;
@@ -23,7 +22,6 @@ const AlterMenuSC = styled.div`
     --altermenu-text: rgb(255, 240, 220);
     --altermenu-border: rgb(90, 70, 40);
     --altermenu-source-text: rgb(160, 130, 90);
-    --altermenu-action-border: rgb(120, 60, 60);
     --altermenu-link-text: hsl(216, 100%, 74%);
     --altermenu-header-bg: rgb(70, 55, 35);
     --altermenu-header-text: #ffcc66;
@@ -79,13 +77,14 @@ const AlterMenuSC = styled.div`
     }
   }
 
+  /* The actions' own gap never changes; the list carries the extra space
+   * as padding, so it grows in with the list's animation. */
   .actionsSection {
-    margin-top: 1em;
+    margin-top: 0.4em;
   }
 
-  /* No alternatives in between: the gap would separate nothing. */
-  .menuHeader + .actionsSection {
-    margin-top: 0.4em;
+  .alternativesList {
+    padding-bottom: 0.6em;
   }
 
   /* Alternatives that arrive while the menu is open slide in, so the
@@ -93,22 +92,22 @@ const AlterMenuSC = styled.div`
   .alternativesList.growIn {
     overflow: hidden;
     animation: ${growIn} 300ms ease-out;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
   }
 
   .removeLink,
   .neutralLink {
     margin-top: 0.5em;
     cursor: pointer;
+    color: var(--altermenu-text);
+    opacity: 0.7;
 
     &:hover {
       filter: brightness(110%);
     }
-  }
-
-  .removeLink,
-  .neutralLink {
-    color: var(--altermenu-text);
-    opacity: 0.7;
   }
 
   .altermenuSourceLabel {
