@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { MEDIUM_WIDTH, MOBILE_WIDTH } from "./screenSize";
 
 const NavOption = styled.li`
+  position: relative;
   box-sizing: border-box;
   margin: 0.25rem 0 0.25rem;
   width: 100%;
@@ -49,6 +50,11 @@ const SharedStyle = css`
   &:active {
     color: ${({ theme }) => theme.btnContentActive};
     background-color: ${({ theme }) => theme.btnBgActive};
+  }
+
+  /* Keeps the row's content (text, notification) clear of the trailing control. */
+  &.withTrailing {
+    padding-right: 2.4rem;
   }
 
   &.logo {
