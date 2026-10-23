@@ -54,7 +54,11 @@ export default class InteractiveText {
     // Might be worth to store a flag to keep track of wether or not the
     // bookmark / text are part of the content or stand by themselves.
     this.previousBookmarks = previousBookmarks;
-    this.paragraphs = tokenizedParagraphs;
+    // A copy, because restoration and ungrouping write onto the tokens, and the
+    // caller's may be shared: the feed caches its response, and every preview
+    // built from it would inherit the last one's changes. Those writes only
+    // set or delete a token's own fields, so copying each token is enough.
+    this.paragraphs = tokenizedParagraphs.map((par) => par.map((sent) => sent.map((token) => ({ ...token }))));
     updateTokensWithBookmarks(this.previousBookmarks, this.paragraphs);
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
       (sent) => new LinkedWordList(sent),

@@ -520,8 +520,8 @@ export class Word extends Item {
     headWord.total_tokens = mainGroup.length;
 
     // Remove other partners in the main group from the list. The flag goes on
-    // the Word, not its token: tokens are shared with cached payloads, and a
-    // flagged token is dropped from every later build of the same text.
+    // the Word: it is about this rendering, and a flagged token would be
+    // skipped whenever a word list is built from these tokens again.
     for (const partner of mainGroup) {
       if (partner !== headWord) {
         partner.skipRender = true;
