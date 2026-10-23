@@ -103,7 +103,7 @@ export default function AccountNavOption({ screenWidth, onNavigate = () => {} })
         trailing={
           showGear && (
             <SettingsGear to={NavigationOptions.settings.linkTo} aria-label={strings.settings} title={strings.settings}>
-              <SettingsRoundedIcon fontSize="small" />
+              <SettingsRoundedIcon />
             </SettingsGear>
           )
         }
