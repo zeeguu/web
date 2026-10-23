@@ -124,10 +124,13 @@ export default function AlterMenu({
 
   const { list: filteredAlternatives, allAgreedWithPrimary } = buildAlternatives(word);
   const hasAlternatives = filteredAlternatives.length > 0;
+  // Set by TranslatableWord while the lazy alternatives fetch is in flight.
+  const loadingAlternatives = !!word._alternativesLoading;
+  // Opened before the alternatives were there: they will be inserted above
+  // the actions, so animate them in rather than shoving the actions down.
+  const [alternativesArriveLate] = useState(loadingAlternatives);
 
-  // Reposition only when something that can change menu dimensions changes;
-  // otherwise re-runs on every keystroke in the input force a reflow.
-  useLayoutEffect(() => {
+  function placeMenu() {
     const el = refToAlterMenu.current;
     const trigger = el?.parentElement;
     if (!el || !trigger) return;
@@ -166,40 +169,52 @@ export default function AlterMenu({
 
     el.style.left = `${viewportLeft - origin.left}px`;
     el.style.top = `${viewportTop - origin.top}px`;
-  }, [hasAlternatives, filteredAlternatives.length]);
+  }
+
+  // Reposition only when something that can change menu dimensions changes;
+  // otherwise re-runs on every keystroke in the input force a reflow.
+  useLayoutEffect(placeMenu, [hasAlternatives, filteredAlternatives.length]);
 
   let header = null;
-  if (word.disagreement) {
+  if (loadingAlternatives) {
+    header = <div className="menuHeader" style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Checking translators…</div>;
+  } else if (word.disagreement) {
     header = (
-      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>
+      <div className="menuHeader" style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>
         <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1, borderBottom: "none" }}>🤖🥊</span>{" "}
-        Bots disagree
+        Translators disagree
       </div>
     );
   } else if (hasAlternatives) {
-    header = <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Alternatives</div>;
+    header = <div className="menuHeader" style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>Alternatives</div>;
   } else if (allAgreedWithPrimary) {
     header = (
-      <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>All providers agree</div>
+      <div className="menuHeader" style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>All translators agree</div>
     );
   } else {
-    header = <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>No alternatives found</div>;
+    header = <div className="menuHeader" style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>No alternatives</div>;
   }
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>
       {header}
-      {hasAlternatives &&
-        filteredAlternatives.map((each, index) => (
-          <div
-            key={`${each.translation}-${each.source}-${index}`}
-            onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
-            className="additionalTrans"
-          >
-            {each.translation}
-            <div className="altermenuSourceLabel">{shortenSource(each)}</div>
-          </div>
-        ))}
+      {hasAlternatives && (
+        <div
+          className={alternativesArriveLate ? "alternativesList growIn" : "alternativesList"}
+          onAnimationEnd={placeMenu}
+        >
+          {filteredAlternatives.map((each, index) => (
+            <div
+              key={`${each.translation}-${each.source}-${index}`}
+              onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
+              className="additionalTrans"
+            >
+              {each.translation}
+              <div className="altermenuSourceLabel">{shortenSource(each)}</div>
+            </div>
+          ))}
+        </div>
+      )}
       <div className="actionsSection">
         {explainSelection && (
           <div className="neutralLink" onClick={() => explainSelection(word)}>
@@ -208,7 +223,7 @@ export default function AlterMenu({
         )}
         {editTranslation && (
           <div className="neutralLink" onClick={() => editTranslation()}>
-            Edit translation
+            Edit
           </div>
         )}
         {word.mweExpression && ungroupMwe && (
@@ -217,7 +232,7 @@ export default function AlterMenu({
           </div>
         )}
         <div className="removeLink" onClick={(e) => deleteTranslation(e, word)}>
-          Delete translation
+          Remove
         </div>
       </div>
     </AlterMenuSC>

@@ -1,13 +1,17 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 import { almostBlack, zeeguuDarkRed, zeeguuLightYellow, zeeguuVeryLightYellow } from "../components/colors";
+
+const growIn = keyframes`
+  from { max-height: 0; opacity: 0; }
+  to { max-height: 20em; opacity: 1; }
+`;
 
 const AlterMenuSC = styled.div`
   --altermenu-bg: ${zeeguuVeryLightYellow};
   --altermenu-text: ${almostBlack};
   --altermenu-border: ${zeeguuLightYellow};
   --altermenu-source-text: rgb(240, 204, 160);
-  --altermenu-action-text: ${zeeguuDarkRed};
   --altermenu-action-border: ${zeeguuDarkRed};
   --altermenu-link-text: hsl(216, 100%, 48%);
   --altermenu-header-bg: ${zeeguuLightYellow};
@@ -19,7 +23,6 @@ const AlterMenuSC = styled.div`
     --altermenu-text: rgb(255, 240, 220);
     --altermenu-border: rgb(90, 70, 40);
     --altermenu-source-text: rgb(160, 130, 90);
-    --altermenu-action-text: #ff7a7a;
     --altermenu-action-border: rgb(120, 60, 60);
     --altermenu-link-text: hsl(216, 100%, 74%);
     --altermenu-header-bg: rgb(70, 55, 35);
@@ -28,6 +31,7 @@ const AlterMenuSC = styled.div`
   }
 
   font-size: 0.8em;
+  font-weight: 500;
   z-index: 1000;
   text-align: left;
 
@@ -48,7 +52,6 @@ const AlterMenuSC = styled.div`
     cursor: pointer;
     margin-top: 0.4em;
     margin-left: 0.8em;
-    font-weight: 600;
 
     &:hover {
       filter: brightness(90%);
@@ -80,6 +83,18 @@ const AlterMenuSC = styled.div`
     margin-top: 1em;
   }
 
+  /* No alternatives in between: the gap would separate nothing. */
+  .menuHeader + .actionsSection {
+    margin-top: 0.4em;
+  }
+
+  /* Alternatives that arrive while the menu is open slide in, so the
+   * actions below ease down instead of jumping from under the finger. */
+  .alternativesList.growIn {
+    overflow: hidden;
+    animation: ${growIn} 300ms ease-out;
+  }
+
   .removeLink,
   .neutralLink {
     margin-top: 0.5em;
@@ -90,10 +105,7 @@ const AlterMenuSC = styled.div`
     }
   }
 
-  .removeLink {
-    color: var(--altermenu-action-text);
-  }
-
+  .removeLink,
   .neutralLink {
     color: var(--altermenu-text);
     opacity: 0.7;

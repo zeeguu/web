@@ -28,7 +28,7 @@ export default function MoreTranslationsPopup({ open, handleCancel }) {
       <Main>
         <s.CenteredText>
           Press <s.ArrowIcon src="/static/icons/ArrowDown.svg" alt="Arrow icon" /> to see more translation options, to
-          unselect a word press <s.DeleteTranslationText>Delete translation.</s.DeleteTranslationText>
+          unselect a word press <s.DeleteTranslationText>Remove</s.DeleteTranslationText>.
         </s.CenteredText>
       </Main>
       <Footer>

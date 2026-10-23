@@ -146,11 +146,12 @@ export default function TranslatableWord({
     // guards against re-firing if the user closes and reopens the menu.
     if (!word.alternatives?.length && !word._lazyAlternativesFetched) {
       word._lazyAlternativesFetched = true;
-      interactiveText.fetchAlternatives(
-        word,
-        () => wordUpdated(word),
-        () => wordUpdated(word),
-      );
+      word._alternativesLoading = true;
+      const done = () => {
+        word._alternativesLoading = false;
+        wordUpdated(word);
+      };
+      interactiveText.fetchAlternatives(word, done, done);
     }
   }
 
