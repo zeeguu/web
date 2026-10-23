@@ -90,8 +90,8 @@ export default function Settings() {
 
         {/* iOS only: pausing other apps needs Apple's Screen Time API. */}
         {nativeShieldAvailable() && (
-          <ListOfSettingsItems header={"Aiki mode"}>
-            <SettingsItem path={"/account_settings/aiki"}>Pause distracting apps</SettingsItem>
+          <ListOfSettingsItems header={"Distraction Interception"}>
+            <SettingsItem path={"/account_settings/aiki"}>Aiki mode</SettingsItem>
           </ListOfSettingsItems>
         )}
 

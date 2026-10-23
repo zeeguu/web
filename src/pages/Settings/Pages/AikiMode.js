@@ -150,6 +150,14 @@ export default function AikiMode() {
         )}
 
         {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
+
+        <AikiCard>
+          <SectionHeading>Why "Aiki"?</SectionHeading>
+          <SectionDescription>
+            The name comes from Aiki, a research project that pioneered this approach. Like aikido, it turns the force
+            of an attack against itself: the urge to open a distracting app becomes the moment you learn a little.
+          </SectionDescription>
+        </AikiCard>
       </Main>
     </CardPage>
   );
