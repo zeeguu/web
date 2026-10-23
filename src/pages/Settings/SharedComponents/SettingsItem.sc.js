@@ -32,4 +32,18 @@ const SettingsItem = styled.li`
   }
 `;
 
-export { SettingsItem };
+// The item's name, after its icon when it has one. The icons are muted and the
+// same size on every row, so they read as a column to scan down rather than
+// as part of each label.
+const ItemLabel = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  svg {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+  }
+`;
+
+export { SettingsItem, ItemLabel };

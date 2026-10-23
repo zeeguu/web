@@ -1,5 +1,7 @@
 import { useContext } from "react";
 import { ThemeContext } from "../../../contexts/ThemeContext";
+import DarkModeIcon from "@mui/icons-material/DarkModeOutlined";
+import { ItemLabel } from "../SharedComponents/SettingsItem.sc";
 import * as s from "./DarkModeToggle.sc";
 
 const OPTIONS = [
@@ -13,7 +15,10 @@ export default function DarkModeToggle() {
 
   return (
     <s.ToggleRow>
-      <span>Theme</span>
+      <ItemLabel>
+        <DarkModeIcon />
+        Theme
+      </ItemLabel>
       <s.SegmentedControl>
         {OPTIONS.map((opt) => (
           <s.SegmentButton key={opt.value} $active={preference === opt.value} onClick={() => setPreference(opt.value)}>
