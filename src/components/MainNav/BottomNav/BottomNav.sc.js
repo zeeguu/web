@@ -4,7 +4,7 @@ const BottomNav = styled.nav`
   box-sizing: border-box;
   width: 100%;
   flex-shrink: 0;
-  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  padding: 0.5rem 1rem 0.5rem 1rem;
   padding-bottom: calc(0.5rem + var(--safe-area-bottom, env(safe-area-inset-bottom, 0px)));
   background-color: ${({ theme }) => theme.navBg};
   z-index: 2;

@@ -1,5 +1,5 @@
 import { useCallback, useContext, useState, useEffect, useRef } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import useScrollDirection from "../hooks/useScrollDirection";
 import LanguageModal from "./MainNav/LanguageModal";
@@ -17,9 +17,14 @@ import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import NotificationIcon from "./NotificationIcon";
 import Feature from "../features/Feature";
 import SettingsIconButton from "./Icons/SettingsIconButton";
+import MoreIconButton from "./Icons/MoreIconButton";
+import MoreOptionsPanel from "./MainNav/BottomNav/MoreOptionsPanel";
+import useMoreOptionsPanel from "./MainNav/useMoreOptionsPanel";
 import strings from "../i18n/definitions";
 
 export default function TopBar() {
+  const location = useLocation();
+  const moreOptions = useMoreOptionsPanel();
   const { userDetails } = useContext(UserContext);
   const history = useHistory();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
@@ -85,6 +90,9 @@ export default function TopBar() {
         )}
         <LanguageStreakBar onMultipleLanguages={setHasStreakBar} onOpenModal={openLanguageModal} />
         <s.TopBarActions>
+          {/* My Words, My Activity and the rest: places to look things up,
+              not actions, so they stay off the bottom bar. */}
+          <MoreIconButton onClick={moreOptions.showMoreOptions} title={strings.more} />
           <SettingsIconButton onClick={() => history.push("/account_settings")} title={strings.settings} />
           {Feature.has_gamification() && (
             <s.ProfileAvatarButton onClick={handleProfileClick} aria-label="Go to profile">
@@ -103,6 +111,14 @@ export default function TopBar() {
         </s.TopBarActions>
       </s.TopBarContainer>
       <LanguageModal open={showLanguageModal} setOpen={closeLanguageModal} />
+      {moreOptions.renderMoreOptions && (
+        <MoreOptionsPanel
+          currentPath={location.pathname}
+          overlayTransition={moreOptions.overlayTransition}
+          moreOptionsTransition={moreOptions.moreOptionsTransition}
+          handleHideMoreOptions={moreOptions.hideMoreOptions}
+        />
+      )}
     </>
   );
 }
