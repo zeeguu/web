@@ -26,12 +26,12 @@ export default function ExercisesRouter() {
   };
 
   const keepExercisingAction = () => {
-    history.push("/exercises");
+    history.push("/practice");
     api.logUserActivity(api.KEEP_EXERCISING, "", "", WEB_READER);
   };
 
   const toScheduledExercises = () => {
-    history.push("/exercises");
+    history.push("/practice");
     api.logUserActivity(api.TO_SCHEDULED_EXERCISES, "", "", WEB_READER);
   };
 
@@ -39,7 +39,7 @@ export default function ExercisesRouter() {
     <>
       <Switch>
         <PrivateRoute
-          path="/exercises/summary"
+          path="/practice/summary"
           component={Congratulations}
           backButtonAction={backToReadingAction}
           keepExercisingAction={keepExercisingAction}
@@ -47,7 +47,7 @@ export default function ExercisesRouter() {
         />
         <s.NarrowColumn>
           <PrivateRoute
-            path="/exercises/no-words"
+            path="/practice/no-words"
             component={ExerciseSession}
             backButtonAction={backToReadingAction}
             keepExercisingAction={keepExercisingAction}
@@ -55,7 +55,7 @@ export default function ExercisesRouter() {
             source={WEB_READER}
           />
           <PrivateRoute
-            path="/exercises"
+            path="/practice"
             component={ExerciseSession}
             backButtonAction={backToReadingAction}
             keepExercisingAction={keepExercisingAction}

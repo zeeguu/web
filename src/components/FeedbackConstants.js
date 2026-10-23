@@ -7,7 +7,7 @@ const FEEDBACK_CATEGORIES = [
   { id: 2, name: "Article Recommendations", key: "ARTICLE_RECOMMENDATION", urlPatterns: ["/articles"] }, 
   { id: 3, name: "Translation", key: "TRANSLATION", urlPatterns: [] },
   { id: 4, name: "Sound", key: "SOUND", urlPatterns: [] },
-  { id: 5, name: "Exercises", key: "EXERCISE", urlPatterns: ["/exercise", "/exercises"] },
+  { id: 5, name: "Exercises", key: "EXERCISE", urlPatterns: ["/exercise", "/exercises", "/practice"] },
   { id: 6, name: "Extension", key: "EXTENSION", urlPatterns: [] },
   { id: 7, name: "Other", key: "OTHER", urlPatterns: [] },
   { id: 8, name: "Daily Audio", key: "DAILY_AUDIO", urlPatterns: ["/daily-audio"] },

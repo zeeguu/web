@@ -24,7 +24,7 @@ export default function ExercisesForArticle() {
   };
 
   const toScheduledExercises = () => {
-    history.push("/exercises");
+    history.push("/practice");
     api.logUserActivity(api.TO_SCHEDULED_EXERCISES, "", "", WEB_READER);
   };
 

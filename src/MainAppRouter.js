@@ -141,7 +141,8 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         <PrivateRouteWithLayout path="/articles" component={ArticlesRouter} />
         <PrivateRouteWithLayout path="/swiper" component={Swiper} />
         <PrivateRoute path="/watch/video" component={VideoPlayer} />
-        <PrivateRouteWithLayout path="/exercises" component={ExercisesRouter} />
+        <PrivateRouteWithLayout path="/practice" component={ExercisesRouter} />
+        <Redirect from="/exercises" to="/practice" />
         <PrivateRouteWithLayout path="/verbalFlashcards" component={VerbalFlashcardsRouter} />
         <PrivateRouteWithLayout path="/daily-audio" component={DailyAudioRouter} />
         <PrivateRouteWithLayout path="/aiki" component={AikiPage} />

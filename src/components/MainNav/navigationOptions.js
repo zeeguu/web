@@ -22,7 +22,7 @@ export default class NavigationOptions {
   }
 
   static exercises = Object.freeze({
-    linkTo: "/exercises",
+    linkTo: "/practice",
     icon: <NavIcon name="exercises" />,
     text: strings.exercises,
   });

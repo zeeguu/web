@@ -9,7 +9,7 @@ export function aikiChoices({ exercisesDue, lesson, unfinishedArticles }) {
       kind: "exercises",
       title: "Exercises",
       meta: `${exercisesDue} ${exercisesDue === 1 ? "word" : "words"} due`,
-      href: "/exercises",
+      href: "/practice",
     });
   }
   choices.push({ kind: "lesson", kicker: "Audio lesson", ...lessonChoice(lesson), href: "/daily-audio" });
