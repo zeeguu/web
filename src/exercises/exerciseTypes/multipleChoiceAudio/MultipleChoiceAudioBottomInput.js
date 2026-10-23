@@ -14,7 +14,7 @@ export default function MultipleChoiceAudioBottomInput({
     if (bookmarkSelected.id === targetBookmark.id) {
       notifyCorrectAnswer(targetBookmark);
     } else {
-      notifyIncorrectAnswer(targetBookmark);
+      notifyIncorrectAnswer(targetBookmark, bookmarkSelected.from);
     }
   }
 

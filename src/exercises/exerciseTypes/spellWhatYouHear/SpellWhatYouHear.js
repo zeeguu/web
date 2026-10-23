@@ -96,7 +96,7 @@ export default function SpellWhatYouHear({
     if (userInput === expectedAnswer) {
       notifyCorrectAnswer(exerciseBookmark);
     } else {
-      correctThenReveal(value, () => notifyIncorrectAnswer(exerciseBookmark));
+      correctThenReveal(value, () => notifyIncorrectAnswer(exerciseBookmark, value));
     }
   }
 

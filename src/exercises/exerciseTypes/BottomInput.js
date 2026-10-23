@@ -211,7 +211,7 @@ export default function BottomInput({
       updatedMessageToAPI = WRONG;
       handleIncorrectAnswer(exerciseBookmark);
     }
-    notifyOfUserAttempt(updatedMessageToAPI, exerciseBookmark);
+    notifyOfUserAttempt(updatedMessageToAPI, exerciseBookmark, currentInput);
     setIsIncorrect(true);
   }
 

@@ -91,6 +91,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [isOutOfWordsToday, setIsOutOfWordsToday] = useState();
   const [totalPracticedBookmarksInSession, setTotalPracticedBookmarksInSession] = useState(0);
   const [exerciseMessageForAPI, setExerciseMessageForAPI] = useState({});
+  // What the learner typed or picked in each wrong attempt, per bookmark id.
+  // A ref, not state: showSolution records and uploads in the same tick.
+  const wrongAnswersRef = useRef({});
   const [isSessionLoading, setIsSessionLoading] = useState(true); // New loading state
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [isReported, setIsReported] = useState(false);
@@ -245,8 +248,12 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setContextualInfo(null);
   }
 
-  function handleUserAttempt(message, bookmarkToUpdate) {
+  function handleUserAttempt(message, bookmarkToUpdate, wrongAnswer) {
     if (message === "" || !bookmarkToUpdate) return "";
+    if (wrongAnswer?.trim()) {
+      const answers = wrongAnswersRef.current[bookmarkToUpdate.id] || [];
+      wrongAnswersRef.current[bookmarkToUpdate.id] = [...answers, wrongAnswer.trim()];
+    }
     let _newExerciseMessageToAPI = { ...exerciseMessageForAPI };
     if (!(bookmarkToUpdate.id in _newExerciseMessageToAPI)) {
       _newExerciseMessageToAPI[bookmarkToUpdate.id] = message;
@@ -311,6 +318,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setIsExerciseOver(false);
     setIsShowSolution(null);
     setExerciseMessageForAPI({});
+    wrongAnswersRef.current = {};
     setIsCorrect(null);
     setShowFeedbackButtons(false);
     setIsReported(false); // Reset report state for new exercise
@@ -363,7 +371,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   let incorrectBookmarksCopy = [...incorrectBookmarks];
 
-  function updateAPIWithIncorrectAnswer(currentBookmark) {
+  function updateAPIWithIncorrectAnswer(currentBookmark, wrongAnswer) {
     let incorrectBookmarksIds = incorrectBookmarksCopy.map((b) => b.id);
     if (!incorrectBookmarksIds.includes(currentBookmark.id)) {
       setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
@@ -376,7 +384,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     incorrectBookmarksCopy.push(currentBookmark);
     setIncorrectBookmarks(incorrectBookmarksCopy);
     teeBookmarkToDrillCache(currentBookmark);
-    handleUserAttempt(WRONG, currentBookmark);
+    handleUserAttempt(WRONG, currentBookmark, wrongAnswer);
   }
 
   function teeBookmarkToDrillCache(b) {
@@ -411,6 +419,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       getCurrentSubSessionDuration(),
       bookmark ? bookmark.user_word_id : null,
       getExerciseSessionId(),
+      undefined,
+      bookmark ? wrongAnswersRef.current[bookmark.id] : undefined,
     );
   }
 

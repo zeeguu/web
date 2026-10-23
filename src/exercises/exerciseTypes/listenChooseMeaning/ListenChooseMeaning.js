@@ -75,7 +75,7 @@ export default function ListenChooseMeaning({
       notifyCorrectAnswer(exerciseBookmark);
     } else {
       setIncorrectAnswer(selectedChoice);
-      notifyIncorrectAnswer(exerciseBookmark);
+      notifyIncorrectAnswer(exerciseBookmark, selectedChoice);
       setIsCorrect(false);
     }
   }

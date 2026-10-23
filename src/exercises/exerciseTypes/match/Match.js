@@ -120,7 +120,7 @@ export default function Match({
         _newAnimationDictionary[LEFT] = [...wrongAnimationsDictionary[LEFT], selectedLeftBookmark.id];
         _newAnimationDictionary[RIGHT] = [...wrongAnimationsDictionary[RIGHT], selectedRightBookmark.id];
         setWrongAnimationsDictionary(_newAnimationDictionary);
-        notifyIncorrectAnswer(selectedLeftBookmark);
+        notifyIncorrectAnswer(selectedLeftBookmark, selectedRightBookmark.to);
       }
 
       // Unselect both - no matter if we're correct or wrong
