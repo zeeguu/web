@@ -43,7 +43,6 @@ const AlterMenuSC = styled.div`
   filter: drop-shadow(0 0 0.2rem rgb(0 0 0 / 50%));
 
   .additionalTrans {
-    height: 100%;
     white-space: normal;
     color: var(--altermenu-text);
     line-height: 1em;
