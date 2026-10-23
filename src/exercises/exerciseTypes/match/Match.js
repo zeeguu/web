@@ -7,6 +7,7 @@ import MatchInput from "./MatchInput.js";
 import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js";
 import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression";
 import { toast } from "react-toastify";
+import { removePunctuation } from "../../../utils/text/preprocessing";
 
 // The user has to match three L1 words to their correct L2 translations.
 // This tests the user's passive knowledge.
@@ -120,7 +121,7 @@ export default function Match({
         _newAnimationDictionary[LEFT] = [...wrongAnimationsDictionary[LEFT], selectedLeftBookmark.id];
         _newAnimationDictionary[RIGHT] = [...wrongAnimationsDictionary[RIGHT], selectedRightBookmark.id];
         setWrongAnimationsDictionary(_newAnimationDictionary);
-        notifyIncorrectAnswer(selectedLeftBookmark, selectedRightBookmark.to);
+        notifyIncorrectAnswer(selectedLeftBookmark, removePunctuation(selectedRightBookmark.to));
       }
 
       // Unselect both - no matter if we're correct or wrong

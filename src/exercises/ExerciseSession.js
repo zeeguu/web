@@ -252,8 +252,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     if (message === "" || !bookmarkToUpdate) return "";
     // The same answer checked twice in a row is one attempt, not two
     const answers = wrongAnswersRef.current[bookmarkToUpdate.id] || [];
-    if (wrongAnswer?.trim() && answers[answers.length - 1] !== wrongAnswer.trim()) {
-      wrongAnswersRef.current[bookmarkToUpdate.id] = [...answers, wrongAnswer.trim()];
+    const answer = wrongAnswer?.trim();
+    if (answer && answers[answers.length - 1] !== answer) {
+      wrongAnswersRef.current[bookmarkToUpdate.id] = [...answers, answer];
     }
     let _newExerciseMessageToAPI = { ...exerciseMessageForAPI };
     if (!(bookmarkToUpdate.id in _newExerciseMessageToAPI)) {
