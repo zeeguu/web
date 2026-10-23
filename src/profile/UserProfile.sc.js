@@ -7,11 +7,7 @@ export { ErrorText };
 export const ProfileWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 1rem;
-`;
-
-export const BackNavigation = styled.div`
-  margin-bottom: 0.8rem;
+  width: 100%;
 `;
 
 export const LanguageOverflowBubble = styled.button`

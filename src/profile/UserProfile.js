@@ -10,7 +10,8 @@ import Badges from "../badges/Badges";
 import * as s from "./UserProfile.sc";
 import { BadgeCounterContext } from "../contexts/BadgeCounterContext";
 import LoadingAnimation from "../components/LoadingAnimation";
-import BackArrow from "../pages/Settings/SharedComponents/BackArrow";
+import CardPage from "../pages/_pages_shared/CardPage";
+import SettingsPageHeader from "../pages/Settings/SharedComponents/SettingsPageHeader";
 import Leaderboards from "../leaderboards/Leaderboards";
 import useFriendActions from "../hooks/useFriendActions";
 import { ProfileHeaderCard } from "./ProfileHeaderCard";
@@ -194,58 +195,62 @@ export default function UserProfile() {
   };
 
   return (
-    <s.ProfileWrapper>
-      {/* Like Settings: tap the arrow or swipe right to go back. Opened
-          directly there is no history, so it falls back to the feed. */}
-      <s.BackNavigation>
-        <BackArrow func={() => (history.length > 1 ? history.goBack() : history.push("/articles"))} />
-      </s.BackNavigation>
+    // Settings' page frame and header, so moving between the two keeps the
+    // back arrow (tap or swipe right) in the same place. Opened directly there
+    // is no history, so back falls back to the feed.
+    <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
+      <s.ProfileWrapper>
+        <SettingsPageHeader
+          title={isOwnProfile ? strings.titleOwnProfile : profileData?.username || "Profile"}
+          func={() => (history.length > 1 ? history.goBack() : history.push("/articles"))}
+        />
 
-      {loadingProfileDetails && (
-        <LoadingAnimation delay={0}>
-          <p>Loading {!isOwnProfile ? "friend" : ""} profile...</p>
-        </LoadingAnimation>
-      )}
+        {loadingProfileDetails && (
+          <LoadingAnimation delay={0}>
+            <p>Loading {!isOwnProfile ? "friend" : ""} profile...</p>
+          </LoadingAnimation>
+        )}
 
-      {!isOwnProfile && friendDetailsError && <s.ErrorText>{friendDetailsError}</s.ErrorText>}
+        {!isOwnProfile && friendDetailsError && <s.ErrorText>{friendDetailsError}</s.ErrorText>}
 
-      {!loadingProfileDetails && !friendDetailsError && (
-        <>
-          <ProfileHeaderCard
-            isOwnProfile={isOwnProfile}
-            profileData={profileData}
-            activeLanguages={activeLanguages}
-            onOpenLanguagesModal={() => setLanguagesModalOpen(true)}
-            onEditAvatar={() => setAvatarPickerOpen(true)}
-            friendActionHandlers={friendActionHandlers}
-            isPendingFriendAction={isPendingFriendAction}
-          />
+        {!loadingProfileDetails && !friendDetailsError && (
+          <>
+            <ProfileHeaderCard
+              isOwnProfile={isOwnProfile}
+              profileData={profileData}
+              activeLanguages={activeLanguages}
+              onOpenLanguagesModal={() => setLanguagesModalOpen(true)}
+              onEditAvatar={() => setAvatarPickerOpen(true)}
+              friendActionHandlers={friendActionHandlers}
+              isPendingFriendAction={isPendingFriendAction}
+            />
 
-          {(isOwnProfile || isFriendAccepted) && (
-            <ProfileTabs tabs={tabs} activeTab={activeTab} onTabClick={handleTabClick}>
-              {renderTabContent()}
-            </ProfileTabs>
-          )}
+            {(isOwnProfile || isFriendAccepted) && (
+              <ProfileTabs tabs={tabs} activeTab={activeTab} onTabClick={handleTabClick}>
+                {renderTabContent()}
+              </ProfileTabs>
+            )}
 
-          <UnfriendConfirmModal
-            open={unfriendModalOpen}
-            onClose={() => setUnfriendModalOpen(false)}
-            onConfirm={handleUnfriend}
-            displayName={profileData?.name ?? profileData?.username}
-            isPendingConfirm={isPendingFriendAction}
-          />
+            <UnfriendConfirmModal
+              open={unfriendModalOpen}
+              onClose={() => setUnfriendModalOpen(false)}
+              onConfirm={handleUnfriend}
+              displayName={profileData?.name ?? profileData?.username}
+              isPendingConfirm={isPendingFriendAction}
+            />
 
-          <LanguagesModal
-            open={languagesModalOpen}
-            onClose={() => setLanguagesModalOpen(false)}
-            isOwnProfile={isOwnProfile}
-            profileData={profileData}
-            activeLanguages={activeLanguages}
-          />
+            <LanguagesModal
+              open={languagesModalOpen}
+              onClose={() => setLanguagesModalOpen(false)}
+              isOwnProfile={isOwnProfile}
+              profileData={profileData}
+              activeLanguages={activeLanguages}
+            />
 
-          {isOwnProfile && <AvatarPickerModal open={avatarPickerOpen} onClose={() => setAvatarPickerOpen(false)} />}
-        </>
-      )}
-    </s.ProfileWrapper>
+            {isOwnProfile && <AvatarPickerModal open={avatarPickerOpen} onClose={() => setAvatarPickerOpen(false)} />}
+          </>
+        )}
+      </s.ProfileWrapper>
+    </CardPage>
   );
 }
