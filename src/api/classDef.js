@@ -72,6 +72,23 @@ const Zeeguu_API = class {
     }
   }
 
+  // Drop an article's bundled title/summary tokens from every cached feed
+  // response, so the next card built for it fetches them instead. The tokens
+  // carry the learner's past bookmarks, and once they change on that article
+  // the bundle would undo the change. Each topic or language has its own
+  // cached response, holding its own copy of the article, hence the sweep.
+  forgetArticleTokens(articleId) {
+    for (const [key, cached] of this._cache) {
+      const endpoint = key.split(":").slice(2).join(":");
+      if (!endpoint.startsWith("user_articles/") || !Array.isArray(cached.data)) continue;
+      for (const article of cached.data) {
+        if (article?.id !== articleId) continue;
+        delete article.interactiveSummary;
+        delete article.interactiveTitle;
+      }
+    }
+  }
+
   apiLog(what) {
     console.log("➡️ " + what);
   }

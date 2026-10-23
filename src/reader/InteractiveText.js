@@ -39,6 +39,7 @@ export default class InteractiveText {
     contextIdentifier,
     formatting = null,
     getBrowsingSessionId = () => null,
+    onBookmarksChanged = () => {},
     getReadingSessionId = () => null,
   }) {
     this.api = api;
@@ -49,6 +50,9 @@ export default class InteractiveText {
     this.formatting = formatting;
     this.contextIdentifier = contextIdentifier;
     this.getBrowsingSessionId = getBrowsingSessionId;
+    // Called after a translate, delete or ungroup on this text, for owners
+    // whose copy of the tokens has to be refreshed (feed previews).
+    this.onBookmarksChanged = onBookmarksChanged;
     this.getReadingSessionId = getReadingSessionId;
 
     // Might be worth to store a flag to keep track of wether or not the
