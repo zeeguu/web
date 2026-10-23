@@ -16,8 +16,8 @@ const ScrollArea = styled.div`
   /* Bleed to the wrapper edge (−48 cancels its 48px padding) so the scrollbar
      rides the modal edge, then re-inset the content generously. The wider
      desktop overlay needs more breathing room than the wrapper's 48px. */
-  /* top: just breathing room under the header band, which now supplies the
-     clearance the title used to carve out for itself. */
+  /* top: just breathing room under the desktop header band, which supplies
+     the clearance the title used to carve out for itself. */
   padding: 1.2em 64px 1.1em;
 
   /* Keep an overscroll at the sheet's edges from bouncing the feed behind it —
@@ -46,12 +46,14 @@ const ScrollArea = styled.div`
   }
 `;
 
-// The sheet's own top band: a fixed-height strip above the scroll area holding
-// the dismiss control, and — on the phone — the grab handle. It is a flex
+// The sheet's own top band: a strip above the scroll area. It is a flex
 // SIBLING of the scroll area rather than an overlay on top of it, so scrolling
-// content cannot pass under the X and collide with it: the scroll area's box
-// simply starts below this band. It bleeds to the wrapper's edges (the negative
-// margins cancel the wrapper's padding) so the divider spans the full width.
+// content cannot pass under its controls: the scroll area's box simply starts
+// below this band. The negative margins cancel the wrapper's top/side padding.
+// No divider: the band reads as part of the sheet, not a toolbar.
+//
+// Desktop: holds the X (the centered card does not drag). Phone: a slim grab
+// strip with only the handle, as on Instagram's sheets — dismissal is the swipe.
 const Header = styled.div`
   flex: 0 0 auto;
   position: relative;
@@ -59,13 +61,12 @@ const Header = styled.div`
   align-items: center;
   height: 52px;
   margin: -32px -48px 0;
-  border-bottom: 1px solid var(--border-light);
-  /* This band is a drag surface, so no browser panning/zooming on it. */
-  touch-action: none;
 
   @media (max-width: 576px) {
-    height: 44px;
+    height: 24px;
     margin: -20px -16px 0;
+    /* This strip is a drag surface, so no browser panning/zooming on it. */
+    touch-action: none;
   }
 `;
 
@@ -80,7 +81,6 @@ const GrabHandle = styled.div`
   height: 4px;
   border-radius: 2px;
   background: var(--border-color);
-  opacity: 0.7;
 
   @media (min-width: 577px) {
     display: none;
@@ -97,7 +97,7 @@ const CloseCorner = styled.button`
   /* 44px: a real touch target around a 22px glyph. */
   width: 44px;
   height: 44px;
-  margin-left: 6px;
+  margin-left: 10px;
   padding: 0;
   border: none;
   border-radius: 50%;
@@ -115,8 +115,8 @@ const CloseCorner = styled.button`
     }
   }
 
-  @media (min-width: 577px) {
-    margin-left: 10px;
+  @media (max-width: 576px) {
+    display: none;
   }
 `;
 
