@@ -272,13 +272,12 @@ const TranslatableText = styled.div`
   z-tag z-tran {
     margin-right: -0.2rem;
     margin-left: -0.2rem;
-    margin-bottom: -0.3rem;
-    margin-top: 0.1rem;
+    margin-top: 0.35em;
     padding-left: 0.3rem;
     border-radius: 0.3em;
     background-clip: padding-box;
     background-color: var(--mwe-adjacent-bg);
-    font-size: 0.75em;
+    font-size: 0.85em;
     line-height: 1.1em;
     max-width: 100%;
     font-weight: 600;
