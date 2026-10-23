@@ -5,6 +5,11 @@ import { PAGES_WITHOUT_BOTTOM_NAV } from "./pagesWithoutBottomNav";
 import BottomNavOptionsForStudent from "./BottomNavOptionsForStudent";
 import BottomNavOptionsForTeacher from "./BottomNavOptionsForTeacher";
 import { slideIn, slideOut } from "../../transitions";
+import strings from "../../../i18n/definitions";
+import NavIcon from "../NavIcon";
+import BottomNavOption from "./BottomNavOption";
+import MoreOptionsPanel from "./MoreOptionsPanel";
+import useMoreOptionsPanel from "../useMoreOptionsPanel";
 import * as s from "./BottomNav.sc";
 
 export default function BottomNav() {
@@ -13,6 +18,7 @@ export default function BottomNav() {
 
   const path = useLocation().pathname;
 
+  const moreOptions = useMoreOptionsPanel();
   const [bottomNavTransition, setBottomNavTransition] = useState({});
   const [renderBottomNav, setRenderBottomNav] = useState(false);
 
@@ -31,8 +37,8 @@ export default function BottomNav() {
     };
   }, [path]);
 
-  // Actions only: Read, Exercises, Listen, Translate. More (My Words, My
-  // Activity and the rest) opens from the TopBar.
+  // The actions -- Read, Exercises, Listen, Translate -- and then More, which
+  // holds the places to look things up: My Words, My Activity and the rest.
   return (
     <>
       {renderBottomNav && (
@@ -44,8 +50,24 @@ export default function BottomNav() {
             {isOnStudentSide && <BottomNavOptionsForStudent />}
 
             {!isOnStudentSide && <BottomNavOptionsForTeacher />}
+
+            <BottomNavOption
+              onClick={moreOptions.showMoreOptions}
+              icon={<NavIcon name="more" />}
+              text={strings.more}
+              ariaHasPopup={"true"}
+            />
           </s.NavList>
         </s.BottomNav>
+      )}
+
+      {moreOptions.renderMoreOptions && (
+        <MoreOptionsPanel
+          currentPath={path}
+          overlayTransition={moreOptions.overlayTransition}
+          moreOptionsTransition={moreOptions.moreOptionsTransition}
+          handleHideMoreOptions={moreOptions.hideMoreOptions}
+        />
       )}
     </>
   );
