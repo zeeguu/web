@@ -12,7 +12,7 @@ export default function useUserPreferences(api) {
   const [audioExercises, setAudioExercises] = useState(true);
   const [translateInReader, setTranslateInReader] = useState(true);
   const [pronounceInReader, setPronounceInReader] = useState(true);
-  const [maxWordsToSchedule, setMaxWordsToSchedule] = useState(15);
+  const [maxWordsToSchedule, setMaxWordsToSchedule] = useState(null);
   const [showMweHints, setShowMweHints] = useState(false);
   const [showReadingTimer, setShowReadingTimer] = useState(false);
 
