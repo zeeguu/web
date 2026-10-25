@@ -18,7 +18,6 @@ import ReportBroken from "./ReportBrokenArticle";
 import TopToolbar from "./TopToolbar";
 import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
-import useShadowRef from "../hooks/useShadowRef";
 import { isSimplifiedArticle as isSimplifiedArticleFn } from "../utils/misc/articleHelpers";
 import useScrollTracking from "../hooks/useScrollTracking";
 import useReadingSession from "../hooks/useReadingSession";
@@ -114,8 +113,6 @@ export default function ArticleReader({ teacherArticleID, articleId: linkArticle
 
   // Reading session hook - starts when articleInfo is loaded
   const { getReadingSessionId, sessionDuration, isTimerActive } = useReadingSession(articleID, "web", !!articleInfo);
-
-  const clickedOnReviewVocabRef = useShadowRef(clickedOnReviewVocab);
 
   // Use the shared scroll tracking hook
   const { scrollPosition, handleScroll, sendFinalScrollEvent, uploadScrollActivity, initializeScrollTracking } =
@@ -325,11 +322,6 @@ export default function ArticleReader({ teacherArticleID, articleId: linkArticle
     window.removeEventListener("blur", handleBlur);
     window.removeEventListener("scroll", handleScroll, true);
     window.removeEventListener("beforeunload", componentWillUnmount);
-    if (!clickedOnReviewVocabRef.current) {
-      // If the user clicks away from the article, prioritize
-      // words based on their rank.
-      api.prioritizeBookmarksToStudy(articleID);
-    }
   }
 
   if (!articleInfo || !interactiveFragments) {
