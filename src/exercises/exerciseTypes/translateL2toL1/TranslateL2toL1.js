@@ -101,7 +101,13 @@ export default function TranslateL2toL1({
           isChecking={isChecking}
         />
       )}
-      <AnswerNote isChecking={isChecking} note={answerNote} expected={exerciseBookmark.to} isTranslation />
+      <AnswerNote
+        isChecking={isChecking}
+        note={answerNote}
+        expected={exerciseBookmark.to}
+        isExerciseOver={isExerciseOver}
+        isTranslation
+      />
     </s.Exercise>
   );
 }

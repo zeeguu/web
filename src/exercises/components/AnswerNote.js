@@ -13,7 +13,9 @@ const SHOW_THINKING_AFTER_MS = 400;
 // (see useAnswerJudge), as one line under the exercise.
 // `expected` is what the exercise wanted; `isTranslation` says whether the
 // learner typed the word they are learning (cloze) or its translation.
-export default function AnswerNote({ isChecking, note, expected, isTranslation = false }) {
+// A near miss in a translate exercise leaves it open for another try, so
+// until `isExerciseOver` the line names neither the answer nor the meaning.
+export default function AnswerNote({ isChecking, note, expected, isExerciseOver = true, isTranslation = false }) {
   const [showThinking, setShowThinking] = useState(false);
 
   useEffect(() => {
@@ -35,6 +37,10 @@ export default function AnswerNote({ isChecking, note, expected, isTranslation =
     );
   }
   if (!note) return null;
+
+  if (note.kind === "nearMiss" && !isExerciseOver) {
+    return <AnswerLine>{withBoldParts(strings.closeTryAgain, note.typed.trim())}</AnswerLine>;
+  }
 
   // Once the exercise ends, what was typed is no longer on screen (the input
   // goes, the cloze blank shows the expected word), so the line says it.
