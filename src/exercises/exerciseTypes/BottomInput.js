@@ -37,6 +37,7 @@ export default function BottomInput({
   notifyOfUserAttempt,
   isL1Answer,
   judgeAnswer,
+  clearAnswerNote,
   isChecking = false,
 }) {
   const { userDetails } = useContext(UserContext);
@@ -153,6 +154,7 @@ export default function BottomInput({
       setFeedbackMessage("");
       return;
     }
+    clearAnswerNote?.();
 
     let normalizedInput = normalizeAnswer(currentInput, answerLanguageCode);
     let [normalizedAnswer, levDistance] = closestAnswer(normalizedInput);

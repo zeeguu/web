@@ -52,5 +52,11 @@ export function useAnswerJudge(askApi, isExerciseOver, resetOn) {
     return verdict;
   }
 
-  return { isChecking, note, setNote, judge };
+  // For an attempt that never reaches judge(), so the line about the
+  // previous one doesn't stay up under it.
+  function clearNote() {
+    setNote(null);
+  }
+
+  return { isChecking, note, setNote, judge, clearNote };
 }
