@@ -14,8 +14,9 @@ import { TextLinkButton } from "../../components/UndoToast.sc";
 import { showUndoToast } from "../../components/UndoToast";
 
 // Chip definitions. The order here is the order the chips render.
-// Each chip carries the backend `reason` enum value (matching
-// api/zeeguu/core/model/exercise_report.py) and its user-facing label.
+// Each chip carries the backend `reason` value (accepted by
+// /report_exercise_issue, stored as a WordReport kind in
+// api/zeeguu/core/model/word_report.py) and its user-facing label.
 const CHIP_DEFS = {
   audio_broken: { reason: "audio_broken", label: "Audio is broken / unclear" },
   word_not_shown: { reason: "word_not_shown", label: "Word not shown" },
