@@ -39,7 +39,7 @@ export default function TranslateL2toL1({
   const [translatedWords, setTranslatedWords] = useState([]);
 
   // Another translation the learner typed ("consult" for "slå op"), asked about.
-  const { isChecking, note: answerNote, judge } = useAnswerJudge(
+  const { isChecking, note: answerNote, judge, clearNote } = useAnswerJudge(
     (typed, signal) => api.judgeTranslationAlternative(exerciseBookmark.id, typed, signal),
     isExerciseOver,
     [reload, exerciseBookmark],
@@ -98,6 +98,7 @@ export default function TranslateL2toL1({
           notifyOfUserAttempt={notifyOfUserAttempt}
           isL1Answer={true}
           judgeAnswer={judge}
+          clearAnswerNote={clearNote}
           isChecking={isChecking}
         />
       )}
