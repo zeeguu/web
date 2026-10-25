@@ -20,7 +20,6 @@ export default function EditBookmarkButton({
   const api = useContext(APIContext);
   const [open, setOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
-  const SOURCE_FOR_API_USER_PREFERENCE = "WORD_EDIT_FORM_CHECKBOX";
   const SOURCE_FOR_API_BOOKMARK_DELETE = "WORD_EDIT_DELETE_BOOKMARK";
 
   function handleOpen() {
@@ -51,7 +50,7 @@ export default function EditBookmarkButton({
     setErrorMessage();
   }
 
-  function updateBookmark(bookmark, newWord, newTranslation, newContext, newFitForStudy) {
+  function updateBookmark(bookmark, newWord, newTranslation, newContext) {
     console.log(
       "Sending to the API. New word: ",
       newWord,
@@ -104,23 +103,6 @@ export default function EditBookmarkButton({
         bookmark.id = newBookmark.id;
         bookmark.user_word_id = newBookmark.user_word_id;
 
-        if (newFitForStudy) {
-          api.userSetForExercises(bookmark.id);
-          api.logUserActivity(
-            api.USER_SET_WORD_PREFERRED,
-            newBookmark.article_id,
-            newBookmark.from,
-            SOURCE_FOR_API_USER_PREFERENCE,
-          );
-        } else {
-          api.userSetNotForExercises(bookmark.id);
-          api.logUserActivity(
-            api.USER_SET_NOT_WORD_PREFERED,
-            newBookmark.article_id,
-            newBookmark.from,
-            SOURCE_FOR_API_USER_PREFERENCE,
-          );
-        }
         if (setReload) setReload(!reload);
 
         if (notifyWordChange) notifyWordChange(bookmark);

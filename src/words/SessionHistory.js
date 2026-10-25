@@ -58,7 +58,7 @@ export default function SessionHistory() {
     setEditError(null);
   };
 
-  const updateBookmark = (bookmark, newWord, newTranslation, newContext, newFitForStudy) => {
+  const updateBookmark = (bookmark, newWord, newTranslation, newContext) => {
     if (!isTextInSentence(newWord, newContext)) {
       setEditError(`'${newWord}' is not present in the context. Make sure the context contains the word.`);
       return;
@@ -88,12 +88,6 @@ export default function SessionHistory() {
             ),
           })),
         );
-
-        if (newFitForStudy) {
-          api.userSetForExercises(newBookmark.id);
-        } else {
-          api.userSetNotForExercises(newBookmark.id);
-        }
 
         if (newBookmark._message) {
           toast.info(newBookmark._message);

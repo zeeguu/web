@@ -33,7 +33,6 @@ export default function WordEditForm({
   const [translation, setTranslation] = useState(bookmark.to);
   const [expression, setExpression] = useState(bookmark.from);
   const [context, setContext] = useState(bookmark.context);
-  const [fitForStudy, setFitForStudy] = useState(bookmark.fit_for_study);
   const [showExcludeModal, setShowExcludeModal] = useState(false);
 
   // Handle user feedback for removing word from exercises
@@ -51,7 +50,6 @@ export default function WordEditForm({
     
     // Update local state
     bookmark.fit_for_study = false;
-    setFitForStudy(false);
     
     // Notify parent if in exercise context
     if (onWordRemovedFromExercises) {
@@ -78,7 +76,6 @@ export default function WordEditForm({
     setTranslation(bookmark.to);
     setExpression(bookmark.from);
     setContext(bookmark.context);
-    setFitForStudy(bookmark.fit_for_study);
   }
 
 
@@ -105,7 +102,7 @@ export default function WordEditForm({
       prepClose();
       handleClose();
     } else {
-      updateBookmark(bookmark, expression, translation, context, bookmark.fit_for_study);
+      updateBookmark(bookmark, expression, translation, context);
     }
   }
 
