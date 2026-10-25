@@ -45,8 +45,8 @@ Zeeguu_API.prototype.getNextWordDueTime = function (callback) {
   this._getJSON(`next_word_due_time`, callback);
 };
 
-Zeeguu_API.prototype.getUserWordsNextInLearning = function (callback) {
-  this._getJSON(`user_words_next_in_learning`, callback);
+Zeeguu_API.prototype.getUserWordsNextInLearning = function (callback, options) {
+  this._getJSON(`user_words_next_in_learning`, callback, options);
 };
 
 // Backward compatibility (deprecated methods)
