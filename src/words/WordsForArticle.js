@@ -22,7 +22,7 @@ export default function WordsForArticle() {
   const [showMoreInfo, setShowMoreInfo] = useState(null);
 
   useEffect(() => {
-    api.prioritizeBookmarksToStudy(articleID, setWords);
+    api.bookmarksForArticle(articleID, setWords);
     api.getArticleInfo(articleID, (data) => {
       setArticleInfo(data);
       setTitle('Words in "' + data.title + '"');
