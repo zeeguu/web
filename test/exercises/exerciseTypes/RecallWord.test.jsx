@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../src/exercises/utils/useInteractiveTextForBookmark.js", () => ({
   useInteractiveTextForBookmark: () => ({}),
@@ -17,13 +18,14 @@ import RecallWord from "../../../src/exercises/exerciseTypes/recallWord/RecallWo
 // nothing that would give the word away.
 describe("RecallWord", () => {
   const bookmark = { id: 1, from: "synes", to: "thinks.", from_lang: "da", to_lang: "en", level: 3 };
-  const show = (isExerciseOver) =>
+  const show = (isExerciseOver, notify = {}) =>
     render(
       <RecallWord
         bookmarksToStudy={[bookmark]}
         setExerciseType={() => {}}
         resetSubSessionTimer={() => {}}
         isExerciseOver={isExerciseOver}
+        {...notify}
       />,
     );
 
@@ -33,6 +35,31 @@ describe("RecallWord", () => {
     expect(screen.getByPlaceholderText(/^type in/i)).toBeTruthy();
     expect(screen.queryByRole("button", { name: /hint/i })).toBeNull();
     expect(screen.queryByText("the context")).toBeNull();
+  });
+
+  it("lets them say they know it, then shows the word and asks whether they were right", async () => {
+    const notifyCorrectAnswer = vi.fn();
+    const notifyShowSolution = vi.fn();
+    show(false, { notifyCorrectAnswer, notifyShowSolution });
+    expect(screen.queryByText("synes")).toBeNull();
+
+    await userEvent.click(screen.getByRole("button", { name: /i know it/i }));
+    expect(screen.getByText("synes")).toBeTruthy();
+    expect(screen.queryByPlaceholderText(/^type in/i)).toBeNull();
+
+    await userEvent.click(screen.getByRole("button", { name: /yes/i }));
+    expect(notifyCorrectAnswer).toHaveBeenCalledWith(bookmark);
+    expect(notifyShowSolution).not.toHaveBeenCalled();
+  });
+
+  it("counts a No as not knowing it", async () => {
+    const notifyCorrectAnswer = vi.fn();
+    const notifyShowSolution = vi.fn();
+    show(false, { notifyCorrectAnswer, notifyShowSolution });
+    await userEvent.click(screen.getByRole("button", { name: /i know it/i }));
+    await userEvent.click(screen.getByRole("button", { name: /^no$/i }));
+    expect(notifyShowSolution).toHaveBeenCalled();
+    expect(notifyCorrectAnswer).not.toHaveBeenCalled();
   });
 
   it("shows the context once answered", () => {

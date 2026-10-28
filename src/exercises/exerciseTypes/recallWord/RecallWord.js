@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
@@ -17,6 +17,8 @@ import AnswerNote from "../../components/AnswerNote.js";
 // The user sees only the L1 translation and has to type the L2 word: no
 // context, no Hint button. A plain test of whether they know the word,
 // sprinkled into sessions now and then (see sprinkleRecallTests).
+// Instead of typing they can say "I know it": the word is shown and they
+// say whether they were right. No ends it as Show solution does.
 // The context is shown once the exercise is over.
 
 const EXERCISE_TYPE = EXERCISE_TYPES.recallWord;
@@ -27,6 +29,7 @@ export default function RecallWord({
   notifyExerciseCompleted,
   notifyIncorrectAnswer,
   notifyOfUserAttempt,
+  notifyShowSolution,
   setExerciseType,
   reload,
   setIsCorrect,
@@ -40,6 +43,9 @@ export default function RecallWord({
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
   const [translatedWords, setTranslatedWords] = useState([]);
+  const [saysTheyKnowIt, setSaysTheyKnowIt] = useState(false);
+
+  useEffect(() => setSaysTheyKnowIt(false), [reload, exerciseBookmark]);
 
   // Another word that means the same here ("tænker" for "synes"), asked about.
   const { isChecking, note: answerNote, judge, clearNote } = useAnswerJudge(
@@ -88,7 +94,20 @@ export default function RecallWord({
         <s.RevealedProgressBar>{bookmarkProgressBar}</s.RevealedProgressBar>
       )}
 
-      {!isExerciseOver && (
+      {!isExerciseOver && saysTheyKnowIt && (
+        <>
+          <p className="wordInContextHeadline highlightedWord">{exerciseBookmark.from}</p>
+          <div className="headlineWithMoreSpace">{strings.wereYouRight}</div>
+          <s.BottomRow>
+            <s.LeftFeedbackButton onClick={() => notifyShowSolution()}>{strings.no}</s.LeftFeedbackButton>
+            <s.RightFeedbackButton onClick={() => notifyCorrectAnswer(exerciseBookmark)}>
+              {strings.yes}
+            </s.RightFeedbackButton>
+          </s.BottomRow>
+        </>
+      )}
+
+      {!isExerciseOver && !saysTheyKnowIt && (
         <BottomInput
           handleCorrectAnswer={notifyCorrectAnswer}
           handleIncorrectAnswer={() => notifyIncorrectAnswer(exerciseBookmark)}
@@ -97,7 +116,7 @@ export default function RecallWord({
           exerciseBookmark={exerciseBookmark}
           notifyOfUserAttempt={notifyOfUserAttempt}
           isL1Answer={false}
-          showHint={false}
+          onIKnowIt={() => setSaysTheyKnowIt(true)}
           judgeAnswer={judge}
           clearAnswerNote={clearNote}
           isChecking={isChecking}

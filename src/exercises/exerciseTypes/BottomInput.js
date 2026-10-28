@@ -39,8 +39,8 @@ export default function BottomInput({
   judgeAnswer,
   clearAnswerNote,
   isChecking = false,
-  // false for tests of the word itself (RecallWord)
-  showHint = true,
+  // Given, the left button is "I know it" instead of Hint (RecallWord).
+  onIKnowIt,
 }) {
   const { userDetails } = useContext(UserContext);
   const [currentInput, setCurrentInput] = useState("");
@@ -284,7 +284,9 @@ export default function BottomInput({
             flexWrap: "wrap",
           }}
         >
-          {showHint && (
+          {onIKnowIt ? (
+            <s.LeftFeedbackButton onClick={onIKnowIt}>{strings.iKnowIt}</s.LeftFeedbackButton>
+          ) : (
             <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
               {strings.hint}
             </s.LeftFeedbackButton>

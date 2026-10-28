@@ -586,6 +586,8 @@ let strings = new LocalizedStrings(
       multipleChoiceL2toL1Headline: "Select the correct translation of the highlighted word",
       listenChooseMeaningHeadline: "Listen, and choose what it means",
       recallWordHeadline: "Type the word for",
+      iKnowIt: "I know it",
+      wereYouRight: "Were you right?",
       clickWordInContextHeadline: "Click on the translation of the word below in the text",
       multipleChoiceContextHeadline: "Choose the context that fits the word",
 
@@ -1034,6 +1036,8 @@ let strings = new LocalizedStrings(
       articles: "Læs",
       listenChooseMeaningHeadline: "Lyt, og vælg hvad det betyder",
       recallWordHeadline: "Skriv ordet for",
+      iKnowIt: "Jeg kan det",
+      wereYouRight: "Havde du ret?",
       noFeedAtA0Title: "Ingen nyheder på A0",
       noFeedAtA0Message: "Der er ikke noget nyhedsfeed på niveau A0. Vi anbefaler, at du bruger lydlektionerne indtil videre.",
       goToAudioLessons: "Gå til lydlektionerne",
