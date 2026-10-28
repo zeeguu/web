@@ -14,6 +14,7 @@ import TranslateL2toL1 from "../exercises/exerciseTypes/translateL2toL1/Translat
 import MultipleChoiceContext from "../exercises/exerciseTypes/multipleChoiceContext/MultipleChoiceContext";
 import MultipleChoiceL2toL1 from "../exercises/exerciseTypes/multipleChoiceL2toL1/MultipleChoiceL2toL1";
 import ListenChooseMeaning from "../exercises/exerciseTypes/listenChooseMeaning/ListenChooseMeaning";
+import RecallWord from "../exercises/exerciseTypes/recallWord/RecallWord";
 import FindWordInContextCloze from "../exercises/exerciseTypes/findWordInContextCloze/FindWordInContextCloze";
 import Match from "../exercises/exerciseTypes/match/Match";
 import SpellWhatYouHear from "../exercises/exerciseTypes/spellWhatYouHear/SpellWhatYouHear";
@@ -63,6 +64,7 @@ const EXERCISE_COMPONENTS = {
   MultipleChoiceAudio: MultipleChoiceAudio,
   ClickWordInContext: ClickWordInContext,
   FindWordInContext: FindWordInContext,
+  RecallWord: RecallWord,
 };
 
 function createBookmarkFromUrl(word, translation, context, lang = "en") {

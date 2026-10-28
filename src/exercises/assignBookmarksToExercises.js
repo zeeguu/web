@@ -1,4 +1,5 @@
 import ListenChooseMeaning from "./exerciseTypes/listenChooseMeaning/ListenChooseMeaning";
+import RecallWord from "./exerciseTypes/recallWord/RecallWord";
 import { removePunctuation } from "../utils/text/preprocessing";
 import { removeAllMatchingItemFromList } from "../utils/basic/arrays";
 import shuffle from "../assorted/fisherYatesShuffle";
@@ -192,4 +193,22 @@ function assignBookmarksToA0Exercises(bookmarks) {
   return exercises;
 }
 
-export { assignBookmarksToExercises, assignBookmarksToA0Exercises };
+/*
+  Now and then, a word gets RecallWord instead of its exercise: the
+  translation alone, type the word, no context and no hint. Only for a word
+  past level 1 (it has been practised with help before), and only in place of
+  an exercise on that word alone, so no other word loses its turn.
+*/
+const RECALL_TEST_CHANCE = 1 / 6;
+const RECALL_TEST_MIN_LEVEL = 2;
+
+function sprinkleRecallTests(exercises, random = Math.random) {
+  return exercises.map((exercise) => {
+    if (exercise.bookmarks.length !== 1) return exercise;
+    if ((exercise.bookmarks[0].level || 1) < RECALL_TEST_MIN_LEVEL) return exercise;
+    if (random() >= RECALL_TEST_CHANCE) return exercise;
+    return { type: RecallWord, bookmarks: exercise.bookmarks };
+  });
+}
+
+export { assignBookmarksToExercises, assignBookmarksToA0Exercises, sprinkleRecallTests };

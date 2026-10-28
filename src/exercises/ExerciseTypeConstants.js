@@ -11,6 +11,7 @@ export const EXERCISE_TYPES = {
   clickWordInContext: "Click_L1W_in_L2T",
   findWordInContext: "Recognize_L1W_in_L2T",
   listenChooseMeaning: "Listen_L2W_choose_L1W",
+  recallWord: "Recall_L2W_from_L1W_no_hints",
 
   isMultiBookmarkExercise: function (exerciseType) {
     return [this.multipleChoice, this.multipleChoiceContext, this.match].includes(exerciseType);

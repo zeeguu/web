@@ -39,6 +39,8 @@ export default function BottomInput({
   judgeAnswer,
   clearAnswerNote,
   isChecking = false,
+  // false for tests of the word itself (RecallWord)
+  showHint = true,
 }) {
   const { userDetails } = useContext(UserContext);
   const [currentInput, setCurrentInput] = useState("");
@@ -282,9 +284,11 @@ export default function BottomInput({
             flexWrap: "wrap",
           }}
         >
-          <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
-            {strings.hint}
-          </s.LeftFeedbackButton>
+          {showHint && (
+            <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
+              {strings.hint}
+            </s.LeftFeedbackButton>
+          )}
           {/* Not disabled while the API is asked: a disabled FeedbackButton is
               struck through (the used Hint). checkResult ignores the press. */}
           <s.RightFeedbackButton onClick={checkResult}>{strings.check}</s.RightFeedbackButton>
