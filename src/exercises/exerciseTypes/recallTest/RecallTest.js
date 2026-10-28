@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
-import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
@@ -14,16 +13,16 @@ import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextFor
 import { useAnswerJudge } from "../../utils/useAnswerJudge.js";
 import AnswerNote from "../../components/AnswerNote.js";
 
-// The user sees only the L1 translation and has to type the L2 word: no
-// context, no Hint button. A plain test of whether they know the word,
-// sprinkled into sessions now and then (see sprinkleRecallTests).
-// Instead of typing they can say "I know it": the word is shown and they
-// say whether they were right. No ends it as Show solution does.
-// The context is shown once the exercise is over.
+// A plain test of whether the learner knows a word, sprinkled into sessions
+// now and then (see sprinkleRecallTests): one side of the word alone, type
+// the other side. No context and no Hint button. Instead of typing they can
+// say "I know it": the answer is shown and they say whether they were right.
+// No ends it as Show solution does. The context is shown once it is over.
+//
+// RecallMeaning and RecallWord are its two directions.
 
-const EXERCISE_TYPE = EXERCISE_TYPES.recallWord;
-
-export default function RecallWord({
+export default function RecallTest({
+  direction,
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyExerciseCompleted,
@@ -42,26 +41,27 @@ export default function RecallWord({
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
   const exerciseBookmark = bookmarksToStudy[0];
+  const { exerciseType, headlineKey, prompt, answer, isL1Answer, judgeAlternative } = direction;
   const [translatedWords, setTranslatedWords] = useState([]);
   const [saysTheyKnowIt, setSaysTheyKnowIt] = useState(false);
 
   useEffect(() => setSaysTheyKnowIt(false), [reload, exerciseBookmark]);
 
-  // Another word that means the same here ("tænker" for "synes"), asked about.
+  // Another word or translation that fits as well, asked about.
   const { isChecking, note: answerNote, judge, clearNote } = useAnswerJudge(
-    (typed, signal) => api.judgeClozeAlternative(exerciseBookmark.id, typed, signal),
+    (typed, signal) => judgeAlternative(api, exerciseBookmark.id, typed, signal),
     isExerciseOver,
     [reload, exerciseBookmark],
   );
 
-  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
+  useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType });
 
   // Loaded up front so the context can appear as soon as the answer is in.
   const interactiveText = useInteractiveTextForBookmark({
     bookmark: exerciseBookmark,
     api,
     speech,
-    exerciseType: EXERCISE_TYPE,
+    exerciseType,
     reload,
     onExerciseLoaded,
   });
@@ -71,10 +71,10 @@ export default function RecallWord({
   }
 
   return (
-    <s.Exercise className="recallWord">
+    <s.Exercise className="recallTest">
       <ExerciseInstructionHeader
-        headline={strings.recallWordHeadline}
-        l2Prompt={removePunctuation(exerciseBookmark.to)}
+        headline={strings[headlineKey]}
+        l2Prompt={removePunctuation(prompt(exerciseBookmark))}
         isExerciseOver={isExerciseOver}
       />
 
@@ -96,7 +96,7 @@ export default function RecallWord({
 
       {!isExerciseOver && saysTheyKnowIt && (
         <>
-          <p className="wordInContextHeadline highlightedWord">{exerciseBookmark.from}</p>
+          <p className="wordInContextHeadline highlightedWord">{answer(exerciseBookmark)}</p>
           <div className="headlineWithMoreSpace">{strings.wereYouRight}</div>
           <s.BottomRow>
             <s.LeftFeedbackButton onClick={() => notifyShowSolution()}>{strings.no}</s.LeftFeedbackButton>
@@ -115,14 +115,20 @@ export default function RecallWord({
           setIsCorrect={setIsCorrect}
           exerciseBookmark={exerciseBookmark}
           notifyOfUserAttempt={notifyOfUserAttempt}
-          isL1Answer={false}
+          isL1Answer={isL1Answer}
           onIKnowIt={() => setSaysTheyKnowIt(true)}
           judgeAnswer={judge}
           clearAnswerNote={clearNote}
           isChecking={isChecking}
         />
       )}
-      <AnswerNote isChecking={isChecking} note={answerNote} expected={exerciseBookmark.from} />
+      <AnswerNote
+        isChecking={isChecking}
+        note={answerNote}
+        expected={answer(exerciseBookmark)}
+        isExerciseOver={isExerciseOver}
+        isTranslation={isL1Answer}
+      />
     </s.Exercise>
   );
 }

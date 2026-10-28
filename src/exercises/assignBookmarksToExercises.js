@@ -1,5 +1,6 @@
 import ListenChooseMeaning from "./exerciseTypes/listenChooseMeaning/ListenChooseMeaning";
-import RecallWord from "./exerciseTypes/recallWord/RecallWord";
+import RecallWord from "./exerciseTypes/recallTest/RecallWord";
+import RecallMeaning from "./exerciseTypes/recallTest/RecallMeaning";
 import { removePunctuation } from "../utils/text/preprocessing";
 import { removeAllMatchingItemFromList } from "../utils/basic/arrays";
 import shuffle from "../assorted/fisherYatesShuffle";
@@ -194,20 +195,24 @@ function assignBookmarksToA0Exercises(bookmarks) {
 }
 
 /*
-  Now and then, a word gets RecallWord instead of its exercise: the
-  translation alone, type the word, no context and no hint. Only for a word
-  past level 1 (it has been practised with help before), and only in place of
-  an exercise on that word alone, so no other word loses its turn.
+  Now and then, a word is tested with no help: one side of it alone, type the
+  other, no context and no hint (RecallTest). It follows the levels' order:
+  at levels 2 and 3 the word is shown and they give its meaning
+  (RecallMeaning), at level 4 the meaning is shown and they give the word
+  (RecallWord). Level 1 is left alone: the word has not been practised yet.
+  Only in place of an exercise on that word alone, so no other word loses its
+  turn.
 */
 const RECALL_TEST_CHANCE = 1 / 6;
-const RECALL_TEST_MIN_LEVEL = 2;
+const RECALL_TEST_TYPE_BY_LEVEL = { 2: RecallMeaning, 3: RecallMeaning, 4: RecallWord };
 
 function sprinkleRecallTests(exercises, random = Math.random) {
   return exercises.map((exercise) => {
     if (exercise.bookmarks.length !== 1) return exercise;
-    if ((exercise.bookmarks[0].level || 1) < RECALL_TEST_MIN_LEVEL) return exercise;
+    const type = RECALL_TEST_TYPE_BY_LEVEL[exercise.bookmarks[0].level];
+    if (!type) return exercise;
     if (random() >= RECALL_TEST_CHANCE) return exercise;
-    return { type: RecallWord, bookmarks: exercise.bookmarks };
+    return { type, bookmarks: exercise.bookmarks };
   });
 }
 
