@@ -636,7 +636,7 @@ let strings = new LocalizedStrings(
       corfirmReset: "Are you sure? This will reset all words.",
       swapInfo: "Click a word to swap, or click again to remove.",
       swapInfoPlaceholderToken: "This is a placeholder, click a word to swap.",
-      disableAudio: "Can't use audio right now",
+      disableAudio: "No audio now",
 
       //ButtonFeedback
       speak: "Speak",

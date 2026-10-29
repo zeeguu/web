@@ -23,7 +23,6 @@ export default function ClozeInputField({
   isCorrectAnswer = false,
   canTypeInline = false,
   showHint = true,
-  aboveClozeElement = null,
   suppressOSKeyboard = false,
   onInputChange,
   onInputSubmit,
@@ -135,7 +134,6 @@ export default function ClozeInputField({
   return (
     <s.ClozeWrapper key={wordId} $isOver={isOver} onClick={handleWrapperClick}>
       {clozeBody}
-      {aboveClozeElement && !isExerciseOver && aboveClozeElement}
     </s.ClozeWrapper>
   );
 }

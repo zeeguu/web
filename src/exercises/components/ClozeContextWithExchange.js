@@ -48,7 +48,6 @@ export default function ClozeContextWithExchange({
   showHint = true,
   canTypeInline = false,
   showCloze = true,
-  aboveClozeElement = null,
   // Wrong typed answer whose correction is playing in the cloze slot.
   correction = null,
   // An answer is being judged by the API: the input waits.
@@ -104,7 +103,6 @@ export default function ClozeContextWithExchange({
                 isCorrectAnswer={isCorrectAnswer}
                 canTypeInline={canTypeInline}
                 showHint={showHint}
-                aboveClozeElement={aboveClozeElement}
                 suppressOSKeyboard={suppressOSKeyboard}
                 onInputChange={onInputChange}
                 onInputSubmit={onInputSubmit}

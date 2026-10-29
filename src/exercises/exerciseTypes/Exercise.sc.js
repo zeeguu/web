@@ -298,6 +298,36 @@ let RightFeedbackButton = styled(FeedbackButton)`
   }
 `;
 
+// The typed answer: [optional speaker] [input] [Check] on one line, so
+// with the phone keyboard up the whole exercise stays above it. The row
+// spaces its children with gap, so their own margins are dropped, and
+// they all take the input's height.
+let AnswerRow = styled.div`
+  display: flex;
+  align-items: stretch;
+  gap: 0.5em;
+  width: 100%;
+  max-width: 26em;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 0 0.5em;
+
+  /* && outranks the children's own margin, height and (Input's) order. */
+  && > * {
+    margin: 0;
+    height: auto;
+    order: 0;
+  }
+
+  && > button {
+    min-width: 2.6em;
+  }
+`;
+
+let CheckButton = styled(FeedbackButton)`
+  padding: 0 1em;
+`;
+
 // Check button for exercises where an answer must be picked first: an
 // outlined, unfilled look while disabled so it doesn't read as one more
 // answer before one has been picked.
@@ -449,8 +479,14 @@ let StyledGreyButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   font-family: "Montserrat";
-  :hover {
-    filter: brightness(110%);
+  @media (hover: hover) {
+    :hover {
+      filter: brightness(110%);
+    }
+  }
+  &:disabled {
+    cursor: default;
+    text-decoration: line-through;
   }
 `;
 
@@ -518,6 +554,16 @@ let CenteredWordRow = styled.div`
   }
   @media (max-width: 800px) {
     flex-wrap: wrap;
+  }
+`;
+
+// Show solution, No audio now and Report on one line. The grey links
+// bring a top margin Report lacks; the row drops it to center them.
+let ExerciseLinksRow = styled(CenteredWordRow)`
+  gap: 0.5rem 1.25rem;
+
+  && > * {
+    margin-top: 0;
   }
 `;
 
@@ -648,6 +694,9 @@ export {
   LeftFeedbackButton,
   RightFeedbackButton,
   PickFirstCheckButton,
+  AnswerRow,
+  CheckButton,
+  ExerciseLinksRow,
   EditSpeakButtonHolder,
   OrangeButtonMessage,
   MultipleChoiceContext,

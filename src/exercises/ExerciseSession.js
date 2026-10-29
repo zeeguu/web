@@ -26,6 +26,8 @@ import DigitalTimer from "../components/DigitalTimer";
 
 import useScreenWidth from "../hooks/useScreenWidth";
 import useSoftKeyboardOpen from "../hooks/useSoftKeyboardOpen";
+import useUndoKeyboardScroll from "../hooks/useUndoKeyboardScroll";
+import ExerciseLinksContext from "./ExerciseLinksContext";
 import { NarrowColumn } from "../components/ColumnWidth.sc";
 import useSubSessionTimer from "../hooks/useSubSessionTimer";
 import { APIContext } from "../contexts/APIContext";
@@ -49,6 +51,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const { setContextualInfo } = useFeedbackContext();
   const history = useHistory();
   const isSoftKeyboardOpen = useSoftKeyboardOpen();
+  useUndoKeyboardScroll(isSoftKeyboardOpen);
 
   const [hasKeptExercising, setHasKeptExercising] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -86,6 +89,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [isCorrect, setIsCorrect] = useState(null);
   const [isExerciseOver, setIsExerciseOver] = useState(false);
   const [isShowSolution, setIsShowSolution] = useState(false);
+  // BottomInput has Show solution and No audio now under its input.
+  const [linksUnderInput, setLinksUnderInput] = useState(false);
   const [selectedExerciseBookmark, setSelectedExerciseBookmark] = useState(null);
 
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
@@ -402,6 +407,13 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     );
   }
 
+  // Show solution as the learner asks for it (the exercises' own
+  // notifyShowSolution is showSolution alone).
+  function handleShowSolution() {
+    setIsShowSolution(true);
+    showSolution();
+  }
+
   function showSolution() {
     // Currently, only match results in all bookmarks being marked as wrong.
     let bookmarksToMarkAsWrong =
@@ -487,6 +499,14 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       : exerciseMessageForAPI[selectedExerciseBookmark.id];
   const CurrentExerciseComponent = fullExerciseProgression[currentIndex].type;
 
+  const exerciseLinks = {
+    onShowSolution: handleShowSolution,
+    exerciseType: currentExerciseType,
+    disableAudio,
+    setIsExerciseOver,
+    setLinksUnderInput,
+  };
+
   const wordProgressBar = isExerciseOver ? (
     <WordProgressBar
       bookmark={selectedExerciseBookmark}
@@ -521,6 +541,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
           </div>
         )}
         <s.ExForm className={isSoftKeyboardOpen ? "softKeyboardOpen" : undefined}>
+          <ExerciseLinksContext.Provider value={exerciseLinks}>
           <CurrentExerciseComponent
             key={currentIndex}
             bookmarksToStudy={currentBookmarksToStudy}
@@ -549,6 +570,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             onExampleUpdated={handleExampleUpdate}
             onExerciseLoaded={handleExerciseLoaded}
           />
+          </ExerciseLinksContext.Provider>
           {/* Gate the bottom nav (Show solution / Report / Next) on:
               (a) the bookmark being usably loaded — context_tokenized is
                   the signal the child exercise has the data it needs;
@@ -565,10 +587,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             exerciseBookmark={currentBookmarksToStudy[0]}
             moveToNextExercise={moveToNextExercise}
             onWordRemovedFromExercises={onWordRemovedFromExercises}
-            handleShowSolution={() => {
-              setIsShowSolution(true);
-              showSolution();
-            }}
+            handleShowSolution={handleShowSolution}
             toggleShow={toggleShow}
             isCorrect={isCorrect}
             isExerciseOver={isExerciseOver}
@@ -578,6 +597,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             onReportClick={() => setReportDialogOpen(true)}
             isReported={isReported}
             interactiveText={currentInteractiveText}
+            linksUnderInput={linksUnderInput}
           />
           )}
         </s.ExForm>

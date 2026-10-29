@@ -10,6 +10,8 @@ import VirtualKeyboard from "../../components/VirtualKeyboard/VirtualKeyboard";
 import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/VirtualKeyboard/SpecialCharacterBar";
 import { UserContext } from "../../contexts/UserContext";
 import useSoftKeyboardOpen from "../../hooks/useSoftKeyboardOpen";
+import ExerciseLinksContext from "../ExerciseLinksContext";
+import { EscapeLinks } from "./SolutionFeedbackLinks";
 
 import { getExpressionlength, countCommonWords } from "../../utils/text/expressions";
 import { HINT, WRONG, ALTERNATIVE } from "../ExerciseConstants";
@@ -39,8 +41,10 @@ export default function BottomInput({
   judgeAnswer,
   clearAnswerNote,
   isChecking = false,
-  // Given, the left button is "I know it" instead of Hint (RecallWord).
+  // Given, the link under the input is "I know it" instead of Hint (RecallWord).
   onIKnowIt,
+  // Sits left of the input in the answer row (the speaker, in audio exercises).
+  leadingButton = null,
 }) {
   const { userDetails } = useContext(UserContext);
   const [currentInput, setCurrentInput] = useState("");
@@ -55,6 +59,15 @@ export default function BottomInput({
   const [isKeyboardCollapsed, setIsKeyboardCollapsed] = useState(getInitialKeyboardCollapsed);
   const inputRef = useRef(null);
   const isSoftKeyboardOpen = useSoftKeyboardOpen();
+  const exerciseLinks = useContext(ExerciseLinksContext);
+  const setLinksUnderInput = exerciseLinks?.setLinksUnderInput;
+
+  // Show solution and No audio now move up here, next to Hint.
+  useEffect(() => {
+    if (!setLinksUnderInput) return;
+    setLinksUnderInput(true);
+    return () => setLinksUnderInput(false);
+  }, [setLinksUnderInput]);
   const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
   const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
@@ -224,17 +237,9 @@ export default function BottomInput({
   return (
     <>
       <div style={{ marginTop: isSoftKeyboardOpen ? "1em" : "3em", marginBottom: "1em" }}>
-        {/* Input field - centered */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginBottom: "1em",
-            width: "100%",
-          }}
-        >
-          <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
+        <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
+        <s.AnswerRow>
+          {leadingButton}
           <InputField
             ref={inputRef}
             type="text"
@@ -263,38 +268,42 @@ export default function BottomInput({
             onAnimationEnd={() => setIsIncorrect(false)}
             autoFocus
             style={{
-              paddingLeft: "1.5em",
+              paddingLeft: "1.8em",
               backgroundImage: `url(${getFlagImageUrl(answerLanguageCode)})`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "1em 1em",
               backgroundPosition: "left center",
-              backgroundPositionX: "0.4em",
-              width: "100%",
-              maxWidth: "300px",
+              backgroundPositionX: "0.5em",
+              textAlign: "left",
+              flex: 1,
+              minWidth: 0,
+              width: "auto",
+              height: "2.6em",
+              boxSizing: "border-box",
             }}
           />
-        </div>
-
-        {/* Buttons - side by side on all screen sizes */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "1em",
-            flexWrap: "wrap",
-          }}
-        >
-          {onIKnowIt ? (
-            <s.LeftFeedbackButton onClick={onIKnowIt}>{strings.iKnowIt}</s.LeftFeedbackButton>
-          ) : (
-            <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
-              {strings.hint}
-            </s.LeftFeedbackButton>
-          )}
           {/* Not disabled while the API is asked: a disabled FeedbackButton is
               struck through (the used Hint). checkResult ignores the press. */}
-          <s.RightFeedbackButton onClick={checkResult}>{strings.check}</s.RightFeedbackButton>
-        </div>
+          <s.CheckButton onClick={checkResult}>{strings.check}</s.CheckButton>
+        </s.AnswerRow>
+
+        <s.ExerciseLinksRow style={{ marginTop: "0.75rem" }}>
+          {onIKnowIt ? (
+            <s.StyledGreyButton onClick={onIKnowIt}>{strings.iKnowIt}</s.StyledGreyButton>
+          ) : (
+            <s.StyledGreyButton onClick={() => handleHint()} disabled={usedHint}>
+              {strings.hint}
+            </s.StyledGreyButton>
+          )}
+          {exerciseLinks && (
+            <EscapeLinks
+              onShowSolution={exerciseLinks.onShowSolution}
+              exerciseType={exerciseLinks.exerciseType}
+              disableAudio={exerciseLinks.disableAudio}
+              setIsExerciseOver={exerciseLinks.setIsExerciseOver}
+            />
+          )}
+        </s.ExerciseLinksRow>
 
         {/* Virtual Keyboard - shown for non-Roman alphabets */}
         {showVirtualKeyboard && (

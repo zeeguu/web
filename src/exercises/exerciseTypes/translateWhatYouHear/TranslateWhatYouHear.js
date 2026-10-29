@@ -97,13 +97,6 @@ export default function TranslateWhatYouHear({
         shouldFocus={false}
         showHint={false}
         canTypeInline={false}
-        aboveClozeElement={
-          <SpeakButton
-            bookmarkToStudy={exerciseBookmark}
-            styling="inline"
-            parentIsSpeakingControl={isButtonSpeaking}
-          />
-        }
       />
 
       {isExerciseOver && bookmarkProgressBar && (
@@ -122,6 +115,13 @@ export default function TranslateWhatYouHear({
           judgeAnswer={judge}
           clearAnswerNote={clearNote}
           isChecking={isChecking}
+          leadingButton={
+            <SpeakButton
+              bookmarkToStudy={exerciseBookmark}
+              styling="square"
+              parentIsSpeakingControl={isButtonSpeaking}
+            />
+          }
         />
       )}
       <AnswerNote

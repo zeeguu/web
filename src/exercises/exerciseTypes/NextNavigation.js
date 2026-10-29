@@ -52,6 +52,7 @@ export default function NextNavigation({
   onReportClick,
   isReported,
   interactiveText,
+  linksUnderInput,
 }) {
   const messageForAPI = isEmptyDictionary(bookmarkMessagesToAPI) ? "" : bookmarkMessagesToAPI[exerciseBookmark.id];
   const api = useContext(APIContext);
@@ -226,6 +227,7 @@ export default function NextNavigation({
         onWordRemovedFromExercises={onWordRemovedFromExercises}
         onReportClick={onReportClick}
         isReported={isReported}
+        linksUnderInput={linksUnderInput}
       />
       <FeedbackModal
         open={showFeedbackModal}
