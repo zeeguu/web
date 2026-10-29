@@ -12,6 +12,8 @@ const exerciseNames = {
   "Click_L1W_in_L2T": "ClickWordInContext",
   "Recognize_L1W_in_L2T": "FindWordInContext",
   "Listen_L2W_choose_L1W": "ListenChooseMeaning",
+  "Recall_L2W_from_L1W_no_hints": "RecallWord",
+  "Recall_L1W_from_L2W_no_hints": "RecallMeaning",
 };
 
 // Utility function to convert exercise type constants to file names

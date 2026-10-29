@@ -10,7 +10,11 @@ import { CORRECT, SOLUTION, WRONG } from "./ExerciseConstants";
 import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { pushDrillVocab } from "../assorted/drillCache";
-import { assignBookmarksToExercises, assignBookmarksToA0Exercises } from "./assignBookmarksToExercises";
+import {
+  assignBookmarksToExercises,
+  assignBookmarksToA0Exercises,
+  sprinkleRecallTests,
+} from "./assignBookmarksToExercises";
 import NextNavigation from "./exerciseTypes/NextNavigation";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { EXTENDED_SEQUENCE, EXTENDED_SEQUENCE_NO_AUDIO } from "./exerciseSequenceTypes";
@@ -186,7 +190,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     // and none asks them to type (see assignBookmarksToA0Exercises).
     let exerciseSession = isA0Ref.current
       ? assignBookmarksToA0Exercises(bookmarks)
-      : assignBookmarksToExercises(bookmarks, getExerciseSequenceType());
+      : sprinkleRecallTests(assignBookmarksToExercises(bookmarks, getExerciseSequenceType()));
     if (exerciseSession.length === 0) {
       setIsOutOfWordsToday(true);
       setIsSessionLoading(false);
