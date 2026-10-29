@@ -608,7 +608,10 @@ let strings = new LocalizedStrings(
       //FeedbackOptions
       bookmarkTooEasy: "Too Easy",
       bookmarkTooEasyTooltip: "I know this already! I don't need to practice it any longer.",
-      iKnowThisWord: "I know this word",
+      removeFromPractice: "Remove from practice",
+      whyRemoveFromPractice: "Why?",
+      iAlreadyKnowIt: "I already know it",
+      notWorthLearning: "Not worth learning",
       bookmarkTooHard: "Too Hard",
       bookmarkTooHardTooltip: "This is a little too difficult. I'd rather focus on simpler words for now.",
       dislike: "Thumb Down",
@@ -1469,7 +1472,10 @@ let strings = new LocalizedStrings(
       //FeedbackOptions
       bookmarkTooEasy: "For nemt",
       bookmarkTooEasyTooltip: "Jeg ved det allerede! Jeg behøver ikke øve det mere.",
-      iKnowThisWord: "Jeg kender dette ord",
+      removeFromPractice: "Fjern fra øvelser",
+      whyRemoveFromPractice: "Hvorfor?",
+      iAlreadyKnowIt: "Jeg kender det allerede",
+      notWorthLearning: "Ikke værd at lære",
       bookmarkTooHard: "For svært",
       bookmarkTooHardTooltip: "Dette er lidt for svært. Jeg vil hellere fokusere på enklere ord for nu.",
       dislike: "Tommelfinger ned",
