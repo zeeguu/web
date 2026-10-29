@@ -15,7 +15,20 @@ export function nativeAudioAvailable() {
   return Capacitor.getPlatform() === "ios" && Capacitor.isPluginAvailable("ZeeguuAudio");
 }
 
-const NATIVE_EVENTS = ["play", "playing", "pause", "ended", "timeupdate", "seeked", "loadedmetadata", "canplay", "error"];
+// The system volume, 0...1. Lessons play through the silent switch, but at
+// volume 0 the learner hears nothing; the player shows a hint then.
+export async function getOutputVolume() {
+  const { volume } = await ZeeguuAudio.getOutputVolume();
+  return volume;
+}
+
+// Calls back with the new volume; returns a function that stops listening.
+export function onOutputVolumeChange(callback) {
+  const handle = ZeeguuAudio.addListener("outputvolumechange", ({ volume }) => callback(volume));
+  return () => handle.then((h) => h.remove());
+}
+
+const NATIVE_EVENTS =["play", "playing", "pause", "ended", "timeupdate", "seeked", "loadedmetadata", "canplay", "error"];
 
 // The element whose lesson is loaded in the native player, if any.
 let owner = null;

@@ -29,6 +29,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "setMuted", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "setMetadata", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "getState", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getOutputVolume", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "unload", returnType: CAPPluginReturnPromise)
     ]
 
@@ -55,6 +56,7 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
     private var rateObservation: NSKeyValueObservation?
     private var timeControlObservation: NSKeyValueObservation?
     private var itemStatusObservation: NSKeyValueObservation?
+    private var outputVolumeObservation: NSKeyValueObservation?
     private var endObserver: NSObjectProtocol?
     private var timeObserver: Any?
     private var lastBackgroundTimeUpdate = Date.distantPast
@@ -89,6 +91,14 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
             name: AVAudioSession.interruptionNotification,
             object: AVAudioSession.sharedInstance()
         )
+        // Lessons ignore the silent switch (.playback), but not the volume:
+        // at 0 the lesson plays and the learner hears nothing. The page shows
+        // a hint, and hides it when this reports the volume going up.
+        outputVolumeObservation = AVAudioSession.sharedInstance().observe(\.outputVolume, options: [.new]) { [weak self] session, _ in
+            DispatchQueue.main.async {
+                self?.notifyListeners("outputvolumechange", data: ["volume": session.outputVolume])
+            }
+        }
         setUpRemoteCommands()
     }
 
@@ -198,6 +208,12 @@ public class ZeeguuAudioPlugin: CAPPlugin, CAPBridgedPlugin {
             state["isPlaying"] = self.player.rate != 0 || (self.playWhenReady && self.player.currentItem != nil)
             call.resolve(state)
         }
+    }
+
+    /// The system volume of the current output (speaker or headphones), 0...1.
+    /// Only up to date while the session is active, i.e. once play() was called.
+    @objc func getOutputVolume(_ call: CAPPluginCall) {
+        call.resolve(["volume": AVAudioSession.sharedInstance().outputVolume])
     }
 
     @objc func unload(_ call: CAPPluginCall) {

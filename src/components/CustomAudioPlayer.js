@@ -6,9 +6,12 @@ import HourglassEmptyRoundedIcon from "@mui/icons-material/HourglassEmptyRounded
 import SkipPreviousRoundedIcon from "@mui/icons-material/SkipPreviousRounded";
 import Replay10RoundedIcon from "@mui/icons-material/Replay10Rounded";
 import Forward10RoundedIcon from "@mui/icons-material/Forward10Rounded";
+import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
 import SpeedPicker from "./SpeedPicker";
 import { loadSpeed, saveSpeed } from "./audioSpeeds";
-import { NativeAudioElement, nativeAudioAvailable } from "./nativeAudio";
+import { NativeAudioElement, nativeAudioAvailable, getOutputVolume, onOutputVolumeChange } from "./nativeAudio";
+import FullWidthInfoMsg from "./FullWidthInfoMsg.sc";
+import strings from "../i18n/definitions";
 import onAppResume from "../utils/misc/onAppResume";
 
 const SEEK_SECONDS = 10;
@@ -76,6 +79,9 @@ export default function CustomAudioPlayer({
   const [nativeAudio] = useState(() => (nativeAudioAvailable() ? new NativeAudioElement() : null));
   if (nativeAudio) audioRef.current = nativeAudio;
   const useWebMediaSession = !nativeAudio && "mediaSession" in navigator;
+  // Playing at system volume 0 (iOS only: browsers don't expose it). Shown
+  // when playback starts; turning the volume up or pausing hides it.
+  const [volumeOff, setVolumeOff] = useState(false);
   const progressTimerRef = useRef(null);
   const lastSavedProgressRef = useRef(0);
 
@@ -112,6 +118,13 @@ export default function CustomAudioPlayer({
       album: language ? `${language.toUpperCase()} Lessons` : "Language Lessons",
     });
   }, [nativeAudio, title, artist, language]);
+
+  useEffect(() => {
+    if (!nativeAudio) return;
+    return onOutputVolumeChange((volume) => {
+      if (volume > 0) setVolumeOff(false);
+    });
+  }, [nativeAudio]);
 
   // Leaving the page stops the lesson, as removing an <audio> element does.
   useEffect(() => () => nativeAudio && nativeAudio.destroy(), [nativeAudio]);
@@ -406,6 +419,11 @@ export default function CustomAudioPlayer({
       startProgressTimer();
       callbacksRef.current.onPlay && callbacksRef.current.onPlay();
       if (useWebMediaSession) navigator.mediaSession.playbackState = "playing";
+      if (nativeAudio) {
+        getOutputVolume()
+          .then((volume) => setVolumeOff(volume === 0))
+          .catch(() => {}); // no hint is fine
+      }
     };
     // THE actual resume seek. `playing` fires once real playback has begun, the
     // only point iOS honors a seek on cold/paused media. We briefly mute so the
@@ -428,6 +446,7 @@ export default function CustomAudioPlayer({
     };
     const handlePause = () => {
       setIsPlaying(false);
+      setVolumeOff(false);
       if (useWebMediaSession) navigator.mediaSession.playbackState = "paused";
       clearProgressTimer();
       saveProgress(true);
@@ -602,6 +621,13 @@ export default function CustomAudioPlayer({
     saveSpeed(language, newRate);
   };
 
+  const volumeOffHint = volumeOff && (
+    <FullWidthInfoMsg style={{ alignItems: "center", marginBottom: "16px" }}>
+      <VolumeOffRoundedIcon />
+      {strings.audioVolumeIsOff}
+    </FullWidthInfoMsg>
+  );
+
   return (
     <div
       style={{
@@ -674,6 +700,8 @@ export default function CustomAudioPlayer({
 
         <SpeedPicker value={playbackRate} onChange={handleSpeedChange} disabled={isLoading} />
       </div>
+
+      {volumeOffHint}
 
       {/* Progress Bar full width, elapsed floats above the playhead, total parks below right */}
       <div style={{ marginTop: "16px" }}>
