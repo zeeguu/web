@@ -407,13 +407,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     );
   }
 
-  // Show solution as the learner asks for it (the exercises' own
-  // notifyShowSolution is showSolution alone).
-  function handleShowSolution() {
-    setIsShowSolution(true);
-    showSolution();
-  }
-
   function showSolution() {
     // Currently, only match results in all bookmarks being marked as wrong.
     let bookmarksToMarkAsWrong =
@@ -500,7 +493,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const CurrentExerciseComponent = fullExerciseProgression[currentIndex].type;
 
   const exerciseLinks = {
-    onShowSolution: handleShowSolution,
+    onShowSolution: showSolution,
     exerciseType: currentExerciseType,
     disableAudio,
     setIsExerciseOver,
@@ -587,7 +580,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             exerciseBookmark={currentBookmarksToStudy[0]}
             moveToNextExercise={moveToNextExercise}
             onWordRemovedFromExercises={onWordRemovedFromExercises}
-            handleShowSolution={handleShowSolution}
+            handleShowSolution={showSolution}
             toggleShow={toggleShow}
             isCorrect={isCorrect}
             isExerciseOver={isExerciseOver}

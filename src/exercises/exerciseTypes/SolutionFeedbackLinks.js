@@ -62,7 +62,7 @@ export default function SolutionFeedbackLinks({
         style={{
           display: "flex",
           alignItems: "center",
-          color: "#999",
+          color: "var(--text-muted)",
           fontSize: "0.75rem",
           gap: "0.25rem",
         }}
@@ -80,7 +80,7 @@ export default function SolutionFeedbackLinks({
           border: "none",
           padding: "0.25rem",
           cursor: "pointer",
-          color: "grey",
+          color: "var(--text-muted)",
           display: "flex",
           alignItems: "center",
           gap: "0.25rem",

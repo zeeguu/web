@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useRef } from "react";
+import { useEffect, useLayoutEffect, useState, useContext, useRef } from "react";
 import levenshtein from "fast-levenshtein";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
@@ -62,8 +62,9 @@ export default function BottomInput({
   const exerciseLinks = useContext(ExerciseLinksContext);
   const setLinksUnderInput = exerciseLinks?.setLinksUnderInput;
 
-  // Show solution and No audio now move up here, next to Hint.
-  useEffect(() => {
+  // Show solution and No audio now move up here, next to Hint. Before the
+  // first paint, so the card's bottom row never shows them too.
+  useLayoutEffect(() => {
     if (!setLinksUnderInput) return;
     setLinksUnderInput(true);
     return () => setLinksUnderInput(false);
@@ -237,7 +238,7 @@ export default function BottomInput({
   return (
     <>
       <div style={{ marginTop: isSoftKeyboardOpen ? "1em" : "3em", marginBottom: "1em" }}>
-        <div className="type-feedback">{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
+        <div className="type-feedback" style={{ textAlign: "center" }}>{feedbackMessage !== "" && <p>{feedbackMessage}</p>}</div>
         <s.AnswerRow>
           {leadingButton}
           <InputField
