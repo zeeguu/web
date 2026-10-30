@@ -31,6 +31,7 @@ export default function LanguageModal({ open, setOpen }) {
   const [activeLanguages, setActiveLanguages] = useState(null);
   const [streaksByCode, setStreaksByCode] = useState({});
   const [practicedByCode, setPracticedByCode] = useState({});
+  const [lastPracticedByCode, setLastPracticedByCode] = useState({});
   const [isSwitching, setIsSwitching] = useState(false);
 
   useEffect(() => {
@@ -47,12 +48,15 @@ export default function LanguageModal({ open, setOpen }) {
       if (cancelled) return;
       const streakMap = {};
       const practicedMap = {};
+      const lastPracticedMap = {};
       data.forEach((l) => {
         streakMap[l.code] = l.daily_streak;
         practicedMap[l.code] = l.practiced_today;
+        lastPracticedMap[l.code] = l.last_practiced;
       });
       setStreaksByCode(streakMap);
       setPracticedByCode(practicedMap);
+      setLastPracticedByCode(lastPracticedMap);
     });
 
     return () => {
@@ -99,12 +103,17 @@ export default function LanguageModal({ open, setOpen }) {
 
     const filteredLanguages = activeLanguages.filter((lang) => lang.code !== userDetails.native_language);
 
+    // Current language first, then most recently practised (ISO timestamps
+    // compare as strings; never-practised languages go last).
     return filteredLanguages.sort((a, b) => {
       if (a.code === userDetails.learned_language) return -1;
       if (b.code === userDetails.learned_language) return 1;
+      const aLast = lastPracticedByCode[a.code] || "";
+      const bLast = lastPracticedByCode[b.code] || "";
+      if (aLast !== bLast) return aLast < bLast ? 1 : -1;
       return (streaksByCode[b.code] || 0) - (streaksByCode[a.code] || 0);
     });
-  }, [activeLanguages, userDetails.native_language, userDetails.learned_language, streaksByCode]);
+  }, [activeLanguages, userDetails.native_language, userDetails.learned_language, streaksByCode, lastPracticedByCode]);
 
   function updateLearnedLanguage(lang_code) {
     setLearnedLanguageCode(lang_code);
