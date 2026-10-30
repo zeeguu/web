@@ -17,7 +17,7 @@ export const KeyboardContainer = styled.div`
   @media (max-width: 768px) {
     padding: 6px 0;
     max-width: 100%;
-    margin: 0;
+    margin: 1em 0 0;
     border-radius: 0.3em;
   }
 `;
@@ -97,7 +97,7 @@ export const CollapsedKeyboardWithKeys = styled.div`
 
   @media (max-width: 768px) {
     max-width: 100%;
-    margin: 0;
+    margin: 1em 0 0;
     border-radius: 0.3em;
     padding: 6px;
   }
