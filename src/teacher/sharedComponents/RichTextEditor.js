@@ -6,9 +6,10 @@ import * as s from "../styledComponents/TitleInput.sc";
 import styled from "styled-components";
 
 const StyledEditorWrapper = styled.div`
-  background-color: white;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
   border-radius: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--input-border);
 
   .ProseMirror {
     min-height: 400px;
@@ -57,7 +58,7 @@ const StyledEditorWrapper = styled.div`
       margin-left: 2em;
       padding: 1em 1.5em;
       border-left: 4px solid #ff8c00;
-      background-color: #f9f9f9;
+      background-color: var(--bg-secondary);
       font-style: italic;
       position: relative;
     }
@@ -84,7 +85,7 @@ const StyledEditorWrapper = styled.div`
   }
 
   .toolbar {
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--input-border);
     padding: 8px;
     display: flex;
     gap: 4px;
@@ -92,19 +93,22 @@ const StyledEditorWrapper = styled.div`
 
     button {
       padding: 6px 12px;
-      border: 1px solid #ddd;
-      background: white;
+      border: 1px solid var(--border-light);
+      background: var(--input-bg);
+      color: var(--text-primary);
       border-radius: 3px;
       cursor: pointer;
       font-size: 14px;
 
-      &:hover {
-        background: #f5f5f5;
+      @media (hover: hover) {
+        &:hover {
+          background: var(--hover-bg);
+        }
       }
 
       &.is-active {
-        background: #e0e0e0;
-        border-color: #999;
+        background: var(--active-bg);
+        border-color: var(--text-faint);
       }
     }
   }
