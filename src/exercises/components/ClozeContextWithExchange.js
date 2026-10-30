@@ -143,8 +143,10 @@ export default function ClozeContextWithExchange({
       )}
 
       {/* Enter alone isn't discoverable: the other typed exercises have a
-          Check button, so learners look for one here too. */}
-      {canTypeInline && !isExerciseOver && !correction && onInputSubmit && (
+          Check button, so learners look for one here too. Hidden once the
+          typed word is right: the exercise auto-submits a moment later, and
+          a press in between would submit it twice. */}
+      {canTypeInline && !isExerciseOver && !isCorrectAnswer && !correction && onInputSubmit && (
         <div style={{ marginTop: "1em" }}>
           <s.PickFirstCheckButton
             onClick={() => onInputSubmit(inputValue)}
