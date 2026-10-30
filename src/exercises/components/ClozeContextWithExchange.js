@@ -8,6 +8,8 @@ import SpecialCharacterBar, { hasSpecialCharacters } from "../../components/Virt
 import { needsVirtualKeyboard } from "../../utils/misc/languageScripts.js";
 import { UserContext } from "../../contexts/UserContext.js";
 import { findClozeWordIds } from "../utils/findClozeWordIds.js";
+import * as s from "../exerciseTypes/Exercise.sc.js";
+import strings from "../../i18n/definitions.js";
 
 /**
  * Orchestrates cloze exercises by combining:
@@ -137,6 +139,21 @@ export default function ClozeContextWithExchange({
             currentValue={inputValue}
             inputRef={clozeInputRef.current}
           />
+        </div>
+      )}
+
+      {/* Enter alone isn't discoverable: the other typed exercises have a
+          Check button, so learners look for one here too. Hidden once the
+          typed word is right: the exercise auto-submits a moment later, and
+          a press in between would submit it twice. */}
+      {canTypeInline && !isExerciseOver && !isCorrectAnswer && !correction && onInputSubmit && (
+        <div>
+          <s.PickFirstCheckButton
+            onClick={() => onInputSubmit(inputValue)}
+            disabled={!inputValue?.trim()}
+          >
+            {strings.check}
+          </s.PickFirstCheckButton>
         </div>
       )}
     </div>
