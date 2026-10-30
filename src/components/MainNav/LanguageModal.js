@@ -19,7 +19,6 @@ import LocalStorage from "../../assorted/LocalStorage.js";
 import { getUserCefrLevel } from "../../utils/misc/userCefrLevel.js";
 import { saveSharedUserInfo } from "../../utils/cookies/userInfo.js";
 
-const MAX_MODAL_LANGUAGES = 7;
 const spinnerSx = { color: "var(--streak-banner-text)" };
 
 export default function LanguageModal({ open, setOpen }) {
@@ -132,7 +131,7 @@ export default function LanguageModal({ open, setOpen }) {
         <RadioGroup
           radioGroupLabel=""
           name="active-language"
-          options={reorderedLanguages.slice(0, MAX_MODAL_LANGUAGES)}
+          options={reorderedLanguages}
           selectedValue={learnedLanguageCode}
           onChange={(e) => updateLearnedLanguage(e.target.value)}
           optionLabel={(e) => (
