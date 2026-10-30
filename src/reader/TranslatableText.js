@@ -170,5 +170,14 @@ export function TranslatableText({
     );
   }
 
+  // A blank line the author left between paragraphs: no words, just space
+  if (interactiveText.formatting === "break") {
+    return (
+      <s.TranslatableText>
+        <div className="textParagraph break" />
+      </s.TranslatableText>
+    );
+  }
+
   return <s.TranslatableText data-show-mwe-hints={showMweHints === true}>{renderedText}</s.TranslatableText>;
 }
