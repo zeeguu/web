@@ -15,6 +15,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CircularProgress from "@mui/material/CircularProgress";
 import DynamicFlagImage from "../DynamicFlagImage.js";
 import LanguageOptionLabel from "./LanguageOptionLabel.js";
+import { orderModalLanguages } from "./orderModalLanguages.js";
 import LocalStorage from "../../assorted/LocalStorage.js";
 import { getUserCefrLevel } from "../../utils/misc/userCefrLevel.js";
 import { saveSharedUserInfo } from "../../utils/cookies/userInfo.js";
@@ -52,7 +53,7 @@ export default function LanguageModal({ open, setOpen }) {
       data.forEach((l) => {
         streakMap[l.code] = l.daily_streak;
         practicedMap[l.code] = l.practiced_today;
-        lastPracticedMap[l.code] = l.last_practiced;
+        lastPracticedMap[l.code] = l.last_practiced_date;
       });
       setStreaksByCode(streakMap);
       setPracticedByCode(practicedMap);
@@ -103,15 +104,10 @@ export default function LanguageModal({ open, setOpen }) {
 
     const filteredLanguages = activeLanguages.filter((lang) => lang.code !== userDetails.native_language);
 
-    // Current language first, then most recently practised (ISO timestamps
-    // compare as strings; never-practised languages go last).
-    return filteredLanguages.sort((a, b) => {
-      if (a.code === userDetails.learned_language) return -1;
-      if (b.code === userDetails.learned_language) return 1;
-      const aLast = lastPracticedByCode[a.code] || "";
-      const bLast = lastPracticedByCode[b.code] || "";
-      if (aLast !== bLast) return aLast < bLast ? 1 : -1;
-      return (streaksByCode[b.code] || 0) - (streaksByCode[a.code] || 0);
+    return orderModalLanguages(filteredLanguages, {
+      learnedLanguage: userDetails.learned_language,
+      lastPracticedByCode,
+      streaksByCode,
     });
   }, [activeLanguages, userDetails.native_language, userDetails.learned_language, streaksByCode, lastPracticedByCode]);
 
