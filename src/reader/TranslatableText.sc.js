@@ -425,6 +425,9 @@ const TranslatableText = styled.div`
       margin: 1em 0;
       line-height: 1.6;
     }
+    &.break {
+      height: 1.6em;
+    }
 
     /* List styling */
     &.ul {
