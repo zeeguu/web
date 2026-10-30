@@ -89,6 +89,27 @@ Zeeguu_API.prototype.getTranslationAlternatives = function (from_lang, to_lang, 
   }).then((response) => response.data);
 };
 
+// The translators disagreed on a lookup: an LLM settles it in the sentence.
+// Answers { translation, reason, changed }; `changed` means the bookmark
+// moved to `translation` (never when the learner changed it meanwhile).
+Zeeguu_API.prototype.resolveTranslationDisagreement = function (
+  from_lang,
+  to_lang,
+  word,
+  context,
+  candidates,
+  shown,
+  bookmark_id,
+) {
+  return this.apiPost(`/resolve_translation_disagreement/${from_lang}/${to_lang}`, {
+    word: word,
+    context: context,
+    candidates: candidates,
+    shown: shown,
+    bookmark_id: bookmark_id,
+  }).then((response) => response.data);
+};
+
 Zeeguu_API.prototype.getMultipleTranslations = function (
   from_lang,
   to_lang,

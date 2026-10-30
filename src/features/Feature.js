@@ -32,6 +32,12 @@ const Feature = {
     return this.is_enabled("verbal_flashcards");
   },
   
+  // An LLM settles lookups the translators disagree on, instead of the
+  // alternatives menu opening by itself. Dev accounts only for now.
+  resolve_disagreements: function () {
+    return this.is_enabled("resolve_disagreements");
+  },
+
   always_open_externally: function () {
     return this.is_enabled("always_open_externally");
   },
