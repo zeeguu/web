@@ -147,7 +147,7 @@ export default function ClozeContextWithExchange({
           typed word is right: the exercise auto-submits a moment later, and
           a press in between would submit it twice. */}
       {canTypeInline && !isExerciseOver && !isCorrectAnswer && !correction && onInputSubmit && (
-        <div style={{ marginTop: "1em" }}>
+        <div>
           <s.PickFirstCheckButton
             onClick={() => onInputSubmit(inputValue)}
             disabled={!inputValue?.trim()}
