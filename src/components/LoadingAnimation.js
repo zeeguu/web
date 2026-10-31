@@ -52,19 +52,6 @@ const PROBE_TIMEOUT_MS = 4000;
 
 const NET_PROBE_URL = "https://1.1.1.1/cdn-cgi/trace";
 
-const LANG_DISPLAY = (() => {
-  try {
-    return new Intl.DisplayNames(["en"], { type: "language" });
-  } catch {
-    return null;
-  }
-})();
-
-function learnedLanguageName(code) {
-  if (!code || !LANG_DISPLAY) return null;
-  try { return LANG_DISPLAY.of(code); } catch { return null; }
-}
-
 async function timedProbe(url, signal, { noCors = false } = {}) {
   const start = performance.now();
   try {
@@ -99,14 +86,21 @@ const REASSURANCE_SUFFIXES = [
   "Patience: nearing C1 level…",
 ];
 
-function diagnosePrefix(netResult, serverResult) {
+// A fast /ping means the connection to us is fine, whatever the net probe
+// says: the wait is the endpoint's own work (an LLM call). The net probe only
+// tells "your connection" from "our server" when /ping is slow or failed too.
+function connectionIsSlow(netResult, serverResult) {
+  return serverResult !== "fast" && (netResult === "failed" || netResult === "slow");
+}
+
+export function diagnosePrefix(netResult, serverResult) {
   if (netResult === "failed" && serverResult === "failed") {
     return "You may be offline.";
   }
   // Net probe failed (CORS / DNS / etc) — we can't be sure about the user's
   // network, but blaming the server would be wrong either. Default to the
   // connection-side message, which is the more common cause.
-  if (netResult === "failed" || netResult === "slow") {
+  if (connectionIsSlow(netResult, serverResult)) {
     return "Your connection seems slow.";
   }
   if (serverResult === "failed") {
@@ -129,17 +123,13 @@ function diagnoseMessage(netResult, serverResult, tick) {
 // resolved (on a hard offline they're set instantly from navigator.onLine), so
 // when we already know the connection is down or slow, say so plainly — the
 // neutral "While waiting…" reads as fake when nothing is actually loading.
-function drillCaption(netResult, serverResult, langName) {
-  const subject = langName || "vocabulary";
-  // Offline state is stated by the primary "You're offline" headline, so the
-  // caption here is just the invitation — no need to repeat "no connection".
-  if (netResult === "failed" && serverResult === "failed") {
-    return `Practice some ${subject} while you wait`;
+// Offline state is stated by the primary "You're offline" headline, so there
+// the caption is just the invitation — no need to repeat "no connection".
+export function drillCaption(netResult, serverResult) {
+  if (connectionIsSlow(netResult, serverResult) && serverResult !== "failed") {
+    return "Slow connection — while waiting, remember some of your words…";
   }
-  if (netResult === "failed" || netResult === "slow") {
-    return `Slow connection — practice some ${subject} while you wait`;
-  }
-  return `Practice some ${subject} while you wait`;
+  return "While waiting, remember some of your words…";
 }
 
 // The lds-ellipsis spinner needs four nodes: each visible dot runs its own
@@ -276,9 +266,6 @@ export default function LoadingAnimation({
   const knownOffline = isOffline;
 
   const spinnerVariant = isTeacherWebsite ? "teacher" : "student";
-  const langName = showDrill
-    ? learnedLanguageName(LocalStorage.getLearnedLanguage())
-    : null;
 
   return (
     <>
@@ -318,7 +305,7 @@ export default function LoadingAnimation({
               }}
             >
               {showDrill
-                ? drillCaption(netProbe, serverProbe, langName)
+                ? drillCaption(netProbe, serverProbe)
                 : diagnoseMessage(netProbe, serverProbe, reassuranceTick)}
             </div>
           )}

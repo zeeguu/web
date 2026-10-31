@@ -3,31 +3,10 @@ import { useHistory } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import useQuery from "../hooks/useQuery";
-import useTimedProgressMessage from "../hooks/useTimedProgressMessage";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticleLanguageModal from "./ArticleLanguageModal";
 import ErrorDialog from "../components/ErrorDialog";
 import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/userCefrLevel";
-
-const PROGRESS_STAGES = {
-  simplify: [
-    { atSeconds: 0, message: "Sending article to Zeeguu…" },
-    { atSeconds: 3, message: "Reading the article…" },
-    { atSeconds: 10, message: "Rewriting for your level…" },
-    { atSeconds: 25, message: "Almost there — longer articles take a moment…" },
-  ],
-  translate: [
-    { atSeconds: 0, message: "Sending article to Zeeguu…" },
-    { atSeconds: 3, message: "Reading the article…" },
-    { atSeconds: 8, message: "Translating and adapting to your level…" },
-    { atSeconds: 25, message: "Almost there — longer articles take a moment…" },
-  ],
-  promote: [
-    { atSeconds: 0, message: "Sending article to Zeeguu…" },
-    { atSeconds: 3, message: "Preparing the article…" },
-    { atSeconds: 10, message: "Almost ready…" },
-  ],
-};
 
 export default function SharedArticleHandler() {
   const api = useContext(APIContext);
@@ -41,11 +20,6 @@ export default function SharedArticleHandler() {
   const [errorMessage, setErrorMessage] = useState("");
   const [articleDetection, setArticleDetection] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [processingAction, setProcessingAction] = useState(null);
-
-  const progressMessage = useTimedProgressMessage(
-    isProcessing && processingAction ? PROGRESS_STAGES[processingAction] : null,
-  );
 
   useEffect(() => {
     if (uploadId) {
@@ -91,7 +65,7 @@ export default function SharedArticleHandler() {
           history.replace("/read/article?id=" + result.id);
           return;
         }
-        createAndNavigate("promote", false);
+        createAndNavigate(false);
       },
       (error) => {
         setStatus("error");
@@ -105,9 +79,8 @@ export default function SharedArticleHandler() {
     history.replace(path);
   };
 
-  const beginProcessing = (action) => {
+  const beginProcessing = () => {
     setIsProcessing(true);
-    setProcessingAction(action);
     setStatus("loading");
   };
 
@@ -126,13 +99,13 @@ export default function SharedArticleHandler() {
     );
   };
 
-  const runArticleConversion = (apiFn, action, noTranslate) => {
-    beginProcessing(action);
+  const runArticleConversion = (apiFn, noTranslate) => {
+    beginProcessing();
     apiFn(uploadId, (result) => navigateToArticle(result.id, noTranslate), onConversionError);
   };
 
-  const createAndNavigate = (action, noTranslate) => {
-    beginProcessing(action);
+  const createAndNavigate = (noTranslate) => {
+    beginProcessing();
     api.findOrCreateArticle(
       { url: sharedUrl },
       (result) => {
@@ -144,22 +117,22 @@ export default function SharedArticleHandler() {
   };
 
   const handleTranslateAndAdapt = () => {
-    if (uploadId) return runArticleConversion(api.translateAndAdaptArticleUpload.bind(api), "translate");
-    beginProcessing("translate");
+    if (uploadId) return runArticleConversion(api.translateAndAdaptArticleUpload.bind(api));
+    beginProcessing();
     api.translateAndAdaptArticle(
       { url: sharedUrl, articleId: articleDetection?.id },
       userDetails.learned_language,
       (result) => navigateToArticle(result.id),
       (error) => {
         console.error("Translation failed:", error);
-        createAndNavigate("promote", false);
+        createAndNavigate(false);
       },
     );
   };
 
   const handleSimplify = () => {
-    if (uploadId) return runArticleConversion(api.simplifyArticleUpload.bind(api), "simplify");
-    beginProcessing("simplify");
+    if (uploadId) return runArticleConversion(api.simplifyArticleUpload.bind(api));
+    beginProcessing();
     api.findOrCreateArticle(
       { url: sharedUrl },
       (result) => {
@@ -184,8 +157,8 @@ export default function SharedArticleHandler() {
   };
 
   const handleReadOriginal = () => {
-    if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), "promote", true);
-    createAndNavigate("promote", true);
+    if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), true);
+    createAndNavigate(true);
   };
 
   // Backing out of the choice: nothing has been saved yet, so leave for the
@@ -194,12 +167,14 @@ export default function SharedArticleHandler() {
   const handleCancel = () => history.replace("/articles");
 
   const handleReadAsIs = () => {
-    if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), "promote", false);
-    createAndNavigate("promote", false);
+    if (uploadId) return runArticleConversion(api.promoteArticleUpload.bind(api), false);
+    createAndNavigate(false);
   };
 
   if (status === "loading") {
-    const message = isProcessing ? progressMessage || "Preparing article…" : "Opening article…";
+    // One line for the whole wait; LoadingAnimation reassures during it
+    // ("Still working…", then the vocabulary drill).
+    const message = isProcessing ? "Preparing your article…" : "Opening article…";
     return (
       <LoadingAnimation
         /* Simplification / translation routinely take 15-25s — hold back the
