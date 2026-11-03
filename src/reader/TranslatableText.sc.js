@@ -286,6 +286,38 @@ const TranslatableText = styled.div`
     display: flex;
   }
 
+  /* The translators disagreed and an LLM is looking at the sentence: the
+   * vote's winner stays readable, breathing slowly. */
+  z-tag z-tran.checking {
+    animation: blink 1.2s ease-in-out infinite alternate;
+  }
+
+  /* The LLM's answer replaced the vote's winner: one flash. */
+  z-tag z-tran.settled {
+    animation: settledFlash 1.4s ease-out 1;
+  }
+
+  @keyframes settledFlash {
+    0% {
+      background-color: var(--mwe-adjacent-color);
+      color: var(--bg-primary);
+    }
+    100% {
+      background-color: var(--mwe-adjacent-bg);
+      color: var(--text-primary);
+    }
+  }
+
+  /* Marks a translation an LLM checked in context. */
+  z-tag z-tran .settledMark {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.2em;
+    font-size: 0.8em;
+    opacity: 0.45;
+    cursor: pointer;
+  }
+
   /* A piece of a just-broken fusion, waiting for its own translation. */
   z-tag z-tran.pending {
     animation: blink 0.75s linear infinite alternate;

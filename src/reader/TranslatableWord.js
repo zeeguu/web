@@ -4,6 +4,8 @@ import extractDomain from "../utils/web/extractDomain";
 import addProtocolToLink from "../utils/web/addProtocolToLink";
 import redirect from "../utils/routing/routing";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import Feature from "../features/Feature";
 import EditBookmarkModal from "../words/EditBookmarkModal";
 import ExplanationModal from "./ExplanationModal";
 import { matchTranslationCase } from "./translationCase";
@@ -112,10 +114,12 @@ export default function TranslatableWord({
           if (mweGroupId && setLoadingMWEGroupId) {
             setLoadingMWEGroupId(null);
           }
-          // Backend flagged a 3-way provider disagreement; surface the
-          // alternatives menu so the user can pick the right answer.
+          // Backend flagged a provider disagreement. Either an LLM settles
+          // it in the background, or the alternatives menu opens so the
+          // learner can pick.
           if (word.disagreement) {
-            openAlterMenu(word);
+            if (Feature.resolve_disagreements()) settleDisagreement(word);
+            else openAlterMenu(word);
           }
         }, onFusionComplete);
       } else {
@@ -129,6 +133,21 @@ export default function TranslatableWord({
       setIsClickedToPronounce(true);
       interactiveText.pronounce(word, null, mweTextToSpeak);
     }
+  }
+
+  // The vote's winner stays on screen while the LLM looks at the sentence, so
+  // reading isn't held up. A changed answer swaps in with a flash. If the call
+  // fails (the API gives up after 4s), the winner just stays: a menu opening
+  // by itself seconds later, after the learner has read on, is worse than
+  // nothing, and the alternatives are still a tap away.
+  function settleDisagreement(word) {
+    word.isResolving = true;
+    const settled = (changed) => {
+      word.isResolving = false;
+      word.justSettled = changed;
+      wordUpdated();
+    };
+    interactiveText.resolveDisagreement(word, settled, () => settled(false));
   }
 
   function openAlterMenu(word) {
@@ -482,6 +501,10 @@ export default function TranslatableWord({
     );
   }
 
+  let tranClass = "";
+  if (word.isResolving) tranClass = "checking";
+  else if (word.justSettled) tranClass = "settled";
+
   return (
     <>
       <z-tag class={wordClass} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
@@ -498,11 +521,24 @@ export default function TranslatableWord({
           </z-tran>
         )}
         {word.translation && (isTranslationVisible || word.isTranslationVisible) && (
-          <z-tran chosen={word.translation} translation0={word.translation} ref={refToTranslation}>
+          <z-tran
+            class={tranClass}
+            chosen={word.translation}
+            translation0={word.translation}
+            ref={refToTranslation}
+            onAnimationEnd={() => {
+              word.justSettled = false;
+            }}
+          >
             <span className="translationContainer">
               <span className="translation" onClick={(e) => toggleAlterMenu(e, word)}>
                 {matchTranslationCase(word.word, word.origin, word.translation)}
               </span>
+              {word.resolution && (
+                <span className="settledMark" title="Checked in context" onClick={(e) => toggleAlterMenu(e, word)}>
+                  <AutoAwesomeIcon fontSize="inherit" />
+                </span>
+              )}
               {!readOnly && (
                 <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
                   {showingAlterMenu ? "▲" : "▼"}

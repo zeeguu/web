@@ -253,6 +253,48 @@ export default class InteractiveText {
       });
   }
 
+  // The translators disagreed on this lookup: ask the API to settle it in the
+  // sentence. Sets word.resolution ({ translation, reason, changed }) and, when
+  // the bookmark moved, the word's translation; then onSettled(changed).
+  resolveDisagreement(word, onSettled, onError) {
+    let context;
+    [context] = this.getContextAndCoordinates(word);
+    const selection = word.mweExpression || word.word;
+    const candidates = (word.alternatives || []).map((alt) => alt.translation);
+    const shown = word.translation;
+
+    this.api
+      .resolveTranslationDisagreement(
+        this.language,
+        localStorage.native_language,
+        selection,
+        context,
+        candidates,
+        shown,
+        word.bookmark_id ?? null,
+      )
+      .then((result) => {
+        // The learner picked another translation while we waited.
+        if (word.translation !== shown) {
+          onSettled && onSettled(false);
+          return;
+        }
+        word.resolution = result;
+        if (result.changed) {
+          word.translation = result.translation;
+          word.service_name = "LLM - resolved disagreement";
+          // translate() fed the vote's winner to the wait drill; keyed by the
+          // looked-up text, so this replaces it.
+          pushDrillVocab(this.language, [{ o: selection, t: result.translation }], "translation");
+        }
+        onSettled && onSettled(result.changed);
+      })
+      .catch((e) => {
+        console.error("Resolving the disagreement failed:", e);
+        onError && onError(e);
+      });
+  }
+
   // ADR 022 follow-up: lazy-fetch alternatives for a word whose
   // /translate_word response didn't include them (own-past-translation
   // path). Triggered from AlterMenu open; pays the voter cost only on

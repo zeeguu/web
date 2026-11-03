@@ -188,6 +188,10 @@ export default function AlterMenu({
   let headerLabel;
   if (loadingAlternatives) {
     headerLabel = "Checking translators…";
+  } else if (word.isResolving) {
+    headerLabel = "Checking in context…";
+  } else if (word.resolution) {
+    headerLabel = "Checked in context";
   } else if (hasAlternatives) {
     // Also covers `word.disagreement`: the learner only needs to know there
     // are other options, not that the engines split.
@@ -199,10 +203,12 @@ export default function AlterMenu({
   }
   const showSources = showTranslators();
   const header = <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>{headerLabel}</div>;
+  const reason = word.resolution?.reason;
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>
       {header}
+      {reason && <div className="settledReason">{reason}</div>}
       {hasAlternatives && (
         <div
           className={alternativesArriveLate ? "alternativesList growIn" : "alternativesList"}
