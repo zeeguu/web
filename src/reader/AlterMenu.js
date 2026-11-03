@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AlterMenuSC } from "./AlterMenu.sc";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import { settledReason } from "./settledReason";
 
 const HEADER_BAND_STYLE = {
   whiteSpace: "nowrap",
@@ -203,12 +205,10 @@ export default function AlterMenu({
   }
   const showSources = showTranslators();
   const header = <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>{headerLabel}</div>;
-  const reason = word.resolution?.reason;
 
   return (
     <AlterMenuSC ref={refToAlterMenu}>
       {header}
-      {reason && <div className="settledReason">{reason}</div>}
       {hasAlternatives && (
         <div
           className={alternativesArriveLate ? "alternativesList growIn" : "alternativesList"}
@@ -232,6 +232,12 @@ export default function AlterMenu({
         {explainSelection && (
           <div className="neutralLink" onClick={() => explainSelection(word)}>
             Explain
+            {/* Same mark as on the word: Explain shows why it was checked. */}
+            {settledReason(word) && (
+              <span className="settledMark">
+                <AutoAwesomeIcon fontSize="inherit" />
+              </span>
+            )}
           </div>
         )}
         {editTranslation && (

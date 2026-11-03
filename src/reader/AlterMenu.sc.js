@@ -71,15 +71,6 @@ const AlterMenuSC = styled.div`
     font-weight: 600;
   }
 
-  /* Why the LLM settled a disagreement the way it did. */
-  .settledReason {
-    color: var(--altermenu-text);
-    font-style: italic;
-    font-weight: 400;
-    line-height: 1.25em;
-    margin: 0.2em 0 0.4em 0;
-  }
-
   .noAlternatives {
     color: gray;
     font-style: italic;
@@ -144,6 +135,14 @@ const AlterMenuSC = styled.div`
         filter: brightness(110%);
       }
     }
+  }
+
+  /* The word's "checked in context" mark, beside Explain. */
+  .settledMark {
+    display: inline-flex;
+    vertical-align: middle;
+    margin-left: 0.3em;
+    font-size: 0.8em;
   }
 
   .altermenuSourceLabel {
