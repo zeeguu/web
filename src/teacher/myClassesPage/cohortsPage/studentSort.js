@@ -6,6 +6,7 @@ import { daysInactive, MIN_EXERCISES_FOR_CORRECTNESS } from "./studentRowText";
 // teacher's, kept across classes (see StudentsActivityOverviewContent).
 export const SORT_COLUMNS = {
   name: { first: "asc" },
+  level: { first: "asc" },
   last_active: { first: "desc" }, // longest inactive first: who needs attention
   time: { first: "desc" },
   texts: { first: "desc" },
@@ -19,6 +20,7 @@ const byName = (a, b) => (a.name || "").localeCompare(b.name || "");
 
 // A comparable value per column, larger = more (activity, recency of absence…).
 const VALUE = {
+  level: (s) => s.cefr_level ?? -1, // never set: below A0
   last_active: (s) => daysInactive(s.last_active),
   time: (s) => s.total_time || 0,
   texts: (s) => s.number_of_texts || 0,

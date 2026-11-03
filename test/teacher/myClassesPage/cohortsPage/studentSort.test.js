@@ -74,3 +74,14 @@ describe("matchesSearch", () => {
     expect(matchesSearch(students[0], "  ")).toBe(true);
   });
 });
+
+describe("sorting by level", () => {
+  it("goes from the lowest level up, unset levels first", () => {
+    const mixed = [
+      { id: 1, name: "B", cefr_level: 3 },
+      { id: 2, name: "A", cefr_level: 0 },
+      { id: 3, name: "C" },
+    ];
+    expect(sortStudents(mixed, { key: "level", dir: "asc" }).map((s) => s.id)).toEqual([3, 2, 1]);
+  });
+});

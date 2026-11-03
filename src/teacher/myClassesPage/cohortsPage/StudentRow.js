@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import DeleteStudentWarning from "./DeleteStudentWarning";
 import * as t from "./ClassTable.sc";
-import { barWidthPercent, correctText, lastActiveText, minutesText } from "./studentRowText";
+import { barWidthPercent, correctText, lastActiveText, levelText, minutesText } from "./studentRowText";
 
 const KIND_LABEL = {
   reading_time: "Reading",
@@ -13,7 +13,14 @@ const KIND_LABEL = {
 
 // One student in the class table. The row opens the student; × removes them
 // from the class (after asking).
-export default function StudentRow({ student, cohortID, classMaxTime, duplicates = [], removeStudentFromCohort }) {
+export default function StudentRow({
+  student,
+  cohortID,
+  classMaxTime,
+  showLevel,
+  duplicates = [],
+  removeStudentFromCohort,
+}) {
   const history = useHistory();
   const [confirmingRemove, setConfirmingRemove] = useState(false);
   const open = () => history.push(`/teacher/classes/viewStudent/${student.id}/class/${cohortID}`);
@@ -53,6 +60,11 @@ export default function StudentRow({ student, cohortID, classMaxTime, duplicates
             </t.Sub>
           )}
         </td>
+        {showLevel && (
+          <td className="level" title="The level the student set for this language">
+            {levelText(student.cefr_level)}
+          </td>
+        )}
         <td className="last-active">
           <t.Muted>{lastActiveText(student.last_active)}</t.Muted>
         </td>

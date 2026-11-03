@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
 import {
+  activityKindsShown,
   barWidthPercent,
+  levelText,
+  studentsDifferInLevel,
   correctText,
   daysInactive,
   lastActiveText,
@@ -41,5 +44,41 @@ describe("minutesText and barWidthPercent", () => {
     expect(barWidthPercent(0, 3900)).toBe(0);
     expect(barWidthPercent(10, 3900)).toBe(3);
     expect(barWidthPercent(1950, 3900)).toBe(50);
+  });
+});
+
+describe("levelText", () => {
+  it("names the 0..6 levels, A0 included", () => {
+    expect(levelText(0)).toBe("A0");
+    expect(levelText(3)).toBe("B1");
+    expect(levelText(6)).toBe("C2");
+  });
+  it("shows a dash for a level never set", () => {
+    expect(levelText(null)).toBe("–");
+    expect(levelText(undefined)).toBe("–");
+  });
+});
+
+describe("studentsDifferInLevel", () => {
+  it("is false when everyone is on the same level", () => {
+    expect(studentsDifferInLevel([{ cefr_level: 2 }, { cefr_level: 2 }])).toBe(false);
+  });
+  it("ignores students who never set a level", () => {
+    expect(studentsDifferInLevel([{ cefr_level: 2 }, { cefr_level: null }, {}])).toBe(false);
+  });
+  it("is true for a mixed class, A0 counting as a level", () => {
+    expect(studentsDifferInLevel([{ cefr_level: 0 }, { cefr_level: 3 }])).toBe(true);
+  });
+});
+
+describe("activityKindsShown", () => {
+  const ALL = [{ key: "reading" }, { key: "exercise" }, { key: "browsing" }, { key: "audio" }];
+  it("keeps the kinds some student has, in legend order", () => {
+    const students = [
+      { activity_segments: [{ kind: "audio_time" }, { kind: "exercise_time" }] },
+      { activity_segments: [{ kind: "exercise_time" }] },
+      {},
+    ];
+    expect(activityKindsShown(students, ALL).map((k) => k.key)).toEqual(["exercise", "audio"]);
   });
 });

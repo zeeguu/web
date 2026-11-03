@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import FilterInput from "../../sharedComponents/FilterInput";
 import Selector from "../../../components/Selector";
 import EmptyState from "../../../components/EmptyState";
+import ActivityLegend, { ACTIVITY_KINDS } from "../../../components/ActivityLegend";
 import { ScrollableTable } from "../../styledComponents/ScrollableTable.sc";
 import * as t from "./ClassTable.sc";
 import StudentRow from "./StudentRow";
 import { likelyDuplicates } from "./duplicateStudents";
 import { DEFAULT_STUDENT_SORT, SORT_COLUMNS, matchesSearch, nextSort, sortStudents } from "./studentSort";
-import { CLASS_PERIODS } from "./studentRowText";
+import { CLASS_PERIODS, activityKindsShown, studentsDifferInLevel } from "./studentRowText";
 
 // One order for every class: a teacher who wants the idle students on top
 // wants them on top in all of their classes.
@@ -76,6 +77,8 @@ export default function StudentsActivityOverviewContent({
     sort,
   );
   const classMaxTime = Math.max(0, ...students.map((student) => student.total_time || 0));
+  const showLevel = studentsDifferInLevel(students);
+  const legendKinds = activityKindsShown(students, ACTIVITY_KINDS);
 
   let table = (
     <ScrollableTable>
@@ -83,6 +86,7 @@ export default function StudentsActivityOverviewContent({
         <thead>
           <tr>
             {header("name", "Student")}
+            {showLevel && header("level", "Level")}
             {header("last_active", "Last active")}
             {header("time", "Time")}
             {header("texts", "Texts", "num")}
@@ -98,6 +102,7 @@ export default function StudentsActivityOverviewContent({
               student={student}
               cohortID={cohortID}
               classMaxTime={classMaxTime}
+              showLevel={showLevel}
               duplicates={duplicates[student.id]}
               removeStudentFromCohort={removeStudentFromCohort}
             />
@@ -115,6 +120,7 @@ export default function StudentsActivityOverviewContent({
         <div className="period">{selector(CLASS_PERIODS, String(period), onPeriodChange, "Period")}</div>
       </t.Toolbar>
       {table}
+      {legendKinds.length > 0 && <t.TimeLegend kinds={legendKinds} />}
     </>
   );
 }

@@ -58,3 +58,28 @@ export function barWidthPercent(total, classMax) {
   if (!total || !classMax) return 0;
   return Math.max(3, (100 * total) / classMax);
 }
+
+const CEFR_NAMES = ["A0", "A1", "A2", "B1", "B2", "C1", "C2"];
+
+// The level a student declared for the class's language (0..6, A0..C2), as a
+// name; "–" when they never set one.
+export function levelText(level) {
+  return CEFR_NAMES[level] || "–";
+}
+
+// The Level column only shows when the students are on different levels. In
+// most classes everyone is at the level the teacher set, and a column
+// repeating it in every row is noise.
+export function studentsDifferInLevel(students) {
+  const levels = new Set(students.map((s) => s.cefr_level).filter((level) => level != null));
+  return levels.size > 1;
+}
+
+// The kinds of activity in the class's time bars, as ActivityLegend keys
+// ("reading_time" -> "reading"), in legend order.
+export function activityKindsShown(students, allKinds) {
+  const shown = new Set(
+    students.flatMap((s) => (s.activity_segments || []).map((segment) => segment.kind.replace(/_time$/, ""))),
+  );
+  return allKinds.filter(({ key }) => shown.has(key));
+}

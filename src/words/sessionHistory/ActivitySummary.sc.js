@@ -1,12 +1,6 @@
 import styled from "styled-components";
-import { activityReading, activityExercise, activityBrowsing, activityListening } from "../../components/colors";
-
-const KIND_COLOR = {
-  reading: activityReading,
-  exercise: activityExercise,
-  browsing: activityBrowsing,
-  audio: activityListening,
-};
+import ActivityLegend from "../../components/ActivityLegend";
+import { ACTIVITY_COLOR } from "../../components/ActivityLegend.sc";
 
 export const Summary = styled.section`
   width: 100%;
@@ -30,7 +24,7 @@ export const Bar = styled.div`
 
 export const Segment = styled.div`
   height: 100%;
-  background: ${({ $kind }) => KIND_COLOR[$kind]};
+  background: ${({ $kind }) => ACTIVITY_COLOR[$kind]};
 `;
 
 export const Total = styled.div`
@@ -40,29 +34,7 @@ export const Total = styled.div`
   white-space: nowrap;
 `;
 
-export const Legend = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3em 1.4em;
+// the shared legend, with room above it for the bar
+export const Legend = styled(ActivityLegend)`
   margin-top: 0.6em;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-
-  b {
-    color: var(--text-primary);
-  }
-`;
-
-export const LegendItem = styled.span`
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.35em;
-`;
-
-export const Dot = styled.span`
-  width: 0.65em;
-  height: 0.65em;
-  border-radius: 50%;
-  align-self: center;
-  background: ${({ $kind }) => KIND_COLOR[$kind]};
 `;

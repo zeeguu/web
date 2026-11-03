@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import ActivityLegend from "../../../components/ActivityLegend";
 import { activityReading, activityExercise, activityBrowsing, activityListening } from "../../../components/colors";
 
 const KIND_COLOR = {
@@ -53,7 +54,7 @@ export const Table = styled.table`
   }
 
   /* On a phone the six columns do not fit. Each student becomes three lines:
-     name and last active; the time bar across the full width; the counts as
+     name, level and last active; the time bar across the full width; the counts as
      a sentence. The headers stay, as a row of sort buttons. */
   @media (max-width: ${PHONE_WIDTH}) {
     /* as a table it would size itself to the one-line header row and run
@@ -82,7 +83,7 @@ export const Table = styled.table`
       display: grid;
       grid-template-columns: auto auto 1fr auto;
       grid-template-areas:
-        "name name last-active remove"
+        "name level last-active remove"
         "time time time time"
         "texts exercises correct correct";
       align-items: center;
@@ -96,6 +97,11 @@ export const Table = styled.table`
     }
     td.name {
       grid-area: name;
+    }
+    td.level {
+      grid-area: level;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
     }
     td.last-active {
       grid-area: last-active;
@@ -236,4 +242,10 @@ export const SortButton = styled.button`
       color: var(--text-primary);
     }
   }
+`;
+
+// Under the table: what the colours of the time bars stand for.
+export const TimeLegend = styled(ActivityLegend)`
+  margin-top: 1em;
+  font-size: 0.8rem;
 `;
