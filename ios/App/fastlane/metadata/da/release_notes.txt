@@ -1,32 +1,9 @@
-En klarere vej rundt i appen, smartere øvelser og mere pålidelige oversættelser i dit feed.
-
-Rundt i appen
-- Bundlinjen er nu Læs, Øv, Lyt, Oversæt og More. Mine ord og Min aktivitet ligger under More.
-- Indstillinger har sin egen knap i toplinjen, ved siden af din profil.
-- Indstillinger er delt op i fem grupper, og hvert punkt har et ikon, så det er nemmere at finde det, du leder efter.
-- Profil og Indstillinger har en tilbagepil, og du kan swipe tilbage.
-- Sprogvælgeren viser alle dine sprog, med det, du sidst har øvet, øverst.
-
-Øvelser
-- En gang imellem bliver et ord testet uden hints, så du kan se, om du virkelig kan det.
-- Når dine øvelser er fyldt op, fortæller Zeeguu dig, at der venter nye ord.
-- Øvelser, hvor du skriver svaret, har en Tjek-knap ved siden af Enter.
-- I oversættelsesøvelser afslører et svar, der næsten er rigtigt, ikke længere løsningen.
-- "Fjern fra øvelser" spørger, om du allerede kender ordet.
-- Oversæt det, du hører: højttaleren, dit svar og Tjek står på én linje.
-
-Aiki-tilstand
-- Når du åbner en app på pause, inviterer Zeeguu dig til at lære lidt og viser, hvor mange minutter der er tilbage, før dine apps er åbne resten af dagen.
-- En ny side viser, hvad du kan gøre nu: øve dine ord, læse videre eller lytte til dagens lektion.
-- Aiki-tilstand ligger nu under Distraction Interception i Indstillinger, med en kort forklaring på, hvor navnet kommer fra.
+En nemmere oversættelsesmenu og en rettelse til skriveøvelser.
 
 Oversættelser
-- Oversættelsesmenuen er roligere og nemmere at læse. Alternativerne glider ind, når de kommer, og hentes igen, hvis oversætterne var langsomme.
-- Rettet: når du oversatte et udtryk på flere ord i et artikelresumé, kunne nogle af ordene forsvinde.
-- Rettet: en oversættelse, du tilføjede eller fjernede i feedet, kunne blive fortrudt, efter du havde været i Indstillinger.
+- Alternative oversættelser vises nu i læsestørrelse, og hver af dem er nem at trykke på på din telefon.
+- Oversættelsesmenuen er enklere: den viser bare Alternativer, uden oversætternes navne.
 
-Mindre rettelser
-- Artikelvisningen på telefonen er mere enkel, med et håndtag til at swipe den væk.
-- Valgene under Feedvisning i Indstillinger går ikke længere ud over skærmen.
-- Tekster fra din lærer beholder de tomme linjer mellem afsnittene.
-- Når du sender en artikel til Zeeguu, viser den én tydelig besked, mens artiklen bliver gjort klar.
+Øvelser
+- Rettet: efter et forkert svar i en skriveøvelse, hvor du skal udfylde et ord, kunne du sidde fast uden mulighed for at komme videre. Øvelsen slutter nu og viser svaret.
+- Hvis du trykker Enter uden at have skrevet noget, tæller det ikke længere som et forkert svar.

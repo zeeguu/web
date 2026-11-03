@@ -1,32 +1,9 @@
-Eine klarere Navigation durch die App, klügeres Üben und zuverlässigere Übersetzungen in deinem Feed.
-
-Navigation
-- Die untere Leiste zeigt jetzt Read, Practice, Listen, Translate und More. My Words und My Activity findest du unter More.
-- Die Einstellungen haben einen eigenen Knopf in der oberen Leiste, neben deinem Profil.
-- Die Einstellungen sind in fünf Gruppen geordnet, jeder Eintrag mit einem Symbol, damit du schneller findest, was du suchst.
-- Profil und Einstellungen haben einen Zurück-Pfeil, und du kannst zurückwischen.
-- Die Sprachauswahl zeigt alle deine Sprachen, die zuletzt geübte zuerst.
-
-Üben
-- Ab und zu wird ein Wort ohne Hinweise abgefragt, damit du siehst, ob du es wirklich kannst.
-- Wenn deine Übungen voll sind, sagt dir Zeeguu, dass neue Wörter warten.
-- Übungen, in denen du die Antwort tippst, haben einen Check-Knopf neben Enter.
-- In Übersetzungsübungen verrät eine fast richtige Antwort nicht mehr die Lösung.
-- "Remove from practice" fragt, ob du das Wort schon kennst.
-- Übersetze, was du hörst: Lautsprecher, deine Antwort und Check stehen in einer Zeile.
-
-Aiki-Modus
-- Wenn du eine pausierte App öffnest, lädt Zeeguu dich ein, ein bisschen zu lernen, und zeigt, wie viele Minuten noch fehlen, bis deine Apps für den Rest des Tages frei sind.
-- Eine neue Seite zeigt, was du als Nächstes tun kannst: deine Wörter üben, weiterlesen oder die heutige Lektion hören.
-- Der Aiki-Modus liegt jetzt unter Distraction Interception in den Einstellungen, mit einer kurzen Erklärung, woher der Name kommt.
+Ein einfacheres Übersetzungsmenü und eine Korrektur für Schreibübungen.
 
 Übersetzungen
-- Das Übersetzungsmenü ist ruhiger und leichter zu lesen. Alternativen gleiten herein, sobald sie da sind, und werden erneut geladen, wenn die Übersetzer langsam waren.
-- Behoben: Beim Übersetzen eines Ausdrucks aus mehreren Wörtern in einer Artikelzusammenfassung konnten einige seiner Wörter verschwinden.
-- Behoben: Eine Übersetzung, die du im Feed hinzugefügt oder entfernt hast, konnte nach einem Besuch der Einstellungen rückgängig gemacht werden.
+- Alternative Übersetzungen erscheinen jetzt in Lesegröße, und jede lässt sich auf dem Handy bequem antippen.
+- Das Übersetzungsmenü ist schlichter: Es zeigt einfach Alternativen, ohne die Namen der Übersetzer.
 
-Kleinere Korrekturen
-- Die Artikelvorschau auf dem Handy ist aufgeräumter, mit einem Griff zum Wegwischen.
-- Die Optionen unter Feed view in den Einstellungen ragen nicht mehr über den Bildschirmrand hinaus.
-- Texte von deiner Lehrkraft behalten die Leerzeilen zwischen den Absätzen.
-- Wenn du einen Artikel an Zeeguu schickst, siehst du eine klare Nachricht, während er vorbereitet wird.
+Üben
+- Behoben: Nach einer falschen Antwort in einer Lückentext-Schreibübung konntest du hängen bleiben und nicht weitermachen. Die Übung endet jetzt und zeigt die Antwort.
+- Enter ohne Eingabe zählt nicht mehr als falsche Antwort.
