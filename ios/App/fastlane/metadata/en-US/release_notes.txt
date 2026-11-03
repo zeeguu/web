@@ -1,10 +1,19 @@
-A clearer way around the app, and more reliable translations in your feed.
+A clearer way around the app, smarter practice, and more reliable translations in your feed.
 
 Getting around
 - The bottom bar is now Read, Practice, Listen, Translate and More. My Words and My Activity are under More.
 - Settings has its own button in the top bar, next to your profile.
 - Settings is organized into five groups, each item with an icon, so it is easier to find what you need.
 - Profile and Settings have a back arrow, and you can swipe back.
+- The language switcher lists all your languages, the one you practiced most recently first.
+
+Practice
+- Now and then a word is tested without hints, to check that you really know it.
+- When your exercises are full, Zeeguu tells you that new words are waiting.
+- Typing exercises have a Check button next to Enter.
+- In translation exercises, an answer that is almost right no longer gives away the solution.
+- "Remove from practice" asks whether you already know the word.
+- Translate what you hear: the speaker, your answer and Check sit on one row.
 
 Aiki mode
 - When you open a paused app, Zeeguu invites you to learn a bit, and shows how many minutes are left until your apps unlock for the rest of the day.
@@ -19,3 +28,5 @@ Translations
 Smaller fixes
 - The article preview on the phone is cleaner, with a handle to swipe it away.
 - The Feed view options in Settings no longer run off the screen.
+- Texts from your teacher keep their blank lines between paragraphs.
+- Sending an article to Zeeguu shows one clear message while it is being prepared.

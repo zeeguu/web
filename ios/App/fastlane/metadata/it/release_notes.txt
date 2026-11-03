@@ -1,10 +1,19 @@
-Una navigazione più chiara nell'app e traduzioni più affidabili nel tuo feed.
+Una navigazione più chiara nell'app, esercizi più intelligenti e traduzioni più affidabili nel tuo feed.
 
 Navigazione
 - La barra in basso ora mostra Read, Practice, Listen, Translate e More. My Words e My Activity si trovano sotto More.
 - Le Impostazioni hanno un pulsante tutto loro nella barra in alto, accanto al tuo profilo.
 - Le Impostazioni sono organizzate in cinque gruppi, ogni voce con un'icona, così trovi più in fretta quello che cerchi.
 - Profilo e Impostazioni hanno una freccia indietro, e puoi scorrere per tornare indietro.
+- La scelta della lingua mostra tutte le tue lingue, con quella esercitata più di recente in cima.
+
+Esercizi
+- Ogni tanto una parola viene verificata senza suggerimenti, per controllare che tu la sappia davvero.
+- Quando i tuoi esercizi sono al completo, Zeeguu ti dice che ci sono nuove parole in attesa.
+- Gli esercizi in cui scrivi la risposta hanno un pulsante Check accanto a Invio.
+- Negli esercizi di traduzione, una risposta quasi giusta non rivela più la soluzione.
+- "Remove from practice" ti chiede se conosci già la parola.
+- Traduci quello che senti: l'altoparlante, la tua risposta e Check stanno su una sola riga.
 
 Modalità Aiki
 - Quando apri un'app in pausa, Zeeguu ti invita a imparare un po' e ti mostra quanti minuti mancano prima che le tue app si sblocchino per il resto della giornata.
@@ -19,3 +28,5 @@ Traduzioni
 Piccole correzioni
 - L'anteprima dell'articolo sul telefono è più pulita, con una maniglia per farla scorrere via.
 - Le opzioni di Feed view nelle Impostazioni non escono più dallo schermo.
+- I testi del tuo insegnante mantengono le righe vuote tra i paragrafi.
+- Quando invii un articolo a Zeeguu, vedi un solo messaggio chiaro mentre viene preparato.
