@@ -15,6 +15,17 @@ const PROVIDER_NAME_OVERRIDES = {
   Microsoft: "Azure",
 };
 
+// Learners pick an alternative by meaning, not by which engine produced it, so
+// the provider label under each alternative is hidden by default. For debugging
+// translator quality: `localStorage.show_translators = "true"` in the console.
+function showTranslators() {
+  try {
+    return localStorage.getItem("show_translators") === "true";
+  } catch {
+    return false;
+  }
+}
+
 function shortenSource(alt) {
   // Source comes in as "Provider - variant" (e.g. "Microsoft - with context",
   // "Google - MWE phrase"); collapse to just the provider name.
@@ -177,20 +188,16 @@ export default function AlterMenu({
   let headerLabel;
   if (loadingAlternatives) {
     headerLabel = "Checking translators…";
-  } else if (word.disagreement) {
-    headerLabel = (
-      <>
-        <span style={{ fontSize: "1.4em", verticalAlign: "middle", lineHeight: 1, borderBottom: "none" }}>🤖🥊</span>{" "}
-        Translators disagree
-      </>
-    );
   } else if (hasAlternatives) {
+    // Also covers `word.disagreement`: the learner only needs to know there
+    // are other options, not that the engines split.
     headerLabel = "Alternatives";
   } else if (allAgreedWithPrimary) {
     headerLabel = "All translators agree";
   } else {
     headerLabel = "No alternatives";
   }
+  const showSources = showTranslators();
   const header = <div style={{ ...HEADER_BAND_STYLE, color: "var(--altermenu-header-text)" }}>{headerLabel}</div>;
 
   return (
@@ -209,7 +216,7 @@ export default function AlterMenu({
                 className="additionalTrans"
               >
                 {each.translation}
-                <div className="altermenuSourceLabel">{shortenSource(each)}</div>
+                {showSources && <div className="altermenuSourceLabel">{shortenSource(each)}</div>}
               </div>
             ))}
           </div>
