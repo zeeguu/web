@@ -136,23 +136,18 @@ export default function TranslatableWord({
   }
 
   // The vote's winner stays on screen while the LLM looks at the sentence, so
-  // reading isn't held up. A changed answer swaps in with a flash; if the
-  // call fails, the menu opens as it did before the resolver.
+  // reading isn't held up. A changed answer swaps in with a flash. If the call
+  // fails (the API gives up after 4s), the winner just stays: a menu opening
+  // by itself seconds later, after the learner has read on, is worse than
+  // nothing, and the alternatives are still a tap away.
   function settleDisagreement(word) {
     word.isResolving = true;
-    interactiveText.resolveDisagreement(
-      word,
-      (changed) => {
-        word.isResolving = false;
-        word.justSettled = changed;
-        wordUpdated();
-      },
-      () => {
-        word.isResolving = false;
-        wordUpdated();
-        openAlterMenu(word);
-      },
-    );
+    const settled = (changed) => {
+      word.isResolving = false;
+      word.justSettled = changed;
+      wordUpdated();
+    };
+    interactiveText.resolveDisagreement(word, settled, () => settled(false));
   }
 
   function openAlterMenu(word) {
