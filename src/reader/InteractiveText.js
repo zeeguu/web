@@ -1,4 +1,5 @@
 import LocalStorage from "../assorted/LocalStorage";
+import { settledReason } from "./settledReason";
 import { explanationCefr } from "../utils/misc/userCefrLevel";
 import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
@@ -227,11 +228,21 @@ export default class InteractiveText {
   // translation: given an ambiguous gloss the model reasons backwards from it
   // and invents structure to fit (measured on "narrøv" -> "Foolish ass", where
   // it fabricated a morpheme rather than reading nar + røv).
+  //
+  // When the LLM settled a translator disagreement on this word and the
+  // learner still has its answer, the explanation is the reason it already
+  // gave: no second call, and the menu stays free of it.
   explainSelection(word, onComplete, onError) {
     let context;
     [context] = this.getContextAndCoordinates(word);
     const selection = word.mweExpression || word.word;
     this.api.logUserActivity(this.api.EXPLAIN_SELECTION, null, selection, this.source, this.sourceId);
+
+    const reason = settledReason(word);
+    if (reason) {
+      onComplete && onComplete({ selection, context, explanation: reason });
+      return;
+    }
 
     this.api
       .explainSelection(
