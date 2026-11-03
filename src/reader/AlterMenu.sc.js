@@ -42,16 +42,28 @@ const AlterMenuSC = styled.div`
   padding: 0.3em 0.8em 0.6em 0.8em;
   filter: drop-shadow(0 0 0.2rem rgb(0 0 0 / 50%));
 
+  /* The alternatives are what the learner reads and picks between: back at
+   * the reading text's size (the menu is 0.8em), and each row a whole tap
+   * target. Without the translator labels under them (839eed37) the rows
+   * were ~16px tall on a phone. */
   .additionalTrans {
     white-space: normal;
     color: var(--altermenu-text);
-    line-height: 1em;
+    font-size: 1.25em;
+    line-height: 1.3em;
+    padding: 0.3em 0;
     cursor: pointer;
-    margin-top: 0.4em;
-    margin-left: 0.8em;
+    margin-left: 0.6em;
 
-    &:hover {
-      filter: brightness(90%);
+    /* Touch screens: ~44px per row, the smallest comfortable target. */
+    @media (pointer: coarse) {
+      padding: 0.5em 0;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        filter: brightness(90%);
+      }
     }
   }
 
