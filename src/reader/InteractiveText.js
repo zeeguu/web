@@ -259,6 +259,7 @@ export default class InteractiveText {
   resolveDisagreement(word, onSettled, onError) {
     let context;
     [context] = this.getContextAndCoordinates(word);
+    const selection = word.mweExpression || word.word;
     const candidates = (word.alternatives || []).map((alt) => alt.translation);
     const shown = word.translation;
 
@@ -266,7 +267,7 @@ export default class InteractiveText {
       .resolveTranslationDisagreement(
         this.language,
         localStorage.native_language,
-        word.mweExpression || word.word,
+        selection,
         context,
         candidates,
         shown,
@@ -282,6 +283,9 @@ export default class InteractiveText {
         if (result.changed) {
           word.translation = result.translation;
           word.service_name = "LLM - resolved disagreement";
+          // translate() fed the vote's winner to the wait drill; keyed by the
+          // looked-up text, so this replaces it.
+          pushDrillVocab(this.language, [{ o: selection, t: result.translation }], "translation");
         }
         onSettled && onSettled(result.changed);
       })
