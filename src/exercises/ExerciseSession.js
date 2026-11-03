@@ -382,7 +382,9 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   let incorrectBookmarksCopy = [...incorrectBookmarks];
 
-  function updateAPIWithIncorrectAnswer(currentBookmark, wrongAnswer) {
+  // endExercise: the wrong answer also ends the exercise (typed cloze, once
+  // the correction has played). Otherwise the learner may try again.
+  function updateAPIWithIncorrectAnswer(currentBookmark, wrongAnswer, endExercise = false) {
     let incorrectBookmarksIds = incorrectBookmarksCopy.map((b) => b.id);
     if (!incorrectBookmarksIds.includes(currentBookmark.id)) {
       setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
@@ -395,7 +397,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     incorrectBookmarksCopy.push(currentBookmark);
     setIncorrectBookmarks(incorrectBookmarksCopy);
     teeBookmarkToDrillCache(currentBookmark);
-    handleUserAttempt(WRONG, currentBookmark, wrongAnswer);
+    if (endExercise) updateAPIWithExerciseComplete(WRONG, currentBookmark, true, wrongAnswer);
+    else handleUserAttempt(WRONG, currentBookmark, wrongAnswer);
   }
 
   function teeBookmarkToDrillCache(b) {
@@ -421,8 +424,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setIsShowSolution(true);
   }
 
-  function updateAPIWithExerciseComplete(message, bookmark, endExercise = true) {
-    let updated_message = handleUserAttempt(message, bookmark);
+  function updateAPIWithExerciseComplete(message, bookmark, endExercise = true, wrongAnswer) {
+    let updated_message = handleUserAttempt(message, bookmark, wrongAnswer);
     if (endExercise) setIsExerciseOver(true);
     api.uploadExerciseFinalizedData(
       updated_message,

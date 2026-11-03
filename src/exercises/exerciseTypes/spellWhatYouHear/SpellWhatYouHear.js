@@ -91,12 +91,14 @@ export default function SpellWhatYouHear({
   }
 
   function handleInputSubmit(value) {
+    if (!value.trim()) return;
     const userInput = value.trim().toLowerCase();
     const expectedAnswer = removePunctuation(exerciseBookmark.from).toLowerCase();
     if (userInput === expectedAnswer) {
       notifyCorrectAnswer(exerciseBookmark);
     } else {
-      correctThenReveal(value, () => notifyIncorrectAnswer(exerciseBookmark, value));
+      // Ends the exercise once the correction has played (see FindWordInContextCloze).
+      correctThenReveal(value, () => notifyIncorrectAnswer(exerciseBookmark, value, true));
     }
   }
 

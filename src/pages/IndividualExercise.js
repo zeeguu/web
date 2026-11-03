@@ -247,9 +247,10 @@ export default function IndividualExercise() {
     setMessage("CORRECT");
   };
 
-  const notifyIncorrectAnswer = (bookmark) => {
+  const notifyIncorrectAnswer = (bookmark, wrongAnswer, endExercise = false) => {
     console.log("Incorrect answer for:", bookmark);
     setIsCorrect(false);
+    if (endExercise) setIsExerciseOver(true);
     setMessage("WRONG");
   };
 

@@ -85,15 +85,17 @@ export default function FindWordInContextCloze({
     }
   }
 
-  // notifyIncorrectAnswer records the "W". (This used to also hand the typed
-  // text to notifyOfUserAttempt, which appends outcome codes, so the outcome
-  // went to the API as e.g. "tænkerW".)
+  // notifyIncorrectAnswer records the "W" and, once the correction has
+  // played, ends the exercise: the correction already shows the answer, and
+  // without the end nothing clears it and Next never comes. (This used to
+  // also hand the typed text to notifyOfUserAttempt, which appends outcome
+  // codes, so the outcome went to the API as e.g. "tænkerW".)
   function answerWasWrong(value) {
-    correctThenReveal(value, () => notifyIncorrectAnswer(exerciseBookmark, value));
+    correctThenReveal(value, () => notifyIncorrectAnswer(exerciseBookmark, value, true));
   }
 
   async function handleInputSubmit(value) {
-    if (isChecking) return;
+    if (isChecking || !value.trim()) return;
     const kind = classifyTypedAnswer(value, exerciseBookmark.from);
     if (kind === EXACT) {
       notifyCorrectAnswer(exerciseBookmark);
