@@ -13,9 +13,13 @@ const EXERCISES_SUMMARY_PATH = "/practice/summary";
 
 /**
  * Switches the user's learning language, but if the user is currently reading
- * an article, first asks for confirmation. On confirm, the article is saved
- * for later, the language is switched, and the user lands on the recommendations
- * for the new language.
+ * an article, first asks what to do with it:
+ *   - Translate: the article is translated into the new language at the user's
+ *     level there, the language is switched, and the user goes on reading the
+ *     translation.
+ *   - Switch without it: the article is saved for later, the language is
+ *     switched, and the user lands on the recommendations for the new language.
+ *   - Closing the dialog keeps reading in the current language.
  *
  * Returns:
  *   requestSwitch(langCode, onDone) — call this instead of switchLanguage()
@@ -33,6 +37,7 @@ export default function useGuardedLanguageSwitch() {
 
   const [pending, setPending] = useState(null); // { langCode, onDone }
   const [isProcessing, setIsProcessing] = useState(false);
+  const [translationFailed, setTranslationFailed] = useState(false);
 
   const willConfirm = location.pathname.startsWith(READER_PATH_PREFIX);
 
@@ -54,43 +59,85 @@ export default function useGuardedLanguageSwitch() {
     setPending({ langCode, onDone });
   }
 
-  function handleConfirm() {
-    if (!pending) return;
-    setIsProcessing(true);
-
-    // Save the article in parallel — don't block the switch on it. Opened
-    // through a link (/read/<link>) there's no id in the URL; resolve it.
+  // Opened through a link (/read/<link>) there's no id in the URL; resolve it.
+  function withArticleId(callback) {
     const articleId = query.get("id");
     const link = location.pathname.slice(READER_PATH_PREFIX.length);
-    if (articleId) api.makePersonalCopy(articleId, () => {});
-    else if (link) api.getArticleLinkInfo(link, (info) => api.makePersonalCopy(info.article_id, () => {}));
+    if (articleId) callback(articleId);
+    else if (link) api.getArticleLinkInfo(link, (info) => callback(info.article_id));
+  }
 
-    const { langCode, onDone } = pending;
-    switchLanguage(api, userDetails, setUserDetails, langCode, () => {
-      setIsProcessing(false);
-      setPending(null);
-      onDone?.();
-      history.push("/articles");
-    });
+  function finish(path) {
+    setIsProcessing(false);
+    setTranslationFailed(false);
+    setPending(null);
+    pending.onDone?.();
+    if (path) history.push(path);
+  }
+
+  function switchWithoutArticle() {
+    if (!pending || isProcessing) return;
+    setIsProcessing(true);
+
+    // Save the article in parallel — don't block the switch on it.
+    withArticleId((articleId) => api.makePersonalCopy(articleId, () => {}));
+
+    switchLanguage(api, userDetails, setUserDetails, pending.langCode, () => finish("/articles"));
+  }
+
+  // Translate first and switch after: until the translation is there, the
+  // reader can still back out, and a failed translation leaves them where
+  // they were. The dialog's spinner covers the wait.
+  function translateAndSwitch() {
+    if (!pending || isProcessing) return;
+    setIsProcessing(true);
+    withArticleId((articleId) =>
+      api.translateAndAdaptArticle(
+        { articleId },
+        pending.langCode,
+        (translated) => {
+          let saved = false;
+          switchLanguage(
+            api,
+            userDetails,
+            setUserDetails,
+            pending.langCode,
+            () => finish(saved ? "/read/article?id=" + translated.id : null),
+            () => (saved = true),
+          );
+        },
+        (error) => {
+          console.error("Translating the article for the language switch failed:", error);
+          setIsProcessing(false);
+          setTranslationFailed(true);
+        },
+      ),
+    );
   }
 
   function handleCancel() {
     if (isProcessing) return;
     pending?.onDone?.();
     setPending(null);
+    setTranslationFailed(false);
   }
 
   const targetLanguageName = pending ? languageName(pending.langCode) : "";
 
+  const message = translationFailed
+    ? `The article could not be translated to ${targetLanguageName}. Switch anyway? It will be saved for later.`
+    : `Switch to ${targetLanguageName}? You can take this article along, translated to your ${targetLanguageName} level.`;
+
   const confirmModal = pending ? (
     <ChoiceModal
-      message={`Switch to ${targetLanguageName}? Your current article will be saved for later, and you'll be taken to your ${targetLanguageName} home.`}
-      primaryLabel="Switch"
-      secondaryLabel="Keep reading"
-      onPrimary={handleConfirm}
-      onSecondary={handleCancel}
+      message={message}
+      primaryLabel={translationFailed ? "Switch" : `Translate to ${targetLanguageName}`}
+      onPrimary={translationFailed ? switchWithoutArticle : translateAndSwitch}
+      secondaryLabel={translationFailed ? "Keep reading" : "Switch without it"}
+      onSecondary={translationFailed ? handleCancel : switchWithoutArticle}
+      onCancel={handleCancel}
       isLoading={isProcessing}
-      loadingLabel="Switching..."
+      loadingLabel={translationFailed ? "Switching..." : "Translating..."}
     />
   ) : null;
 

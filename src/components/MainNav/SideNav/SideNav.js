@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { UserContext } from "../../../contexts/UserContext";
 import { MainNavContext } from "../../../contexts/MainNavContext";
 import SideNavOptionsForStudent from "./SideNavOptionsForStudent";
@@ -16,7 +15,6 @@ export default function SideNav({ screenWidth }) {
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
 
-  const path = useLocation().pathname;
   const defaultPage = userDetails.is_teacher ? "/teacher/classes" : "/articles";
 
   return (
@@ -41,9 +39,7 @@ export default function SideNav({ screenWidth }) {
       <s.BottomSection $screenWidth={screenWidth}>
         <s.NavList>
           <FeedbackButton screenWidth={screenWidth} />
-          {isOnStudentSide && !path?.includes("/read") && (
-            <SideNavLanguageOption screenWidth={screenWidth} />
-          )}
+          {isOnStudentSide && <SideNavLanguageOption screenWidth={screenWidth} />}
         </s.NavList>
         <AccountNavOption screenWidth={screenWidth} />
         {isOnStudentSide && <SideNavProgressStats screenWidth={screenWidth} />}
