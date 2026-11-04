@@ -72,7 +72,7 @@ export default function useGuardedLanguageSwitch() {
     setIsProcessing(false);
     setFailure(null);
     setPending(null);
-    pending.onDone?.();
+    if (pending.onDone) pending.onDone();
     if (path) history.push(path);
   }
 
