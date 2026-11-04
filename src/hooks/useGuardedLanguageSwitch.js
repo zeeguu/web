@@ -14,10 +14,10 @@ const EXERCISES_SUMMARY_PATH = "/practice/summary";
 /**
  * Switches the user's learning language, but if the user is currently reading
  * an article, first asks what to do with it:
- *   - Translate: the article is translated into the new language at the user's
+ *   - Adapt: the article is translated into the new language at the user's
  *     level there, the language is switched, and the user goes on reading the
  *     translation.
- *   - Switch without it: the article is saved for later, the language is
+ *   - Go home: the article is saved for later, the language is
  *     switched, and the user lands on the recommendations for the new language.
  *   - Closing the dialog keeps reading in the current language.
  *
@@ -131,13 +131,13 @@ export default function useGuardedLanguageSwitch() {
   const confirmModal = pending ? (
     <ChoiceModal
       message={message}
-      primaryLabel={translationFailed ? "Switch" : `Translate to ${targetLanguageName}`}
+      primaryLabel={translationFailed ? "Switch" : `Adapt article to my level in ${targetLanguageName}`}
       onPrimary={translationFailed ? switchWithoutArticle : translateAndSwitch}
-      secondaryLabel={translationFailed ? "Keep reading" : "Switch without it"}
+      secondaryLabel={translationFailed ? "Keep reading" : `Go to my ${targetLanguageName} home`}
       onSecondary={translationFailed ? handleCancel : switchWithoutArticle}
       onCancel={handleCancel}
       isLoading={isProcessing}
-      loadingLabel={translationFailed ? "Switching..." : "Translating..."}
+      loadingLabel={translationFailed ? "Switching..." : "Adapting..."}
     />
   ) : null;
 
