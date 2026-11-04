@@ -59,10 +59,11 @@ export default function useGuardedLanguageSwitch() {
     setPending({ langCode, onDone });
   }
 
-  // The reader's URL has the article id (/read/article?id=…) or a link to look it up by (/read/<link>).
-  function withArticleId(callback, onError = () => {}) {
+  function withArticleIdFromURL(callback, onError = () => {}) {
     const articleId = query.get("id");
     if (articleId) return callback(articleId);
+
+    // Opened through a link (/read/<link>) there's no id in the URL; look it up.
     const link = location.pathname.slice(READER_PATH_PREFIX.length);
     api.getArticleLinkInfo(link, (info) => callback(info.article_id), onError);
   }
@@ -80,7 +81,7 @@ export default function useGuardedLanguageSwitch() {
     setIsProcessing(true);
 
     // Save the article in parallel — don't block the switch on it.
-    withArticleId((articleId) => api.makePersonalCopy(articleId, () => {}));
+    withArticleIdFromURL((articleId) => api.makePersonalCopy(articleId, () => {}));
 
     switchLanguage(api, userDetails, setUserDetails, pending.langCode, () => finish("/articles"));
   }
@@ -95,7 +96,7 @@ export default function useGuardedLanguageSwitch() {
   function translateAndSwitch() {
     if (!pending || isProcessing) return;
     setIsProcessing(true);
-    withArticleId(translateArticle, translationFailed);
+    withArticleIdFromURL(translateArticle, translationFailed);
   }
 
   function translateArticle(articleId) {
