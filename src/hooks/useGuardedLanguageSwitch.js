@@ -95,38 +95,28 @@ export default function useGuardedLanguageSwitch() {
   function translateAndSwitch() {
     if (!pending || isProcessing) return;
     setIsProcessing(true);
+    withArticleId(translateArticle, translationFailed);
+  }
 
-    const translationFailed = (error) => {
-      console.error("Translating the article for the language switch failed:", error);
-      fail(`The article could not be translated to ${targetLanguageName}. Switch anyway? It will be saved for later.`);
-    };
+  function translateArticle(articleId) {
+    api.translateAndAdaptArticle({ articleId }, pending.langCode, switchToTranslation, translationFailed);
+  }
 
-    withArticleId(
-      (articleId) =>
-        api.translateAndAdaptArticle(
-          { articleId },
-          pending.langCode,
-          (translated) => {
-            let saved = false;
-            switchLanguage(
-              api,
-              userDetails,
-              setUserDetails,
-              pending.langCode,
-              () => {
-                if (saved) finish("/read/article?id=" + translated.id);
-                else
-                  fail(
-                    `The switch to ${targetLanguageName} could not be saved. Try again? The article will be saved for later.`,
-                  );
-              },
-              () => (saved = true),
-            );
-          },
-          translationFailed,
-        ),
-      translationFailed,
-    );
+  function switchToTranslation(translated) {
+    // onDone also runs when the save failed; onSaved runs before it, on success only.
+    let saved = false;
+    const onSaved = () => (saved = true);
+    const onDone = () => (saved ? finish("/read/article?id=" + translated.id) : switchNotSaved());
+    switchLanguage(api, userDetails, setUserDetails, pending.langCode, onDone, onSaved);
+  }
+
+  function translationFailed(error) {
+    console.error("Translating the article for the language switch failed:", error);
+    fail(`The article could not be translated to ${targetLanguageName}. Switch anyway? It will be saved for later.`);
+  }
+
+  function switchNotSaved() {
+    fail(`The switch to ${targetLanguageName} could not be saved. Try again? The article will be saved for later.`);
   }
 
   function handleCancel() {
