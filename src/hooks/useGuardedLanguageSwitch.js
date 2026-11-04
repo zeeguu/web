@@ -59,12 +59,12 @@ export default function useGuardedLanguageSwitch() {
     setPending({ langCode, onDone });
   }
 
-  // Opened through a link (/read/<link>) there's no id in the URL; resolve it.
+  // The reader's URL has the article id (/read/article?id=…) or a link to look it up by (/read/<link>).
   function withArticleId(callback, onError = () => {}) {
     const articleId = query.get("id");
+    if (articleId) return callback(articleId);
     const link = location.pathname.slice(READER_PATH_PREFIX.length);
-    if (articleId) callback(articleId);
-    else if (link) api.getArticleLinkInfo(link, (info) => callback(info.article_id), onError);
+    api.getArticleLinkInfo(link, (info) => callback(info.article_id), onError);
   }
 
   function finish(path) {
