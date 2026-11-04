@@ -37,7 +37,7 @@ export default function useGuardedLanguageSwitch() {
 
   const [pending, setPending] = useState(null); // { langCode, onDone }
   const [isProcessing, setIsProcessing] = useState(false);
-  const [translationFailed, setTranslationFailed] = useState(false);
+  const [failure, setFailure] = useState(null); // what went wrong, told in the dialog
 
   const willConfirm = location.pathname.startsWith(READER_PATH_PREFIX);
 
@@ -60,16 +60,16 @@ export default function useGuardedLanguageSwitch() {
   }
 
   // Opened through a link (/read/<link>) there's no id in the URL; resolve it.
-  function withArticleId(callback) {
+  function withArticleId(callback, onError = () => {}) {
     const articleId = query.get("id");
     const link = location.pathname.slice(READER_PATH_PREFIX.length);
     if (articleId) callback(articleId);
-    else if (link) api.getArticleLinkInfo(link, (info) => callback(info.article_id));
+    else if (link) api.getArticleLinkInfo(link, (info) => callback(info.article_id), onError);
   }
 
   function finish(path) {
     setIsProcessing(false);
-    setTranslationFailed(false);
+    setFailure(null);
     setPending(null);
     pending.onDone?.();
     if (path) history.push(path);
@@ -85,33 +85,47 @@ export default function useGuardedLanguageSwitch() {
     switchLanguage(api, userDetails, setUserDetails, pending.langCode, () => finish("/articles"));
   }
 
-  // Translate first and switch after: until the translation is there, the
-  // reader can still back out, and a failed translation leaves them where
-  // they were. The dialog's spinner covers the wait.
+  function fail(message) {
+    setIsProcessing(false);
+    setFailure(message);
+  }
+
+  // Translate first and switch after: a failed translation leaves the reader
+  // where they were. The dialog's spinner covers the wait.
   function translateAndSwitch() {
     if (!pending || isProcessing) return;
     setIsProcessing(true);
-    withArticleId((articleId) =>
-      api.translateAndAdaptArticle(
-        { articleId },
-        pending.langCode,
-        (translated) => {
-          let saved = false;
-          switchLanguage(
-            api,
-            userDetails,
-            setUserDetails,
-            pending.langCode,
-            () => finish(saved ? "/read/article?id=" + translated.id : null),
-            () => (saved = true),
-          );
-        },
-        (error) => {
-          console.error("Translating the article for the language switch failed:", error);
-          setIsProcessing(false);
-          setTranslationFailed(true);
-        },
-      ),
+
+    const translationFailed = (error) => {
+      console.error("Translating the article for the language switch failed:", error);
+      fail(`The article could not be translated to ${targetLanguageName}. Switch anyway? It will be saved for later.`);
+    };
+
+    withArticleId(
+      (articleId) =>
+        api.translateAndAdaptArticle(
+          { articleId },
+          pending.langCode,
+          (translated) => {
+            let saved = false;
+            switchLanguage(
+              api,
+              userDetails,
+              setUserDetails,
+              pending.langCode,
+              () => {
+                if (saved) finish("/read/article?id=" + translated.id);
+                else
+                  fail(
+                    `The switch to ${targetLanguageName} could not be saved. Try again? The article will be saved for later.`,
+                  );
+              },
+              () => (saved = true),
+            );
+          },
+          translationFailed,
+        ),
+      translationFailed,
     );
   }
 
@@ -119,25 +133,25 @@ export default function useGuardedLanguageSwitch() {
     if (isProcessing) return;
     pending?.onDone?.();
     setPending(null);
-    setTranslationFailed(false);
+    setFailure(null);
   }
 
   const targetLanguageName = pending ? languageName(pending.langCode) : "";
 
-  const message = translationFailed
-    ? `The article could not be translated to ${targetLanguageName}. Switch anyway? It will be saved for later.`
-    : `Switch to ${targetLanguageName}? You can take this article along, translated to your ${targetLanguageName} level.`;
+  const message =
+    failure ||
+    `Switch to ${targetLanguageName}? You can take this article along, translated to your ${targetLanguageName} level.`;
 
   const confirmModal = pending ? (
     <ChoiceModal
       message={message}
-      primaryLabel={translationFailed ? "Switch" : `Adapt article to my level in ${targetLanguageName}`}
-      onPrimary={translationFailed ? switchWithoutArticle : translateAndSwitch}
-      secondaryLabel={translationFailed ? "Keep reading" : `Go to my ${targetLanguageName} home`}
-      onSecondary={translationFailed ? handleCancel : switchWithoutArticle}
+      primaryLabel={failure ? "Switch" : `Adapt article to my level in ${targetLanguageName}`}
+      onPrimary={failure ? switchWithoutArticle : translateAndSwitch}
+      secondaryLabel={failure ? "Keep reading" : `Go to my ${targetLanguageName} home`}
+      onSecondary={failure ? handleCancel : switchWithoutArticle}
       onCancel={handleCancel}
       isLoading={isProcessing}
-      loadingLabel={translationFailed ? "Switching..." : "Adapting..."}
+      loadingLabel={failure ? "Switching..." : "Adapting..."}
     />
   ) : null;
 
