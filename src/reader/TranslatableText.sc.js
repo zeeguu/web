@@ -546,6 +546,20 @@ const ClozeInputWrapper = styled.span`
   display: inline-block;
 `;
 
+/* Invisible copy of the typed text that gives the wrapper its width.
+   The input is absolutely positioned over it, so the slot grows letter
+   by letter in the sentence's own (proportional) font — no monospace
+   needed for ch-based sizing. Padding/weight must match ClozeInput. */
+const ClozeSizer = styled.span`
+  display: inline-block;
+  visibility: hidden;
+  white-space: pre;
+  font-weight: 700;
+  padding: 2px 4px;
+  min-width: ${props => props.$isOver ? '2ch' : '6em'};
+  border-bottom: 2px solid transparent;
+`;
+
 const ClozeHint = styled.div`
   position: absolute;
   top: 50%;
@@ -563,17 +577,23 @@ const ClozeInput = styled.input`
   border-bottom: 2px dotted ${props => props.$isOver ? orange600 : 'var(--cloze-underline)'};
   background: transparent;
   outline: none;
-  font-size: inherit;
-  font-family: monospace !important;
+  /* Same font, size and weight as the revealed answer, so solving the
+     exercise doesn't make the word jump in size. While typing the text
+     is a dimmed orange; on a correct answer it brightens to full
+     orange600 — the brightness change is the "correct" signal. */
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-weight: 700;
   text-align: ${props => props.$isOver ? 'center' : 'left'};
-  width: ${props => props.$width}ch;
-  max-width: ${props => props.$width}ch;
-  min-width: ${props => props.$isOver ? '2ch' : '8ch'};
   padding: 2px 4px;
   margin: 0;
-  color: ${props => props.$isOver ? orange600 : 'inherit'};
+  color: ${orange600};
+  opacity: ${props => props.$isOver ? 1 : 0.55};
   cursor: ${props => props.$isOver ? 'default' : 'text'};
-  transition: color 0.45s ease-out, border-bottom-color 0.45s ease-out;
+  transition: opacity 0.45s ease-out, border-bottom-color 0.45s ease-out;
   animation: ${props => {
     if (props.$isEmpty) return css`${pulseUnderline} 2s ease-in-out infinite`;
     return 'none';
@@ -584,9 +604,9 @@ const ClozeInput = styled.input`
      correct answer disables the input it visibly dims, masking the colour
      transition with a "freeze" before the orange settles in. */
   &:disabled {
-    opacity: 1;
-    color: ${props => props.$isOver ? orange600 : 'inherit'};
-    -webkit-text-fill-color: ${props => props.$isOver ? orange600 : 'inherit'};
+    opacity: ${props => props.$isOver ? 1 : 0.55};
+    color: ${orange600};
+    -webkit-text-fill-color: ${orange600};
     /* Let taps fall through to the wrapper's onClick so the solved
        cloze can be tapped to pronounce — disabled <input> on iOS would
        otherwise eat the click silently. */
@@ -607,6 +627,7 @@ export {
   TranslatableText,
   ClozeWrapper,
   ClozeInputWrapper,
+  ClozeSizer,
   ClozeHint,
   ClozeInput,
   ClozeStaticPlaceholder,
