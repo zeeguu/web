@@ -590,10 +590,10 @@ const ClozeInput = styled.input`
   text-align: ${props => props.$isOver ? 'center' : 'left'};
   padding: 2px 4px;
   margin: 0;
-  color: ${orange600};
-  opacity: ${props => props.$isOver ? 1 : 0.55};
+  /* Dim only the text (not the underline) while typing. */
+  color: ${props => props.$isOver ? orange600 : `color-mix(in srgb, ${orange600} 55%, transparent)`};
   cursor: ${props => props.$isOver ? 'default' : 'text'};
-  transition: opacity 0.45s ease-out, border-bottom-color 0.45s ease-out;
+  transition: color 0.45s ease-out, border-bottom-color 0.45s ease-out;
   animation: ${props => {
     if (props.$isEmpty) return css`${pulseUnderline} 2s ease-in-out infinite`;
     return 'none';
@@ -604,9 +604,9 @@ const ClozeInput = styled.input`
      correct answer disables the input it visibly dims, masking the colour
      transition with a "freeze" before the orange settles in. */
   &:disabled {
-    opacity: ${props => props.$isOver ? 1 : 0.55};
-    color: ${orange600};
-    -webkit-text-fill-color: ${orange600};
+    opacity: 1;
+    color: ${props => props.$isOver ? orange600 : `color-mix(in srgb, ${orange600} 55%, transparent)`};
+    -webkit-text-fill-color: ${props => props.$isOver ? orange600 : `color-mix(in srgb, ${orange600} 55%, transparent)`};
     /* Let taps fall through to the wrapper's onClick so the solved
        cloze can be tapped to pronounce — disabled <input> on iOS would
        otherwise eat the click silently. */
