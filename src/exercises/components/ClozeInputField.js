@@ -37,10 +37,6 @@ export default function ClozeInputField({
   const isOver = isCorrectAnswer || isExerciseOver;
   const currentValue = isExerciseOver && !isCorrectAnswer ? clozePhrase : inputValue;
 
-  // Monospace font: 1ch = 1 character. Minimum 8ch fits the "tap to type"
-  // hint without the input width jumping once the user starts typing.
-  const inputWidth = Math.max(currentValue.length + 1, 8);
-
   useEffect(() => {
     if (onInputRef) onInputRef(inputRef);
   }, [onInputRef]);
@@ -102,6 +98,11 @@ export default function ClozeInputField({
   } else if (canTypeInline) {
     clozeBody = (
       <s.ClozeInputWrapper>
+        {/* Sizes the slot to the typed text in the sentence's own font;
+            the trailing space leaves room for the caret. */}
+        <s.ClozeSizer aria-hidden="true" $isOver={isOver}>
+          {currentValue + " "}
+        </s.ClozeSizer>
         {showHint && hintVisible && inputValue === '' && !isExerciseOver && (
           <s.ClozeHint>tap to type</s.ClozeHint>
         )}
@@ -117,7 +118,6 @@ export default function ClozeInputField({
           $isOver={isOver}
           $isCorrect={isCorrectAnswer}
           $isEmpty={inputValue === ''}
-          $width={inputWidth}
           autoComplete="off"
           spellCheck="false"
         />
