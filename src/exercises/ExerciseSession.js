@@ -58,16 +58,15 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState();
   // Gate on this rather than just on currentBookmarksToStudy being set, so
   // Show solution / Report never show against the loading screen (or the
-  // wait-drill on a slow connection). Reset every time the exercise
-  // transitions; every exercise component flips it back by calling
+  // wait-drill on a slow connection). Every exercise component calls
   // `onExerciseLoaded` (passed to it below) once it has real content.
-  const [navReady, setNavReady] = useState(false);
-  useEffect(() => {
-    setNavReady(false);
-  }, [currentBookmarksToStudy]);
+  // Derived, not reset in an effect: child effects run first, so a reset here
+  // would undo the call of an exercise that is ready on mount, like Match.
+  const [loadedBookmarks, setLoadedBookmarks] = useState(null);
+  const navReady = loadedBookmarks === currentBookmarksToStudy;
   const [currentInteractiveText, setCurrentInteractiveText] = useState(null);
   const handleExerciseLoaded = (it) => {
-    setNavReady(true);
+    setLoadedBookmarks(currentBookmarksToStudy);
     if (it) setCurrentInteractiveText(it);
   };
   // Reset interactiveText reference when bookmarks change so we don't
