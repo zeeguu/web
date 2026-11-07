@@ -1,9 +1,8 @@
-Ein einfacheres Übersetzungsmenü und eine Korrektur für Schreibübungen.
-
-Übersetzungen
-- Alternative Übersetzungen erscheinen jetzt in Lesegröße, und jede lässt sich auf dem Handy bequem antippen.
-- Das Übersetzungsmenü ist schlichter: Es zeigt einfach Alternativen, ohne die Namen der Übersetzer.
+Eine Korrektur für die Wortzuordnungsübung, und du kannst deinen Artikel beim Sprachwechsel mitnehmen.
 
 Üben
-- Behoben: Nach einer falschen Antwort in einer Lückentext-Schreibübung konntest du hängen bleiben und nicht weitermachen. Die Übung endet jetzt und zeigt die Antwort.
-- Enter ohne Eingabe zählt nicht mehr als falsche Antwort.
+- Behoben: Die Wortzuordnungsübung konnte am Ende hängen bleiben, ohne dass du weitermachen konntest. Die Schaltfläche Weiter ist zurück, zusammen mit den anderen Optionen unter der Übung.
+- Deine Eingabe in Lückentext-Schreibübungen sieht jetzt so aus wie die angezeigte Antwort.
+
+Lesen
+- Wenn du beim Lesen die Sprache wechselst, kannst du jetzt weiterlesen: Zeeguu kann den Artikel in deine neue Sprache übersetzen, passend zu deinem Niveau dort. Oder geh zu deiner Startseite, und der Artikel wird für später gespeichert.

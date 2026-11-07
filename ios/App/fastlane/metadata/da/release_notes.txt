@@ -1,9 +1,8 @@
-En nemmere oversættelsesmenu og en rettelse til skriveøvelser.
-
-Oversættelser
-- Alternative oversættelser vises nu i læsestørrelse, og hver af dem er nem at trykke på på din telefon.
-- Oversættelsesmenuen er enklere: den viser bare Alternativer, uden oversætternes navne.
+En rettelse til øvelsen, hvor du matcher ord, og tag din artikel med, når du skifter sprog.
 
 Øvelser
-- Rettet: efter et forkert svar i en skriveøvelse, hvor du skal udfylde et ord, kunne du sidde fast uden mulighed for at komme videre. Øvelsen slutter nu og viser svaret.
-- Hvis du trykker Enter uden at have skrevet noget, tæller det ikke længere som et forkert svar.
+- Rettet: øvelsen, hvor du matcher ord, kunne gå i stå til sidst, uden mulighed for at komme videre. Knappen Næste er tilbage, sammen med de andre valg under øvelsen.
+- Det, du skriver i øvelser, hvor du skal udfylde et ord, ligner nu det viste svar.
+
+Læsning
+- Når du skifter sprog under læsning, kan du nu læse videre: Zeeguu kan oversætte artiklen til dit nye sprog, tilpasset dit niveau der. Eller gå til din forside, så gemmes artiklen til senere.

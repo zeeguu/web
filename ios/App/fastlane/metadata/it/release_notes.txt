@@ -1,9 +1,8 @@
-Un menu di traduzione più semplice e una correzione per gli esercizi di scrittura.
-
-Traduzioni
-- Le traduzioni alternative ora appaiono a dimensione di lettura, e ognuna è comoda da toccare sul telefono.
-- Il menu di traduzione è più semplice: mostra solo Alternative, senza i nomi dei traduttori.
+Una correzione per l'esercizio di abbinamento delle parole, e il tuo articolo ti segue quando cambi lingua.
 
 Esercizi
-- Corretto: dopo una risposta sbagliata in un esercizio in cui devi scrivere la parola mancante, potevi restare bloccato senza poter continuare. Ora l'esercizio termina e mostra la risposta.
-- Premere Invio senza aver scritto nulla non conta più come risposta sbagliata.
+- Corretto: l'esercizio di abbinamento delle parole poteva bloccarsi alla fine, senza modo di continuare. Il pulsante Avanti è tornato, insieme alle altre opzioni sotto l'esercizio.
+- Quello che scrivi negli esercizi in cui devi inserire la parola mancante ora ha lo stesso aspetto della risposta mostrata.
+
+Lettura
+- Quando cambi lingua mentre leggi, ora puoi continuare: Zeeguu può tradurre l'articolo nella tua nuova lingua, adattato al tuo livello in quella lingua. Oppure vai alla tua pagina iniziale, e l'articolo viene salvato per dopo.

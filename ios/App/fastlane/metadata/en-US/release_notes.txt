@@ -1,9 +1,8 @@
-An easier translation menu and a fix for typing exercises.
-
-Translations
-- Alternative translations now appear at reading size, and each one is a comfortable tap target on your phone.
-- The translation menu is simpler: it shows plain Alternatives, without the names of the translators.
+A fix for the word-matching exercise, and take your article along when you switch languages.
 
 Practice
-- Fixed: after a wrong answer in a fill-in-the-word typing exercise, you could get stuck with no way to continue. The exercise now ends and shows the answer.
-- Pressing Enter with nothing typed no longer counts as a wrong answer.
+- Fixed: the word-matching exercise could get stuck at the end, with no way to continue. The Next button is back, along with Show solution and Report.
+- Typed answers in fill-in-the-word exercises now match the look of the revealed answer.
+
+Reading
+- Switching language while reading now lets you keep going: Zeeguu can translate the article into your new language, adapted to your level there. Or go to your home page, and the article is saved for later.
