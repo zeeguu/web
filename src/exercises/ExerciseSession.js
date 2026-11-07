@@ -18,6 +18,7 @@ import {
 import NextNavigation from "./exerciseTypes/NextNavigation";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { EXTENDED_SEQUENCE, EXTENDED_SEQUENCE_NO_AUDIO } from "./exerciseSequenceTypes";
+import { fetchDisabledExerciseTypes, withoutDisabledTypes } from "./disabledExerciseTypes";
 import { isA0Learner } from "../utils/misc/userCefrLevel";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import useShadowRef from "../hooks/useShadowRef";
@@ -173,6 +174,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   // The last fetched bookmarks and how the session was built from them, so it
   // can be built again if the profile arrives after them and says A0.
   const fetchedRef = useRef(null);
+  const disabledTypesRef = useRef([]);
   useEffect(() => {
     const fetched = fetchedRef.current;
     if (!fetched || fetched.builtAsA0 === isA0Ref.current) return;
@@ -194,7 +196,14 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     // and none asks them to type (see assignBookmarksToA0Exercises).
     let exerciseSession = isA0Ref.current
       ? assignBookmarksToA0Exercises(bookmarks)
-      : sprinkleRecallTests(assignBookmarksToExercises(bookmarks, getExerciseSequenceType()));
+      : sprinkleRecallTests(
+          assignBookmarksToExercises(
+            bookmarks,
+            withoutDisabledTypes(getExerciseSequenceType(), disabledTypesRef.current),
+          ),
+          Math.random,
+          disabledTypesRef.current,
+        );
     if (exerciseSession.length === 0) {
       setIsOutOfWordsToday(true);
       setIsSessionLoading(false);
@@ -219,6 +228,15 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   function getBookmarksAndAssignThemToExercises(gen) {
+    // Asked for alongside the bookmarks, so it only adds to the wait if it is
+    // the slower of the two.
+    const disabledTypes = fetchDisabledExerciseTypes(api);
+    const buildSession = (bookmarks) =>
+      disabledTypes.then((types) => {
+        disabledTypesRef.current = types;
+        initializeExercisesForBookmarks(bookmarks, gen);
+      });
+
     if (articleID) {
       // Fetch article info and words in parallel for faster loading
       const articleInfoPromise = new Promise((resolve) => {
@@ -234,10 +252,10 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         setArticleTitle(articleInfo.title);
         setArticleURL(articleInfo.url);
         setTitle('Exercises for "' + articleInfo.title + '"');
-        initializeExercisesForBookmarks(bookmarks, gen);
+        buildSession(bookmarks);
       });
     } else {
-      api.getBookmarksRecommendedForPractice((bookmarks) => initializeExercisesForBookmarks(bookmarks, gen));
+      api.getBookmarksRecommendedForPractice(buildSession);
       setTitle("Zeeguu: Vocabulary Exercises (𝄂𝄂—𝄂𝄂)", "");
     }
   }

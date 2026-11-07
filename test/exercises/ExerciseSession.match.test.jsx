@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 import ExerciseSession from "../../src/exercises/ExerciseSession";
 import Match from "../../src/exercises/exerciseTypes/match/Match";
+import { EXERCISE_TYPES } from "../../src/exercises/ExerciseTypeConstants";
 import { APIContext } from "../../src/contexts/APIContext";
 import { SpeechContext } from "../../src/contexts/SpeechContext";
 import { UserContext } from "../../src/contexts/UserContext";
@@ -44,8 +45,10 @@ const api = {
   logUserActivity: () => {},
   uploadExerciseFinalizedData: () => {},
   getBookmarksRecommendedForPractice: (callback) => callback([...FIRST, ...SECOND]),
+  getDisabledExerciseTypes: (callback) => callback(disabledTypes),
   getCountOfBookmarksRecommendedForPractice: (callback) => callback(0),
 };
+let disabledTypes = [];
 const speech = { stopAudio: () => {}, speakOut: async () => {} };
 
 function renderSession() {
@@ -76,9 +79,9 @@ function renderSession() {
 }
 
 // Solves the first two pairs; Match reveals the third by itself.
-function solve(bookmarks) {
+async function solve(bookmarks) {
   for (const b of bookmarks.slice(0, 2)) {
-    fireEvent.click(screen.getByText(b.from));
+    fireEvent.click(await screen.findByText(b.from));
     fireEvent.click(screen.getByText(b.to));
   }
 }
@@ -89,6 +92,7 @@ describe("ExerciseSession with Match", () => {
   beforeEach(async () => {
     // Node's own localStorage has no setItem and refuses assignment.
     vi.stubGlobal("localStorage", { getItem: () => null, setItem: () => {}, removeItem: () => {} });
+    disabledTypes = [];
     const { assignBookmarksToExercises } = await import("../../src/exercises/assignBookmarksToExercises");
     assignBookmarksToExercises.mockReturnValue([
       { type: Match, bookmarks: FIRST },
@@ -99,11 +103,11 @@ describe("ExerciseSession with Match", () => {
   it("offers Next after the last pair, and reaches the summary", async () => {
     renderSession();
 
-    solve(FIRST);
+    await solve(FIRST);
     fireEvent.click(await nextButton());
 
     await screen.findByText("hest");
-    solve(SECOND);
+    await solve(SECOND);
     fireEvent.click(await nextButton());
 
     await waitFor(() => expect(screen.getByText("session summary")).toBeInTheDocument());
@@ -113,5 +117,16 @@ describe("ExerciseSession with Match", () => {
     renderSession();
     await screen.findByText("hund");
     expect(await screen.findByText("links")).toBeInTheDocument();
+  });
+
+  it("leaves a type the API disabled out of the session", async () => {
+    const { assignBookmarksToExercises } = await import("../../src/exercises/assignBookmarksToExercises");
+    disabledTypes = [EXERCISE_TYPES.match];
+    renderSession();
+
+    await screen.findByText("hund");
+
+    const sequence = assignBookmarksToExercises.mock.lastCall[1];
+    expect(sequence.some((exercise) => exercise.exerciseType === EXERCISE_TYPES.match)).toBe(false);
   });
 });

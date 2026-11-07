@@ -66,6 +66,10 @@ Zeeguu_API.prototype.getBookmarksRecommendedForPractice = function (callback) {
   return this.getUserWordsRecommendedForPractice(callback);
 };
 
+Zeeguu_API.prototype.getDisabledExerciseTypes = function (callback, onError) {
+  this._getJSON("disabled_exercise_types", callback, { onError });
+};
+
 Zeeguu_API.prototype.getBookmarksNextInLearning = function (callback) {
   return this.getUserWordsNextInLearning(callback);
 };

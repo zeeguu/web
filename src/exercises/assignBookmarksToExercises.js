@@ -4,6 +4,7 @@ import RecallMeaning from "./exerciseTypes/recallTest/RecallMeaning";
 import { removePunctuation } from "../utils/text/preprocessing";
 import { removeAllMatchingItemFromList } from "../utils/basic/arrays";
 import shuffle from "../assorted/fisherYatesShuffle";
+import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
 
 function popNElementsFromList(l, n) {
   let a = [];
@@ -204,15 +205,17 @@ function assignBookmarksToA0Exercises(bookmarks) {
   turn.
 */
 const RECALL_TEST_CHANCE = 1 / 6;
-const RECALL_TEST_TYPE_BY_LEVEL = { 2: RecallMeaning, 3: RecallMeaning, 4: RecallWord };
+const RECALL_MEANING = { type: RecallMeaning, exerciseType: EXERCISE_TYPES.recallMeaning };
+const RECALL_WORD = { type: RecallWord, exerciseType: EXERCISE_TYPES.recallWord };
+const RECALL_TEST_BY_LEVEL = { 2: RECALL_MEANING, 3: RECALL_MEANING, 4: RECALL_WORD };
 
-function sprinkleRecallTests(exercises, random = Math.random) {
+function sprinkleRecallTests(exercises, random = Math.random, disabledTypes = []) {
   return exercises.map((exercise) => {
     if (exercise.bookmarks.length !== 1) return exercise;
-    const type = RECALL_TEST_TYPE_BY_LEVEL[exercise.bookmarks[0].level];
-    if (!type) return exercise;
+    const recallTest = RECALL_TEST_BY_LEVEL[exercise.bookmarks[0].level];
+    if (!recallTest || disabledTypes.includes(recallTest.exerciseType)) return exercise;
     if (random() >= RECALL_TEST_CHANCE) return exercise;
-    return { type, bookmarks: exercise.bookmarks };
+    return { type: recallTest.type, bookmarks: exercise.bookmarks };
   });
 }
 
