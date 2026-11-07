@@ -11,13 +11,14 @@ import TranslateWhatYouHear from "./exerciseTypes/translateWhatYouHear/Translate
 import MultipleChoiceL2toL1 from "./exerciseTypes/multipleChoiceL2toL1/MultipleChoiceL2toL1";
 import ClickWordInContext from "./exerciseTypes/wordInContextExercises/ClickWordInContext";
 import MultipleChoiceContext from "./exerciseTypes/multipleChoiceContext/MultipleChoiceContext";
-import { MEMORY_TASK } from "./ExerciseTypeConstants";
+import { EXERCISE_TYPES, MEMORY_TASK } from "./ExerciseTypeConstants";
 
 const DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE = 12;
 const MAX_NUMBER_OF_BOOKMARKS_EX_SESSION = 20;
 
 const EX_Match = {
   type: Match,
+  exerciseType: EXERCISE_TYPES.match,
   requiredBookmarks: 3,
   learningCycle: "receptive",
   memoryTask: MEMORY_TASK.RECOGNITION,
@@ -26,6 +27,7 @@ const EX_Match = {
 };
 const EX_MultipleChoice = {
   type: MultipleChoice,
+  exerciseType: EXERCISE_TYPES.multipleChoice,
   requiredBookmarks: 1,
   learningCycle: "productive",
   memoryTask: MEMORY_TASK.RECOGNITION,
@@ -42,6 +44,7 @@ const EX_FindWordInContext = {
 };
 const EX_SpellWhatYouHear = {
   type: SpellWhatYouHear,
+  exerciseType: EXERCISE_TYPES.spellWhatYouHear,
   requiredBookmarks: 1,
   learningCycle: "productive",
   memoryTask: MEMORY_TASK.RECALL,
@@ -50,6 +53,7 @@ const EX_SpellWhatYouHear = {
 };
 const EX_MultipleChoiceL2toL1 = {
   type: MultipleChoiceL2toL1,
+  exerciseType: EXERCISE_TYPES.multipleChoiceL2toL1,
   requiredBookmarks: 3,
   learningCycle: "receptive",
   memoryTask: MEMORY_TASK.RECOGNITION,
@@ -58,6 +62,7 @@ const EX_MultipleChoiceL2toL1 = {
 };
 const EX_TranslateL2toL1 = {
   type: TranslateL2toL1,
+  exerciseType: EXERCISE_TYPES.translateL2toL1,
   requiredBookmarks: 1,
   learningCycle: "receptive",
   memoryTask: MEMORY_TASK.RECALL,
@@ -66,6 +71,7 @@ const EX_TranslateL2toL1 = {
 };
 const EX_TranslateWhatYouHear = {
   type: TranslateWhatYouHear,
+  exerciseType: EXERCISE_TYPES.translateWhatYouHear,
   requiredBookmarks: 1,
   learningCycle: "receptive",
   memoryTask: MEMORY_TASK.RECALL,
@@ -74,6 +80,7 @@ const EX_TranslateWhatYouHear = {
 };
 const EX_MultipleChoiceContext = {
   type: MultipleChoiceContext,
+  exerciseType: EXERCISE_TYPES.multipleChoiceContext,
   requiredBookmarks: 3,
   learningCycle: "receptive",
   memoryTask: MEMORY_TASK.RECOGNITION,
@@ -82,6 +89,7 @@ const EX_MultipleChoiceContext = {
 };
 const EX_ClickWordInContext = {
   type: ClickWordInContext,
+  exerciseType: EXERCISE_TYPES.clickWordInContext,
   requiredBookmarks: 1,
   learningCycle: "receptive",
   memoryTask: MEMORY_TASK.RECOGNITION,
@@ -90,6 +98,7 @@ const EX_ClickWordInContext = {
 };
 const EX_FindWordInContextCloze = {
   type: FindWordInContextCloze,
+  exerciseType: EXERCISE_TYPES.findWordInContextCloze,
   requiredBookmarks: 1,
   learningCycle: "productive",
   memoryTask: MEMORY_TASK.RECALL,
@@ -98,6 +107,7 @@ const EX_FindWordInContextCloze = {
 };
 const EX_MultipleChoiceAudio = {
   type: MultipleChoiceAudio,
+  exerciseType: EXERCISE_TYPES.multipleChoiceAudio,
   requiredBookmarks: 3,
   learningCycle: "productive",
   memoryTask: MEMORY_TASK.RECOGNITION,
