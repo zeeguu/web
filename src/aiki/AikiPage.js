@@ -10,14 +10,19 @@ import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
 import { MetaStrip, MetaItem } from "../components/MetaStrip.sc";
 import { articleSourceLabel } from "../utils/misc/articleHelpers";
 import { isA0Learner } from "../utils/misc/userCefrLevel";
-import ArticleThumbnail from "../articles/ArticleThumbnail";
 import ReadingCompletion from "../articles/ReadingCompletion";
 import { Kicker } from "../articles/ArticlePreview.sc";
 import * as s from "../articles/SavedArticleRow.sc";
 import { aikiChoices } from "./aikiChoices";
 import { startAikiSession } from "./aikiMinute";
 
-const KIND_IMAGES = { exercises: "/static/images/elephants/dumbbell.png", lesson: "/static/images/elephants/headphones.png" };
+// One elephant per kind of activity, so the rows read as a set. The article's
+// own photo would break that; its title and source already say which one.
+const KIND_IMAGES = {
+  exercises: "/static/images/elephants/dumbbell.png",
+  lesson: "/static/images/elephants/headphones.png",
+  article: "/static/images/elephants/ada/elephant-reading.png",
+};
 
 // Longest the page waits for a lookup before showing what it has: the
 // exercise count has taken minutes on a bad day, and the lesson row needs none.
@@ -82,9 +87,7 @@ function ChoiceRow({ choice }) {
     }
   };
 
-  const image = choice.article ? (
-    <ArticleThumbnail article={choice.article} />
-  ) : (
+  const image = (
     <s.ThumbnailWrap>
       <s.Placeholder>
         <Elephant src={KIND_IMAGES[choice.kind]} alt="" />
