@@ -1,8 +1,19 @@
 const fs = require('fs');
 const path = require('path');
 
-const outputDir = path.join(__dirname, 'output');
-const fastlaneDir = path.join(__dirname, '..', 'fastlane', 'screenshots', 'en-US');
+// Copies the framed store set from frame.js into fastlane's screenshots.
+//   node copy-to-fastlane.js      Italian set → en-US (every store without its own set)
+//   node copy-to-fastlane.js da   Danish set  → en-GB (what English-language phones
+//                                 in the Danish App Store see)
+const LOCALE_FOR_LANG = { it: 'en-US', da: 'en-GB' };
+const lang = process.argv[2] || 'it';
+if (!LOCALE_FOR_LANG[lang]) {
+  console.error(`No store localization for "${lang}". Known: ${Object.keys(LOCALE_FOR_LANG).join(', ')}`);
+  process.exit(1);
+}
+const outputDir = path.join(__dirname, 'output', lang === 'it' ? 'store' : `store-${lang}`);
+const fastlaneDir = path.join(__dirname, '..', 'fastlane', 'screenshots', LOCALE_FOR_LANG[lang]);
+fs.mkdirSync(fastlaneDir, { recursive: true });
 
 // Find all iPhone screenshots in output folder
 const files = fs.readdirSync(outputDir);

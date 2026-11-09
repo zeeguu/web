@@ -14,7 +14,7 @@
 const puppeteer = require("puppeteer");
 const path = require("path");
 const fs = require("fs");
-const { getResponse, FIXTURE_IMAGE_HOST } = require("./fixtures/mock-data");
+const { getResponse, FIXTURE_IMAGE_HOST, CAPTURE, FIXTURE_LANG } = require("./fixtures/mock-data");
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
 
@@ -44,7 +44,7 @@ const screens = [
   { name: "screenshot03", path: "/articles", wait: 5000 },
   {
     name: "screenshot04",
-    path: "/shared-article?url=https%3A%2F%2Fvogue.it%2Farticle%2Fnordic-latte",
+    path: `/shared-article?url=${encodeURIComponent(CAPTURE.sharedArticleUrl)}`,
     wait: 4000,
   },
   { name: "screenshot05", path: "/read/article?id=1", wait: 6000 },
@@ -56,13 +56,13 @@ const screens = [
     wait: 4000,
     mockOverrides: { get_todays_lesson: { lesson: null } },
     preLoad: async (page) => {
-      await page.evaluateOnNewDocument(() => {
-        localStorage.setItem("audio_lesson_lesson_type_it", "topic");
+      await page.evaluateOnNewDocument((lang, topic) => {
+        localStorage.setItem(`audio_lesson_lesson_type_${lang}`, "topic");
         localStorage.setItem(
-          "audio_lesson_suggestion_topic_it",
-          "bevande naturali",
+          `audio_lesson_suggestion_topic_${lang}`,
+          topic,
         );
-      });
+      }, FIXTURE_LANG, CAPTURE.audioTopic);
     },
   },
   { name: "screenshot09", path: "/daily-audio", wait: 5000 },
@@ -98,6 +98,20 @@ function setupRequestInterception(page, overrides = {}) {
       } else {
         request.abort().catch(() => {});
       }
+      return;
+    }
+
+    // Lesson audio: a silent mp3 of the lesson's length, so the player
+    // shows a real duration and progress instead of 0:00.
+    if (url.includes("api.zeeguu.org") && url.includes("/audio/daily_lessons/")) {
+      request
+        .respond({
+          status: 200,
+          headers: { "Access-Control-Allow-Origin": "*" },
+          contentType: "audio/mpeg",
+          body: fs.readFileSync(path.join(__dirname, "fixtures", "audio", "silence-351s.mp3")),
+        })
+        .catch(() => {});
       return;
     }
 
@@ -192,7 +206,11 @@ function parseScreenFilter(argv) {
 }
 
 async function renderScreenshots() {
-  const outputDir = path.join(__dirname, "output");
+  // Italian (the default set) goes straight into output/, other languages
+  // into output/<lang>/.
+  const outputDir = FIXTURE_LANG === "it"
+    ? path.join(__dirname, "output")
+    : path.join(__dirname, "output", FIXTURE_LANG);
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   const selected = parseScreenFilter(process.argv.slice(2));
@@ -223,9 +241,9 @@ async function renderScreenshots() {
         deviceScaleFactor: device.scale,
       });
 
-      // Force dark mode (matches the app's default on iOS)
+      // Light theme: the app default, and it reads better at search-result size
       await page.emulateMediaFeatures([
-        { name: "prefers-color-scheme", value: "dark" },
+        { name: "prefers-color-scheme", value: "light" },
       ]);
 
       await page.setRequestInterception(true);
@@ -250,6 +268,11 @@ async function renderScreenshots() {
 
         // Wait for React to finish rendering
         await new Promise((r) => setTimeout(r, screen.wait));
+
+        // The web top bar (settings gear) is not part of the app's look.
+        await page.addStyleTag({
+          content: '[class*="Bannerssc__TopBarContainer"] { display: none !important; }',
+        });
 
         // Exercise screenshots: hide the exercise type debug label
         if (screen.path.includes("/exercise/")) {
@@ -280,9 +303,15 @@ async function renderScreenshots() {
           });
         }
 
-        // Click bookmarked words to make translation bubbles visible (reader only)
-        if (screen.path.includes("/read/article")) {
-          const wordTargets = ["bevanda svedese", "latte caldo", "pelle"];
+        // Click bookmarked words to make translation bubbles visible
+        // (reader, and the looked-up word in the first feed title)
+        const wordTargetsByPath = {
+          "/read/article": CAPTURE.readerWords,
+          "/articles": CAPTURE.feedWords,
+        };
+        const pathKey = Object.keys(wordTargetsByPath).find((p) => screen.path.startsWith(p));
+        if (pathKey) {
+          const wordTargets = wordTargetsByPath[pathKey];
           for (const target of wordTargets) {
             const selector = await page.evaluateHandle((t) => {
               const spans = document.querySelectorAll("z-orig > span");
