@@ -12,7 +12,7 @@ describe("aikiChoices", () => {
     });
     expect(kinds(choices)).toEqual(["exercises", "lesson", "article"]);
     expect(choices[0].meta).toBe("6 words due");
-    expect(choices[1]).toMatchObject({ kicker: "Audio lesson", title: "Ved bageren", meta: "4 min" });
+    expect(choices[1]).toMatchObject({ kicker: "Audio lesson", title: "Ved bageren", meta: "Due today" });
     expect(choices[2]).toMatchObject({ progress: 40, href: "/read/article?id=7" });
   });
 
@@ -27,6 +27,6 @@ describe("aikiChoices", () => {
       exercisesDue: 0,
       lesson: { lesson_id: 1, title: "T", duration_seconds: 300, is_completed: true },
     });
-    expect(lesson.meta).toBe("Listen again · 5 min");
+    expect(lesson.meta).toBe("Done today · listen again");
   });
 });
