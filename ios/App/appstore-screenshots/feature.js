@@ -3,6 +3,7 @@
  * live captures (feed + reader) that render-live.js made.
  *
  * Usage: FIXTURE_LANG=da node feature.js   → output/store-da/feature-graphic.png
+ *        FIXTURE_LANG=it node feature.js   → output/store/feature-graphic.png (main listing)
  */
 
 const puppeteer = require("puppeteer");
@@ -11,6 +12,7 @@ const fs = require("fs");
 
 // "|" breaks the line, *x* is orange.
 const CAPTIONS = {
+  it: { title: "Learn a language|from *the news*", sub: "Real stories, simplified to your level. Tap any word to see what it means." },
   da: { title: "Understand the|*Danish news*", sub: "Real stories, simplified to your level. Tap any word to see it in English." },
 };
 
