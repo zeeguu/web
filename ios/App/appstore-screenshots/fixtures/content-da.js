@@ -272,6 +272,12 @@ const CAPTURE = {
   feedWords: ["Nordlys"],
   audioTopic: "vinterbadning",
   sharedArticleUrl: HARBOR_URL,
+  // record-preview.js: the video starts with nothing looked up and taps
+  // these (single words, translated by the mocked translate_word).
+  videoTaps: {
+    feed: [["Nordlys", "northern lights"]],
+    reader: [["dukkert", "dip"], ["Vinterbadning", "winter swimming"], ["humør", "mood"]],
+  },
 };
 
 module.exports = {

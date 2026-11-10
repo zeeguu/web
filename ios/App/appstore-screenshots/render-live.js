@@ -14,7 +14,8 @@
 const puppeteer = require("puppeteer");
 const path = require("path");
 const fs = require("fs");
-const { getResponse, FIXTURE_IMAGE_HOST, CAPTURE, FIXTURE_LANG } = require("./fixtures/mock-data");
+const { CAPTURE, FIXTURE_LANG } = require("./fixtures/mock-data");
+const { setupRequestInterception, HIDE_WEB_CHROME } = require("./intercept");
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
 
@@ -67,127 +68,6 @@ const screens = [
   },
   { name: "screenshot09", path: "/daily-audio", wait: 5000 },
 ];
-
-const FIXTURE_IMAGES_DIR = path.join(__dirname, "fixtures", "images");
-
-function setupRequestInterception(page, overrides = {}) {
-  page.on("request", (request) => {
-    const url = request.url();
-
-    // Block SSE stream → forces fallback to GET /user_article
-    if (url.includes("user_article_stream")) {
-      request.abort().catch(() => {});
-      return;
-    }
-
-    // Serve fixture images
-    if (url.includes(FIXTURE_IMAGE_HOST)) {
-      const parts = url.split(FIXTURE_IMAGE_HOST + "/");
-      const filename = parts[1] ? parts[1].split("?")[0] : null;
-      const filepath = filename
-        ? path.join(FIXTURE_IMAGES_DIR, filename)
-        : null;
-      if (filepath && fs.existsSync(filepath)) {
-        request
-          .respond({
-            status: 200,
-            contentType: "image/jpeg",
-            body: fs.readFileSync(filepath),
-          })
-          .catch(() => {});
-      } else {
-        request.abort().catch(() => {});
-      }
-      return;
-    }
-
-    // Lesson audio: a silent mp3 of the lesson's length, so the player
-    // shows a real duration and progress instead of 0:00.
-    if (url.includes("api.zeeguu.org") && url.includes("/audio/daily_lessons/")) {
-      request
-        .respond({
-          status: 200,
-          headers: { "Access-Control-Allow-Origin": "*" },
-          contentType: "audio/mpeg",
-          body: fs.readFileSync(path.join(__dirname, "fixtures", "audio", "silence-351s.mp3")),
-        })
-        .catch(() => {});
-      return;
-    }
-
-    // Mock API responses (cross-origin: needs CORS headers)
-    if (url.includes("api.zeeguu.org")) {
-      // Handle CORS preflight
-      if (request.method() === "OPTIONS") {
-        request
-          .respond({
-            status: 204,
-            headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Methods": "GET, POST, OPTIONS, DELETE",
-              "Access-Control-Allow-Headers": "Content-Type",
-            },
-          })
-          .catch(() => {});
-        return;
-      }
-
-      // Per-screen overrides take precedence over the shared mock fixture.
-      const routeMatch = url.match(/api\.zeeguu\.org\/+([^?]*)/);
-      const route = routeMatch ? routeMatch[1].replace(/^\/+/, "") : null;
-      if (route && Object.prototype.hasOwnProperty.call(overrides, route)) {
-        const override = overrides[route];
-        const isString = typeof override === "string";
-        request
-          .respond({
-            status: 200,
-            headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Content-Type": isString
-                ? "text/plain; charset=utf-8"
-                : "application/json; charset=utf-8",
-            },
-            body: isString ? override : JSON.stringify(override),
-          })
-          .catch(() => {});
-        return;
-      }
-
-      const response = getResponse(url, request.method());
-      if (response !== null) {
-        const isString = typeof response === "string";
-        request
-          .respond({
-            status: 200,
-            headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Content-Type": isString
-                ? "text/plain; charset=utf-8"
-                : "application/json; charset=utf-8",
-            },
-            body: isString ? response : JSON.stringify(response),
-          })
-          .catch(() => {});
-        return;
-      }
-      // Unhandled API route — return empty OK with CORS to avoid blocking
-      console.warn(`  [unhandled API] ${request.method()} ${url.split("?")[0]}`);
-      request
-        .respond({
-          status: 200,
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json",
-          },
-          body: "null",
-        })
-        .catch(() => {});
-      return;
-    }
-
-    request.continue().catch(() => {});
-  });
-}
 
 // Parse CLI args like `8`, `8 9`, `5-7` into a set of zero-padded screen numbers.
 // Empty set means "render all".
@@ -269,10 +149,7 @@ async function renderScreenshots() {
         // Wait for React to finish rendering
         await new Promise((r) => setTimeout(r, screen.wait));
 
-        // The web top bar (settings gear) is not part of the app's look.
-        await page.addStyleTag({
-          content: '[class*="Bannerssc__TopBarContainer"] { display: none !important; }',
-        });
+        await page.addStyleTag({ content: HIDE_WEB_CHROME });
 
         // Exercise screenshots: hide the exercise type debug label
         if (screen.path.includes("/exercise/")) {

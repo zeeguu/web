@@ -453,6 +453,12 @@ const CAPTURE = {
   feedWords: ["Aurora"],
   audioTopic: "bevande naturali",
   sharedArticleUrl: "https://vogue.it/article/nordic-latte",
+  // record-preview.js: the video starts with nothing looked up and taps
+  // these (single words, translated by the mocked translate_word).
+  videoTaps: {
+    feed: [["spettacolo", "show"]],
+    reader: [["bevanda", "drink"], ["caldo", "warm"], ["pelle", "skin"]],
+  },
 };
 
 module.exports = {
