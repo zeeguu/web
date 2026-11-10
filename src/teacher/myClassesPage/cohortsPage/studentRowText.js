@@ -1,3 +1,5 @@
+import { fromNumber } from "../../../utils/misc/cefr";
+
 // What a student's row in the class table says. Pure, so it can be tested.
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -59,12 +61,10 @@ export function barWidthPercent(total, classMax) {
   return Math.max(3, (100 * total) / classMax);
 }
 
-const CEFR_NAMES = ["A0", "A1", "A2", "B1", "B2", "C1", "C2"];
-
 // The level a student declared for the class's language (0..6, A0..C2), as a
 // name; "–" when they never set one.
 export function levelText(level) {
-  return CEFR_NAMES[level] || "–";
+  return fromNumber(level) || "–";
 }
 
 // The Level column only shows when the students are on different levels. In

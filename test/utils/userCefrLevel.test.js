@@ -7,7 +7,6 @@ import {
   shouldShowLanguageChoice,
 } from "../../src/utils/misc/userCefrLevel";
 import { levelValueFromCefr } from "../../src/assorted/cefrLevels";
-import { cefrOrdinal } from "../../src/utils/misc/cefrScale";
 
 // Levels are stored per language on userDetails, as numbers, under
 // `<code>_cefr_level`. The CEFR field holds a CEFR_LEVELS value, which is that
@@ -74,22 +73,6 @@ describe("explanationCefr", () => {
   it("is A1 when onboarding stored nothing", () => {
     expect(explanationCefr(undefined)).toBe("A1");
     expect(explanationCefr("")).toBe("A1");
-  });
-});
-
-describe("cefrOrdinal", () => {
-  it("reads a plain level", () => {
-    expect(cefrOrdinal("B1")).toBe(3);
-  });
-
-  it("reads a compound level as the harder of the two", () => {
-    expect(cefrOrdinal("B1/B2")).toBe(4);
-  });
-
-  it("is undefined for anything else", () => {
-    expect(cefrOrdinal(undefined)).toBeUndefined();
-    expect(cefrOrdinal("")).toBeUndefined();
-    expect(cefrOrdinal("easy")).toBeUndefined();
   });
 });
 

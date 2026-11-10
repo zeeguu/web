@@ -1,17 +1,4 @@
-import { cefrOrdinal } from "./cefrScale";
-
-// Convert a stored level (0-6) to the CEFR string to pick texts by (A1-C2).
-// 0 is A0, and reads as A1: nothing is written below A1. Only the audio
-// lessons go below it, and the API decides that on its own.
-const NUMERIC_TO_CEFR = {
-  0: "A1",
-  1: "A1",
-  2: "A2",
-  3: "B1",
-  4: "B2",
-  5: "C1",
-  6: "C2",
-};
+import { fromNumber, isAbove, isLevel, readable } from "./cefr";
 
 /**
  * Read the user's CEFR level (0-6, 0 is A0) for a given language code from the
@@ -62,11 +49,12 @@ export function shouldShowLanguageChoice(
   if (articleLanguage !== userDetails.learned_language) return true;
 
   const userNumeric = getUserCefrLevel(userDetails, articleLanguage);
-  const articleOrd = cefrOrdinal(articleCefrLevel);
-  // A stored level that is not one of 0..6 is as good as none: ask.
-  if (!articleOrd || !(userNumeric in NUMERIC_TO_CEFR)) return true;
-  // Compared as the level the user reads at (A0 reads A1, see numericToCefr).
-  return articleOrd > cefrOrdinal(numericToCefr(userNumeric));
+  const userLevel = readable(fromNumber(userNumeric));
+  // An article level we can't read, or a stored level that is not one of
+  // 0..6, is as good as none: ask.
+  if (!readable(articleCefrLevel) || !userLevel) return true;
+  // Compared as the level the user reads at (A0 reads A1).
+  return isAbove(articleCefrLevel, userLevel);
 }
 
 /**
@@ -78,7 +66,9 @@ export function shouldShowLanguageChoice(
  *   else, including no level at all
  */
 export function numericToCefr(numericLevel) {
-  return NUMERIC_TO_CEFR[numericLevel] || "B1";
+  // 0 is A0, and reads as A1: nothing is written below A1. Only the audio
+  // lessons go below it, and the API decides that on its own.
+  return readable(fromNumber(numericLevel)) || "B1";
 }
 
 /**
@@ -90,7 +80,7 @@ export function explanationCefr(storedLevel) {
   if (!storedLevel) return "A1"; // localStorage holds strings, so "0" (A0) is truthy
   // A browser may still hold a CEFR code from before; it is already what the
   // API wants.
-  if (cefrOrdinal(storedLevel)) return storedLevel;
+  if (isLevel(storedLevel)) return storedLevel;
   return numericToCefr(storedLevel);
 }
 

@@ -1,19 +1,6 @@
 import React from "react";
 import * as s from "./AdjustLevelBar.sc";
-
-const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
-
-// Levels strictly easier than the given one. A compound level like "B1/B2" is
-// normalised to its harder end so we never offer a target that isn't simpler.
-function easierLevelsThan(level) {
-  if (!level) return [];
-  const hardestIdx = String(level)
-    .split("/")
-    .map((tok) => CEFR_LEVELS.indexOf(tok.trim()))
-    .reduce((max, idx) => Math.max(max, idx), -1);
-  if (hardestIdx <= 0) return []; // unknown, or already A1 — nothing easier
-  return CEFR_LEVELS.slice(0, hardestIdx);
-}
+import { below } from "../../utils/misc/cefr";
 
 /**
  * "Rewrite to make easier" bar for the teacher text editor.
@@ -39,7 +26,9 @@ export default function AdjustLevelBar({
   onPick, // (level) => void
 }) {
   const languageMissing = !language || language === "default";
-  const easierTargets = easierLevelsThan(originalLevel);
+  // Strictly easier: a split level ("B1/B2") counts as its harder end, so we
+  // never offer a target that isn't simpler.
+  const easierTargets = below(originalLevel);
 
   // Nothing simpler to offer (unknown level, or the original is already A1).
   if (easierTargets.length === 0) return null;

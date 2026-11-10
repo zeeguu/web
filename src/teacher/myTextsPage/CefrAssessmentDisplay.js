@@ -3,8 +3,7 @@ import { APIContext } from "../../contexts/APIContext";
 import { StyledButton } from "../styledComponents/TeacherButtons.sc";
 import debounce from "lodash-es/debounce";
 import { effectiveCefrLevel } from "../../utils/misc/articleDifficulty";
-
-const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
+import { LEVELS } from "../../utils/misc/cefr";
 
 export default function CefrAssessmentDisplay({
   articleID,
@@ -276,7 +275,7 @@ export default function CefrAssessmentDisplay({
               }}
             >
               <option value="">Choose a level…</option>
-              {CEFR_LEVELS.map((level) => (
+              {LEVELS.map((level) => (
                 <option key={level} value={level}>
                   {level}
                 </option>
