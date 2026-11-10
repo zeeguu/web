@@ -212,12 +212,11 @@ Zeeguu_API.prototype.getGeneratedExamples = function (
   callback,
   errorCallback,
   translation = "",
-  cefrLevel = ""
 ) {
+  // No cefr_level: the API uses the learner's level in fromLang (api#944).
   let url = `generate_examples/${encodeURIComponent(word)}/${fromLang}/${toLang}`;
   const params = new URLSearchParams();
   if (translation) params.append("translation", translation);
-  if (cefrLevel) params.append("cefr_level", cefrLevel);
   if (params.toString()) url += `?${params.toString()}`;
 
   this._getJSON(url, (result) => {
