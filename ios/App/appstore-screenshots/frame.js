@@ -18,6 +18,8 @@ const fs = require("fs");
 
 const devices = [
   { name: "iphone", width: 1290, height: 2796 },
+  // 6.3": the only iPhone size custom product pages accept; same capture.
+  { name: "iphone-63", capture: "iphone", width: 1206, height: 2622 },
   { name: "ipad", width: 2048, height: 2732 },
   { name: "android-phone", width: 1080, height: 1920 },
   { name: "android-tablet", width: 1200, height: 1920 },
@@ -49,7 +51,7 @@ async function main() {
     await page.setViewport({ width: device.width, height: device.height, deviceScaleFactor: 1 });
 
     for (const [i, slide] of slides.entries()) {
-      const src = path.join(rawDir, `screenshot-${device.name}-${slide.live}.png`);
+      const src = path.join(rawDir, `screenshot-${device.capture || device.name}-${slide.live}.png`);
       if (!fs.existsSync(src)) {
         console.error(`  ✗ missing ${path.basename(src)}`);
         continue;
@@ -63,10 +65,19 @@ async function main() {
       console.log(`  → output/store/${out}`);
     }
 
-    const startNow = path.join(outputDir, `screenshot-${device.name}-${START_NOW}.png`);
+    const startNow = path.join(outputDir, `screenshot-${device.capture || device.name}-${START_NOW}.png`);
     if (fs.existsSync(startNow)) {
       const out = `screenshot-${device.name}-${String(slides.length + 1).padStart(2, "0")}.png`;
-      fs.copyFileSync(startNow, path.join(storeDir, out));
+      if (device.capture) {
+        // Rendered for another size: scale it to this one.
+        await page.setContent(
+          `<body style="margin:0"><img src="file://${startNow}" style="width:100vw;height:100vh;object-fit:cover;display:block"></body>`,
+        );
+        await page.evaluate(() => document.images[0].decode());
+        await page.screenshot({ path: path.join(storeDir, out) });
+      } else {
+        fs.copyFileSync(startNow, path.join(storeDir, out));
+      }
       console.log(`  → output/store/${out} (Start now!)`);
     }
   }
