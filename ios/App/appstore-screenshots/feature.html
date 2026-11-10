@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--
+  Play Store feature graphic (1024×500): a caption on the left, two live
+  captures (feed + reader) on the right. Filled in by feature.js via the
+  query string (?feed=…&reader=…&title=…&sub=…).
+-->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 1024px; height: 500px; overflow: hidden; }
+    body {
+      background: linear-gradient(135deg, #FDF6E9 0%, #F9E4C8 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      position: relative;
+    }
+    .text { position: absolute; left: 56px; top: 0; bottom: 0; width: 470px;
+            display: flex; flex-direction: column; justify-content: center; }
+    .title { font-size: 54px; font-weight: 800; color: #2E2A26; line-height: 1.06;
+             letter-spacing: -0.02em; }
+    .title em { font-style: normal; color: #E8901A; }
+    .sub { margin-top: 18px; font-size: 22px; color: #6B625A; line-height: 1.35; }
+    /* Phones show their top part and bleed off the bottom edge. */
+    .shot { position: absolute; width: 230px; border-radius: 22px;
+            box-shadow: 0 14px 36px rgba(60, 35, 10, 0.28); }
+    .feed { left: 540px; top: 46px; }
+    .reader { left: 760px; top: 84px; }
+  </style>
+</head>
+<body>
+  <div class="text">
+    <h1 class="title" id="title"></h1>
+    <p class="sub" id="sub"></p>
+  </div>
+  <img class="shot feed" id="feed" alt="">
+  <img class="shot reader" id="reader" alt="">
+  <script>
+    const q = new URLSearchParams(location.search);
+    document.getElementById('title').innerHTML = q.get('title')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>').replace(/\|/g, '<br>');
+    document.getElementById('sub').textContent = q.get('sub');
+    document.getElementById('feed').src = q.get('feed');
+    document.getElementById('reader').src = q.get('reader');
+  </script>
+</body>
+</html>
