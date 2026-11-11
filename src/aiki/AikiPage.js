@@ -67,9 +67,9 @@ export default function AikiPage() {
   return (
     <PaddedNarrowColumn>
       {/* The countdown says how long and what for; the title need not. */}
-      <PageTitle>Study before play</PageTitle>
-      <CountdownUnderTitle />
-      <Subtitle>then play for 5 minutes.</Subtitle>
+      <PageTitle>Earn your break</PageTitle>
+      <CountdownUnderTitle long />
+      <Subtitle>5 minutes of your paused apps.</Subtitle>
       {choices.map((choice) => (
         <ChoiceRow key={choice.kind} choice={choice} />
       ))}
