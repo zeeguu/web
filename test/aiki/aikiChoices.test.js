@@ -11,7 +11,7 @@ describe("aikiChoices", () => {
       unfinishedArticles: [{ id: 7, title: "A", last_reading_percentage: 0.4 }],
     });
     expect(kinds(choices)).toEqual(["exercises", "lesson", "article"]);
-    expect(choices[0].meta).toBe("6 words due");
+    expect(choices[0]).toMatchObject({ kicker: "Exercises", title: "6 words due" });
     expect(choices[1]).toMatchObject({ kicker: "Audio lesson", title: "Ved bageren", meta: "4 min" });
     expect(choices[2]).toMatchObject({ progress: 40, href: "/read/article?id=7" });
   });

@@ -98,7 +98,11 @@ function ChoiceRow({ choice }) {
       </s.Placeholder>
     </s.ThumbnailWrap>
   );
-  const meta = choice.article ? <ArticleMeta article={choice.article} /> : <MetaItem>{choice.meta}</MetaItem>;
+  const meta = choice.article ? (
+    <ArticleMeta article={choice.article} />
+  ) : (
+    choice.meta && <MetaItem>{choice.meta}</MetaItem>
+  );
 
   return (
     <s.Row style={{ cursor: "pointer" }} onClick={open} onKeyDown={onKeyDown} role="button" tabIndex={0}>
@@ -106,7 +110,7 @@ function ChoiceRow({ choice }) {
       <s.Content>
         {choice.kicker && <Kicker>{choice.kicker}</Kicker>}
         <s.Title>{choice.title}</s.Title>
-        <MetaStrip>{meta}</MetaStrip>
+        {meta && <MetaStrip>{meta}</MetaStrip>}
       </s.Content>
     </s.Row>
   );
@@ -136,6 +140,6 @@ const Countdown = styled(AikiCountdown)`
 const FeedLink = styled(Link)`
   display: block;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--link-color);
   margin: 0.5em 0 2em;
 `;
