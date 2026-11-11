@@ -2,7 +2,7 @@ import { MetaStrip, MetaItem, MetaLink, MetaTag } from "./MetaStrip.sc";
 import getDomainName from "../utils/misc/getDomainName";
 import { isSimplifiedArticle } from "../utils/misc/articleHelpers";
 import { effectiveCefrLevel } from "../utils/misc/articleDifficulty";
-import { cefrOrdinal } from "../utils/misc/cefrScale";
+import { isAbove } from "../utils/misc/cefr";
 import DynamicFlagImage from "./DynamicFlagImage";
 
 // `children` are extra MetaItems appended to the same strip -- the teacher's
@@ -28,7 +28,7 @@ export default function ArticleStatInfo({ articleInfo, shareContext, children })
   const showsDrop =
     parentLevel &&
     targetLevel &&
-    cefrOrdinal(parentLevel) > cefrOrdinal(targetLevel);
+    isAbove(parentLevel, targetLevel);
 
   // User-facing CEFR level is suppressed (see feedback_cefr_data_unreliable);
   // teachers still get one. It is the level the server computed and stored
