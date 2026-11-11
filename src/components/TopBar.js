@@ -18,6 +18,8 @@ import NotificationIcon from "./NotificationIcon";
 import Feature from "../features/Feature";
 import SettingsIconButton from "./Icons/SettingsIconButton";
 import strings from "../i18n/definitions";
+import styled from "styled-components";
+import AikiCountdown from "../aiki/AikiCountdown";
 
 export default function TopBar() {
   const { userDetails } = useContext(UserContext);
@@ -84,6 +86,9 @@ export default function TopBar() {
           </s.FlagButton>
         )}
         <LanguageStreakBar onMultipleLanguages={setHasStreakBar} onOpenModal={openLanguageModal} />
+        {/* Next to the streak, which also counts learning time; the auto
+            margin keeps it there instead of centered between the groups. */}
+        <CountdownNextToStreak />
         <s.TopBarActions>
           <SettingsIconButton onClick={() => history.push("/account_settings")} title={strings.settings} />
           {Feature.has_gamification() && (
@@ -106,3 +111,8 @@ export default function TopBar() {
     </>
   );
 }
+
+const CountdownNextToStreak = styled(AikiCountdown)`
+  margin-left: 0.5rem;
+  margin-right: auto;
+`;
