@@ -94,11 +94,15 @@ export function aikiSecondsToUnlock(now = Date.now()) {
   return secondsToUnlock(ledger, unreported, now);
 }
 
-// The ledger turns each completed minute into a break, so the next unlock is
-// at the next whole minute the ledger has not counted yet. While the ledger
-// has not answered for that minute, this stays at 0 instead of wrapping.
+// The ledger says how far the next unlock is (secondsToNextUnlock); the
+// countdown subtracts what it has not counted yet. A break that ran out since
+// the ledger last answered means a fresh minute, as the ledger will count it.
+// Ledgers from before secondsToNextUnlock count to the next whole minute.
+// While the ledger has not answered for that minute, this stays at 0.
 export function secondsToUnlock(state, unreportedSeconds, now) {
   if (state.breakUntil && state.breakUntil > now) return null;
-  const nextMinuteEnd = (Math.floor(state.learnedSecondsToday / 60) + 1) * 60;
-  return Math.max(0, nextMinuteEnd - state.learnedSecondsToday - unreportedSeconds);
+  const toGo = state.breakUntil
+    ? 60
+    : (state.secondsToNextUnlock ?? 60 - (state.learnedSecondsToday % 60));
+  return Math.max(0, toGo - unreportedSeconds);
 }

@@ -121,8 +121,12 @@ describe("secondsToUnlock", () => {
     expect(secondsToUnlock({ learnedSecondsToday: 70, breakUntil: now + 1000 }, 5, now)).toBeNull();
   });
 
-  it("comes back once the break has run out", () => {
-    expect(secondsToUnlock({ learnedSecondsToday: 70, breakUntil: now - 1 }, 5, now)).toBe(45);
+  it("needs a fresh minute once the break has run out", () => {
+    expect(secondsToUnlock({ learnedSecondsToday: 97, secondsToNextUnlock: 23, breakUntil: now - 1 }, 5, now)).toBe(55);
+  });
+
+  it("counts down what the ledger says is left", () => {
+    expect(secondsToUnlock({ learnedSecondsToday: 157, secondsToNextUnlock: 60 }, 5, now)).toBe(55);
   });
 
   it("stays at 0 until the ledger answers, instead of wrapping", () => {
