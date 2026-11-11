@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
-import { PageTitle } from "../components/PageTitle";
 import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
 import { MetaStrip, MetaItem } from "../components/MetaStrip.sc";
 import { articleSourceLabel } from "../utils/misc/articleHelpers";
@@ -66,10 +65,9 @@ export default function AikiPage() {
 
   return (
     <PaddedNarrowColumn>
-      {/* The countdown says how long and what for; the title need not. */}
-      <PageTitle>Earn your break</PageTitle>
-      <CountdownUnderTitle long />
-      <Subtitle>5 minutes of your paused apps.</Subtitle>
+      {/* The countdown is the whole heading: how long, and what for. How long
+          the break lasts is in the toast that opens it. */}
+      <Countdown long />
       {choices.map((choice) => (
         <ChoiceRow key={choice.kind} choice={choice} />
       ))}
@@ -130,15 +128,9 @@ const Elephant = styled.img`
   object-fit: contain;
 `;
 
-const CountdownUnderTitle = styled(AikiCountdown)`
+const Countdown = styled(AikiCountdown)`
   display: table;
-  margin: -0.5rem auto 0;
-`;
-
-const Subtitle = styled.p`
-  text-align: center;
-  color: var(--text-secondary);
-  margin: 0.5em 0 2em;
+  margin: 2rem auto;
 `;
 
 

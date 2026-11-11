@@ -8,7 +8,7 @@ import { aikiSecondsToUnlock, aikiSessionActive, subscribeAikiSession } from "./
 // apps are still locked: in the toolbar, or under the Aiki page's title. The
 // notes about breaks come from aikiMinute, once the ledger grants them.
 // `hidden` keeps the space empty where another copy is already on screen.
-// `long` spells out "of study", where there is room for it (the /aiki page).
+// `long` spells the whole thing out, where there is room (the /aiki page).
 export default function AikiCountdown({ className, hidden = false, long = false }) {
   const active = useSyncExternalStore(subscribeAikiSession, aikiSessionActive);
   const [seconds, setSeconds] = useState(null);
@@ -26,7 +26,7 @@ export default function AikiCountdown({ className, hidden = false, long = false 
 
   if (hidden || seconds === null) return null;
   if (seconds <= 0) return <Pill className={className}>Unlocking…</Pill>;
-  return <Pill className={className}>{long ? `${seconds}s of study to unlock` : `${seconds}s till unlock`}</Pill>;
+  return <Pill className={className}>{long ? `${seconds}s of study to unlock your paused apps` : `${seconds}s till unlock`}</Pill>;
 }
 
 const Pill = styled.span`
