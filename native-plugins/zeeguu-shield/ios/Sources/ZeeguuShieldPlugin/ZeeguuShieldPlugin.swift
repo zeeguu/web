@@ -133,6 +133,7 @@ public class ZeeguuShieldPlugin: CAPPlugin, CAPBridgedPlugin {
             "learnedSecondsToday": ledger.learnedToday(now),
             "dailyGoalSeconds": Aiki.dailyGoalSeconds,
             "freeToday": ledger.freeToday(now),
+            "secondsToNextUnlock": ledger.secondsToNextUnlock(now),
         ]
         if ledger.onBreak(now), let end = ledger.breakUntil {
             result["breakUntil"] = Int(end.timeIntervalSince1970 * 1000)
