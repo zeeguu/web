@@ -14,7 +14,7 @@ import ReadingCompletion from "../articles/ReadingCompletion";
 import { Kicker } from "../articles/ArticlePreview.sc";
 import * as s from "../articles/SavedArticleRow.sc";
 import { aikiChoices } from "./aikiChoices";
-import { startAikiSession } from "./aikiMinute";
+import { startAikiSession, trackAikiPage } from "./aikiMinute";
 
 // One elephant per kind of activity, so the rows read as a set. The article's
 // own photo would break that; its title and source already say which one.
@@ -39,6 +39,12 @@ export default function AikiPage() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const [choices, setChoices] = useState(null);
+
+  // The session starts here, so the countdown shows before anything is picked.
+  useEffect(() => {
+    startAikiSession();
+    return trackAikiPage();
+  }, []);
 
   useEffect(() => {
     // A failed or slow lookup counts as "nothing there"; the lesson row is always shown.
@@ -66,7 +72,7 @@ export default function AikiPage() {
       ))}
       {/* There is no feed at A0 (see NoFeedAtA0). */}
       {!isA0Learner(userDetails) && (
-        <FeedLink to="/articles" onClick={startAikiSession}>
+        <FeedLink to="/articles">
           or pick something from your feed
         </FeedLink>
       )}
@@ -76,10 +82,7 @@ export default function AikiPage() {
 
 function ChoiceRow({ choice }) {
   const history = useHistory();
-  const open = () => {
-    startAikiSession();
-    history.push(choice.href);
-  };
+  const open = () => history.push(choice.href);
   const onKeyDown = (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();

@@ -13,11 +13,13 @@ vi.mock("../../src/components/nativeShield", () => ({
 
 import { toast } from "react-toastify";
 import {
-  aikiProgress,
+  aikiSecondsToUnlock,
   aikiSessionActive,
   endAikiSession,
   ledgerNews,
+  secondsToUnlock,
   startAikiSession,
+  trackAikiPage,
   trackLiveSession,
 } from "../../src/aiki/aikiMinute";
 
@@ -48,17 +50,36 @@ describe("aikiMinute", () => {
 
   it("counts from the ledger, plus what it has not counted yet", async () => {
     await start(locked);
-    const untrack = trackLiveSession("reading", () => 20);
+    // 100 counted by the ledger + 5 in flight + 3 in the open session.
+    const untrack = trackLiveSession("reading", () => 3);
     native.inFlight = 5;
-    expect(aikiProgress()).toEqual({ seconds: 125, goalSeconds: 900 });
+    expect(aikiSecondsToUnlock()).toBe(12);
     untrack();
   });
 
   it("stays hidden when no learning screen is open", async () => {
     await start(locked);
     const untrack = trackLiveSession("browsing", () => 10);
-    expect(aikiProgress()).toBeNull();
+    expect(aikiSecondsToUnlock()).toBeNull();
     untrack();
+  });
+
+  it("reads the ledger afresh when /aiki opens again", async () => {
+    await start(locked);
+    await start({ ...locked, learnedSecondsToday: 0 });
+    const untrack = trackAikiPage();
+    expect(aikiSecondsToUnlock()).toBe(60);
+    untrack();
+    await start({ ...locked, shieldActive: false });
+    expect(aikiSessionActive()).toBe(false);
+  });
+
+  it("shows on /aiki, standing still", async () => {
+    await start(locked);
+    const untrack = trackAikiPage();
+    expect(aikiSecondsToUnlock()).toBe(20);
+    untrack();
+    expect(aikiSecondsToUnlock()).toBeNull();
   });
 
   it("says the apps are unlocked once the ledger starts a break", async () => {
@@ -83,5 +104,28 @@ describe("ledgerNews", () => {
 
   it("announces a new break after the last one ran out", () => {
     expect(ledgerNews({ breakUntil: now - 1 }, { breakUntil: now + 300 }, now)).toBe("unlocked");
+  });
+});
+
+describe("secondsToUnlock", () => {
+  const now = 1000000;
+  it("counts down to the end of the first minute", () => {
+    expect(secondsToUnlock({ learnedSecondsToday: 0 }, 10, now)).toBe(50);
+  });
+
+  it("counts from what the ledger already has", () => {
+    expect(secondsToUnlock({ learnedSecondsToday: 130 }, 5, now)).toBe(45);
+  });
+
+  it("is hidden while a break runs", () => {
+    expect(secondsToUnlock({ learnedSecondsToday: 70, breakUntil: now + 1000 }, 5, now)).toBeNull();
+  });
+
+  it("comes back once the break has run out", () => {
+    expect(secondsToUnlock({ learnedSecondsToday: 70, breakUntil: now - 1 }, 5, now)).toBe(45);
+  });
+
+  it("stays at 0 until the ledger answers, instead of wrapping", () => {
+    expect(secondsToUnlock({ learnedSecondsToday: 50 }, 25, now)).toBe(0);
   });
 });

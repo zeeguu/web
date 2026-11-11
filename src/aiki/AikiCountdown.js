@@ -1,0 +1,39 @@
+import { useEffect, useState, useSyncExternalStore } from "react";
+import styled from "styled-components";
+
+import { zeeguuOrange } from "../components/colors";
+import { aikiSecondsToUnlock, aikiSessionActive, subscribeAikiSession } from "./aikiMinute";
+
+// A small "50s till unlock" note for the toolbar while an Aiki session runs
+// and the paused apps are still locked. The notes about breaks come from
+// aikiMinute, once the ledger grants them.
+export default function AikiCountdown({ className }) {
+  const active = useSyncExternalStore(subscribeAikiSession, aikiSessionActive);
+  const [seconds, setSeconds] = useState(null);
+
+  useEffect(() => {
+    if (!active) {
+      setSeconds(null);
+      return;
+    }
+    const tick = () => setSeconds(aikiSecondsToUnlock());
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [active]);
+
+  if (seconds === null) return null;
+  return <Pill className={className}>{seconds > 0 ? `${seconds}s till unlock` : "Unlocking…"}</Pill>;
+}
+
+const Pill = styled.span`
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: white;
+  background: ${zeeguuOrange};
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  white-space: nowrap;
+  align-self: center;
+`;
