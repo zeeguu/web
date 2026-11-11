@@ -161,20 +161,6 @@ Zeeguu_API.prototype.simplifyOwnText = function (
 };
 
 /*
-  Get all CEFR assessments for an article (LLM, ML, Teacher resolution)
-
-  Example:
-    api.getCEFRAssessments(12345, (data) => {
-      console.log(data.display_cefr); // "A1/A2" or "B1"
-      console.log(data.assessments.llm); // { cefr_level: "A1", method: "llm_assessed_deepseek", ... }
-      console.log(data.assessments.ml);  // { cefr_level: "A2", method: "ml", ... }
-    });
-*/
-Zeeguu_API.prototype.getCEFRAssessments = function (articleId, onSuccess, onError) {
-  this._getJSON(`article/${articleId}/cefr_assessments`, onSuccess, onError);
-};
-
-/*
   Teacher resolves a CEFR disagreement by choosing a level
 
   Example:
