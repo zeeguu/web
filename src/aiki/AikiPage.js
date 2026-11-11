@@ -66,8 +66,8 @@ export default function AikiPage() {
 
   return (
     <PaddedNarrowColumn>
-      {/* The title names no duration: the countdown right under it does. */}
-      <PageTitle>Learn a bit to unlock</PageTitle>
+      {/* The countdown says how long and what for; the title need not. */}
+      <PageTitle>Learn a bit</PageTitle>
       <CountdownUnderTitle />
       <Subtitle>Your paused apps then open for 5 minutes.</Subtitle>
       {choices.map((choice) => (
