@@ -13,6 +13,7 @@ import { isA0Learner } from "../utils/misc/userCefrLevel";
 import ReadingCompletion from "../articles/ReadingCompletion";
 import { Kicker } from "../articles/ArticlePreview.sc";
 import * as s from "../articles/SavedArticleRow.sc";
+import AikiCountdown from "./AikiCountdown";
 import { aikiChoices } from "./aikiChoices";
 import { startAikiSession, trackAikiPage } from "./aikiMinute";
 
@@ -66,6 +67,8 @@ export default function AikiPage() {
   return (
     <PaddedNarrowColumn>
       <PageTitle>Learn for one minute</PageTitle>
+      {/* Here rather than in the top bar, right where the minute is explained. */}
+      <CountdownUnderTitle />
       <Subtitle>to unlock your paused apps for 5 minutes.</Subtitle>
       {choices.map((choice) => (
         <ChoiceRow key={choice.kind} choice={choice} />
@@ -125,6 +128,11 @@ const Elephant = styled.img`
   width: 80%;
   height: 80%;
   object-fit: contain;
+`;
+
+const CountdownUnderTitle = styled(AikiCountdown)`
+  display: table;
+  margin: -0.5rem auto 0;
 `;
 
 const Subtitle = styled.p`
