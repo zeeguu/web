@@ -4,12 +4,13 @@ import styled from "styled-components";
 import { zeeguuOrange } from "../components/colors";
 import { aikiSecondsToUnlock, aikiSessionActive, subscribeAikiSession } from "./aikiMinute";
 
-// A small "50s till unlock" note while an Aiki session runs and the paused
-// apps are still locked: in the toolbar, or under the Aiki page's title. The
-// notes about breaks come from aikiMinute, once the ledger grants them.
+// A small "50s till unlock" note for the toolbar while an Aiki session runs
+// and the paused apps are still locked. The notes about breaks come from
+// aikiMinute, once the ledger grants them.
 // `hidden` keeps the space empty where another copy is already on screen.
-// `long` spells the whole thing out, where there is room (the /aiki page).
-export default function AikiCountdown({ className, hidden = false, long = false }) {
+// `sentence` is the /aiki page's heading: "Study (50s) to unlock your paused
+// apps", the seconds in the same pill as the toolbar's.
+export default function AikiCountdown({ className, hidden = false, sentence = false }) {
   const active = useSyncExternalStore(subscribeAikiSession, aikiSessionActive);
   const [seconds, setSeconds] = useState(null);
 
@@ -25,9 +26,29 @@ export default function AikiCountdown({ className, hidden = false, long = false 
   }, [active]);
 
   if (hidden || seconds === null) return null;
-  if (seconds <= 0) return <Pill className={className}>Unlocking…</Pill>;
-  return <Pill className={className}>{long ? `${seconds}s of study to unlock your paused apps` : `${seconds}s till unlock`}</Pill>;
+  if (sentence) {
+    return (
+      <Sentence className={className}>
+        {seconds > 0 ? (
+          <>
+            Study <Pill>{seconds}s</Pill> to unlock your paused apps
+          </>
+        ) : (
+          "Unlocking your paused apps…"
+        )}
+      </Sentence>
+    );
+  }
+  return <Pill className={className}>{seconds > 0 ? `${seconds}s till unlock` : "Unlocking…"}</Pill>;
 }
+
+const Sentence = styled.p`
+  text-align: center;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  text-wrap: balance;
+  color: var(--text-primary);
+`;
 
 const Pill = styled.span`
   font-size: 0.85rem;

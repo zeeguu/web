@@ -67,7 +67,7 @@ export default function AikiPage() {
     <PaddedNarrowColumn>
       {/* The countdown is the whole heading: how long, and what for. How long
           the break lasts is in the toast that opens it. */}
-      <Countdown long />
+      <Countdown sentence />
       {choices.map((choice) => (
         <ChoiceRow key={choice.kind} choice={choice} />
       ))}
@@ -129,8 +129,7 @@ const Elephant = styled.img`
 `;
 
 const Countdown = styled(AikiCountdown)`
-  display: table;
-  margin: 2rem auto;
+  margin: 2rem 0;
 `;
 
 
