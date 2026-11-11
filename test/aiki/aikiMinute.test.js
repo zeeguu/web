@@ -21,6 +21,7 @@ import {
   startAikiSession,
   trackAikiPage,
   trackLiveSession,
+  unlockedMessage,
 } from "../../src/aiki/aikiMinute";
 
 const locked = { shieldActive: true, freeToday: false, learnedSecondsToday: 100, dailyGoalSeconds: 900 };
@@ -85,7 +86,7 @@ describe("aikiMinute", () => {
   it("says the apps are unlocked once the ledger starts a break", async () => {
     await start(locked);
     native.ledgerListener({ ...locked, learnedSecondsToday: 120, breakUntil: Date.now() + 300000 });
-    expect(toast).toHaveBeenCalledWith("Your paused apps are unlocked");
+    expect(toast).toHaveBeenCalledWith("Your paused apps are unlocked for 5 minutes");
   });
 
   it("ends the session when the ledger frees the day", async () => {
@@ -131,5 +132,19 @@ describe("secondsToUnlock", () => {
 
   it("stays at 0 until the ledger answers, instead of wrapping", () => {
     expect(secondsToUnlock({ learnedSecondsToday: 50 }, 25, now)).toBe(0);
+  });
+});
+
+describe("unlockedMessage", () => {
+  const now = 1_000_000;
+  it("says how long the break lasts", () => {
+    expect(unlockedMessage(now + 300000, now)).toBe("Your paused apps are unlocked for 5 minutes");
+    expect(unlockedMessage(now + 299000, now)).toBe("Your paused apps are unlocked for 5 minutes");
+  });
+  it("says a single minute in the singular", () => {
+    expect(unlockedMessage(now + 60000, now)).toBe("Your paused apps are unlocked for 1 minute");
+  });
+  it("leaves the length out when there is none to give", () => {
+    expect(unlockedMessage(now + 10000, now)).toBe("Your paused apps are unlocked");
   });
 });

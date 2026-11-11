@@ -57,7 +57,7 @@ onLedgerUpdate((next) => {
     endAikiSession();
     return;
   }
-  if (news === "unlocked") toast("Your paused apps are unlocked");
+  if (news === "unlocked") toast(unlockedMessage(next.breakUntil));
   setLedger(next);
 });
 
@@ -68,6 +68,13 @@ export function ledgerNews(before, after, now = Date.now()) {
   const onBreak = (state) => !!state.breakUntil && state.breakUntil > now;
   if (onBreak(after) && !onBreak(before)) return "unlocked";
   return null;
+}
+
+// The break's length comes from the ledger rather than a constant here.
+export function unlockedMessage(breakUntil, now = Date.now()) {
+  const minutes = Math.round((breakUntil - now) / 60000);
+  if (minutes <= 0) return "Your paused apps are unlocked";
+  return `Your paused apps are unlocked for ${minutes} minute${minutes === 1 ? "" : "s"}`;
 }
 
 // Called by useSession while a session runs; returns the unregister function.

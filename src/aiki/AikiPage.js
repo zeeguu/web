@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
-import { PageTitle } from "../components/PageTitle";
 import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
 import { MetaStrip, MetaItem } from "../components/MetaStrip.sc";
 import { articleSourceLabel } from "../utils/misc/articleHelpers";
@@ -13,6 +12,7 @@ import { isA0Learner } from "../utils/misc/userCefrLevel";
 import ReadingCompletion from "../articles/ReadingCompletion";
 import { Kicker } from "../articles/ArticlePreview.sc";
 import * as s from "../articles/SavedArticleRow.sc";
+import AikiCountdown from "./AikiCountdown";
 import { aikiChoices } from "./aikiChoices";
 import { startAikiSession, trackAikiPage } from "./aikiMinute";
 
@@ -65,8 +65,9 @@ export default function AikiPage() {
 
   return (
     <PaddedNarrowColumn>
-      <PageTitle>Learn for one minute</PageTitle>
-      <Subtitle>to unlock your paused apps for 5 minutes.</Subtitle>
+      {/* The countdown is the whole heading: how long, and what for. How long
+          the break lasts is in the toast that opens it. */}
+      <Countdown sentence />
       {choices.map((choice) => (
         <ChoiceRow key={choice.kind} choice={choice} />
       ))}
@@ -127,10 +128,8 @@ const Elephant = styled.img`
   object-fit: contain;
 `;
 
-const Subtitle = styled.p`
-  text-align: center;
-  color: var(--text-secondary);
-  margin: 0.5em 0 2em;
+const Countdown = styled(AikiCountdown)`
+  margin: 2rem 0;
 `;
 
 
