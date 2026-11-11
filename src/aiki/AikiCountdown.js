@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { zeeguuOrange } from "../components/colors";
 import { aikiSecondsToUnlock, aikiSessionActive, subscribeAikiSession } from "./aikiMinute";
 
-// A small "50s till unlock" note while an Aiki session runs and the paused
+// A small "50s to unlock" note while an Aiki session runs and the paused
 // apps are still locked: in the toolbar, or under the Aiki page's title. The
 // notes about breaks come from aikiMinute, once the ledger grants them.
 // `hidden` keeps the space empty where another copy is already on screen.
@@ -24,7 +24,7 @@ export default function AikiCountdown({ className, hidden = false }) {
   }, [active]);
 
   if (hidden || seconds === null) return null;
-  return <Pill className={className}>{seconds > 0 ? `${seconds}s till unlock` : "Unlocking…"}</Pill>;
+  return <Pill className={className}>{seconds > 0 ? `${seconds}s to unlock` : "Unlocking…"}</Pill>;
 }
 
 const Pill = styled.span`
