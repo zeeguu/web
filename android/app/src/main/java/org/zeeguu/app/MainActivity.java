@@ -2,7 +2,6 @@ package org.zeeguu.app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Patterns;
 
 import com.getcapacitor.BridgeActivity;
 
@@ -11,7 +10,14 @@ public class MainActivity extends BridgeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        handleShareIntent(getIntent());
+        // Only a fresh launch carries a new share. Recreating the activity
+        // (after process death, or reopening from Recents) hands back the
+        // original intent, which would open the same share again.
+        boolean fromRecents =
+            (getIntent().getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0;
+        if (savedInstanceState == null && !fromRecents) {
+            handleShareIntent(getIntent());
+        }
     }
 
     @Override
@@ -43,9 +49,6 @@ public class MainActivity extends BridgeActivity {
     }
 
     private void openSharedArticle(String url) {
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            url = "https://" + url;
-        }
         try {
             String encodedUrl = java.net.URLEncoder.encode(url, "UTF-8");
             String path = "/shared-article?url=" + encodedUrl;
@@ -87,8 +90,13 @@ public class MainActivity extends BridgeActivity {
         return rest.split("\\s+").length;
     }
 
+    // Only http(s) links, as in classifySharedText: a bare "dbu.dk" in a
+    // message is part of the message, not an article to open.
+    private static final java.util.regex.Pattern HTTP_LINK =
+        java.util.regex.Pattern.compile("https?://[^\\s<>\"]+", java.util.regex.Pattern.CASE_INSENSITIVE);
+
     private String extractUrl(String text) {
-        java.util.regex.Matcher matcher = Patterns.WEB_URL.matcher(text);
+        java.util.regex.Matcher matcher = HTTP_LINK.matcher(text);
         if (matcher.find()) {
             return matcher.group();
         }

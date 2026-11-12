@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
@@ -19,6 +19,7 @@ import useUserPreferences from "../hooks/useUserPreferences";
 import { setTitle } from "../assorted/setTitle";
 import { languageName } from "../utils/misc/languageCodeToName";
 import strings from "../i18n/definitions";
+import { readableApiError } from "../utils/misc/readableApiError";
 import { classifySharedText, takePendingSharedText, onSharedText, MAX_SHARED_TEXT_CHARS } from "./sharedText";
 
 // Any text the learner brings: shared from another app (a WhatsApp message,
@@ -72,7 +73,7 @@ export default function TextReader() {
   const speech = useContext(SpeechContext);
   const history = useHistory();
   const location = useLocation();
-  const { translateInReader, pronounceInReader, showMweHints } = useUserPreferences(api);
+  const { pronounceInReader, showMweHints } = useUserPreferences(api);
 
   const [draft, setDraft] = useState("");
   const [sharedText, setSharedText] = useState(null); // { text, language }
@@ -82,19 +83,28 @@ export default function TextReader() {
   const [translation, setTranslation] = useState(null);
   const [isTranslating, setIsTranslating] = useState(false);
 
+  // The latest read() wins: an earlier, slower answer must not replace it
+  const latestRead = useRef(0);
+
   const learnedLanguage = userDetails?.learned_language;
-  const nativeLanguage = userDetails?.native_language;
+  // Where InteractiveText sends the word taps, so the whole text and its words
+  // come back in the same language; userDetails may not have loaded yet on a
+  // cold-start share.
+  const nativeLanguage = localStorage.native_language || userDetails?.native_language;
 
   useEffect(() => setTitle(strings.readTextTitle), []);
 
   function read(text, language = null) {
+    const thisRead = ++latestRead.current;
     setError("");
+    setIsTranslating(false);
     setTranslation(null);
     setIsPreparing(true);
     api.prepareSharedText(
       text,
       language,
       (prepared) => {
+        if (thisRead !== latestRead.current) return;
         setSharedText({ text: prepared.text, language: prepared.language });
         // One per line of the text, as the article reader has one per fragment
         setInteractiveLines(
@@ -114,8 +124,9 @@ export default function TextReader() {
         setIsPreparing(false);
       },
       (errorMessage) => {
+        if (thisRead !== latestRead.current) return;
         setIsPreparing(false);
-        setError(typeof errorMessage === "string" && !/^HTTP \d+$/.test(errorMessage) ? errorMessage : strings.couldNotReadText);
+        setError(readableApiError(errorMessage, strings.couldNotReadText));
       },
     );
   }
@@ -142,7 +153,19 @@ export default function TextReader() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // A pasted link is an article to open, as when shared
+  function readDraft() {
+    const pasted = classifySharedText(draft);
+    if (pasted.kind === "article") {
+      history.push("/shared-article?url=" + encodeURIComponent(pasted.url));
+      return;
+    }
+    if (pasted.kind === "text") read(pasted.text);
+  }
+
   function readAnother() {
+    latestRead.current++;
+    setIsTranslating(false);
     setSharedText(null);
     setInteractiveLines([]);
     setTranslation(null);
@@ -151,16 +174,19 @@ export default function TextReader() {
   }
 
   function translateWholeText() {
+    const forRead = latestRead.current;
     setIsTranslating(true);
     api.translateSharedText(
       sharedText.text,
       sharedText.language,
       nativeLanguage,
       (result) => {
+        if (forRead !== latestRead.current) return;
         setTranslation(result.translation);
         setIsTranslating(false);
       },
       () => {
+        if (forRead !== latestRead.current) return;
         setIsTranslating(false);
         setError(strings.couldNotTranslateText);
       },
@@ -185,7 +211,7 @@ export default function TextReader() {
         />
         {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
         <TextActions>
-          <StyledButton $primary disabled={!draft.trim()} onClick={() => read(draft.trim())}>
+          <StyledButton $primary disabled={!draft.trim()} onClick={readDraft}>
             {strings.readText}
           </StyledButton>
         </TextActions>
@@ -209,7 +235,9 @@ export default function TextReader() {
           <TranslatableText
             key={i}
             interactiveText={interactiveText}
-            translating={translateInReader}
+            // Always on: tapping to translate is what this page is for, even
+            // for a learner who switched it off in the article reader
+            translating={true}
             pronouncing={pronounceInReader}
             showMweHints={showMweHints}
           />
@@ -221,7 +249,7 @@ export default function TextReader() {
 
       <TextActions>
         {!translation && (
-          <StyledButton $secondary disabled={isTranslating} onClick={translateWholeText}>
+          <StyledButton $secondary disabled={isTranslating || !nativeLanguage} onClick={translateWholeText}>
             {isTranslating ? strings.translatingText : strings.translateWholeText}
           </StyledButton>
         )}

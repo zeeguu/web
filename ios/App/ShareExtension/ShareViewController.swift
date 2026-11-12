@@ -63,8 +63,8 @@ class ShareViewController: UIViewController {
                     self?.close()
                     return
                 }
-                if let url = self.findURL(in: text),
-                   self.wordsBesides(url, in: text) <= self.maxWordsAroundArticleLink {
+                if let (url, linkText) = self.findLink(in: text),
+                   self.wordsBesides(linkText, in: text) <= self.maxWordsAroundArticleLink {
                     self.openInZeeguu(url: url)
                 } else {
                     self.openMessageInZeeguu(text: text)
@@ -78,17 +78,26 @@ class ShareViewController: UIViewController {
 
     private let maxWordsAroundArticleLink = 12
 
-    /// Finds a web link inside a text string (e.g. "Check this out: https://example.com")
-    private func findURL(in text: String) -> URL? {
+    /// The first http(s) link in a text, with the text it was written as.
+    /// The detector normalizes the URL (e.g. a trailing slash), so the words
+    /// around it are counted against what the text actually says.
+    private func findLink(in text: String) -> (URL, String)? {
         let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
         let range = NSRange(text.startIndex..., in: text)
-        let matches = detector?.matches(in: text, options: [], range: range) ?? []
-        return matches.compactMap { $0.url }.first { $0.scheme == "http" || $0.scheme == "https" }
+        for match in detector?.matches(in: text, options: [], range: range) ?? [] {
+            guard let url = match.url, url.scheme == "http" || url.scheme == "https",
+                  let linkRange = Range(match.range, in: text) else { continue }
+            let linkText = String(text[linkRange])
+            // As in classifySharedText: only links written with their scheme
+            guard linkText.lowercased().hasPrefix("http") else { continue }
+            return (url, linkText)
+        }
+        return nil
     }
 
     /// How many words the text has besides the link.
-    private func wordsBesides(_ url: URL, in text: String) -> Int {
-        let rest = text.replacingOccurrences(of: url.absoluteString, with: " ")
+    private func wordsBesides(_ linkText: String, in text: String) -> Int {
+        let rest = text.replacingOccurrences(of: linkText, with: " ")
         return rest.split(whereSeparator: { $0.isWhitespace }).count
     }
 
