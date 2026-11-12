@@ -52,8 +52,8 @@ class ShareViewController: UIViewController {
         // Case 2: the shared item is plain text. A link with little else
         // around it (some news apps and Chrome share "title + URL") opens as
         // an article; anything else, e.g. a WhatsApp message, opens in the
-        // message reader. Same rule as classifySharedText in
-        // src/translate/sharedText.js.
+        // text reader. Same rule as classifySharedText in
+        // src/reader/sharedText.js.
         if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) {
             provider.loadItem(forTypeIdentifier: UTType.plainText.identifier, options: nil) {
                 [weak self] (item, error) in

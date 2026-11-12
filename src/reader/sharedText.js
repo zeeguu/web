@@ -1,9 +1,9 @@
 // What to do with text another app shared into Zeeguu (the phone's share
 // sheet, or the installed web app's share target).
 //
-// A shared link, maybe with a title around it, is an article to open. A chat
-// message — even one that happens to contain a link — is a message to read
-// word by word. The native share handlers (MainActivity.java,
+// A shared link, maybe with a title around it, is an article to open. Any
+// other text — a chat message, even one that contains a link, a paragraph
+// from a mail — is read word by word at /read/text. The native share handlers (MainActivity.java,
 // ShareViewController.swift) apply the same rule; keep them in step.
 
 // More words than this besides the link, and it's a message, not a title.
@@ -20,18 +20,18 @@ export function classifySharedText(text, url = "") {
 
   if (!body && !link) return { kind: "nothing" };
   if (!body) return { kind: "article", url: link };
-  if (!link) return { kind: "message", text: body };
+  if (!link) return { kind: "text", text: body };
 
   const wordsBesideLink = body
     .replace(link, " ")
     .split(/\s+/)
     .filter((w) => w.length > 0).length;
   if (wordsBesideLink <= MAX_WORDS_AROUND_ARTICLE_LINK) return { kind: "article", url: link };
-  return { kind: "message", text: body };
+  return { kind: "text", text: body };
 }
 
 // Native code hands the message over by calling window.reactReceiveSharedText
-// (see index.js). It may arrive before the message page has mounted, or while
+// (see index.js). It may arrive before the text page has mounted, or while
 // it is already open, so it is kept here until the page takes it.
 let pending = null;
 let listener = null;

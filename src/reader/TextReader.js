@@ -5,9 +5,11 @@ import styled from "styled-components";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { SpeechContext } from "../contexts/SpeechContext";
-import InteractiveText from "../reader/InteractiveText";
-import { TranslatableText } from "../reader/TranslatableText";
-import { MainText } from "../reader/ArticleReader.sc";
+import InteractiveText from "./InteractiveText";
+import { TranslatableText } from "./TranslatableText";
+import { MainText } from "./ArticleReader.sc";
+import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
+import { PageTitle } from "../components/PageTitle";
 import ClearableInput from "../components/ClearableInput";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
@@ -19,11 +21,15 @@ import { languageName } from "../utils/misc/languageCodeToName";
 import strings from "../i18n/definitions";
 import { classifySharedText, takePendingSharedText, onSharedText, MAX_SHARED_TEXT_CHARS } from "./sharedText";
 
+// Any text the learner brings: shared from another app (a WhatsApp message,
+// a paragraph from a mail) or pasted. Read word by word like an article, but
+// not stored as one.
+
 // Bookmarks made here have no article behind them; the context type tells
-// them apart from the reader's (API: ContextType.SHARED_TEXT).
+// them apart from the article reader's (API: ContextType.SHARED_TEXT).
 const SHARED_TEXT_CONTEXT = { context_type: "SharedText" };
 
-const MessageLanguage = styled.div`
+const TextLanguage = styled.div`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -42,7 +48,7 @@ const ReadAsButton = styled.button`
   cursor: pointer;
 `;
 
-const MessageActions = styled.div`
+const TextActions = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -53,13 +59,13 @@ const ShareHint = styled.p`
   text-align: center;
 `;
 
-const MessageTranslation = styled(FullWidthInfoMsg)`
+const WholeTextTranslation = styled(FullWidthInfoMsg)`
   white-space: pre-wrap;
   font-weight: normal;
   margin-top: 1rem;
 `;
 
-export default function MessageReader() {
+export default function TextReader() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const speech = useContext(SpeechContext);
@@ -68,7 +74,7 @@ export default function MessageReader() {
   const { translateInReader, pronounceInReader, showMweHints } = useUserPreferences(api);
 
   const [draft, setDraft] = useState("");
-  const [message, setMessage] = useState(null); // { text, language }
+  const [sharedText, setSharedText] = useState(null); // { text, language }
   const [interactiveLines, setInteractiveLines] = useState([]);
   const [isPreparing, setIsPreparing] = useState(false);
   const [error, setError] = useState("");
@@ -78,7 +84,7 @@ export default function MessageReader() {
   const learnedLanguage = userDetails?.learned_language;
   const nativeLanguage = userDetails?.native_language;
 
-  useEffect(() => setTitle(strings.messageTab), []);
+  useEffect(() => setTitle(strings.readTextTitle), []);
 
   function read(text, language = null) {
     setError("");
@@ -88,8 +94,8 @@ export default function MessageReader() {
       text,
       language,
       (prepared) => {
-        setMessage({ text: prepared.text, language: prepared.language });
-        // One per line of the message, as the article reader has one per fragment
+        setSharedText({ text: prepared.text, language: prepared.language });
+        // One per line of the text, as the article reader has one per fragment
         setInteractiveLines(
           prepared.tokenized_lines.map(
             (tokenizedParagraphs) =>
@@ -108,25 +114,25 @@ export default function MessageReader() {
       },
       (errorMessage) => {
         setIsPreparing(false);
-        setError(typeof errorMessage === "string" && !/^HTTP \d+$/.test(errorMessage) ? errorMessage : strings.couldNotReadMessage);
+        setError(typeof errorMessage === "string" && !/^HTTP \d+$/.test(errorMessage) ? errorMessage : strings.couldNotReadText);
       },
     );
   }
 
-  // A message arrives three ways: native share sheet (index.js puts it in
-  // the inbox), the installed web app's share target (?text=), or pasting.
+  // Text arrives three ways: native share sheet (index.js puts it in the
+  // inbox), the installed web app's share target (?text=), or pasting.
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.has("text") || params.has("url")) {
       // Out of the URL straight away: it would otherwise sit in the history
       // and in error reports.
-      history.replace("/translate/message");
+      history.replace("/read/text");
       const shared = classifySharedText(params.get("text"), params.get("url"));
       if (shared.kind === "article") {
         history.replace("/shared-article?url=" + encodeURIComponent(shared.url));
         return;
       }
-      if (shared.kind === "message") read(shared.text);
+      if (shared.kind === "text") read(shared.text);
     }
 
     const pending = takePendingSharedText();
@@ -136,18 +142,18 @@ export default function MessageReader() {
   }, []);
 
   function readAnother() {
-    setMessage(null);
+    setSharedText(null);
     setInteractiveLines([]);
     setTranslation(null);
     setDraft("");
     setError("");
   }
 
-  function translateWholeMessage() {
+  function translateWholeText() {
     setIsTranslating(true);
     api.translateSharedText(
-      message.text,
-      message.language,
+      sharedText.text,
+      sharedText.language,
       nativeLanguage,
       (result) => {
         setTranslation(result.translation);
@@ -155,46 +161,47 @@ export default function MessageReader() {
       },
       () => {
         setIsTranslating(false);
-        setError(strings.couldNotTranslateMessage);
+        setError(strings.couldNotTranslateText);
       },
     );
   }
 
   if (isPreparing) return <LoadingAnimation />;
 
-  if (!message) {
+  if (!sharedText) {
     return (
-      <>
-        <ShareHint>{strings.messageShareHint}</ShareHint>
+      <PaddedNarrowColumn>
+        <PageTitle>{strings.readTextTitle}</PageTitle>
+        <ShareHint>{strings.readTextHint}</ShareHint>
         <ClearableInput
           value={draft}
           rows={4}
           maxLength={MAX_SHARED_TEXT_CHARS}
-          placeholder={strings.pasteMessagePlaceholder}
+          placeholder={strings.pasteTextPlaceholder}
           onChange={(e) => setDraft(e.target.value)}
           onClear={() => setDraft("")}
           style={{ textAlign: "left" }}
         />
         {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
-        <MessageActions>
+        <TextActions>
           <StyledButton $primary disabled={!draft.trim()} onClick={() => read(draft.trim())}>
-            {strings.readMessage}
+            {strings.readText}
           </StyledButton>
-        </MessageActions>
-      </>
+        </TextActions>
+      </PaddedNarrowColumn>
     );
   }
 
   return (
-    <>
-      <MessageLanguage>
-        <span>{languageName(message.language)}</span>
-        {learnedLanguage && message.language !== learnedLanguage && (
-          <ReadAsButton onClick={() => read(message.text, learnedLanguage)}>
+    <PaddedNarrowColumn>
+      <TextLanguage>
+        <span>{languageName(sharedText.language)}</span>
+        {learnedLanguage && sharedText.language !== learnedLanguage && (
+          <ReadAsButton onClick={() => read(sharedText.text, learnedLanguage)}>
             {strings.readAsLanguage} {languageName(learnedLanguage)}
           </ReadAsButton>
         )}
-      </MessageLanguage>
+      </TextLanguage>
 
       <MainText>
         {interactiveLines.map((interactiveText, i) => (
@@ -208,19 +215,19 @@ export default function MessageReader() {
         ))}
       </MainText>
 
-      {translation && <MessageTranslation>{translation}</MessageTranslation>}
+      {translation && <WholeTextTranslation>{translation}</WholeTextTranslation>}
       {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
 
-      <MessageActions>
+      <TextActions>
         {!translation && (
-          <StyledButton $secondary disabled={isTranslating} onClick={translateWholeMessage}>
-            {isTranslating ? strings.translatingMessage : strings.translateWholeMessage}
+          <StyledButton $secondary disabled={isTranslating} onClick={translateWholeText}>
+            {isTranslating ? strings.translatingText : strings.translateWholeText}
           </StyledButton>
         )}
         <StyledButton $navigation onClick={readAnother}>
-          {strings.readAnotherMessage}
+          {strings.readAnotherText}
         </StyledButton>
-      </MessageActions>
-    </>
+      </TextActions>
+    </PaddedNarrowColumn>
   );
 }

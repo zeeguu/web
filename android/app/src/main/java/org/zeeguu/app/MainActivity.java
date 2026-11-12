@@ -21,8 +21,8 @@ public class MainActivity extends BridgeActivity {
     }
 
     // A shared link (maybe with a title) opens as an article; any other text,
-    // e.g. a WhatsApp message, opens in the message reader. Same rule as
-    // classifySharedText in src/translate/sharedText.js.
+    // e.g. a WhatsApp message, opens in the text reader. Same rule as
+    // classifySharedText in src/reader/sharedText.js.
     private static final int MAX_WORDS_AROUND_ARTICLE_LINK = 12;
 
     private void handleShareIntent(Intent intent) {

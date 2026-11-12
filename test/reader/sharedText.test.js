@@ -4,12 +4,12 @@ import {
   deliverSharedText,
   takePendingSharedText,
   onSharedText,
-} from "../../src/translate/sharedText";
+} from "../../src/reader/sharedText";
 
 describe("classifySharedText", () => {
-  it("reads a chat message as a message", () => {
+  it("reads a chat message as text to read", () => {
     const text = "Hej alle! Træningen i morgen er aflyst, fordi banen er lukket.";
-    expect(classifySharedText(text)).toEqual({ kind: "message", text });
+    expect(classifySharedText(text)).toEqual({ kind: "text", text });
   });
 
   it("opens a bare link as an article", () => {
@@ -26,11 +26,11 @@ describe("classifySharedText", () => {
     });
   });
 
-  it("reads a long message that happens to contain a link as a message", () => {
+  it("reads a long message that happens to contain a link as text to read", () => {
     const text =
       "Hej forældre, husk at tilmelde jeres børn til stævnet på lørdag senest torsdag aften, " +
       "ellers kan vi ikke nå at bestille bus: https://forms.example.com/stævne";
-    expect(classifySharedText(text)).toEqual({ kind: "message", text });
+    expect(classifySharedText(text)).toEqual({ kind: "text", text });
   });
 
   it("uses the url the share target passed separately", () => {

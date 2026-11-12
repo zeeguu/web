@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { deliverSharedText } from "./translate/sharedText";
+import { deliverSharedText } from "./reader/sharedText";
 
 import * as Sentry from "@sentry/react";
 
@@ -33,13 +33,13 @@ window.reactNavigateFromNative = (path) => {
   window.dispatchEvent(new PopStateEvent("popstate"));
 };
 
-// Called from native code with a message shared from another app (e.g.
-// WhatsApp). The text goes through the inbox rather than the URL, so it
-// stays out of the history and out of error reports.
+// Called from native code with text shared from another app (a WhatsApp
+// message, a paragraph from a mail...). The text goes through the inbox
+// rather than the URL, so it stays out of the history and error reports.
 window.reactReceiveSharedText = (text) => {
   deliverSharedText(text);
-  if (window.location.pathname !== "/translate/message") {
-    window.reactNavigateFromNative("/translate/message");
+  if (window.location.pathname !== "/read/text") {
+    window.reactNavigateFromNative("/read/text");
   }
 };
 

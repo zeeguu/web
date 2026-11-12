@@ -64,7 +64,7 @@
     }
   ],
   "share_target": {
-    "action": "/translate/message",
+    "action": "/read/text",
     "method": "GET",
     "params": {
       "title": "title",

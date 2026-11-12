@@ -22,6 +22,7 @@ import WordsRouter from "./words/_WordsRouter";
 import TranslateRouter from "./translate/_TranslateRouter";
 import ReadingHistory from "./words/WordHistory";
 import ActivityRouter from "./activity/_ActivityRouter";
+import TextReader from "./reader/TextReader";
 import SharedArticleHandler from "./reader/SharedArticleHandler";
 import SharedVideoHandler from "./reader/SharedVideoHandler";
 import LoadingAnimation from "./components/LoadingAnimation";
@@ -164,6 +165,8 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
         <PrivateRouteWithLayout path="/shared-video" component={SharedVideoHandler} />
         <ReadArticleRouteEntry path="/read/article" />
+        {/* Must precede /read/:code, which would swallow it. */}
+        <PrivateRouteWithLayout path="/read/text" component={TextReader} />
         {/* Must follow /read/article, which it would otherwise swallow, and
             precede /read/:code, which would swallow it. */}
         <Route path="/read/:code/summary" component={SummaryLinkRouteEntry} />
