@@ -30,5 +30,6 @@ import "./verbal_flashcards";
 import "./badges";
 import "./friends";
 import "./leaderboards";
+import "./sharedText";
 
 export default Zeeguu_API;

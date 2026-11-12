@@ -49,17 +49,26 @@ class ShareViewController: UIViewController {
             return true
         }
 
-        // Case 2: the shared item is plain text that might contain a URL
-        // (e.g. from Chrome or some news apps that share text instead of URLs)
+        // Case 2: the shared item is plain text. A link with little else
+        // around it (some news apps and Chrome share "title + URL") opens as
+        // an article; anything else, e.g. a WhatsApp message, opens in the
+        // message reader. Same rule as classifySharedText in
+        // src/translate/sharedText.js.
         if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) {
             provider.loadItem(forTypeIdentifier: UTType.plainText.identifier, options: nil) {
                 [weak self] (item, error) in
-                guard let text = item as? String,
-                      let url = self?.findURL(in: text) else {
+                guard let self = self,
+                      let text = (item as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      !text.isEmpty else {
                     self?.close()
                     return
                 }
-                self?.openInZeeguu(url: url)
+                if let url = self.findURL(in: text),
+                   self.wordsBesides(url, in: text) <= self.maxWordsAroundArticleLink {
+                    self.openInZeeguu(url: url)
+                } else {
+                    self.openMessageInZeeguu(text: text)
+                }
             }
             return true
         }
@@ -67,20 +76,43 @@ class ShareViewController: UIViewController {
         return false
     }
 
-    /// Finds a URL inside a text string (e.g. "Check this out: https://example.com")
+    private let maxWordsAroundArticleLink = 12
+
+    /// Finds a web link inside a text string (e.g. "Check this out: https://example.com")
     private func findURL(in text: String) -> URL? {
         let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
         let range = NSRange(text.startIndex..., in: text)
-        if let match = detector?.firstMatch(in: text, options: [], range: range) {
-            return match.url
-        }
-        return URL(string: text)
+        let matches = detector?.matches(in: text, options: [], range: range) ?? []
+        return matches.compactMap { $0.url }.first { $0.scheme == "http" || $0.scheme == "https" }
+    }
+
+    /// How many words the text has besides the link.
+    private func wordsBesides(_ url: URL, in text: String) -> Int {
+        let rest = text.replacingOccurrences(of: url.absoluteString, with: " ")
+        return rest.split(whereSeparator: { $0.isWhitespace }).count
     }
 
     // MARK: - Open Zeeguu with the URL
 
     private func openInZeeguu(url: URL) {
         guard let zeeguuURL = buildZeeguuURL(for: url) else {
+            close()
+            return
+        }
+        DispatchQueue.main.async {
+            self.askIOSToOpen(zeeguuURL)
+            self.close()
+        }
+    }
+
+    /// Opens org.zeeguu.app://shared-text?text=<message>; AppDelegate hands the
+    /// text to the web app without putting it in a route.
+    private func openMessageInZeeguu(text: String) {
+        var components = URLComponents()
+        components.scheme = appURLScheme
+        components.host = "shared-text"
+        components.queryItems = [URLQueryItem(name: "text", value: text)]
+        guard let zeeguuURL = components.url else {
             close()
             return
         }

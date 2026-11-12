@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { deliverSharedText } from "./translate/sharedText";
 
 import * as Sentry from "@sentry/react";
 
@@ -30,6 +31,16 @@ Sentry.init({
 window.reactNavigateFromNative = (path) => {
   window.history.pushState({}, "", path);
   window.dispatchEvent(new PopStateEvent("popstate"));
+};
+
+// Called from native code with a message shared from another app (e.g.
+// WhatsApp). The text goes through the inbox rather than the URL, so it
+// stays out of the history and out of error reports.
+window.reactReceiveSharedText = (text) => {
+  deliverSharedText(text);
+  if (window.location.pathname !== "/translate/message") {
+    window.reactNavigateFromNative("/translate/message");
+  }
 };
 
 const root = createRoot(document.getElementById("root"));
