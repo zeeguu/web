@@ -4,7 +4,7 @@ import {
   deliverSharedText,
   takePendingSharedText,
   onSharedText,
-} from "../../src/reader/sharedText";
+} from "../../src/texts/sharedText";
 
 describe("classifySharedText", () => {
   it("reads a chat message as text to read", () => {

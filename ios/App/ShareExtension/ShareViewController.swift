@@ -53,7 +53,7 @@ class ShareViewController: UIViewController {
         // around it (some news apps and Chrome share "title + URL") opens as
         // an article; anything else, e.g. a WhatsApp message, opens in the
         // text reader. Same rule as classifySharedText in
-        // src/reader/sharedText.js.
+        // src/texts/sharedText.js.
         if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) {
             provider.loadItem(forTypeIdentifier: UTType.plainText.identifier, options: nil) {
                 [weak self] (item, error) in

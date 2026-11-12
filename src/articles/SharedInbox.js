@@ -13,8 +13,8 @@ import * as s from "../components/TopMessage.sc";
 // comes from SharedArticlesContext (refetched on navigation and polled while visible).
 //
 // The inbox is where reading arrives from outside, so it is also where the
-// learner brings in a text of their own (/texts/read; texts shared from other
-// apps land there directly).
+// learner brings in a text of their own (/texts; texts shared from other apps
+// land there directly).
 
 const OwnTextLinkRow = styled.div`
   display: flex;
@@ -24,7 +24,7 @@ const OwnTextLinkRow = styled.div`
 function OwnTextLink() {
   return (
     <OwnTextLinkRow>
-      <ReactLink className="small" to="/texts/read">
+      <ReactLink className="small" to="/texts">
         <AddRoundedIcon /> {strings.readYourOwnText}
       </ReactLink>
     </OwnTextLinkRow>

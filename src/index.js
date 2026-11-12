@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { deliverSharedText } from "./reader/sharedText";
+import { deliverSharedText } from "./texts/sharedText";
 
 import * as Sentry from "@sentry/react";
 
@@ -38,8 +38,8 @@ window.reactNavigateFromNative = (path) => {
 // rather than the URL, so it stays out of the history and error reports.
 window.reactReceiveSharedText = (text) => {
   deliverSharedText(text);
-  if (window.location.pathname !== "/texts/read") {
-    window.reactNavigateFromNative("/texts/read");
+  if (window.location.pathname !== "/texts") {
+    window.reactNavigateFromNative("/texts");
   }
 };
 
