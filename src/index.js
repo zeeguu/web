@@ -38,8 +38,8 @@ window.reactNavigateFromNative = (path) => {
 // rather than the URL, so it stays out of the history and error reports.
 window.reactReceiveSharedText = (text) => {
   deliverSharedText(text);
-  if (window.location.pathname !== "/read/text") {
-    window.reactNavigateFromNative("/read/text");
+  if (window.location.pathname !== "/texts/read") {
+    window.reactNavigateFromNative("/texts/read");
   }
 };
 

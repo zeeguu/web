@@ -64,7 +64,7 @@
     }
   ],
   "share_target": {
-    "action": "/read/text",
+    "action": "/texts/read",
     "method": "GET",
     "params": {
       "title": "title",

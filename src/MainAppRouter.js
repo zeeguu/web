@@ -164,9 +164,10 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         <PrivateRouteWithLayout path="/teacher" component={TeacherRouter} />
         <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
         <PrivateRouteWithLayout path="/shared-video" component={SharedVideoHandler} />
+        {/* Texts the learner brings (pasted or shared from another app), not
+            articles. /texts itself is free for a list of them later. */}
+        <PrivateRouteWithLayout path="/texts/read" component={TextReader} />
         <ReadArticleRouteEntry path="/read/article" />
-        {/* Must precede /read/:code, which would swallow it. */}
-        <PrivateRouteWithLayout path="/read/text" component={TextReader} />
         {/* Must follow /read/article, which it would otherwise swallow, and
             precede /read/:code, which would swallow it. */}
         <Route path="/read/:code/summary" component={SummaryLinkRouteEntry} />

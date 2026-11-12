@@ -3,7 +3,7 @@
 //
 // A shared link, maybe with a title around it, is an article to open. Any
 // other text — a chat message, even one that contains a link, a paragraph
-// from a mail — is read word by word at /read/text. The native share handlers (MainActivity.java,
+// from a mail — is read word by word at /texts/read. The native share handlers (MainActivity.java,
 // ShareViewController.swift) apply the same rule; keep them in step.
 
 // More words than this besides the link, and it's a message, not a title.

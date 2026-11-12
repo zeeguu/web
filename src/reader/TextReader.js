@@ -30,6 +30,7 @@ import { classifySharedText, takePendingSharedText, onSharedText, MAX_SHARED_TEX
 const SHARED_TEXT_CONTEXT = { context_type: "SharedText" };
 
 const TextLanguage = styled.div`
+  margin-top: 1.5rem;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -126,7 +127,7 @@ export default function TextReader() {
     if (params.has("text") || params.has("url")) {
       // Out of the URL straight away: it would otherwise sit in the history
       // and in error reports.
-      history.replace("/read/text");
+      history.replace("/texts/read");
       const shared = classifySharedText(params.get("text"), params.get("url"));
       if (shared.kind === "article") {
         history.replace("/shared-article?url=" + encodeURIComponent(shared.url));
