@@ -1,19 +1,24 @@
 import { useContext, useEffect, useState } from "react";
 import CardPage from "../../_pages_shared/CardPage";
-import Main from "../../_pages_shared/Main.sc";
+import { NotificationSections } from "./NotificationSettings.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
 import { setTitle } from "../../../assorted/setTitle";
 import { APIContext } from "../../../contexts/APIContext";
+import { UserContext } from "../../../contexts/UserContext";
+import { studyReminderAvailable } from "../../../reminder/studyReminder";
+import StudyReminderSetting from "./StudyReminderSetting";
 import { SectionContainer, SectionHeading } from "./FeedPreferences.sc";
 import { FormControlLabel, Checkbox } from "@mui/material";
 
 export default function NotificationSettings() {
   const api = useContext(APIContext);
+  const { userDetails, userPreferences } = useContext(UserContext);
+  const isAnonymous = userDetails?.is_anonymous;
   const [emailOnArticleShared, setEmailOnArticleShared] = useState(true);
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
 
   useEffect(() => {
-    setTitle("Email Notifications");
+    setTitle("Notifications");
   }, []);
 
   useEffect(() => {
@@ -36,29 +41,36 @@ export default function NotificationSettings() {
 
   return (
     <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
-      <SettingsPageHeader title="Email Notifications" />
-      <Main>
-        <SectionContainer>
-          <SectionHeading>Email notifications</SectionHeading>
-          <div style={{ marginTop: "0", marginBottom: "0" }}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={emailOnArticleShared}
-                  onChange={handleToggleEmailOnArticleShared}
-                  disabled={!preferencesLoaded}
-                />
-              }
-              label="Email me when a friend shares an article with me"
-              sx={{ "& .MuiTypography-root": { fontFamily: "inherit" } }}
-            />
-            <div style={{ fontSize: "0.9em", color: "var(--text-secondary)", marginLeft: "32px", marginTop: "0.25em" }}>
-              You'll get at most one email while you have unread shares — further shares wait in your inbox until you
-              open it.
+      <SettingsPageHeader title="Notifications" />
+      <NotificationSections>
+        {studyReminderAvailable() && (
+          <StudyReminderSetting goalMinutes={parseInt(userPreferences?.daily_goal_minutes, 10) || null} />
+        )}
+        {!isAnonymous && (
+          <SectionContainer>
+            <SectionHeading>Email notifications</SectionHeading>
+            <div style={{ marginTop: "0", marginBottom: "0" }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={emailOnArticleShared}
+                    onChange={handleToggleEmailOnArticleShared}
+                    disabled={!preferencesLoaded}
+                  />
+                }
+                label="Email me when a friend shares an article with me"
+                sx={{ "& .MuiTypography-root": { fontFamily: "inherit" } }}
+              />
+              <div
+                style={{ fontSize: "0.9em", color: "var(--text-secondary)", marginLeft: "32px", marginTop: "0.25em" }}
+              >
+                You'll get at most one email while you have unread shares — further shares wait in your inbox until you
+                open it.
+              </div>
             </div>
-          </div>
-        </SectionContainer>
-      </Main>
+          </SectionContainer>
+        )}
+      </NotificationSections>
     </CardPage>
   );
 }

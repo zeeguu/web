@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { APIContext } from "../../../contexts/APIContext";
+import { Checkbox, FormControlLabel } from "@mui/material";
 import FullWidthInfoMsg from "../../../components/FullWidthInfoMsg.sc";
-import { SectionHeading } from "./FeedPreferences.sc";
+import { SectionContainer, SectionHeading } from "./FeedPreferences.sc";
 import * as s from "./StudyReminderSetting.sc";
 import {
   allowReminders,
@@ -11,8 +12,8 @@ import {
   syncReminderPreferences,
 } from "../../../reminder/studyReminder";
 
-// The daily study reminder's switch and time, on the Daily goal page (phone
-// only): it reminds the learner on days they have not reached that goal yet.
+// The daily study reminder's switch and time, on the Notifications page (phone
+// only): it reminds the learner on days they have not reached their daily goal.
 export default function StudyReminderSetting({ goalMinutes }) {
   const api = useContext(APIContext);
   const [setting, setSetting] = useState(null);
@@ -43,11 +44,14 @@ export default function StudyReminderSetting({ goalMinutes }) {
   if (!setting) return null;
 
   return (
-    <s.Reminder>
-      <SectionHeading>Reminder</SectionHeading>
+    <SectionContainer>
+      <SectionHeading>Study reminder</SectionHeading>
       <s.ReminderRow>
-        <input id="study-reminder" type="checkbox" checked={setting.enabled} onChange={handleToggle} />
-        <label htmlFor="study-reminder">Remind me at</label>
+        <FormControlLabel
+          control={<Checkbox checked={setting.enabled} onChange={handleToggle} />}
+          label="Remind me at"
+          sx={{ marginRight: 0, "& .MuiTypography-root": { fontFamily: "inherit" } }}
+        />
         <s.TimeInput
           type="time"
           aria-label="Reminder time"
@@ -56,13 +60,15 @@ export default function StudyReminderSetting({ goalMinutes }) {
           onChange={(e) => e.target.value && update({ ...setting, time: e.target.value })}
         />
       </s.ReminderRow>
-      <s.ReminderNote>Only on days you haven't reached your goal yet.</s.ReminderNote>
+      <s.ReminderNote>
+        Only on days you haven't reached your daily goal{goalMinutes ? ` of ${goalMinutes} minutes` : ""} yet.
+      </s.ReminderNote>
       {blocked && (
         <FullWidthInfoMsg>
           Notifications are off for Zeeguu. To get the reminder, turn them on in your phone's Settings → Zeeguu →
           Notifications.
         </FullWidthInfoMsg>
       )}
-    </s.Reminder>
+    </SectionContainer>
   );
 }
