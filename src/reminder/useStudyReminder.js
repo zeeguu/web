@@ -42,8 +42,8 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
     async function report() {
       const permission = await notificationPermission();
       if (stopped || !permission || permission === reported) return;
-      reported = permission;
-      api.saveUserPreferences({ notifications_permission: permission });
+      // Remembered once saved: a failed save is tried again on the next resume.
+      api.saveUserPreferences({ notifications_permission: permission }, () => (reported = permission));
     }
     report();
     const stopListening = onAppResume(report);
@@ -53,11 +53,17 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
     };
   }, [api, loggedIn, preferencesLoaded]);
 
+  // The setting and the goal take effect at once.
+  const language = languageName(learned);
   useEffect(() => {
-    if (!studyReminderAvailable() || !api || !learned || !goalMinutes) return;
-    // The setting and the goal take effect at once; today's progress follows.
-    rescheduleStudyReminders({ enabled, time, goalMinutes, language: languageName(learned) });
-    if (!enabled) return;
+    if (!studyReminderAvailable() || !learned || !goalMinutes) return;
+    rescheduleStudyReminders({ enabled, time, goalMinutes, language });
+  }, [learned, goalMinutes, enabled, time, language]);
+
+  // Today's progress: on start, on resume, and when the goal changes (the
+  // server may count today against the new goal) or the reminder is turned on.
+  useEffect(() => {
+    if (!studyReminderAvailable() || !api || !learned || !goalMinutes || !enabled) return;
 
     let stopped = false;
     function refresh() {
@@ -80,7 +86,7 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
       refreshNow = null;
       stopListening();
     };
-  }, [api, learned, goalMinutes, enabled, time]);
+  }, [api, learned, goalMinutes, enabled]);
 }
 
 let refreshNow = null;

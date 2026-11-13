@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import debounce from "lodash-es/debounce";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import { APIContext } from "../../../contexts/APIContext";
@@ -7,7 +7,9 @@ import FullWidthInfoMsg from "../../../components/FullWidthInfoMsg.sc";
 import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
 import { SectionContainer, SectionHeading } from "./FeedPreferences.sc";
 import * as s from "./StudyReminderSetting.sc";
-import { allowReminders, reminderSettingFrom } from "../../../reminder/studyReminder";
+import { ChangeLink } from "./AikiMode.sc"; // the same inline action
+import { allowReminders, notificationPermission, reminderSettingFrom } from "../../../reminder/studyReminder";
+import { onAppPause } from "../../../utils/misc/onAppResume";
 
 // The daily study reminder's switch and time, on the Notifications page (phone
 // only): it reminds the learner on days they have not reached their daily goal.
@@ -22,37 +24,42 @@ export default function StudyReminderSetting() {
   const [error, setError] = useState(false);
 
   // Shown at once, saved optimistically; a failed save is undone unless
-  // something newer (another change, logging out) replaced it meanwhile.
+  // something newer (another change, logging out) replaced it meanwhile. Each
+  // change applies to the preferences as they are when it lands, so two quick
+  // changes (a time, then the switch) both stay.
   function save(changes) {
-    if (!userPreferences?.daily_goal_minutes) return; // not loaded, or logged out
-    const before = userPreferences;
-    const after = { ...userPreferences, ...changes };
+    const keys = Object.keys(changes);
+    let previous = null;
     setError(false);
-    setUserPreferences(after);
-    api.saveUserPreferences(changes, undefined, () => {
-      setUserPreferences((current) => (current === after ? before : current));
-      setError(true);
+    setUserPreferences((current) => {
+      if (!current?.daily_goal_minutes) return current; // not loaded, or logged out
+      previous = Object.fromEntries(keys.map((key) => [key, current[key]]));
+      return { ...current, ...changes };
     });
+    api.saveUserPreferences(
+      changes,
+      () => {},
+      () => {
+        setUserPreferences((current) =>
+          previous && keys.every((key) => current?.[key] === changes[key]) ? { ...current, ...previous } : current,
+        );
+        setError(true);
+      },
+    );
   }
-  const saveRef = useRef(save);
-  saveRef.current = save;
 
   // The time being typed or wheeled shows at once and is saved once it
   // settles, or when the page or the app is left.
   const [shownTime, setShownTime] = useState(time);
   useEffect(() => setShownTime(time), [time]);
-  const saveTime = useMemo(() => debounce((value) => saveRef.current({ study_reminder_time: value }), 800), []);
+  const saveTime = useMemo(() => debounce((value) => save({ study_reminder_time: value }), 800), []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const onHide = () => document.visibilityState === "hidden" && saveTime.flush();
     document.addEventListener("visibilitychange", onHide);
-    let appListener = null;
-    import("@capacitor/app")
-      .then(({ App }) => App.addListener("appStateChange", ({ isActive }) => !isActive && saveTime.flush()))
-      .then((handle) => (appListener = handle))
-      .catch(() => {});
+    const stopListening = onAppPause(() => saveTime.flush());
     return () => {
       document.removeEventListener("visibilitychange", onHide);
-      appListener?.remove();
+      stopListening();
       saveTime.flush();
     };
   }, [saveTime]);
@@ -63,20 +70,28 @@ export default function StudyReminderSetting() {
     saveTime(e.target.value);
   }
 
+  // This phone may not have been asked yet: the setting follows the learner,
+  // but each phone needs its own permission.
+  const [permission, setPermission] = useState(null);
+  useEffect(() => {
+    notificationPermission().then(setPermission);
+  }, []);
+
+  async function askPermission() {
+    const allowed = await allowReminders();
+    const now = allowed ? "granted" : "denied";
+    setPermission(now);
+    setBlocked(!allowed);
+    api.saveUserPreferences({ notifications_permission: now }, () => {});
+    return allowed;
+  }
+
   async function handleToggle(e) {
     const turnOn = e.target.checked;
-    if (turnOn && !(await allowReminders())) {
-      setBlocked(true);
-      api.saveUserPreferences({ notifications_permission: "denied" });
-      return;
-    }
+    if (turnOn && !(await askPermission())) return;
     setBlocked(false);
     saveTime.flush(); // the time on screen goes first
-    save(
-      turnOn
-        ? { study_reminder_enabled: "true", notifications_permission: "granted" }
-        : { study_reminder_enabled: "false" },
-    );
+    save({ study_reminder_enabled: turnOn ? "true" : "false" });
   }
 
   return (
@@ -99,6 +114,12 @@ export default function StudyReminderSetting() {
       <s.ReminderNote>
         Only on days you haven't reached your daily goal{goalMinutes ? ` of ${goalMinutes} minutes` : ""} yet.
       </s.ReminderNote>
+      {enabled && !blocked && permission && permission !== "granted" && (
+        <FullWidthInfoMsg>
+          This phone hasn't been allowed to show notifications yet.{" "}
+          <ChangeLink onClick={askPermission}>Allow notifications</ChangeLink>
+        </FullWidthInfoMsg>
+      )}
       {blocked && (
         <FullWidthInfoMsg>
           Notifications are off for Zeeguu. To get the reminder, turn them on in your phone's Settings → Zeeguu →
