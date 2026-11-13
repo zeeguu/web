@@ -11,8 +11,8 @@ export function nativeShieldAvailable() {
 }
 
 // Session labels (see hooks/use*Session.js) whose time earns Aiki breaks:
-// reading, exercises and audio lessons; not browsing the feed or videos.
-const LEARNING_SESSIONS = ["reading", "exercise", "listening"];
+// every activity session, the same ones the streak counts (ADR 046).
+const LEARNING_SESSIONS = ["reading", "exercise", "listening", "browsing", "watching"];
 
 export function isLearningSession(label) {
   return LEARNING_SESSIONS.includes(label);
@@ -48,9 +48,32 @@ export function reportLearningSeconds(label, seconds) {
     .catch(() => (secondsInFlight -= rounded));
 }
 
-// Which setup step a learner is at, from ZeeguuShield.getStatus().
-export function aikiStep(status) {
+// The goal Aiki should use, from the learner's preferences (ADR 046): their
+// daily goal, which for a new learner is the default 5 minutes. Null for the
+// grandfathered 2 minutes of learners from before the goal existed: Aiki asks
+// them to choose rather than free their apps after 2 minutes.
+export const GRANDFATHERED_GOAL = "2";
+
+export function chosenDailyGoal(preferences) {
+  const value = preferences?.daily_goal_minutes;
+  if (!value || value === GRANDFATHERED_GOAL) return null;
+  const minutes = parseInt(value, 10);
+  return minutes > 0 ? minutes : null;
+}
+
+// Hands the chosen goal to the ledger on the phone. Without one the ledger
+// keeps its own 15 minutes. Older app builds have no setDailyGoal: ignored.
+export function sendDailyGoalToAiki(preferences) {
+  const minutes = chosenDailyGoal(preferences);
+  if (!minutes || !nativeShieldAvailable()) return;
+  ZeeguuShield.setDailyGoal({ minutes }).catch(() => {});
+}
+
+// Which setup step a learner is at, from ZeeguuShield.getStatus() and whether
+// they have chosen a daily goal: Aiki frees the apps once the goal is met.
+export function aikiStep(status, goalChosen = true) {
   if (!status || !status.supported) return "unsupported";
+  if (!goalChosen) return "goal";
   if (status.authorization !== "approved") return "authorize";
   if (pickedCount(status) === 0) return "pick";
   return "ready";

@@ -24,6 +24,7 @@ import TextIcon from "@mui/icons-material/TextFieldsOutlined";
 import AudioIcon from "@mui/icons-material/HeadphonesOutlined";
 import SchedulingIcon from "@mui/icons-material/CalendarMonthOutlined";
 import ShieldIcon from "@mui/icons-material/ShieldOutlined";
+import GoalIcon from "@mui/icons-material/FlagOutlined";
 import TimerIcon from "@mui/icons-material/TimerOutlined";
 import ScienceIcon from "@mui/icons-material/ScienceOutlined";
 import CodeIcon from "@mui/icons-material/CodeOutlined";
@@ -119,6 +120,10 @@ export default function Settings() {
         </ListOfSettingsItems>
 
         <ListOfSettingsItems header={"App"}>
+          {/* Next to Aiki mode, which frees the apps once it is met (ADR 046). */}
+          <SettingsItem path={"/account_settings/daily_goal"} icon={<GoalIcon />}>
+            Daily goal
+          </SettingsItem>
           {/* iOS only: pausing other apps needs Apple's Screen Time API. */}
           {nativeShieldAvailable() && (
             <SettingsItem path={"/account_settings/aiki"} icon={<ShieldIcon />}>

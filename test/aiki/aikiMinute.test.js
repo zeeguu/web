@@ -6,7 +6,7 @@ vi.mock("react-toastify", () => ({ toast: vi.fn() }));
 vi.mock("../../src/components/nativeShield", () => ({
   ZeeguuShield: { getStatus: () => Promise.resolve(native.status) },
   nativeShieldAvailable: () => true,
-  isLearningSession: (label) => ["reading", "exercise", "listening"].includes(label),
+  isLearningSession: (label) => ["reading", "exercise", "listening", "browsing", "watching"].includes(label),
   learningSecondsInFlight: () => native.inFlight,
   onLedgerUpdate: (listener) => (native.ledgerListener = listener),
 }));
@@ -60,7 +60,7 @@ describe("aikiMinute", () => {
 
   it("stays hidden when no learning screen is open", async () => {
     await start(locked);
-    const untrack = trackLiveSession("browsing", () => 10);
+    const untrack = trackLiveSession("settings", () => 10);
     expect(aikiSecondsToUnlock()).toBeNull();
     untrack();
   });

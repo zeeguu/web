@@ -29,6 +29,7 @@ import { Capacitor } from "@capacitor/core";
 import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
 import useOpenAikiOnRequest from "./aiki/useOpenAikiOnRequest";
+import { sendDailyGoalToAiki } from "./components/nativeShield";
 import useExtensionCommunication from "./hooks/useExtensionCommunication";
 import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
@@ -226,6 +227,7 @@ function App() {
       setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
       setUserDetails(userDetails);
       setUserPreferences(userPreferences);
+      sendDailyGoalToAiki(userPreferences);
       setServerError(false);
       seedDrillCacheIfEmpty(userDetails.learned_language);
     } catch (e) {
