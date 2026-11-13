@@ -35,9 +35,10 @@ export default function DailyGoal() {
   // Aiki setup sends the learner here; once they choose, they go back to it.
   const returnAfterChoosing = useLocation().state?.returnAfterChoosing;
   const [error, setError] = useState(false);
-  // Only the latest choice's answer counts, when the learner taps again
-  // before the first save came back.
+  // When the learner taps again before a save came back, only the latest
+  // choice acts; a failure goes back to the last goal the server accepted.
   const latestSave = useRef(0);
+  const accepted = useRef(null);
 
   useEffect(() => {
     setTitle("Daily goal");
@@ -57,11 +58,13 @@ export default function DailyGoal() {
     const before = userPreferences;
     const after = { ...userPreferences, daily_goal_minutes: minutes, daily_goal_set: "true" };
     const save = ++latestSave.current;
+    if (!accepted.current) accepted.current = before;
     setError(false);
     setUserPreferences(after);
     api.saveUserPreferences(
       { daily_goal_minutes: minutes },
       () => {
+        accepted.current = after;
         if (save !== latestSave.current) return;
         sendDailyGoalToAiki(after);
         refreshStudyReminders(); // the server may have just counted today
@@ -69,7 +72,11 @@ export default function DailyGoal() {
       },
       () => {
         if (save !== latestSave.current) return;
-        setUserPreferences(before);
+        // An earlier tap may have been accepted meanwhile: Aiki and the
+        // reminders get that goal too.
+        setUserPreferences(accepted.current);
+        sendDailyGoalToAiki(accepted.current);
+        refreshStudyReminders();
         setError(true);
       },
     );

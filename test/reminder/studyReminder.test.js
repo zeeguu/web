@@ -78,6 +78,11 @@ describe("reminderPreferencesToSync", () => {
     expect(reminderPreferencesToSync(on, "denied", server)).toEqual({ notifications_permission: "denied" });
   });
 
+  it("reports only the permission from a phone without a setting of its own", () => {
+    const server = { study_reminder_enabled: "true", study_reminder_time: "07:30" };
+    expect(reminderPreferencesToSync(null, "prompt", server)).toEqual({ notifications_permission: "prompt" });
+  });
+
   it("reports Android's rationale prompt as not asked yet", () => {
     expect(reminderPreferencesToSync(on, "prompt-with-rationale", {}).notifications_permission).toBe("prompt");
   });
@@ -114,8 +119,12 @@ describe("settingFromServer", () => {
     expect(settingFromServer(server, "granted")).toEqual({ enabled: true, time: "07:30" });
   });
 
-  it("keeps it off while the phone may not show notifications", () => {
-    expect(settingFromServer(server, "prompt")).toEqual({ enabled: false, time: "07:30" });
+  it("restores nothing while the phone may not show notifications, so the server keeps the learner's choice", () => {
+    expect(settingFromServer(server, "prompt")).toBeNull();
+  });
+
+  it("restores a reminder that is off", () => {
+    expect(settingFromServer({ study_reminder_enabled: "false" }, "prompt")).toEqual({ enabled: false, time: "19:00" });
   });
 
   it("has nothing to restore when the server has no setting", () => {

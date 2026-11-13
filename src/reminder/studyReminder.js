@@ -94,49 +94,79 @@ async function loadStoredSetting() {
 
 // The setting as the server keeps it, for a phone that has none of its own:
 // the learner's choice survives logging out, a reinstall or a new phone. Null
-// when the server has none either. On only if the phone may show notifications.
+// when there is nothing safe to keep: no setting on the server, or a reminder
+// that is on while this phone may not show notifications yet (keeping it as
+// "off" would then overwrite the learner's choice on the server).
 export function settingFromServer(serverPreferences, permission) {
   const enabled = serverPreferences?.study_reminder_enabled;
-  if (enabled !== "true" && enabled !== "false") return null;
-  return {
-    enabled: enabled === "true" && permission === "granted",
-    time: serverPreferences.study_reminder_time || DEFAULT_REMINDER_TIME,
-  };
+  const time = serverPreferences?.study_reminder_time || DEFAULT_REMINDER_TIME;
+  if (enabled === "false") return { enabled: false, time };
+  if (enabled === "true" && permission === "granted") return { enabled: true, time };
+  return null;
 }
 
 // The preferences to send the server so its copy matches this phone: only the
 // ones that differ from what it has. `permission` is the OS answer
-// (LocalNotifications.checkPermissions().display).
+// (LocalNotifications.checkPermissions().display). A phone with no setting of
+// its own (`setting` null) reports only the permission: it has no choice to tell.
 export function reminderPreferencesToSync(setting, permission, serverPreferences = {}) {
   // What this app sent since start counts as the server's copy too.
   serverPreferences = { ...serverPreferences, ...sentToServer };
   const wanted = {
-    study_reminder_enabled: setting.enabled ? "true" : "false",
-    study_reminder_time: setting.time,
     notifications_permission: permission === "prompt-with-rationale" ? "prompt" : permission,
   };
+  if (setting) {
+    wanted.study_reminder_enabled = setting.enabled ? "true" : "false";
+    wanted.study_reminder_time = setting.time;
+  }
   return Object.fromEntries(Object.entries(wanted).filter(([key, value]) => value && serverPreferences[key] !== value));
 }
 
 let sentToServer = {};
 
-// Sends the server the setting and permission when they differ from its copy.
-// Resolves to the preferences sent.
-export async function syncReminderPreferences(api, serverPreferences) {
+// Bumped on logout: anything still on its way for the learner who logged out
+// (a restore, a save's answer) sees it and does nothing.
+let session = 0;
+
+// The latest sync, so the settings page shows the setting once a restore from
+// the server has landed rather than "off" just before it.
+let syncing = Promise.resolve();
+
+export function reminderSettingReady() {
+  return syncing.then(() => rescheduling);
+}
+
+// Sends the server the setting and permission when they differ from its copy;
+// first, on a phone without a setting, takes the server's. Resolves to the
+// preferences sent.
+export function syncReminderPreferences(api, serverPreferences) {
+  syncing = sync(api, serverPreferences);
+  return syncing;
+}
+
+async function sync(api, serverPreferences) {
   if (!studyReminderAvailable()) return {};
+  const mySession = session;
   try {
     const { LocalNotifications } = await plugins();
     const [stored, { display }] = await Promise.all([loadStoredSetting(), LocalNotifications.checkPermissions()]);
-    let setting = stored || REMINDER_OFF;
+    if (mySession !== session) return {};
+    let setting = stored;
     const restored = !stored && settingFromServer(serverPreferences, display);
     if (restored) {
       setting = restored;
-      await saveReminderSetting(setting);
+      // In the queue, after any logout's clear that came first.
+      rescheduling = rescheduling.then(async () => {
+        if (mySession !== session || (await loadStoredSetting())) return;
+        await saveReminderSetting(restored);
+      });
       rescheduleStudyReminders();
     }
     const changed = reminderPreferencesToSync(setting, display, serverPreferences);
     if (Object.keys(changed).length) {
-      api.saveUserPreferences(changed, () => Object.assign(sentToServer, changed));
+      api.saveUserPreferences(changed, () => {
+        if (mySession === session) Object.assign(sentToServer, changed);
+      });
     }
     return changed;
   } catch {
@@ -226,6 +256,7 @@ export function noteDoneToday() {
 // learner to log in on it starts with the reminder off.
 // In the reschedule queue, so one still running cannot schedule them again.
 export function clearStudyReminders() {
+  session++;
   lastKnown = { ...nothingKnown };
   sentToServer = {};
   rescheduling = rescheduling.then(clear);

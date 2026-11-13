@@ -7,6 +7,7 @@ import * as s from "./StudyReminderSetting.sc";
 import {
   allowReminders,
   loadReminderSetting,
+  reminderSettingReady,
   rescheduleStudyReminders,
   saveReminderSetting,
   syncReminderPreferences,
@@ -19,21 +20,32 @@ export default function StudyReminderSetting({ goalMinutes }) {
   const [setting, setSetting] = useState(null);
   const [blocked, setBlocked] = useState(false);
 
-  // A time being typed or wheeled is saved once it settles (or on leaving the
-  // page), not on every intermediate value.
+  // A time being typed or wheeled is saved once it settles, or when the page
+  // or the app is left, not on every intermediate value.
   const pendingTime = useRef(null);
 
   useEffect(() => {
-    loadReminderSetting().then(setSetting);
-    return () => savePendingTime();
+    // After a restore from the server, if one is under way, not "off" before it.
+    reminderSettingReady().then(loadReminderSetting).then(setSetting);
+    const onHide = () => document.visibilityState === "hidden" && savePendingTime();
+    document.addEventListener("visibilitychange", onHide);
+    return () => {
+      document.removeEventListener("visibilitychange", onHide);
+      savePendingTime();
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function savePendingTime() {
+  // Drops a time waiting to be saved; returns what it was waiting to save.
+  function cancelPendingTime() {
     const pending = pendingTime.current;
-    if (!pending) return;
-    clearTimeout(pending.timer);
+    clearTimeout(pending?.timer);
     pendingTime.current = null;
-    update(pending.next);
+    return pending?.next;
+  }
+
+  function savePendingTime() {
+    const next = cancelPendingTime();
+    if (next) update(next);
   }
 
   function handleTimeChange(e) {
@@ -41,22 +53,20 @@ export default function StudyReminderSetting({ goalMinutes }) {
     if (!time) return;
     const next = { ...setting, time };
     setSetting(next);
-    clearTimeout(pendingTime.current?.timer);
+    cancelPendingTime();
     pendingTime.current = { next, timer: setTimeout(savePendingTime, 800) };
   }
 
   async function update(next) {
     setSetting(next);
     await saveReminderSetting(next);
-    rescheduleStudyReminders({ goalMinutes });
+    rescheduleStudyReminders(); // the goal itself is kept up to date by useStudyReminder
     syncReminderPreferences(api, {}); // all of it: the learner just changed it
   }
 
   async function handleToggle(e) {
     const enabled = e.target.checked;
-    // The time on screen goes with this save.
-    clearTimeout(pendingTime.current?.timer);
-    pendingTime.current = null;
+    cancelPendingTime(); // the time on screen goes with this save
     if (enabled && !(await allowReminders())) {
       setBlocked(true);
       syncReminderPreferences(api, {}); // the permission, now known
