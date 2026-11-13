@@ -360,6 +360,8 @@ function App() {
         api.setSession(undefined);
         setUserDetails({});
         setUserPreferences({});
+        clearStudyReminders();
+        sendDailyGoalToAiki({});
       }
     }, 1000);
     return () => clearInterval(interval);

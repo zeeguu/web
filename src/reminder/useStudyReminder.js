@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import onAppResume from "../utils/misc/onAppResume";
 import { languageName } from "../utils/misc/languageCodeToName";
 import {
-  dayKey,
   doneTodayFrom,
   logOpenedReminders,
   noteDoneToday,
@@ -67,14 +66,11 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
 
     let stopped = false;
     function refresh() {
-      // A goal change asks once before the save and once after it, and the
-      // answers may come back in either order: an older answer never replaces
-      // a newer one (but is used if the newer one never comes).
-      const request = ++requestsSent;
+      // Only ever marks today done, never undone (that happens at midnight by
+      // itself), so an answer that comes back late cannot bring back today's
+      // reminder after the goal was met.
       api.getAllLanguageStreaks((streaks) => {
-        if (stopped || request < newestAnswer) return;
-        newestAnswer = request;
-        rescheduleStudyReminders({ doneOn: doneTodayFrom(streaks) ? dayKey(new Date()) : null });
+        if (!stopped) noteStreaks(streaks);
       });
     }
 
@@ -90,8 +86,6 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
 }
 
 let refreshNow = null;
-let requestsSent = 0;
-let newestAnswer = 0;
 
 // Asks the API again whether today is done, e.g. once a new goal is saved
 // (the server may have just counted today against it).

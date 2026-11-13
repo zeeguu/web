@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import debounce from "lodash-es/debounce";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import { APIContext } from "../../../contexts/APIContext";
@@ -9,7 +9,8 @@ import { SectionContainer, SectionHeading } from "./FeedPreferences.sc";
 import * as s from "./StudyReminderSetting.sc";
 import { ChangeLink } from "./AikiMode.sc"; // the same inline action
 import { allowReminders, notificationPermission, reminderSettingFrom } from "../../../reminder/studyReminder";
-import { onAppPause } from "../../../utils/misc/onAppResume";
+import onAppResume, { onAppPause } from "../../../utils/misc/onAppResume";
+import { savePreferences } from "../../../utils/preferences/savePreferences";
 
 // The daily study reminder's switch and time, on the Notifications page (phone
 // only): it reminds the learner on days they have not reached their daily goal.
@@ -23,29 +24,20 @@ export default function StudyReminderSetting() {
   const [blocked, setBlocked] = useState(false);
   const [error, setError] = useState(false);
 
-  // Shown at once, saved optimistically; a failed save is undone unless
-  // something newer (another change, logging out) replaced it meanwhile. Each
-  // change applies to the preferences as they are when it lands, so two quick
-  // changes (a time, then the switch) both stay.
+  // The preferences as of the last render, for saves made from a debounced
+  // flush (e.g. when the page is left after logging out).
+  const preferences = useRef(userPreferences);
+  preferences.current = userPreferences;
+
   function save(changes) {
-    const keys = Object.keys(changes);
-    let previous = null;
     setError(false);
-    setUserPreferences((current) => {
-      if (!current?.daily_goal_minutes) return current; // not loaded, or logged out
-      previous = Object.fromEntries(keys.map((key) => [key, current[key]]));
-      return { ...current, ...changes };
-    });
-    api.saveUserPreferences(
+    savePreferences({
+      api,
+      preferences: preferences.current,
+      setUserPreferences,
       changes,
-      () => {},
-      () => {
-        setUserPreferences((current) =>
-          previous && keys.every((key) => current?.[key] === changes[key]) ? { ...current, ...previous } : current,
-        );
-        setError(true);
-      },
-    );
+      onFailed: () => setError(true),
+    });
   }
 
   // The time being typed or wheeled shows at once and is saved once it
@@ -72,9 +64,16 @@ export default function StudyReminderSetting() {
 
   // This phone may not have been asked yet: the setting follows the learner,
   // but each phone needs its own permission.
+  // Read again on resume: the learner may have just changed it in Settings.
   const [permission, setPermission] = useState(null);
   useEffect(() => {
-    notificationPermission().then(setPermission);
+    const check = () =>
+      notificationPermission().then((now) => {
+        setPermission(now);
+        if (now === "granted") setBlocked(false);
+      });
+    check();
+    return onAppResume(check);
   }, []);
 
   async function askPermission() {
@@ -114,13 +113,13 @@ export default function StudyReminderSetting() {
       <s.ReminderNote>
         Only on days you haven't reached your daily goal{goalMinutes ? ` of ${goalMinutes} minutes` : ""} yet.
       </s.ReminderNote>
-      {enabled && !blocked && permission && permission !== "granted" && (
+      {enabled && !blocked && permission === "prompt" && (
         <FullWidthInfoMsg>
           This phone hasn't been allowed to show notifications yet.{" "}
           <ChangeLink onClick={askPermission}>Allow notifications</ChangeLink>
         </FullWidthInfoMsg>
       )}
-      {blocked && (
+      {(blocked || (enabled && permission === "denied")) && (
         <FullWidthInfoMsg>
           Notifications are off for Zeeguu. To get the reminder, turn them on in your phone's Settings → Zeeguu →
           Notifications.

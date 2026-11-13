@@ -13,6 +13,7 @@ import { SectionDescription } from "./FeedPreferences.sc";
 import { GRANDFATHERED_GOAL, nativeShieldAvailable } from "../../../components/nativeShield";
 import { languageName } from "../../../utils/misc/languageCodeToName";
 import { refreshStudyReminders } from "../../../reminder/useStudyReminder";
+import { savePreferences } from "../../../utils/preferences/savePreferences";
 
 // The learner's daily goal (ADR 046): the minutes a day that count the day for
 // the streak, and on the phone the minutes after which Aiki leaves the paused
@@ -54,27 +55,23 @@ export default function DailyGoal() {
 
   function handleChange(e) {
     if (saving.current) return;
-    const minutes = e.target.value;
-    const before = userPreferences;
-    const after = { ...userPreferences, daily_goal_minutes: minutes, daily_goal_set: "true" };
-    saving.current = true;
     setError(false);
     // Aiki gets the goal from App, which hands it over whenever it changes.
-    setUserPreferences(after);
-    api.saveUserPreferences(
-      { daily_goal_minutes: minutes },
-      () => {
+    saving.current = savePreferences({
+      api,
+      preferences: userPreferences,
+      setUserPreferences,
+      changes: { daily_goal_minutes: e.target.value },
+      onSaved: () => {
         saving.current = false;
         refreshStudyReminders(); // the server may have just counted today
         if (returnAfterChoosing) history.goBack();
       },
-      () => {
+      onFailed: () => {
         saving.current = false;
-        // Unless something newer (logging out) replaced it meanwhile.
-        setUserPreferences((current) => (current === after ? before : current));
         setError(true);
       },
-    );
+    });
   }
 
   return (
