@@ -581,6 +581,7 @@ let strings = new LocalizedStrings(
       alsoRightTranslation: "{0} is also right. Your saved translation is {1}.",
       closeButTranslation: "{0} is close, but here it means {1}.",
       closeTryAgain: "{0} is close, but not quite. Try again.",
+      wrongAudioPickTryAgain: "That was {0}, which means {1}. Try again.",
       translateL2toL1Headline: "Translate the highlighted word",
       translateWhatYouHearHeadline: "Translate the word you hear",
       multipleChoiceL2toL1Headline: "Select the correct translation of the highlighted word",

@@ -58,7 +58,7 @@ export default function AnswerNote({ isChecking, note, expected, isExerciseOver 
 
 // A string with {0}, {1}, ... in it, those filled in bold. (The app's
 // strings.formatString turns elements into "[object Object]".)
-function withBoldParts(template, ...parts) {
+export function withBoldParts(template, ...parts) {
   return template.split(/(\{\d\})/).map((piece, i) => {
     const placeholder = piece.match(/^\{(\d)\}$/);
     return placeholder ? <strong key={i}>{parts[placeholder[1]]}</strong> : piece;
@@ -68,7 +68,7 @@ function withBoldParts(template, ...parts) {
 // One line under the sentence about an answer that was another word than the
 // expected one. The FullWidth*Msg boxes are page-level messages, too heavy for
 // a line inside the exercise card.
-const AnswerLine = styled.p`
+export const AnswerLine = styled.p`
   text-align: center;
   color: var(--text-secondary);
   font-size: 0.95em;
