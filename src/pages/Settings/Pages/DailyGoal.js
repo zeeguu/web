@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import CardPage from "../../_pages_shared/CardPage";
 import Main from "../../_pages_shared/Main.sc";
@@ -35,6 +35,9 @@ export default function DailyGoal() {
   // Aiki setup sends the learner here; once they choose, they go back to it.
   const returnAfterChoosing = useLocation().state?.returnAfterChoosing;
   const [error, setError] = useState(false);
+  // Only the latest choice's answer counts, when the learner taps again
+  // before the first save came back.
+  const latestSave = useRef(0);
 
   useEffect(() => {
     setTitle("Daily goal");
@@ -53,16 +56,19 @@ export default function DailyGoal() {
     const minutes = e.target.value;
     const before = userPreferences;
     const after = { ...userPreferences, daily_goal_minutes: minutes, daily_goal_set: "true" };
+    const save = ++latestSave.current;
     setError(false);
     setUserPreferences(after);
     api.saveUserPreferences(
       { daily_goal_minutes: minutes },
       () => {
+        if (save !== latestSave.current) return;
         sendDailyGoalToAiki(after);
         refreshStudyReminders(); // the server may have just counted today
         if (returnAfterChoosing) history.goBack();
       },
       () => {
+        if (save !== latestSave.current) return;
         setUserPreferences(before);
         setError(true);
       },

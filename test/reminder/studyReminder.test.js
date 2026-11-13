@@ -6,6 +6,7 @@ import {
   reminderPreferencesToSync,
   reminderText,
   reminderTimes,
+  settingFromServer,
 } from "../../src/reminder/studyReminder";
 
 const morning = new Date(2026, 10, 13, 9, 0);
@@ -103,5 +104,21 @@ describe("dayKey", () => {
   it("is the local day, so being done today expires at midnight", () => {
     expect(dayKey(new Date(2026, 10, 13, 23, 59))).toBe("2026-11-13");
     expect(dayKey(new Date(2026, 10, 14, 0, 1))).toBe("2026-11-14");
+  });
+});
+
+describe("settingFromServer", () => {
+  const server = { study_reminder_enabled: "true", study_reminder_time: "07:30" };
+
+  it("restores the learner's reminder on a phone that has none", () => {
+    expect(settingFromServer(server, "granted")).toEqual({ enabled: true, time: "07:30" });
+  });
+
+  it("keeps it off while the phone may not show notifications", () => {
+    expect(settingFromServer(server, "prompt")).toEqual({ enabled: false, time: "07:30" });
+  });
+
+  it("has nothing to restore when the server has no setting", () => {
+    expect(settingFromServer({}, "granted")).toBeNull();
   });
 });

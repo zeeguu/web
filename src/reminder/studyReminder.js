@@ -73,16 +73,35 @@ async function plugins() {
   return { LocalNotifications, Preferences };
 }
 
+const REMINDER_OFF = { enabled: false, time: DEFAULT_REMINDER_TIME };
+
 export async function loadReminderSetting() {
-  const off = { enabled: false, time: DEFAULT_REMINDER_TIME };
-  if (!studyReminderAvailable()) return off;
+  return (await loadStoredSetting()) || REMINDER_OFF;
+}
+
+// The setting this phone keeps; null when it has none (a new install, or after
+// logging out).
+async function loadStoredSetting() {
+  if (!studyReminderAvailable()) return null;
   try {
     const { Preferences } = await plugins();
     const { value } = await Preferences.get({ key: SETTING_KEY });
-    return value ? { ...off, ...JSON.parse(value) } : off;
+    return value ? { ...REMINDER_OFF, ...JSON.parse(value) } : null;
   } catch {
-    return off;
+    return null;
   }
+}
+
+// The setting as the server keeps it, for a phone that has none of its own:
+// the learner's choice survives logging out, a reinstall or a new phone. Null
+// when the server has none either. On only if the phone may show notifications.
+export function settingFromServer(serverPreferences, permission) {
+  const enabled = serverPreferences?.study_reminder_enabled;
+  if (enabled !== "true" && enabled !== "false") return null;
+  return {
+    enabled: enabled === "true" && permission === "granted",
+    time: serverPreferences.study_reminder_time || DEFAULT_REMINDER_TIME,
+  };
 }
 
 // The preferences to send the server so its copy matches this phone: only the
@@ -107,7 +126,14 @@ export async function syncReminderPreferences(api, serverPreferences) {
   if (!studyReminderAvailable()) return {};
   try {
     const { LocalNotifications } = await plugins();
-    const [setting, { display }] = await Promise.all([loadReminderSetting(), LocalNotifications.checkPermissions()]);
+    const [stored, { display }] = await Promise.all([loadStoredSetting(), LocalNotifications.checkPermissions()]);
+    let setting = stored || REMINDER_OFF;
+    const restored = !stored && settingFromServer(serverPreferences, display);
+    if (restored) {
+      setting = restored;
+      await saveReminderSetting(setting);
+      rescheduleStudyReminders();
+    }
     const changed = reminderPreferencesToSync(setting, display, serverPreferences);
     if (Object.keys(changed).length) {
       api.saveUserPreferences(changed, () => Object.assign(sentToServer, changed));
@@ -198,9 +224,15 @@ export function noteDoneToday() {
 
 // On logout: this phone stops reminding, and forgets the setting, so the next
 // learner to log in on it starts with the reminder off.
-export async function clearStudyReminders() {
+// In the reschedule queue, so one still running cannot schedule them again.
+export function clearStudyReminders() {
   lastKnown = { ...nothingKnown };
   sentToServer = {};
+  rescheduling = rescheduling.then(clear);
+  return rescheduling;
+}
+
+async function clear() {
   if (!studyReminderAvailable()) return;
   try {
     const { LocalNotifications, Preferences } = await plugins();

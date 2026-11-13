@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { APIContext } from "../../../contexts/APIContext";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import FullWidthInfoMsg from "../../../components/FullWidthInfoMsg.sc";
@@ -19,9 +19,31 @@ export default function StudyReminderSetting({ goalMinutes }) {
   const [setting, setSetting] = useState(null);
   const [blocked, setBlocked] = useState(false);
 
+  // A time being typed or wheeled is saved once it settles (or on leaving the
+  // page), not on every intermediate value.
+  const pendingTime = useRef(null);
+
   useEffect(() => {
     loadReminderSetting().then(setSetting);
-  }, []);
+    return () => savePendingTime();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function savePendingTime() {
+    const pending = pendingTime.current;
+    if (!pending) return;
+    clearTimeout(pending.timer);
+    pendingTime.current = null;
+    update(pending.next);
+  }
+
+  function handleTimeChange(e) {
+    const time = e.target.value;
+    if (!time) return;
+    const next = { ...setting, time };
+    setSetting(next);
+    clearTimeout(pendingTime.current?.timer);
+    pendingTime.current = { next, timer: setTimeout(savePendingTime, 800) };
+  }
 
   async function update(next) {
     setSetting(next);
@@ -32,6 +54,9 @@ export default function StudyReminderSetting({ goalMinutes }) {
 
   async function handleToggle(e) {
     const enabled = e.target.checked;
+    // The time on screen goes with this save.
+    clearTimeout(pendingTime.current?.timer);
+    pendingTime.current = null;
     if (enabled && !(await allowReminders())) {
       setBlocked(true);
       syncReminderPreferences(api, {}); // the permission, now known
@@ -57,7 +82,7 @@ export default function StudyReminderSetting({ goalMinutes }) {
           aria-label="Reminder time"
           value={setting.time}
           disabled={!setting.enabled}
-          onChange={(e) => e.target.value && update({ ...setting, time: e.target.value })}
+          onChange={handleTimeChange}
         />
       </s.ReminderRow>
       <s.ReminderNote>

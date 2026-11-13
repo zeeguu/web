@@ -43,8 +43,13 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
   useEffect(() => {
     if (!studyReminderAvailable() || !api || !learned || !goalMinutes) return;
 
+    let stopped = false;
     function refresh() {
+      // Only the latest answer counts: a goal change asks once before the save
+      // and once after it, and the answers may come back in either order.
+      const request = ++latestRequest;
       api.getAllLanguageStreaks((streaks) => {
+        if (stopped || request !== latestRequest) return;
         rescheduleStudyReminders({
           doneOn: doneTodayFrom(streaks) ? dayKey(new Date()) : null,
           goalMinutes,
@@ -57,6 +62,7 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
     refresh();
     const stopListening = onAppResume(refresh);
     return () => {
+      stopped = true; // e.g. logged out: an answer still on its way is ignored
       refreshNow = null;
       stopListening();
     };
@@ -64,6 +70,7 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
 }
 
 let refreshNow = null;
+let latestRequest = 0;
 
 // Asks the API again whether today is done, e.g. once a new goal is saved
 // (the server may have just counted today against it).
