@@ -6,42 +6,58 @@ import {
   doneTodayFrom,
   logOpenedReminders,
   noteDoneToday,
+  notificationPermission,
+  reminderSettingFrom,
   rescheduleStudyReminders,
   studyReminderAvailable,
-  syncReminderPreferences,
 } from "./studyReminder";
 
-// Keeps the scheduled study reminders up to date: when the app starts, when it
-// comes back to the foreground (a new day, or study done elsewhere), and when
-// the goal or the language changes. LanguageStreakBar reports the moment the
-// goal is met while the app is open (noteStreaks). Also keeps the server's
-// copy of the setting and of the notification permission current, and logs
-// the reminders the learner opens.
+// Keeps the phone's scheduled study reminders in line with the learner's
+// preferences (the setting and the daily goal) and with today's progress: when
+// the app starts, when it comes back to the foreground (a new day, or study
+// done elsewhere), and when the preferences change. LanguageStreakBar reports
+// the moment the goal is met while the app is open (noteStreaks). Also reports
+// whether the phone may show notifications, and logs the reminders opened.
 export default function useStudyReminder(api, userDetails, userPreferences) {
   const goalMinutes = parseInt(userPreferences?.daily_goal_minutes, 10) || null;
   const learned = userDetails?.learned_language;
   const loggedIn = Boolean(api && learned);
+  const { enabled, time } = reminderSettingFrom(userPreferences);
 
   useEffect(() => {
     if (!loggedIn) return;
     return logOpenedReminders(api);
   }, [api, loggedIn]);
 
-  // The server's copy is compared on start and on each resume, with the
-  // preferences as last loaded; what was sent since is remembered by
-  // syncReminderPreferences, so it is not sent again.
+  // Whether the phone may show notifications, checked on start and on resume
+  // (it can be changed in the phone's settings at any time), and reported
+  // when it differs from what the server last heard.
   const preferences = useRef(userPreferences);
   preferences.current = userPreferences;
   const preferencesLoaded = Boolean(userPreferences?.daily_goal_minutes);
   useEffect(() => {
-    if (!loggedIn || !preferencesLoaded) return;
-    const sync = () => syncReminderPreferences(api, preferences.current);
-    sync();
-    return onAppResume(sync);
+    if (!loggedIn || !preferencesLoaded || !studyReminderAvailable()) return;
+    let stopped = false;
+    let reported = preferences.current?.notifications_permission;
+    async function report() {
+      const permission = await notificationPermission();
+      if (stopped || !permission || permission === reported) return;
+      reported = permission;
+      api.saveUserPreferences({ notifications_permission: permission });
+    }
+    report();
+    const stopListening = onAppResume(report);
+    return () => {
+      stopped = true;
+      stopListening();
+    };
   }, [api, loggedIn, preferencesLoaded]);
 
   useEffect(() => {
     if (!studyReminderAvailable() || !api || !learned || !goalMinutes) return;
+    // The setting and the goal take effect at once; today's progress follows.
+    rescheduleStudyReminders({ enabled, time, goalMinutes, language: languageName(learned) });
+    if (!enabled) return;
 
     let stopped = false;
     function refresh() {
@@ -52,11 +68,7 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
       api.getAllLanguageStreaks((streaks) => {
         if (stopped || request < newestAnswer) return;
         newestAnswer = request;
-        rescheduleStudyReminders({
-          doneOn: doneTodayFrom(streaks) ? dayKey(new Date()) : null,
-          goalMinutes,
-          language: languageName(learned),
-        });
+        rescheduleStudyReminders({ doneOn: doneTodayFrom(streaks) ? dayKey(new Date()) : null });
       });
     }
 
@@ -68,7 +80,7 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
       refreshNow = null;
       stopListening();
     };
-  }, [api, learned, goalMinutes]);
+  }, [api, learned, goalMinutes, enabled, time]);
 }
 
 let refreshNow = null;

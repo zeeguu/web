@@ -10,7 +10,7 @@ import { setTitle } from "../../../assorted/setTitle";
 import { APIContext } from "../../../contexts/APIContext";
 import { UserContext } from "../../../contexts/UserContext";
 import { SectionDescription } from "./FeedPreferences.sc";
-import { GRANDFATHERED_GOAL, nativeShieldAvailable, sendDailyGoalToAiki } from "../../../components/nativeShield";
+import { GRANDFATHERED_GOAL, nativeShieldAvailable } from "../../../components/nativeShield";
 import { languageName } from "../../../utils/misc/languageCodeToName";
 import { refreshStudyReminders } from "../../../reminder/useStudyReminder";
 
@@ -35,10 +35,9 @@ export default function DailyGoal() {
   // Aiki setup sends the learner here; once they choose, they go back to it.
   const returnAfterChoosing = useLocation().state?.returnAfterChoosing;
   const [error, setError] = useState(false);
-  // When the learner taps again before a save came back, only the latest
-  // choice acts; a failure goes back to the last goal the server accepted.
-  const latestSave = useRef(0);
-  const accepted = useRef(null);
+  // One save at a time: the choice shown is the one being saved, and a tap
+  // while it is under way is ignored.
+  const saving = useRef(false);
 
   useEffect(() => {
     setTitle("Daily goal");
@@ -54,29 +53,25 @@ export default function DailyGoal() {
   }));
 
   function handleChange(e) {
+    if (saving.current) return;
     const minutes = e.target.value;
     const before = userPreferences;
     const after = { ...userPreferences, daily_goal_minutes: minutes, daily_goal_set: "true" };
-    const save = ++latestSave.current;
-    if (!accepted.current) accepted.current = before;
+    saving.current = true;
     setError(false);
+    // Aiki gets the goal from App, which hands it over whenever it changes.
     setUserPreferences(after);
     api.saveUserPreferences(
       { daily_goal_minutes: minutes },
       () => {
-        accepted.current = after;
-        if (save !== latestSave.current) return;
-        sendDailyGoalToAiki(after);
+        saving.current = false;
         refreshStudyReminders(); // the server may have just counted today
         if (returnAfterChoosing) history.goBack();
       },
       () => {
-        if (save !== latestSave.current) return;
-        // An earlier tap may have been accepted meanwhile: Aiki and the
-        // reminders get that goal too.
-        setUserPreferences(accepted.current);
-        sendDailyGoalToAiki(accepted.current);
-        refreshStudyReminders();
+        saving.current = false;
+        // Unless something newer (logging out) replaced it meanwhile.
+        setUserPreferences((current) => (current === after ? before : current));
         setError(true);
       },
     );

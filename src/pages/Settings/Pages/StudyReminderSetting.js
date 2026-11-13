@@ -1,97 +1,98 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { APIContext } from "../../../contexts/APIContext";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import debounce from "lodash-es/debounce";
 import { Checkbox, FormControlLabel } from "@mui/material";
+import { APIContext } from "../../../contexts/APIContext";
+import { UserContext } from "../../../contexts/UserContext";
 import FullWidthInfoMsg from "../../../components/FullWidthInfoMsg.sc";
+import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
 import { SectionContainer, SectionHeading } from "./FeedPreferences.sc";
 import * as s from "./StudyReminderSetting.sc";
-import {
-  allowReminders,
-  loadReminderSetting,
-  reminderSettingReady,
-  rescheduleStudyReminders,
-  saveReminderSetting,
-  syncReminderPreferences,
-} from "../../../reminder/studyReminder";
+import { allowReminders, reminderSettingFrom } from "../../../reminder/studyReminder";
 
 // The daily study reminder's switch and time, on the Notifications page (phone
 // only): it reminds the learner on days they have not reached their daily goal.
-export default function StudyReminderSetting({ goalMinutes }) {
+// The setting is a preference like any other; useStudyReminder schedules the
+// reminders from it.
+export default function StudyReminderSetting() {
   const api = useContext(APIContext);
-  const [setting, setSetting] = useState(null);
+  const { userPreferences, setUserPreferences } = useContext(UserContext);
+  const { enabled, time } = reminderSettingFrom(userPreferences);
+  const goalMinutes = parseInt(userPreferences?.daily_goal_minutes, 10) || null;
   const [blocked, setBlocked] = useState(false);
+  const [error, setError] = useState(false);
 
-  // A time being typed or wheeled is saved once it settles, or when the page
-  // or the app is left, not on every intermediate value.
-  const pendingTime = useRef(null);
+  // Shown at once, saved optimistically; a failed save is undone unless
+  // something newer (another change, logging out) replaced it meanwhile.
+  function save(changes) {
+    if (!userPreferences?.daily_goal_minutes) return; // not loaded, or logged out
+    const before = userPreferences;
+    const after = { ...userPreferences, ...changes };
+    setError(false);
+    setUserPreferences(after);
+    api.saveUserPreferences(changes, undefined, () => {
+      setUserPreferences((current) => (current === after ? before : current));
+      setError(true);
+    });
+  }
+  const saveRef = useRef(save);
+  saveRef.current = save;
 
+  // The time being typed or wheeled shows at once and is saved once it
+  // settles, or when the page or the app is left.
+  const [shownTime, setShownTime] = useState(time);
+  useEffect(() => setShownTime(time), [time]);
+  const saveTime = useMemo(() => debounce((value) => saveRef.current({ study_reminder_time: value }), 800), []);
   useEffect(() => {
-    // After a restore from the server, if one is under way, not "off" before it.
-    reminderSettingReady().then(loadReminderSetting).then(setSetting);
-    const onHide = () => document.visibilityState === "hidden" && savePendingTime();
+    const onHide = () => document.visibilityState === "hidden" && saveTime.flush();
     document.addEventListener("visibilitychange", onHide);
+    let appListener = null;
+    import("@capacitor/app")
+      .then(({ App }) => App.addListener("appStateChange", ({ isActive }) => !isActive && saveTime.flush()))
+      .then((handle) => (appListener = handle))
+      .catch(() => {});
     return () => {
       document.removeEventListener("visibilitychange", onHide);
-      savePendingTime();
+      appListener?.remove();
+      saveTime.flush();
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Drops a time waiting to be saved; returns what it was waiting to save.
-  function cancelPendingTime() {
-    const pending = pendingTime.current;
-    clearTimeout(pending?.timer);
-    pendingTime.current = null;
-    return pending?.next;
-  }
-
-  function savePendingTime() {
-    const next = cancelPendingTime();
-    if (next) update(next);
-  }
+  }, [saveTime]);
 
   function handleTimeChange(e) {
-    const time = e.target.value;
-    if (!time) return;
-    const next = { ...setting, time };
-    setSetting(next);
-    cancelPendingTime();
-    pendingTime.current = { next, timer: setTimeout(savePendingTime, 800) };
-  }
-
-  async function update(next) {
-    setSetting(next);
-    await saveReminderSetting(next);
-    rescheduleStudyReminders(); // the goal itself is kept up to date by useStudyReminder
-    syncReminderPreferences(api, {}); // all of it: the learner just changed it
+    if (!e.target.value) return;
+    setShownTime(e.target.value);
+    saveTime(e.target.value);
   }
 
   async function handleToggle(e) {
-    const enabled = e.target.checked;
-    cancelPendingTime(); // the time on screen goes with this save
-    if (enabled && !(await allowReminders())) {
+    const turnOn = e.target.checked;
+    if (turnOn && !(await allowReminders())) {
       setBlocked(true);
-      syncReminderPreferences(api, {}); // the permission, now known
+      api.saveUserPreferences({ notifications_permission: "denied" });
       return;
     }
     setBlocked(false);
-    update({ ...setting, enabled });
+    saveTime.flush(); // the time on screen goes first
+    save(
+      turnOn
+        ? { study_reminder_enabled: "true", notifications_permission: "granted" }
+        : { study_reminder_enabled: "false" },
+    );
   }
-
-  if (!setting) return null;
 
   return (
     <SectionContainer>
       <SectionHeading>Study reminder</SectionHeading>
       <s.ReminderRow>
         <FormControlLabel
-          control={<Checkbox checked={setting.enabled} onChange={handleToggle} />}
+          control={<Checkbox checked={enabled} onChange={handleToggle} />}
           label="Remind me at"
           sx={{ marginRight: 0, "& .MuiTypography-root": { fontFamily: "inherit" } }}
         />
         <s.TimeInput
           type="time"
           aria-label="Reminder time"
-          value={setting.time}
-          disabled={!setting.enabled}
+          value={shownTime}
+          disabled={!enabled}
           onChange={handleTimeChange}
         />
       </s.ReminderRow>
@@ -104,6 +105,7 @@ export default function StudyReminderSetting({ goalMinutes }) {
           Notifications.
         </FullWidthInfoMsg>
       )}
+      {error && <FullWidthErrorMsg>Couldn't save your reminder. Please try again.</FullWidthErrorMsg>}
     </SectionContainer>
   );
 }

@@ -9,17 +9,18 @@ import { Capacitor } from "@capacitor/core";
 // the app opens that day). A learner who does not open the app for a week stops
 // being reminded, which is gentler than nagging someone who has stopped.
 //
-// The setting lives on the device, in Capacitor Preferences, since the
-// notifications it schedules do too. The server gets a copy, with whether the
-// phone allows notifications, so it can tell which days a reminder would have
-// fired; the app logs STUDY_REMINDER_OPENED when the learner opens one. iOS
-// shows a scheduled notification without running the app, so whether one was
-// shown is not known, only whether it was opened.
+// The setting (on, and at what time) is a user preference on the server, like
+// every other setting, so it follows the learner to a new phone and survives
+// logging out; the phone only holds the notifications scheduled from it. The
+// phone also reports whether it may show notifications at all, so the server
+// can tell which days a reminder would have fired; the app logs
+// STUDY_REMINDER_OPENED when the learner opens one. iOS shows a scheduled
+// notification without running the app, so whether one was shown is not
+// known, only whether it was opened.
 
 export const DEFAULT_REMINDER_TIME = "19:00";
 const DAYS_AHEAD = 7;
 const FIRST_ID = 4600; // ids FIRST_ID .. FIRST_ID + DAYS_AHEAD - 1 are ours
-const SETTING_KEY = "study_reminder";
 const TEST_ID = FIRST_ID + 99;
 
 // Which text a reminder used, logged when it is opened, so texts can later be
@@ -66,111 +67,30 @@ export function doneTodayFrom(streaks) {
 }
 
 async function plugins() {
-  const [{ LocalNotifications }, { Preferences }] = await Promise.all([
-    import("@capacitor/local-notifications"),
-    import("@capacitor/preferences"),
-  ]);
-  return { LocalNotifications, Preferences };
+  return { LocalNotifications: (await import("@capacitor/local-notifications")).LocalNotifications };
 }
 
-const REMINDER_OFF = { enabled: false, time: DEFAULT_REMINDER_TIME };
-
-export async function loadReminderSetting() {
-  return (await loadStoredSetting()) || REMINDER_OFF;
+// The learner's reminder setting, from their preferences.
+export function reminderSettingFrom(preferences) {
+  return {
+    enabled: preferences?.study_reminder_enabled === "true",
+    time: preferences?.study_reminder_time || DEFAULT_REMINDER_TIME,
+  };
 }
 
-// The setting this phone keeps; null when it has none (a new install, or after
-// logging out).
-async function loadStoredSetting() {
+// The OS answer (LocalNotifications.checkPermissions().display) as the server
+// keeps it: Android's rationale prompt is still "not asked yet".
+export function permissionToReport(display) {
+  return display === "prompt-with-rationale" ? "prompt" : display;
+}
+
+export async function notificationPermission() {
   if (!studyReminderAvailable()) return null;
   try {
-    const { Preferences } = await plugins();
-    const { value } = await Preferences.get({ key: SETTING_KEY });
-    return value ? { ...REMINDER_OFF, ...JSON.parse(value) } : null;
+    const { LocalNotifications } = await plugins();
+    return permissionToReport((await LocalNotifications.checkPermissions()).display);
   } catch {
     return null;
-  }
-}
-
-// The setting as the server keeps it, for a phone that has none of its own:
-// the learner's choice survives logging out, a reinstall or a new phone. Null
-// when there is nothing safe to keep: no setting on the server, or a reminder
-// that is on while this phone may not show notifications yet (keeping it as
-// "off" would then overwrite the learner's choice on the server).
-export function settingFromServer(serverPreferences, permission) {
-  const enabled = serverPreferences?.study_reminder_enabled;
-  const time = serverPreferences?.study_reminder_time || DEFAULT_REMINDER_TIME;
-  if (enabled === "false") return { enabled: false, time };
-  if (enabled === "true" && permission === "granted") return { enabled: true, time };
-  return null;
-}
-
-// The preferences to send the server so its copy matches this phone: only the
-// ones that differ from what it has. `permission` is the OS answer
-// (LocalNotifications.checkPermissions().display). A phone with no setting of
-// its own (`setting` null) reports only the permission: it has no choice to tell.
-export function reminderPreferencesToSync(setting, permission, serverPreferences = {}) {
-  // What this app sent since start counts as the server's copy too.
-  serverPreferences = { ...serverPreferences, ...sentToServer };
-  const wanted = {
-    notifications_permission: permission === "prompt-with-rationale" ? "prompt" : permission,
-  };
-  if (setting) {
-    wanted.study_reminder_enabled = setting.enabled ? "true" : "false";
-    wanted.study_reminder_time = setting.time;
-  }
-  return Object.fromEntries(Object.entries(wanted).filter(([key, value]) => value && serverPreferences[key] !== value));
-}
-
-let sentToServer = {};
-
-// Bumped on logout: anything still on its way for the learner who logged out
-// (a restore, a save's answer) sees it and does nothing.
-let session = 0;
-
-// The latest sync, so the settings page shows the setting once a restore from
-// the server has landed rather than "off" just before it.
-let syncing = Promise.resolve();
-
-export function reminderSettingReady() {
-  return syncing.then(() => rescheduling);
-}
-
-// Sends the server the setting and permission when they differ from its copy;
-// first, on a phone without a setting, takes the server's. Resolves to the
-// preferences sent.
-export function syncReminderPreferences(api, serverPreferences) {
-  syncing = sync(api, serverPreferences);
-  return syncing;
-}
-
-async function sync(api, serverPreferences) {
-  if (!studyReminderAvailable()) return {};
-  const mySession = session;
-  try {
-    const { LocalNotifications } = await plugins();
-    const [stored, { display }] = await Promise.all([loadStoredSetting(), LocalNotifications.checkPermissions()]);
-    if (mySession !== session) return {};
-    let setting = stored;
-    const restored = !stored && settingFromServer(serverPreferences, display);
-    if (restored) {
-      setting = restored;
-      // In the queue, after any logout's clear that came first.
-      rescheduling = rescheduling.then(async () => {
-        if (mySession !== session || (await loadStoredSetting())) return;
-        await saveReminderSetting(restored);
-      });
-      rescheduleStudyReminders();
-    }
-    const changed = reminderPreferencesToSync(setting, display, serverPreferences);
-    if (Object.keys(changed).length) {
-      api.saveUserPreferences(changed, () => {
-        if (mySession === session) Object.assign(sentToServer, changed);
-      });
-    }
-    return changed;
-  } catch {
-    return {};
   }
 }
 
@@ -212,11 +132,6 @@ function reminderExtra(textId, at, test = false) {
   return { kind: "study_reminder", textId, scheduledFor: at.toISOString(), test };
 }
 
-export async function saveReminderSetting(setting) {
-  const { Preferences } = await plugins();
-  await Preferences.set({ key: SETTING_KEY, value: JSON.stringify(setting) });
-}
-
 // Asks iOS (or Android 13+) once; afterwards only the system settings can
 // change the answer. Resolves to whether notifications may be shown.
 export async function allowReminders() {
@@ -231,7 +146,7 @@ export async function allowReminders() {
 // The last facts the app knows, so a resume or a changed setting can
 // reschedule without asking the API again. `doneOn` is the day (dayKey) the
 // goal was last known to be met, so "done" expires at midnight by itself.
-const nothingKnown = { doneOn: null, goalMinutes: null, language: null };
+const nothingKnown = { enabled: false, time: DEFAULT_REMINDER_TIME, doneOn: null, goalMinutes: null, language: null };
 let lastKnown = { ...nothingKnown };
 
 // Reschedules one at a time: each reads the setting and the facts when it
@@ -252,13 +167,10 @@ export function noteDoneToday() {
   if (lastKnown.doneOn !== today) rescheduleStudyReminders({ doneOn: today });
 }
 
-// On logout: this phone stops reminding, and forgets the setting, so the next
-// learner to log in on it starts with the reminder off.
-// In the reschedule queue, so one still running cannot schedule them again.
+// On logout: this phone stops reminding. In the reschedule queue, so one still
+// running cannot schedule them again.
 export function clearStudyReminders() {
-  session++;
   lastKnown = { ...nothingKnown };
-  sentToServer = {};
   rescheduling = rescheduling.then(clear);
   return rescheduling;
 }
@@ -266,9 +178,8 @@ export function clearStudyReminders() {
 async function clear() {
   if (!studyReminderAvailable()) return;
   try {
-    const { LocalNotifications, Preferences } = await plugins();
+    const { LocalNotifications } = await plugins();
     await LocalNotifications.cancel({ notifications: ourIds().map((id) => ({ id })) });
-    await Preferences.remove({ key: SETTING_KEY });
   } catch {
     // Nothing scheduled, or an older app build: nothing to clear.
   }
@@ -285,13 +196,12 @@ async function reschedule() {
     const ids = Array.from({ length: DAYS_AHEAD }, (_, i) => ({ id: FIRST_ID + i }));
     await LocalNotifications.cancel({ notifications: ids });
 
-    const setting = await loadReminderSetting();
-    const { doneOn, goalMinutes, language } = lastKnown;
-    if (!setting.enabled || !goalMinutes) return;
+    const { enabled, time, doneOn, goalMinutes, language } = lastKnown;
+    if (!enabled || !goalMinutes) return;
 
     const now = new Date();
     const { id: textId, title, body } = reminderText(goalMinutes, language);
-    const times = reminderTimes(now, setting.time, doneOn === dayKey(now));
+    const times = reminderTimes(now, time, doneOn === dayKey(now));
     await LocalNotifications.schedule({
       notifications: times.map((at, i) => ({
         id: FIRST_ID + i,
