@@ -66,9 +66,11 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
 
     let stopped = false;
     function refresh() {
-      // Only ever marks today done, never undone (that happens at midnight by
-      // itself), so an answer that comes back late cannot bring back today's
-      // reminder after the goal was met.
+      // Renews the DAYS_AHEAD days of reminders (an app resumed every day is
+      // never restarted), then asks about today. Today is only ever marked
+      // done, never undone (midnight does that by itself), so an answer that
+      // comes back late cannot bring back today's reminder after the goal was met.
+      rescheduleStudyReminders();
       api.getAllLanguageStreaks((streaks) => {
         if (!stopped) noteStreaks(streaks);
       });

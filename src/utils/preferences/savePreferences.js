@@ -19,17 +19,26 @@ export function undoChanges(current, changes, previous) {
   return untouched ? { ...current, ...previous } : current;
 }
 
+// The latest save of each key: a failed save is undone only for keys no later
+// save has touched, even one that set the same value again (on, off, on).
+const latestSaveOf = {};
+let saves = 0;
+
 // Returns false (and sends nothing) when the preferences are not loaded, or
 // the learner has logged out.
 export function savePreferences({ api, preferences, setUserPreferences, changes, onSaved, onFailed }) {
   const { previous } = applyChanges(preferences, changes);
   if (!previous) return false;
+  const save = ++saves;
+  Object.keys(changes).forEach((key) => (latestSaveOf[key] = save));
   setUserPreferences((current) => applyChanges(current, changes).next);
   api.saveUserPreferences(
     changes,
     () => onSaved?.(),
     () => {
-      setUserPreferences((current) => undoChanges(current, changes, previous));
+      if (Object.keys(changes).every((key) => latestSaveOf[key] === save)) {
+        setUserPreferences((current) => undoChanges(current, changes, previous));
+      }
       onFailed?.();
     },
   );

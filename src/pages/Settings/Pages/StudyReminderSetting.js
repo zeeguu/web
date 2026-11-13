@@ -8,7 +8,12 @@ import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
 import { SectionContainer, SectionHeading } from "./FeedPreferences.sc";
 import * as s from "./StudyReminderSetting.sc";
 import { ChangeLink } from "./AikiMode.sc"; // the same inline action
-import { allowReminders, notificationPermission, reminderSettingFrom } from "../../../reminder/studyReminder";
+import {
+  allowReminders,
+  notificationPermission,
+  reminderSettingFrom,
+  rescheduleStudyReminders,
+} from "../../../reminder/studyReminder";
 import onAppResume, { onAppPause } from "../../../utils/misc/onAppResume";
 import { savePreferences } from "../../../utils/preferences/savePreferences";
 
@@ -25,7 +30,8 @@ export default function StudyReminderSetting() {
   const [error, setError] = useState(false);
 
   // The preferences as of the last render, for saves made from a debounced
-  // flush (e.g. when the page is left after logging out).
+  // flush. (On logout the flush still sees them, but the save, without a
+  // session, fails and its undo finds the preferences emptied: nothing changes.)
   const preferences = useRef(userPreferences);
   preferences.current = userPreferences;
 
@@ -82,6 +88,7 @@ export default function StudyReminderSetting() {
     setPermission(now);
     setBlocked(!allowed);
     api.saveUserPreferences({ notifications_permission: now }, () => {});
+    if (allowed) rescheduleStudyReminders(); // whatever failed to schedule before can now
     return allowed;
   }
 
