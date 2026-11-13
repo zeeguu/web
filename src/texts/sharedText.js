@@ -1,10 +1,10 @@
 // What to do with text another app shared into Zeeguu (the phone's share
-// sheet, or the installed web app's share target).
+// sheet via texts/pendingShare.js, or the installed web app's share target).
 //
 // A shared link, maybe with a title around it, is an article to open. Any
 // other text — a chat message, even one that contains a link, a paragraph
-// from a mail — is kept and read word by word (/texts). The native share handlers (MainActivity.java,
-// ShareViewController.swift) apply the same rule; keep them in step.
+// from a mail — is kept and read word by word (/texts). The rule lives only
+// here: the native share handlers pass on what they received.
 
 // More words than this besides the link, and it's a message, not a title.
 export const MAX_WORDS_AROUND_ARTICLE_LINK = 12;
@@ -30,9 +30,9 @@ export function classifySharedText(text, url = "") {
   return { kind: "text", text: body };
 }
 
-// Native code hands the message over by calling window.reactReceiveSharedText
-// (see index.js). It may arrive before the text page has mounted, or while
-// it is already open, so it is kept here until the page takes it.
+// A shared text on its way to /texts (from usePendingShare): it may arrive
+// before the page has mounted, or while it is already open, so it is kept here
+// until the page takes it.
 let pending = null;
 let listener = null;
 

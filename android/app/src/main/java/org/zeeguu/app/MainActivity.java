@@ -5,7 +5,17 @@ import android.os.Bundle;
 
 import com.getcapacitor.BridgeActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends BridgeActivity {
+
+    // Where a share waits for the web app: Capacitor Preferences' own storage
+    // (group "CapacitorStorage"), read by src/hooks/usePendingShare.js. Keep
+    // the key and event name in step with src/texts/pendingShare.js.
+    private static final String CAPACITOR_STORAGE = "CapacitorStorage";
+    private static final String PENDING_SHARE_KEY = "zeeguu.pendingShare";
+    private static final String SHARE_WAITING_EVENT = "zeeguu:share";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,80 +36,32 @@ public class MainActivity extends BridgeActivity {
         handleShareIntent(intent);
     }
 
-    // A shared link (maybe with a title) opens as an article; any other text,
-    // e.g. a WhatsApp message, opens in the text reader. Same rule as
-    // classifySharedText in src/texts/sharedText.js.
-    private static final int MAX_WORDS_AROUND_ARTICLE_LINK = 12;
-
+    // Stores what was shared for the web app to take when it is ready. The web
+    // app decides whether it is an article link or a text to read.
     private void handleShareIntent(Intent intent) {
         if (intent == null) return;
-        String action = intent.getAction();
-        String type = intent.getType();
-        if (!Intent.ACTION_SEND.equals(action) || !"text/plain".equals(type)) return;
+        if (!Intent.ACTION_SEND.equals(intent.getAction()) || !"text/plain".equals(intent.getType())) return;
 
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText == null || sharedText.trim().isEmpty()) return;
 
-        String url = extractUrl(sharedText);
-        if (url != null && wordsBesides(url, sharedText) <= MAX_WORDS_AROUND_ARTICLE_LINK) {
-            openSharedArticle(url);
-        } else {
-            openSharedMessage(sharedText.trim());
-        }
-    }
-
-    private void openSharedArticle(String url) {
         try {
-            String encodedUrl = java.net.URLEncoder.encode(url, "UTF-8");
-            String path = "/shared-article?url=" + encodedUrl;
-            getBridge().getWebView().post(() -> {
+            JSONObject share = new JSONObject();
+            share.put("text", sharedText);
+            getSharedPreferences(CAPACITOR_STORAGE, MODE_PRIVATE)
+                .edit()
+                .putString(PENDING_SHARE_KEY, share.toString())
+                .apply();
+        } catch (JSONException e) {
+            return;
+        }
+
+        // A nudge for a page that is already running. If it isn't yet, nothing
+        // is lost: the web app looks for a waiting share when it starts.
+        if (getBridge() != null && getBridge().getWebView() != null) {
+            getBridge().getWebView().post(() ->
                 getBridge().getWebView().evaluateJavascript(
-                    "window.reactNavigateFromNative('" + path + "')",
-                    null
-                );
-            });
-        } catch (java.io.UnsupportedEncodingException e) {
-            // UTF-8 is always supported
+                    "window.dispatchEvent(new Event('" + SHARE_WAITING_EVENT + "'))", null));
         }
-    }
-
-    // The text goes to the page as a JS string, not in a URL, so it stays out
-    // of the history. On a cold start the page may not have loaded yet, so
-    // retry until window.reactReceiveSharedText exists.
-    private void openSharedMessage(String text) {
-        String js = "(function(t){"
-            + "if (typeof window.reactReceiveSharedText !== 'function') return false;"
-            + "window.reactReceiveSharedText(t); return true;"
-            + "})(" + org.json.JSONObject.quote(text) + ")";
-        deliverSharedMessage(js, 0);
-    }
-
-    private void deliverSharedMessage(String js, int attempt) {
-        if (attempt >= 30) return;
-        getBridge().getWebView().postDelayed(() ->
-            getBridge().getWebView().evaluateJavascript(js, result -> {
-                if (!"true".equals(result)) deliverSharedMessage(js, attempt + 1);
-            }),
-            attempt == 0 ? 0 : 500
-        );
-    }
-
-    private int wordsBesides(String url, String text) {
-        String rest = text.replace(url, " ").trim();
-        if (rest.isEmpty()) return 0;
-        return rest.split("\\s+").length;
-    }
-
-    // Only http(s) links, as in classifySharedText: a bare "dbu.dk" in a
-    // message is part of the message, not an article to open.
-    private static final java.util.regex.Pattern HTTP_LINK =
-        java.util.regex.Pattern.compile("https?://[^\\s<>\"]+", java.util.regex.Pattern.CASE_INSENSITIVE);
-
-    private String extractUrl(String text) {
-        java.util.regex.Matcher matcher = HTTP_LINK.matcher(text);
-        if (matcher.find()) {
-            return matcher.group();
-        }
-        return null;
     }
 }

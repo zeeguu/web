@@ -44,31 +44,23 @@ class ShareViewController: UIViewController {
                     self?.close()
                     return
                 }
-                self?.openInZeeguu(url: url)
+                self?.openInZeeguu(host: "shared-article", name: "url", value: url.absoluteString)
             }
             return true
         }
 
-        // Case 2: the shared item is plain text. A link with little else
-        // around it (some news apps and Chrome share "title + URL") opens as
-        // an article; anything else, e.g. a WhatsApp message, opens in the
-        // text reader. Same rule as classifySharedText in
-        // src/texts/sharedText.js.
+        // Case 2: the shared item is plain text: a WhatsApp message, or "title
+        // + URL" from some news apps. The web app decides which it is
+        // (classifySharedText in src/texts/sharedText.js).
         if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) {
             provider.loadItem(forTypeIdentifier: UTType.plainText.identifier, options: nil) {
                 [weak self] (item, error) in
-                guard let self = self,
-                      let text = (item as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                guard let text = (item as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
                       !text.isEmpty else {
                     self?.close()
                     return
                 }
-                if let (url, linkText) = self.findLink(in: text),
-                   self.wordsBesides(linkText, in: text) <= self.maxWordsAroundArticleLink {
-                    self.openInZeeguu(url: url)
-                } else {
-                    self.openMessageInZeeguu(text: text)
-                }
+                self?.openInZeeguu(host: "shared-text", name: "text", value: text)
             }
             return true
         }
@@ -76,51 +68,16 @@ class ShareViewController: UIViewController {
         return false
     }
 
-    private let maxWordsAroundArticleLink = 12
+    // MARK: - Open Zeeguu
 
-    /// The first http(s) link in a text, with the text it was written as.
-    /// The detector normalizes the URL (e.g. a trailing slash), so the words
-    /// around it are counted against what the text actually says.
-    private func findLink(in text: String) -> (URL, String)? {
-        let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-        let range = NSRange(text.startIndex..., in: text)
-        for match in detector?.matches(in: text, options: [], range: range) ?? [] {
-            guard let url = match.url, url.scheme == "http" || url.scheme == "https",
-                  let linkRange = Range(match.range, in: text) else { continue }
-            let linkText = String(text[linkRange])
-            // As in classifySharedText: only links written with their scheme
-            guard linkText.lowercased().hasPrefix("http") else { continue }
-            return (url, linkText)
-        }
-        return nil
-    }
-
-    /// How many words the text has besides the link.
-    private func wordsBesides(_ linkText: String, in text: String) -> Int {
-        let rest = text.replacingOccurrences(of: linkText, with: " ")
-        return rest.split(whereSeparator: { $0.isWhitespace }).count
-    }
-
-    // MARK: - Open Zeeguu with the URL
-
-    private func openInZeeguu(url: URL) {
-        guard let zeeguuURL = buildZeeguuURL(for: url) else {
-            close()
-            return
-        }
-        DispatchQueue.main.async {
-            self.askIOSToOpen(zeeguuURL)
-            self.close()
-        }
-    }
-
-    /// Opens org.zeeguu.app://shared-text?text=<message>; AppDelegate hands the
-    /// text to the web app without putting it in a route.
-    private func openMessageInZeeguu(text: String) {
+    /// Opens org.zeeguu.app://<host>?<name>=<value>. AppDelegate stores it for
+    /// the web app to take when it is ready. URLComponents encodes the value,
+    /// "&" and "=" included, so a link's own query survives the trip.
+    private func openInZeeguu(host: String, name: String, value: String) {
         var components = URLComponents()
         components.scheme = appURLScheme
-        components.host = "shared-text"
-        components.queryItems = [URLQueryItem(name: "text", value: text)]
+        components.host = host
+        components.queryItems = [URLQueryItem(name: name, value: value)]
         guard let zeeguuURL = components.url else {
             close()
             return
@@ -129,14 +86,6 @@ class ShareViewController: UIViewController {
             self.askIOSToOpen(zeeguuURL)
             self.close()
         }
-    }
-
-    /// Builds org.zeeguu.app://shared-article?url=<encoded article URL>
-    private func buildZeeguuURL(for articleURL: URL) -> URL? {
-        guard let encoded = articleURL.absoluteString.addingPercentEncoding(
-            withAllowedCharacters: .urlQueryAllowed
-        ) else { return nil }
-        return URL(string: "\(appURLScheme)://shared-article?url=\(encoded)")
     }
 
     /// Opens a URL via UIApplication.shared.open() using the Objective-C runtime.

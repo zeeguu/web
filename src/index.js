@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { deliverSharedText } from "./texts/sharedText";
 
 import * as Sentry from "@sentry/react";
 
@@ -23,25 +22,6 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
   enabled: import.meta.env.PROD, // cf: https://stackoverflow.com/a/70537824
 });
-
-// Called from native iOS/Android code to navigate the React app.
-// Native code can only run raw JS in the WebView — it can't access
-// React Router's history.replace(). pushState updates the URL, and
-// the popstate event tells React Router to render the new route.
-window.reactNavigateFromNative = (path) => {
-  window.history.pushState({}, "", path);
-  window.dispatchEvent(new PopStateEvent("popstate"));
-};
-
-// Called from native code with text shared from another app (a WhatsApp
-// message, a paragraph from a mail...). The text goes through the inbox
-// rather than the URL, so it stays out of the history and error reports.
-window.reactReceiveSharedText = (text) => {
-  deliverSharedText(text);
-  if (window.location.pathname !== "/texts") {
-    window.reactNavigateFromNative("/texts");
-  }
-};
 
 const root = createRoot(document.getElementById("root"));
 root.render(

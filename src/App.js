@@ -34,6 +34,7 @@ import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
+import usePendingShare from "./hooks/usePendingShare";
 import useDeepLinkHandler from "./hooks/useDeepLinkHandler";
 import useMoreTranslationsOnboarding from "./hooks/useMoreTranslationsOnboarding";
 import useOnboardingModal from "./hooks/useOnboardingModal";
@@ -65,9 +66,10 @@ function generateUUID() {
 }
 
 // Wrapper component to use location tracker inside Router context
-function LocationTrackingWrapper({ children }) {
+function LocationTrackingWrapper({ loggedIn, children }) {
   useLocationTracker();
   useDeepLinkHandler();
+  usePendingShare(loggedIn);
   useOpenAikiOnRequest();
   return children;
 }
@@ -445,7 +447,7 @@ function App() {
       <SystemLanguagesContext.Provider value={{ systemLanguages, sortedSystemLanguages }}>
         <SpeechContext.Provider value={zeeguuSpeech}>
           <BrowserRouter>
-            <LocationTrackingWrapper>
+            <LocationTrackingWrapper loggedIn={!!userDetails}>
               <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
                 <UserContext.Provider
                   value={{
