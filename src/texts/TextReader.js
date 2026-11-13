@@ -14,7 +14,6 @@ import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import FullWidthInfoMsg from "../components/FullWidthInfoMsg.sc";
-import { StyledButton } from "../components/allButtons.sc";
 import useUserPreferences from "../hooks/useUserPreferences";
 import useQuery from "../hooks/useQuery";
 import { setTitle } from "../assorted/setTitle";
@@ -30,10 +29,12 @@ import strings from "../i18n/definitions";
 // The API's ContextType.SHORT_TEXT
 const SHORT_TEXT_CONTEXT = { context_type: "ShortText" };
 
+// Back on the left, language on the right: far apart, so going back doesn't
+// hit the picker and re-read the text in another language.
 const TextHeader = styled.div`
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  justify-content: space-between;
   gap: 0.75rem;
   margin: 1rem 0 0.5rem;
   color: var(--text-secondary);
@@ -51,9 +52,32 @@ const TextLanguagePicker = styled.select`
   cursor: pointer;
 `;
 
-const TextActions = styled.div`
-  display: flex;
-  justify-content: center;
+// Deliberately quiet, in the muted style of the language picker: a way out
+// when a few lines won't come together, not the page's main action.
+const WholeTextLink = styled.button`
+  display: block;
+  margin-top: 1.5rem;
+  padding: 0.25rem 0;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+    text-decoration: none;
+  }
+
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      color: var(--text-secondary);
+    }
+  }
 `;
 
 const WholeTextTranslation = styled(FullWidthInfoMsg)`
@@ -206,11 +230,9 @@ export default function TextReader() {
           which): a way out when a few lines won't come together, not a
           substitute for reading */}
       {shortText.can_translate_whole && !translation && (
-        <TextActions>
-          <StyledButton $secondary disabled={isTranslating || !nativeLanguage} onClick={translateWholeText}>
-            {isTranslating ? strings.translatingText : strings.translateWholeText}
-          </StyledButton>
-        </TextActions>
+        <WholeTextLink disabled={isTranslating || !nativeLanguage} onClick={translateWholeText}>
+          {isTranslating ? strings.translatingText : strings.translateWholeText}
+        </WholeTextLink>
       )}
     </PaddedNarrowColumn>
   );
