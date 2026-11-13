@@ -368,6 +368,16 @@ let AnimatedOrangeButton = styled(OrangeButton)`
   margin: 1em;
 `;
 
+// Wraps a button that isn't an OrangeButton (the audio options are
+// SpeakButtons) to shake it like AnimatedOrangeButton after a wrong pick.
+let ShakeOnce = styled.span`
+  display: inline-block;
+  animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+`;
+
 let AnimatedMatchButton = styled(MatchButton)`
   animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   transform: translate3d(0, 0, 0);
@@ -672,6 +682,7 @@ export {
   FeedbackButton,
   OrangeButton,
   AnimatedOrangeButton,
+  ShakeOnce,
   Input,
   AnimatedInput,
   BottomRow,

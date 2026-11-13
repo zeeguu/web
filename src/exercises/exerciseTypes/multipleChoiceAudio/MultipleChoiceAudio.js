@@ -13,6 +13,7 @@ import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { APIContext } from "../../../contexts/APIContext.js";
+import { AnswerLine, withBoldParts } from "../../components/AnswerNote.js";
 
 // The user has to select the correct spoken L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
@@ -37,6 +38,10 @@ export default function MultipleChoiceAudio({
   const exerciseBookmark = bookmarksToStudy[0];
   const [choiceOptions, setChoiceOptions] = useState(null);
   const [currentSelectedChoice, setCurrentSelectedChoice] = useState("");
+  // The last wrong pick, so the learner sees it was wrong and what they
+  // actually heard. `attempt` restarts the shake when the same option is
+  // picked wrong twice in a row.
+  const [wrongPick, setWrongPick] = useState(null);
 
   useExerciseLifecycle({ speech, resetSubSessionTimer, setExerciseType, exerciseType: EXERCISE_TYPE });
 
@@ -52,9 +57,16 @@ export default function MultipleChoiceAudio({
   useEffect(() => {
     // Index 0 is the correct bookmark; 1 and 2 are distractors.
     setChoiceOptions(shuffle([0, 1, 2]));
+    setCurrentSelectedChoice("");
+    setWrongPick(null);
     if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload, exerciseBookmark]);
+
+  function onWrongPick(option) {
+    setCurrentSelectedChoice("");
+    setWrongPick((previous) => ({ option, attempt: (previous?.attempt || 0) + 1 }));
+  }
 
   if (!interactiveText || !choiceOptions) {
     return <LoadingAnimation />;
@@ -87,16 +99,32 @@ export default function MultipleChoiceAudio({
       {!isExerciseOver && (
         <div style={{ marginTop: "2em" }}>
           <s.CenteredWordRow>
-            {choiceOptions.map((option) => (
-              <SpeakButton
-                onClickCallback={() => setCurrentSelectedChoice(option)}
-                isSelected={option === currentSelectedChoice}
-                bookmarkToStudy={bookmarksToStudy[option]}
-                id={option}
-                styling={option === currentSelectedChoice ? "selected" : ""}
-              />
-            ))}
+            {choiceOptions.map((option) => {
+              const button = (
+                <SpeakButton
+                  onClickCallback={() => setCurrentSelectedChoice(option)}
+                  isSelected={option === currentSelectedChoice}
+                  bookmarkToStudy={bookmarksToStudy[option]}
+                  id={option}
+                  styling={option === currentSelectedChoice ? "selected" : ""}
+                />
+              );
+              return wrongPick?.option === option ? (
+                <s.ShakeOnce key={`${option}-${wrongPick.attempt}`}>{button}</s.ShakeOnce>
+              ) : (
+                <span key={option}>{button}</span>
+              );
+            })}
           </s.CenteredWordRow>
+          {wrongPick && (
+            <AnswerLine>
+              {withBoldParts(
+                strings.wrongAudioPickTryAgain,
+                bookmarksToStudy[wrongPick.option].from,
+                bookmarksToStudy[wrongPick.option].to,
+              )}
+            </AnswerLine>
+          )}
         </div>
       )}
 
@@ -111,6 +139,7 @@ export default function MultipleChoiceAudio({
           targetBookmark={exerciseBookmark}
           notifyCorrectAnswer={notifyCorrectAnswer}
           notifyIncorrectAnswer={notifyIncorrectAnswer}
+          onWrongPick={onWrongPick}
         />
       )}
     </s.Exercise>

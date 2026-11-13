@@ -7,6 +7,7 @@ export default function MultipleChoiceAudioBottomInput({
   currentChoice,
   targetBookmark,
   bookmarksToStudy,
+  onWrongPick,
 }) {
   const bookmarkSelected = bookmarksToStudy[currentChoice];
 
@@ -15,6 +16,7 @@ export default function MultipleChoiceAudioBottomInput({
       notifyCorrectAnswer(targetBookmark);
     } else {
       notifyIncorrectAnswer(targetBookmark, bookmarkSelected.from);
+      onWrongPick(currentChoice);
     }
   }
 
