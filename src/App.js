@@ -100,6 +100,13 @@ function App() {
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   useStudyReminder(api, userDetails, userPreferences);
+
+  // Aiki on the phone uses the daily goal (ADR 046): handed over whenever it
+  // is loaded or changes. Logging out resets it (see logout).
+  const dailyGoalMinutes = userPreferences?.daily_goal_minutes;
+  useEffect(() => {
+    if (dailyGoalMinutes) sendDailyGoalToAiki({ daily_goal_minutes: dailyGoalMinutes });
+  }, [dailyGoalMinutes]);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
   const moreTranslationsModal = useMoreTranslationsOnboarding(api, userDetails);
 
@@ -230,7 +237,6 @@ function App() {
       setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
       setUserDetails(userDetails);
       setUserPreferences(userPreferences);
-      sendDailyGoalToAiki(userPreferences);
       setServerError(false);
       seedDrillCacheIfEmpty(userDetails.learned_language);
     } catch (e) {
@@ -354,6 +360,8 @@ function App() {
         api.setSession(undefined);
         setUserDetails({});
         setUserPreferences({});
+        clearStudyReminders();
+        sendDailyGoalToAiki({});
       }
     }, 1000);
     return () => clearInterval(interval);

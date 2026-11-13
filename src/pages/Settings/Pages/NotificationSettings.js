@@ -12,7 +12,7 @@ import { FormControlLabel, Checkbox } from "@mui/material";
 
 export default function NotificationSettings() {
   const api = useContext(APIContext);
-  const { userDetails, userPreferences } = useContext(UserContext);
+  const { userDetails } = useContext(UserContext);
   const isAnonymous = userDetails?.is_anonymous;
   const [emailOnArticleShared, setEmailOnArticleShared] = useState(true);
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
@@ -43,9 +43,7 @@ export default function NotificationSettings() {
     <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
       <SettingsPageHeader title="Notifications" />
       <NotificationSections>
-        {studyReminderAvailable() && (
-          <StudyReminderSetting goalMinutes={parseInt(userPreferences?.daily_goal_minutes, 10) || null} />
-        )}
+        {studyReminderAvailable() && <StudyReminderSetting />}
         {!isAnonymous && (
           <SectionContainer>
             <SectionHeading>Email notifications</SectionHeading>

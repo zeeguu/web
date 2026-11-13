@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import CardPage from "../../_pages_shared/CardPage";
 import Main from "../../_pages_shared/Main.sc";
@@ -10,9 +10,10 @@ import { setTitle } from "../../../assorted/setTitle";
 import { APIContext } from "../../../contexts/APIContext";
 import { UserContext } from "../../../contexts/UserContext";
 import { SectionDescription } from "./FeedPreferences.sc";
-import { GRANDFATHERED_GOAL, nativeShieldAvailable, sendDailyGoalToAiki } from "../../../components/nativeShield";
+import { GRANDFATHERED_GOAL, nativeShieldAvailable } from "../../../components/nativeShield";
 import { languageName } from "../../../utils/misc/languageCodeToName";
 import { refreshStudyReminders } from "../../../reminder/useStudyReminder";
+import { savePreferences } from "../../../utils/preferences/savePreferences";
 
 // The learner's daily goal (ADR 046): the minutes a day that count the day for
 // the streak, and on the phone the minutes after which Aiki leaves the paused
@@ -35,6 +36,9 @@ export default function DailyGoal() {
   // Aiki setup sends the learner here; once they choose, they go back to it.
   const returnAfterChoosing = useLocation().state?.returnAfterChoosing;
   const [error, setError] = useState(false);
+  // One save at a time: the choice shown is the one being saved, and a tap
+  // while it is under way is ignored.
+  const saving = useRef(false);
 
   useEffect(() => {
     setTitle("Daily goal");
@@ -50,23 +54,24 @@ export default function DailyGoal() {
   }));
 
   function handleChange(e) {
-    const minutes = e.target.value;
-    const before = userPreferences;
-    const after = { ...userPreferences, daily_goal_minutes: minutes, daily_goal_set: "true" };
+    if (saving.current) return;
     setError(false);
-    setUserPreferences(after);
-    api.saveUserPreferences(
-      { daily_goal_minutes: minutes },
-      () => {
-        sendDailyGoalToAiki(after);
+    // Aiki gets the goal from App, which hands it over whenever it changes.
+    saving.current = savePreferences({
+      api,
+      preferences: userPreferences,
+      setUserPreferences,
+      changes: { daily_goal_minutes: e.target.value },
+      onSaved: () => {
+        saving.current = false;
         refreshStudyReminders(); // the server may have just counted today
         if (returnAfterChoosing) history.goBack();
       },
-      () => {
-        setUserPreferences(before);
+      onFailed: () => {
+        saving.current = false;
         setError(true);
       },
-    );
+    });
   }
 
   return (

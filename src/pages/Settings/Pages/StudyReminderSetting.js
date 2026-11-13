@@ -1,74 +1,138 @@
-import { useContext, useEffect, useState } from "react";
-import { APIContext } from "../../../contexts/APIContext";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import debounce from "lodash-es/debounce";
 import { Checkbox, FormControlLabel } from "@mui/material";
+import { APIContext } from "../../../contexts/APIContext";
+import { UserContext } from "../../../contexts/UserContext";
 import FullWidthInfoMsg from "../../../components/FullWidthInfoMsg.sc";
+import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
 import { SectionContainer, SectionHeading } from "./FeedPreferences.sc";
 import * as s from "./StudyReminderSetting.sc";
+import { ChangeLink } from "./AikiMode.sc"; // the same inline action
 import {
   allowReminders,
-  loadReminderSetting,
+  notificationPermission,
+  reminderSettingFrom,
   rescheduleStudyReminders,
-  saveReminderSetting,
-  syncReminderPreferences,
 } from "../../../reminder/studyReminder";
+import onAppResume, { onAppPause } from "../../../utils/misc/onAppResume";
+import { savePreferences } from "../../../utils/preferences/savePreferences";
 
 // The daily study reminder's switch and time, on the Notifications page (phone
 // only): it reminds the learner on days they have not reached their daily goal.
-export default function StudyReminderSetting({ goalMinutes }) {
+// The setting is a preference like any other; useStudyReminder schedules the
+// reminders from it.
+export default function StudyReminderSetting() {
   const api = useContext(APIContext);
-  const [setting, setSetting] = useState(null);
+  const { userPreferences, setUserPreferences } = useContext(UserContext);
+  const { enabled, time } = reminderSettingFrom(userPreferences);
+  const goalMinutes = parseInt(userPreferences?.daily_goal_minutes, 10) || null;
   const [blocked, setBlocked] = useState(false);
+  const [error, setError] = useState(false);
 
+  // The preferences as of the last render, for saves made from a debounced
+  // flush. (On logout the flush still sees them, but the save, without a
+  // session, fails and its undo finds the preferences emptied: nothing changes.)
+  const preferences = useRef(userPreferences);
+  preferences.current = userPreferences;
+
+  function save(changes) {
+    setError(false);
+    savePreferences({
+      api,
+      preferences: preferences.current,
+      setUserPreferences,
+      changes,
+      onFailed: () => setError(true),
+    });
+  }
+
+  // The time being typed or wheeled shows at once and is saved once it
+  // settles, or when the page or the app is left.
+  const [shownTime, setShownTime] = useState(time);
+  useEffect(() => setShownTime(time), [time]);
+  const saveTime = useMemo(() => debounce((value) => save({ study_reminder_time: value }), 800), []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
-    loadReminderSetting().then(setSetting);
+    const onHide = () => document.visibilityState === "hidden" && saveTime.flush();
+    document.addEventListener("visibilitychange", onHide);
+    const stopListening = onAppPause(() => saveTime.flush());
+    return () => {
+      document.removeEventListener("visibilitychange", onHide);
+      stopListening();
+      saveTime.flush();
+    };
+  }, [saveTime]);
+
+  function handleTimeChange(e) {
+    if (!e.target.value) return;
+    setShownTime(e.target.value);
+    saveTime(e.target.value);
+  }
+
+  // This phone may not have been asked yet: the setting follows the learner,
+  // but each phone needs its own permission.
+  // Read again on resume: the learner may have just changed it in Settings.
+  const [permission, setPermission] = useState(null);
+  useEffect(() => {
+    const check = () =>
+      notificationPermission().then((now) => {
+        setPermission(now);
+        if (now === "granted") setBlocked(false);
+      });
+    check();
+    return onAppResume(check);
   }, []);
 
-  async function update(next) {
-    setSetting(next);
-    await saveReminderSetting(next);
-    rescheduleStudyReminders({ goalMinutes });
-    syncReminderPreferences(api, {}); // all of it: the learner just changed it
+  async function askPermission() {
+    const allowed = await allowReminders();
+    const now = allowed ? "granted" : "denied";
+    setPermission(now);
+    setBlocked(!allowed);
+    api.saveUserPreferences({ notifications_permission: now }, () => {});
+    if (allowed) rescheduleStudyReminders(); // whatever failed to schedule before can now
+    return allowed;
   }
 
   async function handleToggle(e) {
-    const enabled = e.target.checked;
-    if (enabled && !(await allowReminders())) {
-      setBlocked(true);
-      syncReminderPreferences(api, {}); // the permission, now known
-      return;
-    }
+    const turnOn = e.target.checked;
+    if (turnOn && !(await askPermission())) return;
     setBlocked(false);
-    update({ ...setting, enabled });
+    saveTime.flush(); // the time on screen goes first
+    save({ study_reminder_enabled: turnOn ? "true" : "false" });
   }
-
-  if (!setting) return null;
 
   return (
     <SectionContainer>
       <SectionHeading>Study reminder</SectionHeading>
       <s.ReminderRow>
         <FormControlLabel
-          control={<Checkbox checked={setting.enabled} onChange={handleToggle} />}
+          control={<Checkbox checked={enabled} onChange={handleToggle} />}
           label="Remind me at"
           sx={{ marginRight: 0, "& .MuiTypography-root": { fontFamily: "inherit" } }}
         />
         <s.TimeInput
           type="time"
           aria-label="Reminder time"
-          value={setting.time}
-          disabled={!setting.enabled}
-          onChange={(e) => e.target.value && update({ ...setting, time: e.target.value })}
+          value={shownTime}
+          disabled={!enabled}
+          onChange={handleTimeChange}
         />
       </s.ReminderRow>
       <s.ReminderNote>
         Only on days you haven't reached your daily goal{goalMinutes ? ` of ${goalMinutes} minutes` : ""} yet.
       </s.ReminderNote>
-      {blocked && (
+      {enabled && !blocked && permission === "prompt" && (
+        <FullWidthInfoMsg>
+          This phone hasn't been allowed to show notifications yet.{" "}
+          <ChangeLink onClick={askPermission}>Allow notifications</ChangeLink>
+        </FullWidthInfoMsg>
+      )}
+      {(blocked || (enabled && permission === "denied")) && (
         <FullWidthInfoMsg>
           Notifications are off for Zeeguu. To get the reminder, turn them on in your phone's Settings → Zeeguu →
           Notifications.
         </FullWidthInfoMsg>
       )}
+      {error && <FullWidthErrorMsg>Couldn't save your reminder. Please try again.</FullWidthErrorMsg>}
     </SectionContainer>
   );
 }

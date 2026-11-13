@@ -13,7 +13,6 @@ export const TimeInput = styled.input`
   border: 1px solid var(--input-border);
   border-radius: 0.5rem;
   padding: 0.3rem 0.5rem;
-  color-scheme: light dark;
 
   &:disabled {
     opacity: 0.5;

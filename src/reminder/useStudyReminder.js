@@ -2,54 +2,77 @@ import { useEffect, useRef } from "react";
 import onAppResume from "../utils/misc/onAppResume";
 import { languageName } from "../utils/misc/languageCodeToName";
 import {
-  dayKey,
   doneTodayFrom,
   logOpenedReminders,
   noteDoneToday,
+  notificationPermission,
+  reminderSettingFrom,
   rescheduleStudyReminders,
   studyReminderAvailable,
-  syncReminderPreferences,
 } from "./studyReminder";
 
-// Keeps the scheduled study reminders up to date: when the app starts, when it
-// comes back to the foreground (a new day, or study done elsewhere), and when
-// the goal or the language changes. LanguageStreakBar reports the moment the
-// goal is met while the app is open (noteStreaks). Also keeps the server's
-// copy of the setting and of the notification permission current, and logs
-// the reminders the learner opens.
+// Keeps the phone's scheduled study reminders in line with the learner's
+// preferences (the setting and the daily goal) and with today's progress: when
+// the app starts, when it comes back to the foreground (a new day, or study
+// done elsewhere), and when the preferences change. LanguageStreakBar reports
+// the moment the goal is met while the app is open (noteStreaks). Also reports
+// whether the phone may show notifications, and logs the reminders opened.
 export default function useStudyReminder(api, userDetails, userPreferences) {
   const goalMinutes = parseInt(userPreferences?.daily_goal_minutes, 10) || null;
   const learned = userDetails?.learned_language;
   const loggedIn = Boolean(api && learned);
+  const { enabled, time } = reminderSettingFrom(userPreferences);
 
   useEffect(() => {
     if (!loggedIn) return;
     return logOpenedReminders(api);
   }, [api, loggedIn]);
 
-  // The server's copy is compared on start and on each resume, with the
-  // preferences as last loaded; what was sent since is remembered by
-  // syncReminderPreferences, so it is not sent again.
+  // Whether the phone may show notifications, checked on start and on resume
+  // (it can be changed in the phone's settings at any time), and reported
+  // when it differs from what the server last heard.
   const preferences = useRef(userPreferences);
   preferences.current = userPreferences;
   const preferencesLoaded = Boolean(userPreferences?.daily_goal_minutes);
   useEffect(() => {
-    if (!loggedIn || !preferencesLoaded) return;
-    const sync = () => syncReminderPreferences(api, preferences.current);
-    sync();
-    return onAppResume(sync);
+    if (!loggedIn || !preferencesLoaded || !studyReminderAvailable()) return;
+    let stopped = false;
+    let reported = preferences.current?.notifications_permission;
+    async function report() {
+      const permission = await notificationPermission();
+      if (stopped || !permission || permission === reported) return;
+      // Remembered once saved: a failed save is tried again on the next resume.
+      api.saveUserPreferences({ notifications_permission: permission }, () => (reported = permission));
+    }
+    report();
+    const stopListening = onAppResume(report);
+    return () => {
+      stopped = true;
+      stopListening();
+    };
   }, [api, loggedIn, preferencesLoaded]);
 
+  // The setting and the goal take effect at once.
+  const language = languageName(learned);
   useEffect(() => {
-    if (!studyReminderAvailable() || !api || !learned || !goalMinutes) return;
+    if (!studyReminderAvailable() || !learned || !goalMinutes) return;
+    rescheduleStudyReminders({ enabled, time, goalMinutes, language });
+  }, [learned, goalMinutes, enabled, time, language]);
 
+  // Today's progress: on start, on resume, and when the goal changes (the
+  // server may count today against the new goal) or the reminder is turned on.
+  useEffect(() => {
+    if (!studyReminderAvailable() || !api || !learned || !goalMinutes || !enabled) return;
+
+    let stopped = false;
     function refresh() {
+      // Renews the DAYS_AHEAD days of reminders (an app resumed every day is
+      // never restarted), then asks about today. Today is only ever marked
+      // done, never undone (midnight does that by itself), so an answer that
+      // comes back late cannot bring back today's reminder after the goal was met.
+      rescheduleStudyReminders();
       api.getAllLanguageStreaks((streaks) => {
-        rescheduleStudyReminders({
-          doneOn: doneTodayFrom(streaks) ? dayKey(new Date()) : null,
-          goalMinutes,
-          language: languageName(learned),
-        });
+        if (!stopped) noteStreaks(streaks);
       });
     }
 
@@ -57,10 +80,11 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
     refresh();
     const stopListening = onAppResume(refresh);
     return () => {
+      stopped = true; // e.g. logged out: an answer still on its way is ignored
       refreshNow = null;
       stopListening();
     };
-  }, [api, learned, goalMinutes]);
+  }, [api, learned, goalMinutes, enabled]);
 }
 
 let refreshNow = null;

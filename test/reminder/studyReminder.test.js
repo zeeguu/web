@@ -3,7 +3,8 @@ import {
   dayKey,
   doneTodayFrom,
   openedReminderEvent,
-  reminderPreferencesToSync,
+  permissionToReport,
+  reminderSettingFrom,
   reminderText,
   reminderTimes,
 } from "../../src/reminder/studyReminder";
@@ -56,32 +57,6 @@ describe("reminderText", () => {
   });
 });
 
-describe("reminderPreferencesToSync", () => {
-  const on = { enabled: true, time: "07:30" };
-
-  it("sends what the server does not have yet", () => {
-    expect(reminderPreferencesToSync(on, "granted", {})).toEqual({
-      study_reminder_enabled: "true",
-      study_reminder_time: "07:30",
-      notifications_permission: "granted",
-    });
-  });
-
-  it("sends only what changed", () => {
-    const server = {
-      study_reminder_enabled: "true",
-      study_reminder_time: "07:30",
-      notifications_permission: "granted",
-    };
-    expect(reminderPreferencesToSync(on, "granted", server)).toEqual({});
-    expect(reminderPreferencesToSync(on, "denied", server)).toEqual({ notifications_permission: "denied" });
-  });
-
-  it("reports Android's rationale prompt as not asked yet", () => {
-    expect(reminderPreferencesToSync(on, "prompt-with-rationale", {}).notifications_permission).toBe("prompt");
-  });
-});
-
 describe("openedReminderEvent", () => {
   it("logs the text and when the reminder was due", () => {
     const notification = {
@@ -103,5 +78,26 @@ describe("dayKey", () => {
   it("is the local day, so being done today expires at midnight", () => {
     expect(dayKey(new Date(2026, 10, 13, 23, 59))).toBe("2026-11-13");
     expect(dayKey(new Date(2026, 10, 14, 0, 1))).toBe("2026-11-14");
+  });
+});
+
+describe("reminderSettingFrom", () => {
+  it("reads the learner's preferences", () => {
+    expect(reminderSettingFrom({ study_reminder_enabled: "true", study_reminder_time: "07:30" })).toEqual({
+      enabled: true,
+      time: "07:30",
+    });
+  });
+
+  it("is off at the default time when never set", () => {
+    expect(reminderSettingFrom({})).toEqual({ enabled: false, time: "19:00" });
+    expect(reminderSettingFrom(undefined)).toEqual({ enabled: false, time: "19:00" });
+  });
+});
+
+describe("permissionToReport", () => {
+  it("reports Android's rationale prompt as not asked yet", () => {
+    expect(permissionToReport("prompt-with-rationale")).toBe("prompt");
+    expect(permissionToReport("granted")).toBe("granted");
   });
 });
