@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { APIContext } from "../../../contexts/APIContext";
 import FullWidthInfoMsg from "../../../components/FullWidthInfoMsg.sc";
 import { SectionHeading } from "./FeedPreferences.sc";
 import * as s from "./StudyReminderSetting.sc";
@@ -7,11 +8,13 @@ import {
   loadReminderSetting,
   rescheduleStudyReminders,
   saveReminderSetting,
+  syncReminderPreferences,
 } from "../../../reminder/studyReminder";
 
 // The daily study reminder's switch and time, on the Daily goal page (phone
 // only): it reminds the learner on days they have not reached that goal yet.
 export default function StudyReminderSetting({ goalMinutes }) {
+  const api = useContext(APIContext);
   const [setting, setSetting] = useState(null);
   const [blocked, setBlocked] = useState(false);
 
@@ -23,12 +26,14 @@ export default function StudyReminderSetting({ goalMinutes }) {
     setSetting(next);
     await saveReminderSetting(next);
     rescheduleStudyReminders({ goalMinutes });
+    syncReminderPreferences(api, {}); // all of it: the learner just changed it
   }
 
   async function handleToggle(e) {
     const enabled = e.target.checked;
     if (enabled && !(await allowReminders())) {
       setBlocked(true);
+      syncReminderPreferences(api, {}); // the permission, now known
       return;
     }
     setBlocked(false);

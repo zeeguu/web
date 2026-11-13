@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { doneTodayFrom, reminderText, reminderTimes } from "../../src/reminder/studyReminder";
+import {
+  doneTodayFrom,
+  openedReminderEvent,
+  reminderPreferencesToSync,
+  reminderText,
+  reminderTimes,
+} from "../../src/reminder/studyReminder";
 
 const morning = new Date(2026, 10, 13, 9, 0);
 const evening = new Date(2026, 10, 13, 20, 0);
@@ -42,8 +48,48 @@ describe("doneTodayFrom", () => {
 describe("reminderText", () => {
   it("names the language and the goal", () => {
     expect(reminderText(10, "Danish")).toEqual({
+      id: "goal-v1",
       title: "Time for Danish",
       body: "10 minutes keep your streak going.",
     });
+  });
+});
+
+describe("reminderPreferencesToSync", () => {
+  const on = { enabled: true, time: "07:30" };
+
+  it("sends what the server does not have yet", () => {
+    expect(reminderPreferencesToSync(on, "granted", {})).toEqual({
+      study_reminder_enabled: "true",
+      study_reminder_time: "07:30",
+      notifications_permission: "granted",
+    });
+  });
+
+  it("sends only what changed", () => {
+    const server = { study_reminder_enabled: "true", study_reminder_time: "07:30", notifications_permission: "granted" };
+    expect(reminderPreferencesToSync(on, "granted", server)).toEqual({});
+    expect(reminderPreferencesToSync(on, "denied", server)).toEqual({ notifications_permission: "denied" });
+  });
+
+  it("reports Android's rationale prompt as not asked yet", () => {
+    expect(reminderPreferencesToSync(on, "prompt-with-rationale", {}).notifications_permission).toBe("prompt");
+  });
+});
+
+describe("openedReminderEvent", () => {
+  it("logs the text and when the reminder was due", () => {
+    const notification = {
+      extra: { kind: "study_reminder", textId: "goal-v1", scheduledFor: "2026-11-13T18:00:00.000Z", test: false },
+    };
+    expect(openedReminderEvent(notification)).toEqual({
+      textId: "goal-v1",
+      details: '{"scheduled_for":"2026-11-13T18:00:00.000Z","test":false}',
+    });
+  });
+
+  it("ignores other notifications", () => {
+    expect(openedReminderEvent({ extra: { kind: "something_else" } })).toBeNull();
+    expect(openedReminderEvent({})).toBeNull();
   });
 });
