@@ -31,6 +31,7 @@ import { ToastContainer } from "react-toastify";
 import useOpenAikiOnRequest from "./aiki/useOpenAikiOnRequest";
 import { sendDailyGoalToAiki } from "./components/nativeShield";
 import useStudyReminder from "./reminder/useStudyReminder";
+import { clearStudyReminders } from "./reminder/studyReminder";
 import useExtensionCommunication from "./hooks/useExtensionCommunication";
 import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
@@ -376,6 +377,8 @@ function App() {
     setUserPreferences({});
 
     removeSharedUserInfo();
+    clearStudyReminders();
+    sendDailyGoalToAiki({}); // back to Aiki's own default, not this learner's goal
     api.setSession(undefined);
     api.resetFunnel();
   }

@@ -12,6 +12,7 @@ import { UserContext } from "../../../contexts/UserContext";
 import { SectionDescription } from "./FeedPreferences.sc";
 import { GRANDFATHERED_GOAL, nativeShieldAvailable, sendDailyGoalToAiki } from "../../../components/nativeShield";
 import { languageName } from "../../../utils/misc/languageCodeToName";
+import { refreshStudyReminders } from "../../../reminder/useStudyReminder";
 
 // The learner's daily goal (ADR 046): the minutes a day that count the day for
 // the streak, and on the phone the minutes after which Aiki leaves the paused
@@ -58,6 +59,7 @@ export default function DailyGoal() {
       { daily_goal_minutes: minutes },
       () => {
         sendDailyGoalToAiki(after);
+        refreshStudyReminders(); // the server may have just counted today
         if (returnAfterChoosing) history.goBack();
       },
       () => {

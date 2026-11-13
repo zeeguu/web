@@ -31,6 +31,12 @@ export function studyReminderAvailable() {
   return Capacitor.isNativePlatform() && Capacitor.isPluginAvailable("LocalNotifications");
 }
 
+// "2026-11-13": the local day, to tell whether "done" is about today.
+export function dayKey(date) {
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
 // When to remind, from `now`: the next DAYS_AHEAD days at `time` ("19:00"),
 // leaving out today when it is done or its time has passed.
 export function reminderTimes(now, time, doneToday, days = DAYS_AHEAD) {
@@ -83,6 +89,8 @@ export async function loadReminderSetting() {
 // ones that differ from what it has. `permission` is the OS answer
 // (LocalNotifications.checkPermissions().display).
 export function reminderPreferencesToSync(setting, permission, serverPreferences = {}) {
+  // What this app sent since start counts as the server's copy too.
+  serverPreferences = { ...serverPreferences, ...sentToServer };
   const wanted = {
     study_reminder_enabled: setting.enabled ? "true" : "false",
     study_reminder_time: setting.time,
@@ -90,6 +98,8 @@ export function reminderPreferencesToSync(setting, permission, serverPreferences
   };
   return Object.fromEntries(Object.entries(wanted).filter(([key, value]) => value && serverPreferences[key] !== value));
 }
+
+let sentToServer = {};
 
 // Sends the server the setting and permission when they differ from its copy.
 // Resolves to the preferences sent.
@@ -99,7 +109,9 @@ export async function syncReminderPreferences(api, serverPreferences) {
     const { LocalNotifications } = await plugins();
     const [setting, { display }] = await Promise.all([loadReminderSetting(), LocalNotifications.checkPermissions()]);
     const changed = reminderPreferencesToSync(setting, display, serverPreferences);
-    if (Object.keys(changed).length) api.saveUserPreferences(changed);
+    if (Object.keys(changed).length) {
+      api.saveUserPreferences(changed, () => Object.assign(sentToServer, changed));
+    }
     return changed;
   } catch {
     return {};
@@ -161,13 +173,49 @@ export async function allowReminders() {
 }
 
 // The last facts the app knows, so a resume or a changed setting can
-// reschedule without asking the API again.
-let lastKnown = { doneToday: false, goalMinutes: null, language: null };
+// reschedule without asking the API again. `doneOn` is the day (dayKey) the
+// goal was last known to be met, so "done" expires at midnight by itself.
+const nothingKnown = { doneOn: null, goalMinutes: null, language: null };
+let lastKnown = { ...nothingKnown };
+
+// Reschedules one at a time: each reads the setting and the facts when it
+// runs, so the last change wins even if an earlier one was still running.
+let rescheduling = Promise.resolve();
 
 // Replaces the scheduled reminders with ones that match the setting and what
-// is known about today. Any argument left out keeps its last known value.
-export async function rescheduleStudyReminders(facts = {}) {
+// is known about today. Any fact left out keeps its last known value.
+export function rescheduleStudyReminders(facts = {}) {
   lastKnown = { ...lastKnown, ...facts };
+  rescheduling = rescheduling.then(reschedule);
+  return rescheduling;
+}
+
+// The goal was just met today (LanguageStreakBar saw it): today's reminder goes.
+export function noteDoneToday() {
+  const today = dayKey(new Date());
+  if (lastKnown.doneOn !== today) rescheduleStudyReminders({ doneOn: today });
+}
+
+// On logout: this phone stops reminding, and forgets the setting, so the next
+// learner to log in on it starts with the reminder off.
+export async function clearStudyReminders() {
+  lastKnown = { ...nothingKnown };
+  sentToServer = {};
+  if (!studyReminderAvailable()) return;
+  try {
+    const { LocalNotifications, Preferences } = await plugins();
+    await LocalNotifications.cancel({ notifications: ourIds().map((id) => ({ id })) });
+    await Preferences.remove({ key: SETTING_KEY });
+  } catch {
+    // Nothing scheduled, or an older app build: nothing to clear.
+  }
+}
+
+function ourIds() {
+  return [...Array.from({ length: DAYS_AHEAD }, (_, i) => FIRST_ID + i), TEST_ID];
+}
+
+async function reschedule() {
   if (!studyReminderAvailable()) return;
   try {
     const { LocalNotifications } = await plugins();
@@ -175,11 +223,12 @@ export async function rescheduleStudyReminders(facts = {}) {
     await LocalNotifications.cancel({ notifications: ids });
 
     const setting = await loadReminderSetting();
-    const { doneToday, goalMinutes, language } = lastKnown;
+    const { doneOn, goalMinutes, language } = lastKnown;
     if (!setting.enabled || !goalMinutes) return;
 
+    const now = new Date();
     const { id: textId, title, body } = reminderText(goalMinutes, language);
-    const times = reminderTimes(new Date(), setting.time, doneToday);
+    const times = reminderTimes(now, setting.time, doneOn === dayKey(now));
     await LocalNotifications.schedule({
       notifications: times.map((at, i) => ({
         id: FIRST_ID + i,

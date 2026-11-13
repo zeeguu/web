@@ -61,18 +61,22 @@ export function chosenDailyGoal(preferences) {
   return minutes > 0 ? minutes : null;
 }
 
-// Hands the chosen goal to the ledger on the phone. Without one the ledger
-// keeps its own 15 minutes. Older app builds have no setDailyGoal: ignored.
+// Hands the chosen goal to the ledger on the phone. Without one (the
+// grandfathered 2, or logged out) it sends 0, and the ledger falls back to its
+// own 15 minutes rather than keeping an earlier learner's goal. Older app
+// builds have no setDailyGoal, or refuse 0: ignored.
 export function sendDailyGoalToAiki(preferences) {
-  const minutes = chosenDailyGoal(preferences);
-  if (!minutes || !nativeShieldAvailable()) return;
-  ZeeguuShield.setDailyGoal({ minutes }).catch(() => {});
+  if (!nativeShieldAvailable()) return;
+  ZeeguuShield.setDailyGoal({ minutes: chosenDailyGoal(preferences) ?? 0 }).catch(() => {});
 }
 
 // Which setup step a learner is at, from ZeeguuShield.getStatus() and whether
 // they have chosen a daily goal: Aiki frees the apps once the goal is met.
+// A learner who already set Aiki up keeps its controls; the page asks them
+// for a goal beside them.
 export function aikiStep(status, goalChosen = true) {
   if (!status || !status.supported) return "unsupported";
+  if (status.authorization === "approved" && pickedCount(status) > 0) return "ready";
   if (!goalChosen) return "goal";
   if (status.authorization !== "approved") return "authorize";
   if (pickedCount(status) === 0) return "pick";

@@ -2,8 +2,10 @@ import { useEffect, useRef } from "react";
 import onAppResume from "../utils/misc/onAppResume";
 import { languageName } from "../utils/misc/languageCodeToName";
 import {
+  dayKey,
   doneTodayFrom,
   logOpenedReminders,
+  noteDoneToday,
   rescheduleStudyReminders,
   studyReminderAvailable,
   syncReminderPreferences,
@@ -25,40 +27,53 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
     return logOpenedReminders(api);
   }, [api, loggedIn]);
 
-  // The preferences as loaded at start; what was sent since is added to them,
-  // so a resume does not send the same values again.
-  const serverCopy = useRef(null);
+  // The server's copy is compared on start and on each resume, with the
+  // preferences as last loaded; what was sent since is remembered by
+  // syncReminderPreferences, so it is not sent again.
+  const preferences = useRef(userPreferences);
+  preferences.current = userPreferences;
+  const preferencesLoaded = Boolean(userPreferences?.daily_goal_minutes);
   useEffect(() => {
-    if (!loggedIn || !userPreferences) return;
-    serverCopy.current = { ...userPreferences };
-    function sync() {
-      syncReminderPreferences(api, serverCopy.current).then((sent) => Object.assign(serverCopy.current, sent));
-    }
+    if (!loggedIn || !preferencesLoaded) return;
+    const sync = () => syncReminderPreferences(api, preferences.current);
     sync();
     return onAppResume(sync);
-  }, [api, loggedIn, userPreferences]);
+  }, [api, loggedIn, preferencesLoaded]);
 
   useEffect(() => {
     if (!studyReminderAvailable() || !api || !learned || !goalMinutes) return;
 
     function refresh() {
       api.getAllLanguageStreaks((streaks) => {
-        knownDone = doneTodayFrom(streaks);
-        rescheduleStudyReminders({ doneToday: knownDone, goalMinutes, language: languageName(learned) });
+        rescheduleStudyReminders({
+          doneOn: doneTodayFrom(streaks) ? dayKey(new Date()) : null,
+          goalMinutes,
+          language: languageName(learned),
+        });
       });
     }
 
+    refreshNow = refresh;
     refresh();
-    return onAppResume(refresh);
+    const stopListening = onAppResume(refresh);
+    return () => {
+      refreshNow = null;
+      stopListening();
+    };
   }, [api, learned, goalMinutes]);
 }
 
-let knownDone = false;
+let refreshNow = null;
+
+// Asks the API again whether today is done, e.g. once a new goal is saved
+// (the server may have just counted today against it).
+export function refreshStudyReminders() {
+  refreshNow?.();
+}
 
 // Called with each /all_language_streaks answer the app gets anyway (it polls
-// while the goal is not met); reschedules only when today has just become done.
+// while the goal is not met), so a goal met while the app is open removes
+// today's reminder at once.
 export function noteStreaks(streaks) {
-  if (knownDone || !doneTodayFrom(streaks)) return;
-  knownDone = true;
-  rescheduleStudyReminders({ doneToday: true });
+  if (doneTodayFrom(streaks)) noteDoneToday();
 }

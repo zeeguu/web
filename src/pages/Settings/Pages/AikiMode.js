@@ -113,9 +113,11 @@ export default function AikiMode() {
           <FullWidthInfoMsg>Aiki mode needs the Zeeguu iPhone app on iOS 16 or newer.</FullWidthInfoMsg>
         )}
 
-        {step === "goal" && (
+        {(step === "goal" || (step === "ready" && goal === null)) && (
           <AikiCard>
-            <SectionHeading>First, choose your daily goal</SectionHeading>
+            <SectionHeading>
+              {step === "goal" ? "First, choose your daily goal" : "Choose your daily goal"}
+            </SectionHeading>
             <SectionDescription>
               Once you've studied that long in a day, your paused apps are free until tomorrow. The same goal keeps your
               streak going.

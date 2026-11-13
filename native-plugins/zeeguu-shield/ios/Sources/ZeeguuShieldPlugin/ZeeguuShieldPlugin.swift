@@ -121,10 +121,11 @@ public class ZeeguuShieldPlugin: CAPPlugin, CAPBridgedPlugin {
 
     /// The learner's daily goal, from their preferences (ADR 046). Lowering it
     /// below what was learned today frees the apps at once, hence the sync.
+    /// 0 means no chosen goal (logged out, or grandfathered): the default.
     @objc func setDailyGoal(_ call: CAPPluginCall) {
         guard #available(iOS 16.0, *) else { _ = unsupported(call); return }
-        guard let minutes = call.getInt("minutes"), minutes > 0 else {
-            call.reject("minutes must be a positive number", "BAD_GOAL")
+        guard let minutes = call.getInt("minutes"), minutes >= 0 else {
+            call.reject("minutes must be 0 or more", "BAD_GOAL")
             return
         }
         let now = Date()

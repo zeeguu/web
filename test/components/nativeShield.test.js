@@ -13,9 +13,14 @@ describe("aikiStep", () => {
     expect(aikiStep({ supported: false })).toBe("unsupported");
   });
 
-  it("asks for a daily goal before anything else", () => {
-    expect(aikiStep({ supported: true, authorization: "approved", apps: 2 }, false)).toBe("goal");
+  it("asks for a daily goal before setting Aiki up", () => {
+    expect(aikiStep({ supported: true, authorization: "notDetermined" }, false)).toBe("goal");
+    expect(aikiStep({ supported: true, authorization: "approved", apps: 0 }, false)).toBe("goal");
     expect(aikiStep({ supported: false }, false)).toBe("unsupported");
+  });
+
+  it("keeps the controls of a learner who set Aiki up before choosing a goal", () => {
+    expect(aikiStep({ supported: true, authorization: "approved", apps: 2 }, false)).toBe("ready");
   });
 
   it("asks for access until it is approved", () => {

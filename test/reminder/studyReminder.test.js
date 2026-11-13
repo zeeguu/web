@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
+  dayKey,
   doneTodayFrom,
   openedReminderEvent,
   reminderPreferencesToSync,
@@ -67,7 +68,11 @@ describe("reminderPreferencesToSync", () => {
   });
 
   it("sends only what changed", () => {
-    const server = { study_reminder_enabled: "true", study_reminder_time: "07:30", notifications_permission: "granted" };
+    const server = {
+      study_reminder_enabled: "true",
+      study_reminder_time: "07:30",
+      notifications_permission: "granted",
+    };
     expect(reminderPreferencesToSync(on, "granted", server)).toEqual({});
     expect(reminderPreferencesToSync(on, "denied", server)).toEqual({ notifications_permission: "denied" });
   });
@@ -91,5 +96,12 @@ describe("openedReminderEvent", () => {
   it("ignores other notifications", () => {
     expect(openedReminderEvent({ extra: { kind: "something_else" } })).toBeNull();
     expect(openedReminderEvent({})).toBeNull();
+  });
+});
+
+describe("dayKey", () => {
+  it("is the local day, so being done today expires at midnight", () => {
+    expect(dayKey(new Date(2026, 10, 13, 23, 59))).toBe("2026-11-13");
+    expect(dayKey(new Date(2026, 10, 14, 0, 1))).toBe("2026-11-14");
   });
 });
