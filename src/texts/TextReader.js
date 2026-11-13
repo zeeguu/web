@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
 import { SystemLanguagesContext } from "../contexts/SystemLanguagesContext";
 import { SpeechContext } from "../contexts/SpeechContext";
 import InteractiveText from "../reader/InteractiveText";
@@ -12,6 +13,8 @@ import BackArrow from "../pages/Settings/SharedComponents/BackArrow";
 import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
+import FullWidthInfoMsg from "../components/FullWidthInfoMsg.sc";
+import { StyledButton } from "../components/allButtons.sc";
 import useUserPreferences from "../hooks/useUserPreferences";
 import useQuery from "../hooks/useQuery";
 import { setTitle } from "../assorted/setTitle";
@@ -48,9 +51,20 @@ const TextLanguagePicker = styled.select`
   cursor: pointer;
 `;
 
+const TextActions = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const WholeTextTranslation = styled(FullWidthInfoMsg)`
+  white-space: pre-wrap;
+  font-weight: normal;
+  margin-top: 1rem;
+`;
 
 export default function TextReader() {
   const api = useContext(APIContext);
+  const { userDetails } = useContext(UserContext);
   const learnableLanguages = useContext(SystemLanguagesContext)?.sortedSystemLanguages?.learnable_languages;
   const speech = useContext(SpeechContext);
   const history = useHistory();
@@ -60,18 +74,26 @@ export default function TextReader() {
   const [shortText, setShortText] = useState(null); // as GET /short_texts/<id> answers
   const [interactiveText, setInteractiveText] = useState(null);
   const [error, setError] = useState("");
+  const [translation, setTranslation] = useState(null);
+  const [isTranslating, setIsTranslating] = useState(false);
 
   // The text on screen; answers for any other (an earlier, slower request,
   // or a text replaced by "Read as") are dropped
   const shownId = useRef(id);
   shownId.current = id;
 
+  // Where InteractiveText sends the word taps, so the whole text and its words
+  // come back in the same language; userDetails may not have loaded yet on a
+  // cold-start share.
+  const nativeLanguage = localStorage.native_language || userDetails?.native_language;
 
   useEffect(() => setTitle(strings.readTextTitle), []);
 
   useEffect(() => {
     setShortText(null);
     setInteractiveText(null);
+    setTranslation(null);
+    setIsTranslating(false);
     setError("");
     if (!id) {
       history.replace("/texts");
@@ -109,6 +131,25 @@ export default function TextReader() {
       { language, insteadOf: shortText.id },
       (added) => history.replace(`/texts/read?id=${added.id}`),
       (errorMessage) => setError(readableApiError(errorMessage, strings.couldNotReadText)),
+    );
+  }
+
+  function translateWholeText() {
+    const forId = shortText.id;
+    setIsTranslating(true);
+    api.translateShortText(
+      forId,
+      nativeLanguage,
+      (result) => {
+        if (forId !== shownId.current) return;
+        setTranslation(result.translation);
+        setIsTranslating(false);
+      },
+      () => {
+        if (forId !== shownId.current) return;
+        setIsTranslating(false);
+        setError(strings.couldNotTranslateText);
+      },
     );
   }
 
@@ -158,7 +199,16 @@ export default function TextReader() {
         />
       </MainText>
 
+      {translation && <WholeTextTranslation>{translation}</WholeTextTranslation>}
       {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
+
+      {!translation && (
+        <TextActions>
+          <StyledButton $secondary disabled={isTranslating || !nativeLanguage} onClick={translateWholeText}>
+            {isTranslating ? strings.translatingText : strings.translateWholeText}
+          </StyledButton>
+        </TextActions>
+      )}
     </PaddedNarrowColumn>
   );
 }

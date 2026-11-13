@@ -32,3 +32,7 @@ Zeeguu_API.prototype.forgetShortText = function (id, onSuccess, onError) {
     .then((response) => (response.ok ? onSuccess?.() : onError?.(`HTTP ${response.status}`)))
     .catch((e) => onError?.(e));
 };
+
+Zeeguu_API.prototype.translateShortText = function (id, toLang, onSuccess, onError) {
+  this._post(`/short_texts/${id}/translate/${toLang}`, "", onSuccess, onError, true);
+};
