@@ -10,6 +10,7 @@
     "@capacitor/core": "^7.4.3",
     "@capacitor/device": "^7.0.5",
     "@capacitor/ios": "^7.4.3",
+    "@capacitor/local-notifications": "^7.0.7",
     "@capacitor/network": "^7.0.4",
     "@capacitor/preferences": "^7.0.3",
     "@capacitor/splash-screen": "^7.0.3",

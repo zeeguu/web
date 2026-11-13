@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import CardPage from "../../_pages_shared/CardPage";
 import Main from "../../_pages_shared/Main.sc";
 import Button from "../../_pages_shared/Button.sc";
@@ -6,11 +7,13 @@ import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
 import FullWidthInfoMsg from "../../../components/FullWidthInfoMsg.sc";
 import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
 import { setTitle } from "../../../assorted/setTitle";
+import { UserContext } from "../../../contexts/UserContext";
 import { SectionHeading, SectionDescription } from "./FeedPreferences.sc";
 import { AikiCard, AikiState, ChangeLink } from "./AikiMode.sc";
 import {
   ZeeguuShield,
   aikiStep,
+  chosenDailyGoal,
   describePicked,
   nativeShieldAvailable,
   pickedCount,
@@ -21,6 +24,9 @@ import {
 // Apple's picker can show its categories with no apps in them, and the pause
 // between the two steps gives iOS time to fill the list.
 export default function AikiMode() {
+  const { userPreferences } = useContext(UserContext);
+  const history = useHistory();
+  const goal = chosenDailyGoal(userPreferences);
   const [status, setStatus] = useState(null);
   const [nothingPicked, setNothingPicked] = useState(false);
   const [error, setError] = useState(null);
@@ -75,7 +81,13 @@ export default function AikiMode() {
     run(() => (status.shieldActive ? ZeeguuShield.removeShield() : ZeeguuShield.applyShield()));
   }
 
-  const step = aikiStep(status);
+  // Aiki frees the apps once the daily goal is met (ADR 046). New learners have
+  // the default 5; learners still on the grandfathered 2 are asked to choose.
+  const step = aikiStep(status, goal !== null);
+
+  function handleChooseGoal() {
+    history.push("/account_settings/daily_goal", { returnAfterChoosing: true });
+  }
 
   return (
     <CardPage layoutVariant={"card-under-menu"} isTransparent reducedPadding>
@@ -83,8 +95,8 @@ export default function AikiMode() {
       <Main>
         <AikiCard>
           <SectionDescription>
-            Aiki mode pauses the apps that distract you. A minute of learning in Zeeguu unlocks them for the next 5 minutes;
-            learn 15 minutes and they're free until tomorrow.
+            Aiki mode pauses the apps that distract you. A minute of learning in Zeeguu unlocks them for the next 5
+            minutes; reach your daily goal{goal ? ` (${goal} minutes)` : ""} and they're free until tomorrow.
           </SectionDescription>
         </AikiCard>
 
@@ -99,6 +111,21 @@ export default function AikiMode() {
 
         {step === "unsupported" && status && (
           <FullWidthInfoMsg>Aiki mode needs the Zeeguu iPhone app on iOS 16 or newer.</FullWidthInfoMsg>
+        )}
+
+        {(step === "goal" || (step === "ready" && goal === null)) && (
+          <AikiCard>
+            <SectionHeading>
+              {step === "goal" ? "First, choose your daily goal" : "Choose your daily goal"}
+            </SectionHeading>
+            <SectionDescription>
+              Once you've studied that long in a day, your paused apps are free until tomorrow. The same goal keeps your
+              streak going.
+            </SectionDescription>
+            <Button className={"small"} onClick={handleChooseGoal} style={{ marginTop: "1rem" }}>
+              Choose a goal
+            </Button>
+          </AikiCard>
         )}
 
         {step === "authorize" && (

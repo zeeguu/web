@@ -11,7 +11,7 @@ import DeviceActivity
 // Rules: a minute of learning unlocks the paused apps for the next 5 minutes,
 // counted from that minute, so a break never runs out while the learner is
 // still learning. Once a break has run out, the next one takes a fresh minute.
-// 15 minutes of learning frees them for the rest of the day.
+// Reaching the learner's daily goal frees them for the rest of the day.
 
 @available(iOS 16.0, *)
 public enum Aiki {
@@ -20,7 +20,19 @@ public enum Aiki {
     static let appGroup = "group.org.zeeguu.app"
     static var defaults: UserDefaults { UserDefaults(suiteName: appGroup) ?? .standard }
     public static let minutesEarnedPerMinute = 5
-    public static let dailyGoalSeconds = 15 * 60
+    // The learner's daily goal (ADR 046), set by the app with setDailyGoal.
+    // 15 minutes until it has: the fixed price before the goal existed, kept
+    // for an app that has not sent a chosen goal yet.
+    static let dailyGoalKey = "dailyGoalMinutes"
+    static let defaultDailyGoalMinutes = 15
+    public static var dailyGoalSeconds: Int {
+        let minutes = defaults.integer(forKey: dailyGoalKey)
+        return (minutes > 0 ? minutes : defaultDailyGoalMinutes) * 60
+    }
+
+    public static func setDailyGoal(minutes: Int) {
+        defaults.set(minutes, forKey: dailyGoalKey)
+    }
 
     static let breakActivity = DeviceActivityName("aiki.break")
     static let dailyActivity = DeviceActivityName("aiki.daily")

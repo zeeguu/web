@@ -29,6 +29,9 @@ import { Capacitor } from "@capacitor/core";
 import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
 import useOpenAikiOnRequest from "./aiki/useOpenAikiOnRequest";
+import { sendDailyGoalToAiki } from "./components/nativeShield";
+import useStudyReminder from "./reminder/useStudyReminder";
+import { clearStudyReminders } from "./reminder/studyReminder";
 import useExtensionCommunication from "./hooks/useExtensionCommunication";
 import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
@@ -96,6 +99,7 @@ function App() {
 
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
+  useStudyReminder(api, userDetails, userPreferences);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
   const moreTranslationsModal = useMoreTranslationsOnboarding(api, userDetails);
 
@@ -226,6 +230,7 @@ function App() {
       setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
       setUserDetails(userDetails);
       setUserPreferences(userPreferences);
+      sendDailyGoalToAiki(userPreferences);
       setServerError(false);
       seedDrillCacheIfEmpty(userDetails.learned_language);
     } catch (e) {
@@ -372,6 +377,8 @@ function App() {
     setUserPreferences({});
 
     removeSharedUserInfo();
+    clearStudyReminders();
+    sendDailyGoalToAiki({}); // back to Aiki's own default, not this learner's goal
     api.setSession(undefined);
     api.resetFunnel();
   }

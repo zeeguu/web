@@ -16,6 +16,7 @@ import NotificationSettings from "./Pages/NotificationSettings";
 import Labs from "./Pages/Labs";
 import Developer from "./Pages/Developer";
 import AikiMode from "./Pages/AikiMode";
+import DailyGoal from "./Pages/DailyGoal";
 
 export default function SettingsRouter({ setUser }) {
   return (
@@ -51,6 +52,8 @@ export default function SettingsRouter({ setUser }) {
       <PrivateRoute path="/account_settings/developer" component={Developer} />
 
       <PrivateRoute path="/account_settings/aiki" component={AikiMode} />
+
+      <PrivateRoute path="/account_settings/daily_goal" component={DailyGoal} />
     </Switch>
   );
 }
