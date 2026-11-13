@@ -131,7 +131,12 @@ export default function ShortTexts() {
               role="button"
               tabIndex={0}
               onClick={() => history.push(`/texts/read?id=${text.id}`)}
-              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && history.push(`/texts/read?id=${text.id}`)}
+              // Only keys aimed at the row itself: Enter on × bubbles here too
+              onKeyDown={(e) =>
+                e.target === e.currentTarget &&
+                (e.key === "Enter" || e.key === " ") &&
+                history.push(`/texts/read?id=${text.id}`)
+              }
             >
               <row.Content>
                 <row.Title>{text.preview}</row.Title>

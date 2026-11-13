@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
+import { SystemLanguagesContext } from "../contexts/SystemLanguagesContext";
 import { SpeechContext } from "../contexts/SpeechContext";
 import InteractiveText from "../reader/InteractiveText";
 import { TranslatableText } from "../reader/TranslatableText";
@@ -38,13 +39,15 @@ const TextHeader = styled.div`
   color: var(--text-secondary);
 `;
 
-const ReadAsButton = styled.button`
-  background: none;
+// The language the text is read in, and the way to correct it: the guess
+// leans on the learned language, so it can be wrong in either direction.
+const TextLanguagePicker = styled.select`
+  background: var(--bg-primary);
   border: none;
-  padding: 0;
+  border-bottom: 1px dashed var(--text-muted);
+  padding: 0.1rem 0;
   font: inherit;
   color: var(--text-secondary);
-  text-decoration: underline;
   cursor: pointer;
 `;
 
@@ -62,6 +65,7 @@ const WholeTextTranslation = styled(FullWidthInfoMsg)`
 export default function TextReader() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
+  const learnableLanguages = useContext(SystemLanguagesContext)?.sortedSystemLanguages?.learnable_languages;
   const speech = useContext(SpeechContext);
   const history = useHistory();
   const id = Number(useQuery().get("id"));
@@ -78,7 +82,6 @@ export default function TextReader() {
   const shownId = useRef(id);
   shownId.current = id;
 
-  const learnedLanguage = userDetails?.learned_language;
   // Where InteractiveText sends the word taps, so the whole text and its words
   // come back in the same language; userDetails may not have loaded yet on a
   // cold-start share.
@@ -121,7 +124,7 @@ export default function TextReader() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // Same text in the learned language; the misread one leaves the list
+  // Same text in another language; the misread one leaves the list
   function readAs(language) {
     api.addShortText(
       shortText.text,
@@ -153,12 +156,22 @@ export default function TextReader() {
   const header = (
     <TextHeader>
       <BackArrow redirectLink="/texts" />
-      {shortText && <span>{languageName(shortText.language)}</span>}
-      {shortText && learnedLanguage && shortText.language !== learnedLanguage && (
-        <ReadAsButton onClick={() => readAs(learnedLanguage)}>
-          {strings.readAsLanguage} {languageName(learnedLanguage)}
-        </ReadAsButton>
-      )}
+      {shortText &&
+        (learnableLanguages ? (
+          <TextLanguagePicker
+            aria-label={strings.languageOfThisText}
+            value={shortText.language}
+            onChange={(e) => readAs(e.target.value)}
+          >
+            {learnableLanguages.map((language) => (
+              <option key={language.code} value={language.code}>
+                {languageName(language.code)}
+              </option>
+            ))}
+          </TextLanguagePicker>
+        ) : (
+          <span>{languageName(shortText.language)}</span>
+        ))}
     </TextHeader>
   );
 
