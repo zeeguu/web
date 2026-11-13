@@ -202,7 +202,10 @@ export default function TextReader() {
       {translation && <WholeTextTranslation>{translation}</WholeTextTranslation>}
       {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
 
-      {!translation && (
+      {/* Only on request, and only for a message-sized text (the API says
+          which): a way out when a few lines won't come together, not a
+          substitute for reading */}
+      {shortText.can_translate_whole && !translation && (
         <TextActions>
           <StyledButton $secondary disabled={isTranslating || !nativeLanguage} onClick={translateWholeText}>
             {isTranslating ? strings.translatingText : strings.translateWholeText}
