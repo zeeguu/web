@@ -16,6 +16,7 @@ export const DEFAULT_REMINDER_TIME = "19:00";
 const DAYS_AHEAD = 7;
 const FIRST_ID = 4600; // ids FIRST_ID .. FIRST_ID + DAYS_AHEAD - 1 are ours
 const SETTING_KEY = "study_reminder";
+const TEST_ID = FIRST_ID + 99;
 
 export function studyReminderAvailable() {
   return Capacitor.isNativePlatform() && Capacitor.isPluginAvailable("LocalNotifications");
@@ -115,4 +116,16 @@ export async function rescheduleStudyReminders(facts = {}) {
   } catch {
     // Best effort: a reminder that does not get scheduled is not worth an error.
   }
+}
+
+// Developer tools: the reminder's real text, once, a minute from now, whatever
+// the setting and today's progress. Resolves to false without permission.
+export async function sendTestReminder(goalMinutes, language) {
+  if (!(await allowReminders())) return false;
+  const { LocalNotifications } = await plugins();
+  const { title, body } = reminderText(goalMinutes, language);
+  await LocalNotifications.schedule({
+    notifications: [{ id: TEST_ID, title, body, schedule: { at: new Date(Date.now() + 60_000) } }],
+  });
+  return true;
 }

@@ -6,9 +6,13 @@ import Button from "../../_pages_shared/Button.sc";
 import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
 import SettingsPageHeader from "../SharedComponents/SettingsPageHeader";
 import { setTitle } from "../../../assorted/setTitle";
+import { UserContext } from "../../../contexts/UserContext";
+import { languageName } from "../../../utils/misc/languageCodeToName";
+import { sendTestReminder, studyReminderAvailable } from "../../../reminder/studyReminder";
 
 export default function Developer() {
   const api = useContext(APIContext);
+  const { userDetails, userPreferences } = useContext(UserContext);
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
@@ -29,6 +33,18 @@ export default function Developer() {
   // standalone /admin/login password form unnecessary.
   function openApiPage(path) {
     window.open(`${api.baseAPIurl}${path}?session=${api.session}`, "_blank", "noopener,noreferrer");
+  }
+
+  // The study reminder's real text, a minute from now: lock the phone to see it.
+  async function handleTestReminder() {
+    setStatus(null);
+    const goal = parseInt(userPreferences?.daily_goal_minutes, 10) || 5;
+    try {
+      const sent = await sendTestReminder(goal, languageName(userDetails?.learned_language));
+      setStatus(sent ? "Test reminder in 1 minute. Lock the phone to see it." : "Notifications are off for Zeeguu.");
+    } catch (e) {
+      setStatus(`Couldn't schedule the test reminder: ${e.message || e}`);
+    }
   }
 
   // Copy the session token to the clipboard — for pasting into the Scriptable
@@ -54,6 +70,7 @@ export default function Developer() {
           <Button onClick={() => openApiPage("/user_stats/dashboard")}>Admin dashboard</Button>
           <Button onClick={() => openApiPage("/crawl_stats/dashboard")}>Crawl stats</Button>
           <Button onClick={handleCopySession}>Copy session (for widget)</Button>
+          {studyReminderAvailable() && <Button onClick={handleTestReminder}>Test study reminder (1 min)</Button>}
         </ButtonContainer>
         {status && <p style={{ marginTop: "1em" }}>{status}</p>}
       </Main>
