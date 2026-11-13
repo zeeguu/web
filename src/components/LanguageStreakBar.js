@@ -9,6 +9,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CircularProgress from "@mui/material/CircularProgress";
 import styled, { keyframes } from "styled-components";
 import { playStreakChime } from "../utils/chimes";
+import { noteStreaks } from "../reminder/useStudyReminder";
 
 const POLL_FAST_MS = 5_000;
 const POLL_SLOW_MS = 60_000;
@@ -160,6 +161,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
     function fetchStreaks() {
       api.getAllLanguageStreaks((data) => {
         if (!data) return;
+        noteStreaks(data);
         const newJustPracticed = {};
         const prev = prevPracticedRef.current;
         data.forEach((lang) => {

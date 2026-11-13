@@ -30,6 +30,7 @@ import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
 import useOpenAikiOnRequest from "./aiki/useOpenAikiOnRequest";
 import { sendDailyGoalToAiki } from "./components/nativeShield";
+import useStudyReminder from "./reminder/useStudyReminder";
 import useExtensionCommunication from "./hooks/useExtensionCommunication";
 import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
@@ -97,6 +98,7 @@ function App() {
 
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
+  useStudyReminder(api, userDetails, userPreferences);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
   const moreTranslationsModal = useMoreTranslationsOnboarding(api, userDetails);
 

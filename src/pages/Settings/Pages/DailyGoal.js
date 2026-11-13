@@ -12,6 +12,8 @@ import { UserContext } from "../../../contexts/UserContext";
 import { SectionDescription } from "./FeedPreferences.sc";
 import { GRANDFATHERED_GOAL, nativeShieldAvailable, sendDailyGoalToAiki } from "../../../components/nativeShield";
 import { languageName } from "../../../utils/misc/languageCodeToName";
+import { studyReminderAvailable } from "../../../reminder/studyReminder";
+import StudyReminderSetting from "./StudyReminderSetting";
 
 // The learner's daily goal (ADR 046): the minutes a day that count the day for
 // the streak, and on the phone the minutes after which Aiki leaves the paused
@@ -103,6 +105,8 @@ export default function DailyGoal() {
           optionLabel={(option) => option.label}
           optionDescription={(option) => option.description}
         />
+
+        {studyReminderAvailable() && <StudyReminderSetting goalMinutes={parseInt(current, 10)} />}
 
         {error && <FullWidthErrorMsg>Couldn't save your goal. Please try again.</FullWidthErrorMsg>}
       </Main>
