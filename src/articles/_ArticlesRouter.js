@@ -16,7 +16,7 @@ import MySearches from "./MySearches";
 import EvergreenArticles from "./EvergreenArticles";
 import Search from "./Search";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import NewspaperRoundedIcon from "@mui/icons-material/NewspaperRounded";
 import ParkRoundedIcon from "@mui/icons-material/ParkRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
@@ -82,9 +82,11 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const iconStyle = { display: "inline-flex", alignItems: "center", padding: "0.4em 0.25em", verticalAlign: "middle" };
   const iconProps = { style: { fontSize: "2.1rem", verticalAlign: "middle" } };
 
-  const homeIcon = (
-    <s.IconSpan style={{ verticalAlign: "middle" }}>
-      <HomeRoundedIcon {...iconProps} />
+  // The feed at /articles is the news: with the Evergreen tab next to it,
+  // it is one of two kinds of reading, not "home".
+  const newsIcon = (
+    <s.IconSpan style={{ verticalAlign: "middle" }} title={strings.news}>
+      <NewspaperRoundedIcon {...iconProps} />
     </s.IconSpan>
   );
 
@@ -124,7 +126,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   );
 
   const tabs = [
-    { text: homeIcon, link: "/articles" },
+    { text: newsIcon, link: "/articles" },
     { text: evergreenIcon, link: "/articles/evergreen" },
     { text: bookmarkIcon, link: "/articles/bookmarked" },
     isStudent && { text: classroomIcon, link: "/articles/classroom" },
