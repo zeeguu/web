@@ -1,13 +1,32 @@
-import React from "react";
-import { Switch } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Switch, useLocation } from "react-router-dom";
+import LocalStorage from "../assorted/LocalStorage";
 import { PrivateRoute } from "../PrivateRoute";
 import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
 import Translate from "./Translate";
 import TranslateHistory from "./TranslateHistory";
+import useTabbedRoute from "../hooks/useTabbedRoute";
+
+
+const TRANSLATE_TAB_PATHS = ["/translate", "/translate/history"];
 
 export default function TranslateRouter() {
+  const location = useLocation();
+  // Swipe left/right between the tabs, as in Read and Listen. Tuned like Read:
+  // the history and the texts are vertical lists.
+  const swipeRef = useTabbedRoute(TRANSLATE_TAB_PATHS, {
+    swipeOptions: { threshold: 90, deadzone: 12, lockRatio: 1.6, qualifyRatio: 2 },
+  });
+
+  // Remember the tab, so the Translate button opens it again (as Read does).
+  useEffect(() => {
+    if (TRANSLATE_TAB_PATHS.includes(location.pathname)) {
+      LocalStorage.setLastVisitedTranslatePath(location.pathname);
+    }
+  }, [location.pathname]);
+
   const tabsAndLinks = [
     {
       text: strings.translate,
@@ -24,8 +43,10 @@ export default function TranslateRouter() {
       <PaddedNarrowColumn>
         <TopTabs tabsAndLinks={tabsAndLinks} />
 
-        <PrivateRoute exact path="/translate" component={Translate} />
-        <PrivateRoute exact path="/translate/history" component={TranslateHistory} />
+        <div ref={swipeRef}>
+          <PrivateRoute exact path="/translate" component={Translate} />
+          <PrivateRoute exact path="/translate/history" component={TranslateHistory} />
+        </div>
       </PaddedNarrowColumn>
     </Switch>
   );

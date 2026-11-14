@@ -35,6 +35,7 @@ const LocalStorage = {
     LastVisitedPage: "last_visited_page",
     LastVisitedTeacherPage: "last_visited_teacher_page",
     LastVisitedReadPath: "last_visited_read_path",
+    LastVisitedTranslatePath: "last_visited_translate_path",
     SelectedFeedTopic: "selected_feed_topic",
     DailyFeedbackLastShown: "daily_feedback_last_shown",
     InviteCode: "invite_code",
@@ -357,6 +358,16 @@ const LocalStorage = {
 
   setLastVisitedReadPath: function (path) {
     localStorage[this.Keys.LastVisitedReadPath] = path;
+  },
+
+  // Only a tab that exists: a tab that was removed would open a blank page.
+  getLastVisitedTranslatePath: function () {
+    const path = localStorage[this.Keys.LastVisitedTranslatePath];
+    return ["/translate", "/translate/history"].includes(path) ? path : "/translate";
+  },
+
+  setLastVisitedTranslatePath: function (path) {
+    localStorage[this.Keys.LastVisitedTranslatePath] = path;
   },
 
   // Home-feed topic pill the user last selected ({id, title}), so the choice

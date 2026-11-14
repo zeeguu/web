@@ -27,7 +27,7 @@ export default function usePendingShare(loggedIn) {
         if (destination?.path) history.push(destination.path);
         if (destination?.text) {
           deliverSharedText(destination.text);
-          if (window.location.pathname !== "/texts") history.push("/texts");
+          if (window.location.pathname !== "/articles/shared") history.push("/articles/shared");
         }
       } catch (e) {
         console.error("Could not take the pending share:", e);
