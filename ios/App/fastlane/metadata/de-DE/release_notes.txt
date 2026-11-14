@@ -1,8 +1,17 @@
-Eine Korrektur für die Wortzuordnungsübung, und du kannst deinen Artikel beim Sprachwechsel mitnehmen.
+Sag deinen Audiolektionen, wie sie waren, lies deine eigenen Texte und bekomm eine tägliche Erinnerung zum Lernen.
 
-Üben
-- Behoben: Die Wortzuordnungsübung konnte am Ende hängen bleiben, ohne dass du weitermachen konntest. Die Schaltfläche Weiter ist zurück, zusammen mit den anderen Optionen unter der Übung.
-- Deine Eingabe in Lückentext-Schreibübungen sieht jetzt so aus wie die angezeigte Antwort.
+Audiolektionen
+- Wenn du eine Lektion beendest, gibt es jetzt eine kleine Feier.
+- Nach einer Anfängerlektion kannst du sagen, wie sie war: Tempo, Wiederholungen und Länge. Zeeguu sagt dir, wie sich deine nächste Lektion ändert.
+- Wähle aus einer kurzen Liste von Alltagssituationen, wo deine Lektionen spielen, mit der Anzahl deiner bisherigen Lektionen in jeder, oder gib deine eigene ein. Nach einer Lektion schlägt Zeeguu auch vor, wie es weitergehen kann.
+- Die Schaltfläche unter dem Player zeigt jetzt, worum es in deinen Lektionen geht.
 
 Lesen
-- Wenn du beim Lesen die Sprache wechselst, kannst du jetzt weiterlesen: Zeeguu kann den Artikel in deine neue Sprache übersetzen, passend zu deinem Niveau dort. Oder geh zu deiner Startseite, und der Artikel wird für später gespeichert.
+- Teile einen kurzen Text aus einer anderen App mit Zeeguu, etwa eine Nachricht, und tippe auf ein Wort, um es zu übersetzen. Deine Texte findest du im Inbox, neben dem, was Freunde teilen.
+- Neuer Tab Evergreen neben Nachrichten: Artikel, die immer lesenswert sind, gefiltert nach deinen Themen und Stichwörtern.
+- Ausdrücke, deren Wörter getrennt stehen, sind jetzt nummeriert, damit du siehst, welche Wörter zusammengehören. Ihr Text springt beim Übersetzen nicht mehr, und du kannst sie auftrennen.
+
+Üben
+- In der Übung mit drei Audiooptionen sagt dir eine falsche Wahl jetzt, welches Wort du gewählt hast und was es bedeutet.
+- Eine tägliche Lernerinnerung, auf der Seite Benachrichtigungen.
+- Aiki zeigt, wie viele Sekunden Lernen deine pausierten Apps wieder freischalten.

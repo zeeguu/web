@@ -1,8 +1,17 @@
-En rettelse til øvelsen, hvor du matcher ord, og tag din artikel med, når du skifter sprog.
+Fortæl dine lydlektioner, hvordan de gik, læs dine egne tekster, og få en daglig påmindelse om at øve dig.
 
-Øvelser
-- Rettet: øvelsen, hvor du matcher ord, kunne gå i stå til sidst, uden mulighed for at komme videre. Knappen Næste er tilbage, sammen med de andre valg under øvelsen.
-- Det, du skriver i øvelser, hvor du skal udfylde et ord, ligner nu det viste svar.
+Lydlektioner
+- Når du bliver færdig med en lektion, bliver det fejret.
+- Efter en begynderlektion kan du sige, hvordan den var: tempo, gentagelser og længde. Zeeguu fortæller dig, hvordan din næste lektion bliver anderledes.
+- Vælg, hvor dine lektioner foregår, fra en kort liste over hverdagssituationer, med hvor mange lektioner du har haft i hver, eller skriv din egen. Efter en lektion foreslår Zeeguu også, hvor du kan fortsætte.
+- Knappen under afspilleren viser nu, hvad dine lektioner handler om.
 
 Læsning
-- Når du skifter sprog under læsning, kan du nu læse videre: Zeeguu kan oversætte artiklen til dit nye sprog, tilpasset dit niveau der. Eller gå til din forside, så gemmes artiklen til senere.
+- Del en kort tekst fra en anden app til Zeeguu, fx en besked, og tryk på et ord for at oversætte det. Dine tekster ligger i Indbakke, sammen med det, dine venner deler.
+- Ny fane Evergreen ved siden af Nyheder: artikler, der altid er værd at læse, filtreret efter dine emner og nøgleord.
+- Udtryk, hvis ord står adskilt, er nu nummereret, så du kan se, hvilke ord der hører sammen. Teksten hopper ikke længere, når den oversættes, og du kan opdele dem.
+
+Øvelser
+- I øvelsen med tre lydvalg fortæller et forkert valg dig nu, hvilket ord du valgte, og hvad det betyder.
+- En daglig påmindelse om at øve dig, på siden Notifikationer.
+- Aiki viser, hvor mange sekunders øvelse der låser dine pausede apps op.
