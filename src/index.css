@@ -333,3 +333,10 @@ code {
 .Toastify__toast-container.Toastify__toast-container--top-center {
   top: calc(env(safe-area-inset-top) + var(--top-bar-height, 0px) + 0.5rem);
 }
+
+/* Undo toasts (UndoToast.js) stay at the bottom, within thumb reach, but
+   above the bottom nav, which publishes its height including the home
+   indicator's safe area. Without a nav they sit just above the safe area. */
+.Toastify__toast-container.Toastify__toast-container--bottom-center {
+  bottom: calc(var(--bottom-nav-height, var(--safe-area-bottom, env(safe-area-inset-bottom))) + 0.5rem);
+}

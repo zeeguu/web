@@ -37,12 +37,30 @@ export default function BottomNav() {
     };
   }, [path]);
 
+  // Publish our height (safe-area padding included) so the undo toasts can
+  // sit just above us; removed while hidden so they drop to the screen edge.
+  const navRef = useRef(null);
+  useEffect(() => {
+    const element = navRef.current;
+    if (!element) return;
+    const publishHeight = () =>
+      document.documentElement.style.setProperty("--bottom-nav-height", `${element.offsetHeight}px`);
+    publishHeight();
+    const observer = new ResizeObserver(publishHeight);
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+      document.documentElement.style.removeProperty("--bottom-nav-height");
+    };
+  }, [renderBottomNav]);
+
   // The actions -- Read, Exercises, Listen, Translate -- and then More, which
   // holds the places to look things up: My Words, My Activity and the rest.
   return (
     <>
       {renderBottomNav && (
         <s.BottomNav
+          ref={navRef}
           aria-label="Bottom Navigation"
           $bottomNavTransition={bottomNavTransition}
         >
