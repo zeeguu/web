@@ -6,6 +6,7 @@ import useQuery from "../hooks/useQuery";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ArticleLanguageModal from "./ArticleLanguageModal";
 import ErrorDialog from "../components/ErrorDialog";
+import { readableApiError } from "../utils/misc/readableApiError";
 import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/userCefrLevel";
 
 export default function SharedArticleHandler() {
@@ -86,16 +87,11 @@ export default function SharedArticleHandler() {
 
   const onConversionError = (errorMessage) => {
     setStatus("error");
-    // Surface the server's message when it's human-readable (the API sends
-    // actionable text like "…too long… try a single chapter" as JSON
-    // `message`). Fall back to a friendly generic for bare "HTTP 4xx" or
-    // network strings, which aren't useful to a reader.
-    const isBareHttpCode =
-      typeof errorMessage === "string" && /^HTTP \d+$/.test(errorMessage.trim());
     setErrorMessage(
-      errorMessage && !isBareHttpCode
-        ? errorMessage
-        : "Could not process this article. It may be too long, or the source may be blocking us — try a shorter piece or a single chapter.",
+      readableApiError(
+        errorMessage,
+        "Could not process this article. It may be too long, or the source may be blocking us — try a shorter piece or a single chapter.",
+      ),
     );
   };
 

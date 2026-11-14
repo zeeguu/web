@@ -44,22 +44,23 @@ class ShareViewController: UIViewController {
                     self?.close()
                     return
                 }
-                self?.openInZeeguu(url: url)
+                self?.openInZeeguu(host: "shared-article", name: "url", value: url.absoluteString)
             }
             return true
         }
 
-        // Case 2: the shared item is plain text that might contain a URL
-        // (e.g. from Chrome or some news apps that share text instead of URLs)
+        // Case 2: the shared item is plain text: a WhatsApp message, or "title
+        // + URL" from some news apps. The web app decides which it is
+        // (classifySharedText in src/texts/sharedText.js).
         if provider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) {
             provider.loadItem(forTypeIdentifier: UTType.plainText.identifier, options: nil) {
                 [weak self] (item, error) in
-                guard let text = item as? String,
-                      let url = self?.findURL(in: text) else {
+                guard let text = (item as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      !text.isEmpty else {
                     self?.close()
                     return
                 }
-                self?.openInZeeguu(url: url)
+                self?.openInZeeguu(host: "shared-text", name: "text", value: text)
             }
             return true
         }
@@ -67,20 +68,17 @@ class ShareViewController: UIViewController {
         return false
     }
 
-    /// Finds a URL inside a text string (e.g. "Check this out: https://example.com")
-    private func findURL(in text: String) -> URL? {
-        let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-        let range = NSRange(text.startIndex..., in: text)
-        if let match = detector?.firstMatch(in: text, options: [], range: range) {
-            return match.url
-        }
-        return URL(string: text)
-    }
+    // MARK: - Open Zeeguu
 
-    // MARK: - Open Zeeguu with the URL
-
-    private func openInZeeguu(url: URL) {
-        guard let zeeguuURL = buildZeeguuURL(for: url) else {
+    /// Opens org.zeeguu.app://<host>?<name>=<value>. AppDelegate stores it for
+    /// the web app to take when it is ready. URLComponents encodes the value,
+    /// "&" and "=" included, so a link's own query survives the trip.
+    private func openInZeeguu(host: String, name: String, value: String) {
+        var components = URLComponents()
+        components.scheme = appURLScheme
+        components.host = host
+        components.queryItems = [URLQueryItem(name: name, value: value)]
+        guard let zeeguuURL = components.url else {
             close()
             return
         }
@@ -88,14 +86,6 @@ class ShareViewController: UIViewController {
             self.askIOSToOpen(zeeguuURL)
             self.close()
         }
-    }
-
-    /// Builds org.zeeguu.app://shared-article?url=<encoded article URL>
-    private func buildZeeguuURL(for articleURL: URL) -> URL? {
-        guard let encoded = articleURL.absoluteString.addingPercentEncoding(
-            withAllowedCharacters: .urlQueryAllowed
-        ) else { return nil }
-        return URL(string: "\(appURLScheme)://shared-article?url=\(encoded)")
     }
 
     /// Opens a URL via UIApplication.shared.open() using the Objective-C runtime.
