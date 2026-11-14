@@ -228,9 +228,14 @@ Zeeguu_API.prototype.searchMore = function (
 // the next day's list depends on it.
 // Sends the language on screen, as getUserArticles does, so a language switch
 // doesn't race the save of the new language on the server.
-Zeeguu_API.prototype.getEvergreenArticles = function (callback, onError) {
+// filter: { topic: <title> } or { keyword: <text> } narrows it to one pill.
+Zeeguu_API.prototype.getEvergreenArticles = function (callback, onError, filter = {}) {
+  const params = [];
   const learnedLanguage = LocalStorage.getLearnedLanguage();
-  const query = learnedLanguage ? "?language=" + learnedLanguage : "";
+  if (learnedLanguage) params.push("language=" + learnedLanguage);
+  if (filter.topic) params.push("topic=" + encodeURIComponent(filter.topic));
+  if (filter.keyword) params.push("keyword=" + encodeURIComponent(filter.keyword));
+  const query = params.length ? "?" + params.join("&") : "";
   this._getJSON("user_articles/evergreen" + query, callback, { onError });
 };
 
