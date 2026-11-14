@@ -1,5 +1,6 @@
-import React from "react";
-import { Switch } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Switch, useLocation } from "react-router-dom";
+import LocalStorage from "../assorted/LocalStorage";
 import { PrivateRoute } from "../PrivateRoute";
 import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
 import TopTabs from "../components/TopTabs";
@@ -12,7 +13,18 @@ function ShortTextsTab() {
   return <ShortTexts inTab />;
 }
 
+const TRANSLATE_TAB_PATHS = ["/translate", "/translate/history", "/translate/texts"];
+
 export default function TranslateRouter() {
+  const location = useLocation();
+
+  // Remember the tab, so the Translate button opens it again (as Read does).
+  useEffect(() => {
+    if (TRANSLATE_TAB_PATHS.includes(location.pathname)) {
+      LocalStorage.setLastVisitedTranslatePath(location.pathname);
+    }
+  }, [location.pathname]);
+
   const tabsAndLinks = [
     {
       text: strings.translate,

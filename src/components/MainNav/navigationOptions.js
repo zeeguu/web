@@ -5,10 +5,12 @@ import LocalStorage from "../../assorted/LocalStorage";
 export function isNavOptionActive(linkTo, currentPath) {
   // Special case: the Read (articles) button should be active for any
   // /articles/* sub-tab and /swiper. linkTo varies (last-visited tab) so
-  // match on the /articles prefix instead of equality.
-  return linkTo?.startsWith("/articles")
-    ? currentPath?.startsWith("/articles") || currentPath?.startsWith("/swiper")
-    : currentPath?.startsWith(linkTo);
+  // match on the /articles prefix instead of equality. Translate likewise.
+  if (linkTo?.startsWith("/articles")) {
+    return currentPath?.startsWith("/articles") || currentPath?.startsWith("/swiper");
+  }
+  if (linkTo?.startsWith("/translate")) return currentPath?.startsWith("/translate");
+  return currentPath?.startsWith(linkTo);
 }
 
 export default class NavigationOptions {
@@ -39,11 +41,14 @@ export default class NavigationOptions {
     text: strings.dailyAudio,
   });
 
-  static translate = Object.freeze({
-    linkTo: "/translate",
-    icon: <NavIcon name="translate" />,
-    text: strings.translate,
-  });
+  // Opens the Translate tab last visited (Your texts stays Your texts).
+  static get translate() {
+    return Object.freeze({
+      linkTo: LocalStorage.getLastVisitedTranslatePath(),
+      icon: <NavIcon name="translate" />,
+      text: strings.translate,
+    });
+  }
 
   static words = Object.freeze({
     linkTo: "/words",
