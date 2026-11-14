@@ -21,7 +21,7 @@ import ParkRoundedIcon from "@mui/icons-material/ParkRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import MoveToInboxRoundedIcon from "@mui/icons-material/MoveToInboxRounded";
-import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
+import FormatQuoteRoundedIcon from "@mui/icons-material/FormatQuoteRounded";
 import ShortTexts from "../texts/ShortTexts";
 import NotificationIcon from "../components/NotificationIcon";
 import { SharedArticlesContext } from "../contexts/SharedArticlesContext";
@@ -134,7 +134,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
 
   const textsIcon = (
     <s.IconSpan style={{ verticalAlign: "middle" }} title={strings.yourTextsTab}>
-      <ChatRoundedIcon {...iconProps} />
+      <FormatQuoteRoundedIcon {...iconProps} />
     </s.IconSpan>
   );
 

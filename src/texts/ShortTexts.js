@@ -5,10 +5,8 @@ import styled from "styled-components";
 import { APIContext } from "../contexts/APIContext";
 import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
 import { PageTitle } from "../components/PageTitle";
-import ClearableInput from "../components/ClearableInput";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
-import { StyledButton } from "../components/allButtons.sc";
 import { MetaStrip, MetaItem } from "../components/MetaStrip.sc";
 import * as row from "../articles/SavedArticleRow.sc";
 import { Row } from "../articles/SharedArticleRow.sc";
@@ -17,21 +15,16 @@ import { languageName } from "../utils/misc/languageCodeToName";
 import { timeAgo } from "../utils/misc/readableTime";
 import { readableApiError } from "../utils/misc/readableApiError";
 import strings from "../i18n/definitions";
-import { classifySharedText, takePendingSharedText, onSharedText, MAX_SHARED_TEXT_CHARS } from "./sharedText";
+import { classifySharedText, takePendingSharedText, onSharedText } from "./sharedText";
 
-// /articles/texts (the "Your texts" tab in Read; /texts redirects there):
-// bring a short text to read (paste it, or share it here from another
-// app, e.g. a WhatsApp message), and the texts brought before. Long texts with
-// a title are articles, and open in the article reader instead.
+// /articles/texts (the "Your texts" tab in Read; /texts redirects there): the
+// short texts the learner shared with Zeeguu from other apps (e.g. a WhatsApp
+// message). A share opens here and goes straight to the reader. Long texts
+// with a title are articles, and open in the article reader instead.
 
 const ShareHint = styled.p`
   color: var(--text-secondary);
   text-align: center;
-`;
-
-const TextActions = styled.div`
-  display: flex;
-  justify-content: center;
 `;
 
 const TextList = styled.div`
@@ -43,7 +36,6 @@ export default function ShortTexts({ inTab = false }) {
   const history = useHistory();
   const location = useLocation();
 
-  const [draft, setDraft] = useState("");
   const [texts, setTexts] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [error, setError] = useState("");
@@ -104,27 +96,13 @@ export default function ShortTexts({ inTab = false }) {
 
   if (isAdding) return <LoadingAnimation />;
 
-  // As a Read tab the tab row already names the page, and gives the column.
+  // As a Read tab the tab row already names the page and says what it holds.
   const Wrapper = inTab ? Fragment : PaddedNarrowColumn;
   return (
     <Wrapper>
       {!inTab && <PageTitle>{strings.readTextTitle}</PageTitle>}
-      <ShareHint>{strings.readTextHint}</ShareHint>
-      <ClearableInput
-        value={draft}
-        rows={4}
-        maxLength={MAX_SHARED_TEXT_CHARS}
-        placeholder={strings.pasteTextPlaceholder}
-        onChange={(e) => setDraft(e.target.value)}
-        onClear={() => setDraft("")}
-        style={{ textAlign: "left" }}
-      />
+      {!inTab && <ShareHint>{strings.yourTextsIntro}</ShareHint>}
       {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
-      <TextActions>
-        <StyledButton $primary disabled={!draft.trim()} onClick={() => bring(draft)}>
-          {strings.readText}
-        </StyledButton>
-      </TextActions>
 
       {texts && texts.length > 0 && (
         <TextList>
