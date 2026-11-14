@@ -8,6 +8,7 @@ import { PrivateRoute } from "../PrivateRoute";
 import { Redirect } from "react-router-dom";
 import ClassroomArticles from "./ClassroomArticles";
 import TopTabs from "../components/TopTabs";
+import { PageTitle } from "../components/PageTitle";
 import strings from "../i18n/definitions";
 
 import OwnArticles from "./OwnArticles";
@@ -126,18 +127,29 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   );
 
   const tabs = [
-    { text: newsIcon, link: "/articles" },
-    { text: evergreenIcon, link: "/articles/evergreen" },
-    { text: bookmarkIcon, link: "/articles/bookmarked" },
-    isStudent && { text: classroomIcon, link: "/articles/classroom" },
+    { text: newsIcon, link: "/articles", name: strings.news },
+    { text: evergreenIcon, link: "/articles/evergreen", name: strings.evergreenTitle },
+    { text: bookmarkIcon, link: "/articles/bookmarked", name: strings.saved },
+    isStudent && { text: classroomIcon, link: "/articles/classroom", name: strings.classroomTab },
     {
       text: searchIcon,
       link: "/articles/mySearches",
+      name: strings.search,
       // Stay active on /search too — results are conceptually the search tab.
       isActive: (_, loc) => loc.pathname === "/articles/mySearches" || loc.pathname === "/search",
     },
-    { text: inboxIcon, link: "/articles/shared" },
+    { text: inboxIcon, link: "/articles/shared", name: strings.inboxTab },
   ].filter(Boolean);
+
+  // The tabs are icons only, and the newer ones (Evergreen's tree) don't
+  // explain themselves: every tab says its name above its content.
+  const activeTab = tabs.find((t) =>
+    t.isActive
+      ? t.isActive(null, location)
+      : t.link === "/articles"
+        ? location.pathname === "/articles"
+        : location.pathname.startsWith(t.link),
+  );
 
   // Swipe left/right between the read tabs. Tuned stiffer than the default
   // (and than daily-audio) because the feed is a long vertical scroll: a
@@ -178,6 +190,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
       {/* Rendering top menu first, then routing to corresponding page */}
       <columnS.NarrowColumn>
         <TopTabs title={strings.articles} tabsAndLinks={tabs} hasBackground={false} isCompact={true} />
+        {activeTab && <PageTitle>{activeTab.name}</PageTitle>}
 
         <s.ContentContainer ref={swipeRef}>
           <PrivateRoute

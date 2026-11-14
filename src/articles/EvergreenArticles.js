@@ -10,7 +10,6 @@ import EmptyState from "../components/EmptyState";
 import Tag from "../pages/_pages_shared/Tag.sc";
 import { FilterRow } from "../components/FilterRow.sc";
 import { setTitle } from "../assorted/setTitle";
-import { PageTitle } from "../components/PageTitle";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
@@ -96,14 +95,8 @@ export default function EvergreenArticles() {
     </s.KeywordSection>
   );
 
-  // The tab is only a tree icon, which nobody reads as "evergreen": the page
-  // says its name before it explains itself.
-  const intro = (
-    <>
-      <PageTitle>{strings.evergreenTitle}</PageTitle>
-      <s.Intro>{strings.evergreenIntro}</s.Intro>
-    </>
-  );
+  // The name is above, from the router (every Read tab says its name).
+  const intro = <s.Intro>{strings.evergreenIntro}</s.Intro>;
 
   if (failed) {
     return (
