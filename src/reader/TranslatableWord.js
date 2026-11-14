@@ -23,6 +23,7 @@ export default function TranslatableWord({
   loadingMWEGroupId,
   setLoadingMWEGroupId,
   mweGroupColorMap,
+  splitMweMarkers,
   mweGroupsWithTranslations,
   // Exercise solution highlighting props
   solutionWordIds,
@@ -389,6 +390,20 @@ export default function TranslatableWord({
     return word.mweExpression ? "mwe-color-0" : "";
   }
 
+  // The number of a split expression, shown after the last word of each of its
+  // parts: blev¹ "offentligt ydmyget¹. Colors alone didn't say the parts belong
+  // together. Null for every other word.
+  function splitMweMarker() {
+    const groupId = word.token.mwe_group_id;
+    if (!groupId || !word.token.mwe_is_separated) return null;
+    const marker = splitMweMarkers?.[groupId];
+    if (!marker) return null;
+    let next = word.next;
+    while (next && next.skipRender) next = next.next;
+    if (next && next.token.mwe_group_id === groupId) return null;
+    return marker;
+  }
+
   // Get CSS classes for special tokens (punctuation, numbers, symbols)
   function getSpecialTokenClasses(word) {
     const classes = [];
@@ -495,7 +510,13 @@ export default function TranslatableWord({
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {word.word + (word.token.has_space === true && !word.word.endsWith("-") && !word.next?.word?.startsWith("-") ? " " : "")}
+          {word.word}
+          {splitMweMarker() && (
+            <sup className="splitMweMarker" aria-hidden="true">
+              {splitMweMarker()}
+            </sup>
+          )}
+          {word.token.has_space === true && !word.word.endsWith("-") && !word.next?.word?.startsWith("-") ? " " : ""}
         </z-tag>
       </>
     );
@@ -571,6 +592,11 @@ export default function TranslatableWord({
                   ))
                 : word.word}
             </span>
+          )}
+          {!isWordTranslating && splitMweMarker() && (
+            <sup className="splitMweMarker" aria-hidden="true">
+              {splitMweMarker()}
+            </sup>
           )}
           {/* The space between words sits outside the underlined span:
               z-tag keeps it at full width (break-spaces), so inside the span

@@ -126,6 +126,19 @@ const TranslatableText = styled.div`
     --mwe-tran-bg: rgb(250, 220, 235);
   }
 
+  /* --- Split MWE marker: blev¹ "offentligt ydmyget¹ ---
+   * Same number after each part of a split expression, in its color. */
+  z-tag sup.splitMweMarker {
+    color: var(--mwe-color);
+    font-size: 0.6em;
+    font-weight: 700;
+    line-height: 0;
+    margin-left: 0.1em;
+    user-select: none;
+    /* An inline-block doesn't inherit the word's underline */
+    display: inline-block;
+  }
+
   /* --- MWE Loading: All partner words pulse together --- */
   z-tag.mwe-loading {
     animation: blink 0.75s linear infinite alternate;
