@@ -29,9 +29,10 @@ export function aikiChoices({ exercisesDue, lesson, unfinishedArticles }) {
 
 function lessonChoice(lesson) {
   if (!lesson?.lesson_id) return { title: "Today's lesson", meta: "Make today's lesson" };
-  const minutes = Math.max(1, Math.round((lesson.duration_seconds || 0) / 60));
+  // No duration here: this page asks for one minute, and a lesson can be
+  // stopped after one like anything else. Say where today's lesson stands.
   return {
     title: lesson.title || "Today's lesson",
-    meta: lesson.is_completed ? `Listen again · ${minutes} min` : `${minutes} min`,
+    meta: lesson.is_completed ? "Done today · listen again" : "Due today",
   };
 }
