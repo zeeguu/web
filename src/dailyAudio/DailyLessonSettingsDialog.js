@@ -7,6 +7,7 @@ import { SubtleTextButton } from "./LessonView.sc";
 import { zeeguuOrange } from "../components/colors";
 import { UserContext } from "../contexts/UserContext";
 import { isA0Learner } from "../utils/misc/userCefrLevel";
+import A0SituationPicker from "./A0SituationPicker";
 
 // At A0 the learner drills their own role in the dialogue. Who they speak as is
 // theirs to say, never guessed from their name; "either" lets the lessons take
@@ -162,15 +163,23 @@ export default function DailyLessonSettingsDialog({
         {a0 ? "Daily situation" : "Daily lesson type"}
       </h2>
 
-      <SuggestionSelector
-        suggestionType={pillType}
-        setSuggestionType={setPillType}
-        suggestion={currentSubject}
-        setSuggestion={setCurrentSubject}
-        autoDisabled={autoDisabled}
-        types={types}
-        placeholder={a0 ? "A situation to get through — e.g. ordering a coffee, buying a train ticket" : undefined}
-      />
+      {a0 ? (
+        <A0SituationPicker
+          api={api}
+          language={userDetails?.learned_language}
+          subject={currentSubject}
+          setSubject={setCurrentSubject}
+        />
+      ) : (
+        <SuggestionSelector
+          suggestionType={pillType}
+          setSuggestionType={setPillType}
+          suggestion={currentSubject}
+          setSuggestion={setCurrentSubject}
+          autoDisabled={autoDisabled}
+          types={types}
+        />
+      )}
 
       {a0 && character && (
         <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>

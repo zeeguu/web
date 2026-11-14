@@ -258,6 +258,13 @@ Zeeguu_API.prototype.sendLessonFeedback = function (lessonId, aspect, value, cal
     });
 };
 
+// How many lessons the learner has had in each situation, in one language:
+// [{raw_suggestion, canonical_suggestion, lessons}].
+Zeeguu_API.prototype.getAudioLessonSituations = function (language, callback, onError) {
+  const params = language ? `?language=${encodeURIComponent(language)}` : "";
+  this._getJSON(`audio_lesson_situations${params}`, callback, { onError });
+};
+
 Zeeguu_API.prototype.checkDailyLessonFeasibility = function (callback, onError) {
   this._getJSON("check_daily_lesson_feasibility", callback, { onError });
 };
