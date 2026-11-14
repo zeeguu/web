@@ -15,6 +15,7 @@ import { APIContext } from "../contexts/APIContext";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import { LeftGroup, MiddleGroup, RightGroup, ProgressBar } from "./TopToolbar.sc";
 import SaveAndEditButton from "../components/Buttons/SaveAndEditButton";
+import AikiCountdown from "../aiki/AikiCountdown";
 
 export default function TopToolbar({
   user,
@@ -70,6 +71,7 @@ export default function TopToolbar({
             {timer}
           </LeftGroup>
           <MiddleGroup>
+            <AikiCountdown />
             {user.is_teacher && (
               <>
                 {teacherArticleID && !isMobile && (

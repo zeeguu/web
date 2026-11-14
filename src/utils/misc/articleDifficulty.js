@@ -1,4 +1,4 @@
-import { CEFR_ORDINAL } from "./cefrScale";
+import { combine } from "./cefr";
 
 /**
  * The single difficulty a teacher sees for an article.
@@ -34,46 +34,6 @@ export function effectiveCefrLevel(assessments, adaptedLevel = null) {
 function synthesizeCefrLevel({ llm, ml, teacher }) {
   if (teacher?.level) return teacher.level;
 
-  const llmLevel = llm?.level || null;
-  const mlLevel = ml?.level || null;
-  if (!llmLevel || !mlLevel) return llmLevel || mlLevel || null;
-  if (llmLevel === mlLevel) return llmLevel;
-
-  const [lower, higher] = [llmLevel, mlLevel].sort(
-    (a, b) => CEFR_ORDINAL[a] - CEFR_ORDINAL[b],
-  );
-  const distance = Math.abs(CEFR_ORDINAL[llmLevel] - CEFR_ORDINAL[mlLevel]);
-
-  return distance === 1 ? `${lower}/${higher}` : higher;
+  return combine(llm?.level, ml?.level);
 }
 
-/**
- * Extract the highest CEFR level from a display string.
- *
- * Examples:
- * - "B1/B2" -> "B2"
- * - "A1/B2 ⚠️" -> "B2"
- * - "C1" -> "C1"
- *
- * @param {string} displayLevel - The CEFR level display string
- * @returns {string} The highest CEFR level
- */
-export function getHighestCefrLevel(displayLevel) {
-  if (!displayLevel) return 'B1';
-
-  // Convert to string in case it's not
-  const levelStr = String(displayLevel);
-
-  // Remove warning emoji if present
-  const cleanLevel = levelStr.replace(/⚠️/g, '').trim();
-
-  // If it contains a slash, split and take the highest (last one after sorting)
-  if (cleanLevel.includes('/')) {
-    const levels = cleanLevel.split('/').map(l => l.trim());
-    const cefrOrder = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-    levels.sort((a, b) => cefrOrder.indexOf(a) - cefrOrder.indexOf(b));
-    return levels[levels.length - 1]; // Return highest (last after sorting)
-  }
-
-  return cleanLevel;
-}

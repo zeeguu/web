@@ -14,7 +14,8 @@
 const puppeteer = require("puppeteer");
 const path = require("path");
 const fs = require("fs");
-const { getResponse, FIXTURE_IMAGE_HOST } = require("./fixtures/mock-data");
+const { CAPTURE, FIXTURE_LANG } = require("./fixtures/mock-data");
+const { setupRequestInterception, HIDE_WEB_CHROME } = require("./intercept");
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
 
@@ -44,7 +45,7 @@ const screens = [
   { name: "screenshot03", path: "/articles", wait: 5000 },
   {
     name: "screenshot04",
-    path: "/shared-article?url=https%3A%2F%2Fvogue.it%2Farticle%2Fnordic-latte",
+    path: `/shared-article?url=${encodeURIComponent(CAPTURE.sharedArticleUrl)}`,
     wait: 4000,
   },
   { name: "screenshot05", path: "/read/article?id=1", wait: 6000 },
@@ -56,124 +57,17 @@ const screens = [
     wait: 4000,
     mockOverrides: { get_todays_lesson: { lesson: null } },
     preLoad: async (page) => {
-      await page.evaluateOnNewDocument(() => {
-        localStorage.setItem("audio_lesson_lesson_type_it", "topic");
+      await page.evaluateOnNewDocument((lang, topic) => {
+        localStorage.setItem(`audio_lesson_lesson_type_${lang}`, "topic");
         localStorage.setItem(
-          "audio_lesson_suggestion_topic_it",
-          "bevande naturali",
+          `audio_lesson_suggestion_topic_${lang}`,
+          topic,
         );
-      });
+      }, FIXTURE_LANG, CAPTURE.audioTopic);
     },
   },
   { name: "screenshot09", path: "/daily-audio", wait: 5000 },
 ];
-
-const FIXTURE_IMAGES_DIR = path.join(__dirname, "fixtures", "images");
-
-function setupRequestInterception(page, overrides = {}) {
-  page.on("request", (request) => {
-    const url = request.url();
-
-    // Block SSE stream → forces fallback to GET /user_article
-    if (url.includes("user_article_stream")) {
-      request.abort().catch(() => {});
-      return;
-    }
-
-    // Serve fixture images
-    if (url.includes(FIXTURE_IMAGE_HOST)) {
-      const parts = url.split(FIXTURE_IMAGE_HOST + "/");
-      const filename = parts[1] ? parts[1].split("?")[0] : null;
-      const filepath = filename
-        ? path.join(FIXTURE_IMAGES_DIR, filename)
-        : null;
-      if (filepath && fs.existsSync(filepath)) {
-        request
-          .respond({
-            status: 200,
-            contentType: "image/jpeg",
-            body: fs.readFileSync(filepath),
-          })
-          .catch(() => {});
-      } else {
-        request.abort().catch(() => {});
-      }
-      return;
-    }
-
-    // Mock API responses (cross-origin: needs CORS headers)
-    if (url.includes("api.zeeguu.org")) {
-      // Handle CORS preflight
-      if (request.method() === "OPTIONS") {
-        request
-          .respond({
-            status: 204,
-            headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Methods": "GET, POST, OPTIONS, DELETE",
-              "Access-Control-Allow-Headers": "Content-Type",
-            },
-          })
-          .catch(() => {});
-        return;
-      }
-
-      // Per-screen overrides take precedence over the shared mock fixture.
-      const routeMatch = url.match(/api\.zeeguu\.org\/+([^?]*)/);
-      const route = routeMatch ? routeMatch[1].replace(/^\/+/, "") : null;
-      if (route && Object.prototype.hasOwnProperty.call(overrides, route)) {
-        const override = overrides[route];
-        const isString = typeof override === "string";
-        request
-          .respond({
-            status: 200,
-            headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Content-Type": isString
-                ? "text/plain; charset=utf-8"
-                : "application/json; charset=utf-8",
-            },
-            body: isString ? override : JSON.stringify(override),
-          })
-          .catch(() => {});
-        return;
-      }
-
-      const response = getResponse(url, request.method());
-      if (response !== null) {
-        const isString = typeof response === "string";
-        request
-          .respond({
-            status: 200,
-            headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Content-Type": isString
-                ? "text/plain; charset=utf-8"
-                : "application/json; charset=utf-8",
-            },
-            body: isString ? response : JSON.stringify(response),
-          })
-          .catch(() => {});
-        return;
-      }
-      // Unhandled API route — return empty OK with CORS to avoid blocking
-      console.warn(`  [unhandled API] ${request.method()} ${url.split("?")[0]}`);
-      request
-        .respond({
-          status: 200,
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json",
-          },
-          body: "null",
-        })
-        .catch(() => {});
-      return;
-    }
-
-    request.continue().catch(() => {});
-  });
-}
 
 // Parse CLI args like `8`, `8 9`, `5-7` into a set of zero-padded screen numbers.
 // Empty set means "render all".
@@ -192,7 +86,11 @@ function parseScreenFilter(argv) {
 }
 
 async function renderScreenshots() {
-  const outputDir = path.join(__dirname, "output");
+  // Italian (the default set) goes straight into output/, other languages
+  // into output/<lang>/.
+  const outputDir = FIXTURE_LANG === "it"
+    ? path.join(__dirname, "output")
+    : path.join(__dirname, "output", FIXTURE_LANG);
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   const selected = parseScreenFilter(process.argv.slice(2));
@@ -223,9 +121,9 @@ async function renderScreenshots() {
         deviceScaleFactor: device.scale,
       });
 
-      // Force dark mode (matches the app's default on iOS)
+      // Light theme: the app default, and it reads better at search-result size
       await page.emulateMediaFeatures([
-        { name: "prefers-color-scheme", value: "dark" },
+        { name: "prefers-color-scheme", value: "light" },
       ]);
 
       await page.setRequestInterception(true);
@@ -250,6 +148,8 @@ async function renderScreenshots() {
 
         // Wait for React to finish rendering
         await new Promise((r) => setTimeout(r, screen.wait));
+
+        await page.addStyleTag({ content: HIDE_WEB_CHROME });
 
         // Exercise screenshots: hide the exercise type debug label
         if (screen.path.includes("/exercise/")) {
@@ -280,9 +180,15 @@ async function renderScreenshots() {
           });
         }
 
-        // Click bookmarked words to make translation bubbles visible (reader only)
-        if (screen.path.includes("/read/article")) {
-          const wordTargets = ["bevanda svedese", "latte caldo", "pelle"];
+        // Click bookmarked words to make translation bubbles visible
+        // (reader, and the looked-up word in the first feed title)
+        const wordTargetsByPath = {
+          "/read/article": CAPTURE.readerWords,
+          "/articles": CAPTURE.feedWords,
+        };
+        const pathKey = Object.keys(wordTargetsByPath).find((p) => screen.path.startsWith(p));
+        if (pathKey) {
+          const wordTargets = wordTargetsByPath[pathKey];
           for (const target of wordTargets) {
             const selector = await page.evaluateHandle((t) => {
               const spans = document.querySelectorAll("z-orig > span");

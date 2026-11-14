@@ -7,8 +7,8 @@ export function aikiChoices({ exercisesDue, lesson, unfinishedArticles }) {
   if (exercisesDue > 0) {
     choices.push({
       kind: "exercises",
-      title: "Exercises",
-      meta: `${exercisesDue} ${exercisesDue === 1 ? "word" : "words"} due`,
+      kicker: "Exercises",
+      title: `${exercisesDue} ${exercisesDue === 1 ? "word" : "words"} due`,
       href: "/practice",
     });
   }

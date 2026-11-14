@@ -1,5 +1,5 @@
 import { useCallback, useContext, useState, useEffect, useRef } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import useScrollDirection from "../hooks/useScrollDirection";
 import LanguageModal from "./MainNav/LanguageModal";
@@ -18,10 +18,13 @@ import NotificationIcon from "./NotificationIcon";
 import Feature from "../features/Feature";
 import SettingsIconButton from "./Icons/SettingsIconButton";
 import strings from "../i18n/definitions";
+import styled from "styled-components";
+import AikiCountdown from "../aiki/AikiCountdown";
 
 export default function TopBar() {
   const { userDetails } = useContext(UserContext);
   const history = useHistory();
+  const { pathname } = useLocation();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [hasStreakBar, setHasStreakBar] = useState(null);
   const [avatarCharacterId, setAvatarCharacterId] = useState();
@@ -84,6 +87,10 @@ export default function TopBar() {
           </s.FlagButton>
         )}
         <LanguageStreakBar onMultipleLanguages={setHasStreakBar} onOpenModal={openLanguageModal} />
+        {/* Next to the streak, which also counts learning time; the auto
+            margin keeps it there instead of centered between the groups.
+            The Aiki page shows it under its own title instead. */}
+        <CountdownNextToStreak hidden={pathname === "/aiki"} />
         <s.TopBarActions>
           <SettingsIconButton onClick={() => history.push("/account_settings")} title={strings.settings} />
           {Feature.has_gamification() && (
@@ -106,3 +113,8 @@ export default function TopBar() {
     </>
   );
 }
+
+const CountdownNextToStreak = styled(AikiCountdown)`
+  margin-left: 0.5rem;
+  margin-right: auto;
+`;

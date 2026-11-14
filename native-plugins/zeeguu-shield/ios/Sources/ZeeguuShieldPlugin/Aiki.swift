@@ -10,7 +10,8 @@ import DeviceActivity
 //
 // Rules: a minute of learning unlocks the paused apps for the next 5 minutes,
 // counted from that minute, so a break never runs out while the learner is
-// still learning; 15 minutes of learning frees them for the rest of the day.
+// still learning. Once a break has run out, the next one takes a fresh minute.
+// Reaching the learner's daily goal frees them for the rest of the day.
 
 @available(iOS 16.0, *)
 public enum Aiki {
@@ -19,7 +20,19 @@ public enum Aiki {
     static let appGroup = "group.org.zeeguu.app"
     static var defaults: UserDefaults { UserDefaults(suiteName: appGroup) ?? .standard }
     public static let minutesEarnedPerMinute = 5
-    public static let dailyGoalSeconds = 15 * 60
+    // The learner's daily goal (ADR 046), set by the app with setDailyGoal.
+    // 15 minutes until it has: the fixed price before the goal existed, kept
+    // for an app that has not sent a chosen goal yet.
+    static let dailyGoalKey = "dailyGoalMinutes"
+    static let defaultDailyGoalMinutes = 15
+    public static var dailyGoalSeconds: Int {
+        let minutes = defaults.integer(forKey: dailyGoalKey)
+        return (minutes > 0 ? minutes : defaultDailyGoalMinutes) * 60
+    }
+
+    public static func setDailyGoal(minutes: Int) {
+        defaults.set(minutes, forKey: dailyGoalKey)
+    }
 
     static let breakActivity = DeviceActivityName("aiki.break")
     static let dailyActivity = DeviceActivityName("aiki.daily")
@@ -31,7 +44,9 @@ public enum Aiki {
         public var enabled = false
         public var day = ""
         public var learnedSeconds = 0
-        public var minutesConverted = 0
+        /// Learned seconds at which the next break is earned. Nil in ledgers
+        /// saved before it existed, and at the start of a day.
+        public var nextUnlockAt: Int?
         public var breakUntil: Date?
 
         public func isToday(_ now: Date) -> Bool { day == Aiki.dayString(now) }
@@ -43,18 +58,36 @@ public enum Aiki {
             enabled && !freeToday(now) && !onBreak(now)
         }
 
-        /// Counts learning time; each newly completed minute restarts the break.
+        /// Where the next break is earned. Once a break has run out, that takes
+        /// a fresh minute: what was learned during the break went into the
+        /// break, and the learner coming back expects a full minute to go.
+        func unlockTarget(_ now: Date) -> Int {
+            guard isToday(now) else { return 60 }
+            if let end = breakUntil, end <= now { return learnedSeconds + 60 }
+            return nextUnlockAt ?? (learnedSeconds / 60 + 1) * 60
+        }
+
+        public func secondsToNextUnlock(_ now: Date) -> Int {
+            max(0, unlockTarget(now) - learnedToday(now))
+        }
+
+        /// Counts learning time; each further minute earned restarts the break.
         public mutating func addLearning(seconds: Int, now: Date) {
             if !isToday(now) {
                 day = Aiki.dayString(now)
                 learnedSeconds = 0
-                minutesConverted = 0
+                nextUnlockAt = nil
                 breakUntil = nil
             }
+            var target = unlockTarget(now)
+            if let end = breakUntil, end <= now { breakUntil = nil }
             learnedSeconds += max(0, seconds)
-            let newMinutes = learnedSeconds / 60 - minutesConverted
-            guard newMinutes > 0 else { return }
-            minutesConverted += newMinutes
+            guard learnedSeconds >= target else {
+                nextUnlockAt = target
+                return
+            }
+            target += ((learnedSeconds - target) / 60 + 1) * 60
+            nextUnlockAt = target
             let fiveFromNow = now.addingTimeInterval(TimeInterval(Aiki.minutesEarnedPerMinute * 60))
             breakUntil = max(breakUntil ?? fiveFromNow, fiveFromNow)
         }

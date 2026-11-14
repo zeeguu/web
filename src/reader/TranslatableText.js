@@ -40,6 +40,9 @@ export function TranslatableText({
   const [highlightedMWEGroupId, setHighlightedMWEGroupId] = useState(null);
   const [loadingMWEGroupId, setLoadingMWEGroupId] = useState(null);
   const [mweGroupColorMap, setMweGroupColorMap] = useState({});
+  // Split expressions only ("blev ... ydmyget"), numbered per sentence from 1:
+  // the number shown next to each part, so the parts read as one expression.
+  const [splitMweMarkers, setSplitMweMarkers] = useState({});
   const [mweGroupsWithTranslations, setMweGroupsWithTranslations] = useState(new Set());
   const divType = interactiveText.formatting ? interactiveText.formatting : "div";
 
@@ -54,6 +57,8 @@ export function TranslatableText({
   function buildMweColorMap() {
     const groupsWithTranslations = new Set();
     const colorMap = {};
+    const splitMarkers = {};
+    let splitCount = 0;
 
     let currentSentI = -1;
     let colorIndex = 0;
@@ -69,6 +74,7 @@ export function TranslatableText({
           if (sentI !== currentSentI) {
             currentSentI = sentI;
             colorIndex = 0;
+            splitCount = 0;
             sentenceMweGroups.clear();
           }
 
@@ -76,6 +82,7 @@ export function TranslatableText({
             sentenceMweGroups.add(groupId);
             colorMap[groupId] = colorIndex % 5;
             colorIndex++;
+            if (word.token.mwe_is_separated) splitMarkers[groupId] = ++splitCount;
           }
 
           if (word.translation) {
@@ -87,6 +94,7 @@ export function TranslatableText({
     }
 
     setMweGroupColorMap(colorMap);
+    setSplitMweMarkers(splitMarkers);
     setMweGroupsWithTranslations(groupsWithTranslations);
   }
 
@@ -137,6 +145,7 @@ export function TranslatableText({
     highlightedMWEGroupId,
     loadingMWEGroupId,
     mweGroupColorMap,
+    splitMweMarkers,
     mweGroupsWithTranslations,
   ]);
 
@@ -165,6 +174,7 @@ export function TranslatableText({
         loadingMWEGroupId={loadingMWEGroupId}
         setLoadingMWEGroupId={setLoadingMWEGroupId}
         mweGroupColorMap={mweGroupColorMap}
+        splitMweMarkers={splitMweMarkers}
         mweGroupsWithTranslations={mweGroupsWithTranslations}
       />
     );

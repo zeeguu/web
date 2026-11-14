@@ -126,6 +126,24 @@ const TranslatableText = styled.div`
     --mwe-tran-bg: rgb(250, 220, 235);
   }
 
+  /* --- Split MWE marker: blev¹ "offentligt ydmyget¹ ---
+   * Same number after each part of a split expression, in its color. */
+  z-tag sup.splitMweMarker {
+    color: var(--mwe-color);
+    font-size: 0.6em;
+    font-weight: 700;
+    line-height: 0;
+    margin-left: 0.1em;
+    user-select: none;
+    /* An inline-block doesn't inherit the word's underline */
+    display: inline-block;
+  }
+  z-tag .splitMweSpace {
+    display: inline-block;
+    /* The translated word's underline is drawn on every z-orig > span */
+    text-decoration: none !important;
+  }
+
   /* --- MWE Loading: All partner words pulse together --- */
   z-tag.mwe-loading {
     animation: blink 0.75s linear infinite alternate;
@@ -205,6 +223,29 @@ const TranslatableText = styled.div`
   }
   z-tag[class*="mwe-color-"]:not(.mwe-hover-hint) z-tran {
     background-color: var(--mwe-tran-bg) !important;
+  }
+
+  /* --- Split MWE head: the chip spills to the right ---
+   * The translation of the whole expression ("Was publicly humiliated") sits
+   * on its first word ("blev"). As a normal chip it made the word's box as
+   * wide as the translation, which pushed the next token (the quote in
+   * blev "offentligt ydmyget") far to the right. Here the chip takes no
+   * width and overhangs the expression's other parts, which have no chip. */
+  z-tag[class*="mwe-color-"].mwe-split-head:not(.mwe-hover-hint) z-tran {
+    width: 0;
+    max-width: none;
+    overflow: visible;
+    background-color: transparent !important;
+  }
+  z-tag.mwe-split-head z-tran .translationContainer {
+    width: max-content;
+    /* A flex item in a zero-width z-tran would shrink to its narrowest */
+    flex-shrink: 0;
+    max-width: min(16em, 70vw);
+    margin-left: -0.3rem;
+    padding-left: 0.3rem;
+    border-radius: 0.3em;
+    background-color: var(--mwe-tran-bg);
   }
 
   /* --- MWE & Solution Hover Active: desktop only --- */

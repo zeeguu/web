@@ -6,6 +6,8 @@ PODS:
   - CapacitorCordova (7.6.9)
   - CapacitorDevice (7.0.5):
     - Capacitor
+  - CapacitorLocalNotifications (7.0.7):
+    - Capacitor
   - CapacitorNetwork (7.0.4):
     - Capacitor
   - CapacitorPreferences (7.0.3):
@@ -22,6 +24,7 @@ DEPENDENCIES:
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorDevice (from `../../node_modules/@capacitor/device`)"
+  - "CapacitorLocalNotifications (from `../../node_modules/@capacitor/local-notifications`)"
   - "CapacitorNetwork (from `../../node_modules/@capacitor/network`)"
   - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
@@ -37,6 +40,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorDevice:
     :path: "../../node_modules/@capacitor/device"
+  CapacitorLocalNotifications:
+    :path: "../../node_modules/@capacitor/local-notifications"
   CapacitorNetwork:
     :path: "../../node_modules/@capacitor/network"
   CapacitorPreferences:
@@ -53,12 +58,13 @@ SPEC CHECKSUMS:
   CapacitorApp: 63b237168fc869e758481dba283315a85743ee78
   CapacitorCordova: 2080fc0d6bfbc9dcc0e6d88e77fa624190d343ca
   CapacitorDevice: ba96f933a2cb5dcdc68187503d48f7b5aa11ba9e
+  CapacitorLocalNotifications: 71124afe526ac00585314bff34651bd023f86e37
   CapacitorNetwork: b719d692a8d1310da8d26d6648d3aa1ef1e100e1
   CapacitorPreferences: 913eef88272c13eb6445b21e51fe8ef6635412cc
   CapacitorSplashScreen: e388b8e0ed0e982a9d3a40417f478e7a018a8763
   ZeeguuAudio: ead02f5aeca180cd719ed0890682bdcda3e6e8ad
   ZeeguuShield: ee7c26028afb7c5dbba6553f1f3e89a5abd2ef9b
 
-PODFILE CHECKSUM: 4c9ca433681074879d81c3e4c9d8b81ad7f44d3c
+PODFILE CHECKSUM: f2c18650b6c0696ab774eb2129e4ca6a5b518c0c
 
 COCOAPODS: 1.16.2

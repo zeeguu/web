@@ -63,6 +63,15 @@
       "form_factor": "narrow"
     }
   ],
+  "share_target": {
+    "action": "/texts",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
   "launch_handler": {
     "client_mode": "focus-existing"
   },

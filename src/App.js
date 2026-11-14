@@ -28,13 +28,16 @@ import { Capacitor } from "@capacitor/core";
 
 import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
-import AikiMinuteBar from "./aiki/AikiMinuteBar";
 import useOpenAikiOnRequest from "./aiki/useOpenAikiOnRequest";
+import { sendDailyGoalToAiki } from "./components/nativeShield";
+import useStudyReminder from "./reminder/useStudyReminder";
+import { clearStudyReminders } from "./reminder/studyReminder";
 import useExtensionCommunication from "./hooks/useExtensionCommunication";
 import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import useLocationTracker from "./hooks/useLocationTracker";
+import usePendingShare from "./hooks/usePendingShare";
 import useDeepLinkHandler from "./hooks/useDeepLinkHandler";
 import useMoreTranslationsOnboarding from "./hooks/useMoreTranslationsOnboarding";
 import useOnboardingModal from "./hooks/useOnboardingModal";
@@ -66,9 +69,10 @@ function generateUUID() {
 }
 
 // Wrapper component to use location tracker inside Router context
-function LocationTrackingWrapper({ children }) {
+function LocationTrackingWrapper({ loggedIn, children }) {
   useLocationTracker();
   useDeepLinkHandler();
+  usePendingShare(loggedIn);
   useOpenAikiOnRequest();
   return children;
 }
@@ -97,6 +101,14 @@ function App() {
 
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
+  useStudyReminder(api, userDetails, userPreferences);
+
+  // Aiki on the phone uses the daily goal (ADR 046): handed over whenever it
+  // is loaded or changes. Logging out resets it (see logout).
+  const dailyGoalMinutes = userPreferences?.daily_goal_minutes;
+  useEffect(() => {
+    if (dailyGoalMinutes) sendDailyGoalToAiki({ daily_goal_minutes: dailyGoalMinutes });
+  }, [dailyGoalMinutes]);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
   const moreTranslationsModal = useMoreTranslationsOnboarding(api, userDetails);
 
@@ -350,6 +362,8 @@ function App() {
         api.setSession(undefined);
         setUserDetails({});
         setUserPreferences({});
+        clearStudyReminders();
+        sendDailyGoalToAiki({});
       }
     }, 1000);
     return () => clearInterval(interval);
@@ -373,6 +387,8 @@ function App() {
     setUserPreferences({});
 
     removeSharedUserInfo();
+    clearStudyReminders();
+    sendDailyGoalToAiki({}); // back to Aiki's own default, not this learner's goal
     api.setSession(undefined);
     api.resetFunnel();
   }
@@ -446,7 +462,7 @@ function App() {
       <SystemLanguagesContext.Provider value={{ systemLanguages, sortedSystemLanguages }}>
         <SpeechContext.Provider value={zeeguuSpeech}>
           <BrowserRouter>
-            <LocationTrackingWrapper>
+            <LocationTrackingWrapper loggedIn={!!userDetails}>
               <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
                 <UserContext.Provider
                   value={{
@@ -471,7 +487,6 @@ function App() {
                           open={moreTranslationsModal.open}
                           handleCancel={moreTranslationsModal.close}
                         />
-                        <AikiMinuteBar />
                         <ToastContainer
                           position="bottom-right"
                           autoClose={2000}

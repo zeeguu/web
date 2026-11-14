@@ -11,8 +11,8 @@ export function nativeShieldAvailable() {
 }
 
 // Session labels (see hooks/use*Session.js) whose time earns Aiki breaks:
-// reading, exercises and audio lessons; not browsing the feed or videos.
-const LEARNING_SESSIONS = ["reading", "exercise", "listening"];
+// every activity session, the same ones the streak counts (ADR 046).
+const LEARNING_SESSIONS = ["reading", "exercise", "listening", "browsing", "watching"];
 
 export function isLearningSession(label) {
   return LEARNING_SESSIONS.includes(label);
@@ -48,9 +48,36 @@ export function reportLearningSeconds(label, seconds) {
     .catch(() => (secondsInFlight -= rounded));
 }
 
-// Which setup step a learner is at, from ZeeguuShield.getStatus().
-export function aikiStep(status) {
+// The goal Aiki should use, from the learner's preferences (ADR 046): their
+// daily goal, which for a new learner is the default 5 minutes. Null for the
+// grandfathered 2 minutes of learners from before the goal existed: Aiki asks
+// them to choose rather than free their apps after 2 minutes.
+export const GRANDFATHERED_GOAL = "2";
+
+export function chosenDailyGoal(preferences) {
+  const value = preferences?.daily_goal_minutes;
+  if (!value || value === GRANDFATHERED_GOAL) return null;
+  const minutes = parseInt(value, 10);
+  return minutes > 0 ? minutes : null;
+}
+
+// Hands the chosen goal to the ledger on the phone. Without one (the
+// grandfathered 2, or logged out) it sends 0, and the ledger falls back to its
+// own 15 minutes rather than keeping an earlier learner's goal. Older app
+// builds have no setDailyGoal, or refuse 0: ignored.
+export function sendDailyGoalToAiki(preferences) {
+  if (!nativeShieldAvailable()) return;
+  ZeeguuShield.setDailyGoal({ minutes: chosenDailyGoal(preferences) ?? 0 }).catch(() => {});
+}
+
+// Which setup step a learner is at, from ZeeguuShield.getStatus() and whether
+// they have chosen a daily goal: Aiki frees the apps once the goal is met.
+// A learner who already set Aiki up keeps its controls; the page asks them
+// for a goal beside them.
+export function aikiStep(status, goalChosen = true) {
   if (!status || !status.supported) return "unsupported";
+  if (status.authorization === "approved" && pickedCount(status) > 0) return "ready";
+  if (!goalChosen) return "goal";
   if (status.authorization !== "approved") return "authorize";
   if (pickedCount(status) === 0) return "pick";
   return "ready";

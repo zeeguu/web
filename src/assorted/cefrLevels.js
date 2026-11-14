@@ -1,4 +1,5 @@
 import strings from "../i18n/definitions";
+import { toNumber } from "../utils/misc/cefr";
 
 // The levels a learner can choose for themselves. "0" is A0, for someone who has
 // never learned the language: their audio lessons start from zero, and they read
@@ -15,6 +16,6 @@ export const CEFR_LEVELS = [
 
 // "A2" -> "2", the CEFR_LEVELS value; "" for anything else.
 export function levelValueFromCefr(code) {
-  const index = ["A0", "A1", "A2", "B1", "B2", "C1", "C2"].indexOf(code);
-  return index === -1 ? "" : String(index);
+  const number = toNumber(code);
+  return number === null ? "" : String(number);
 }

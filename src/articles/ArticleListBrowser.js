@@ -180,7 +180,7 @@ export default function ArticleListBrowser({
   const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow, resetPagination] = useArticlePagination(
     articlesAndVideosList,
     updateOnPagination,
-    searchQuery ? "Article Search" : strings.titleHome,
+    searchQuery ? "Article Search" : strings.news,
     getNewArticlesForPage,
     // Pause infinite scroll while the feed itself is (re)loading, so the hidden
     // list / collapsed page doesn't trigger a spurious load-more + 2nd spinner.
@@ -276,7 +276,7 @@ export default function ArticleListBrowser({
           },
         );
       } else {
-        setTitle(strings.titleHome);
+        setTitle(strings.news);
         // Clear any leftover search-loading state when leaving a search pill,
         // and show the loader straight away (dropping the previous list) for
         // instant feedback on a topic switch.

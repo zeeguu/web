@@ -1,6 +1,6 @@
 import ChoiceModal from "../components/modal_shared/ChoiceModal";
 import { languageName } from "../utils/misc/languageCodeToName";
-import { cefrOrdinal } from "../utils/misc/cefrScale";
+import { rank } from "../utils/misc/cefr";
 
 const CEFR_BAR_COUNT = 4;
 const CEFR_BAR_GEOMETRY = [
@@ -11,7 +11,8 @@ const CEFR_BAR_GEOMETRY = [
 ];
 
 function LevelBars({ level }) {
-  const filled = Math.min(cefrOrdinal(level) ?? CEFR_BAR_COUNT, CEFR_BAR_COUNT);
+  const r = rank(level);
+  const filled = Math.min(r === null ? CEFR_BAR_COUNT : r + 1, CEFR_BAR_COUNT);
   return (
     <svg
       width="16"

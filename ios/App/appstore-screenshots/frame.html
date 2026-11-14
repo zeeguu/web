@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--
+  Store frame: a caption above a live capture of the app.
+  Filled in by frame.js via the query string (?img=…&title=…&sub=…).
+  Sizes are in vmin/vh so the same template works for phone and tablet.
+-->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100vw; height: 100vh; overflow: hidden; }
+    body {
+      background: linear-gradient(180deg, #FDF6E9 0%, #F9E4C8 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 7vh;
+    }
+    .title {
+      font-size: 9.4vmin;
+      font-weight: 800;
+      color: #2E2A26;
+      text-align: center;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      padding: 0 6vmin;
+    }
+    .title em { font-style: normal; color: #E8901A; }
+    .sub {
+      margin-top: 2.2vh;
+      font-size: 4.6vmin;
+      color: #6B625A;
+      text-align: center;
+      line-height: 1.3;
+      padding: 0 8vmin;
+    }
+    .shot {
+      margin-top: 5vh;
+      width: 82vw;
+      max-width: 62vh;
+      border-radius: 5vmin;
+      box-shadow: 0 3vmin 8vmin rgba(60, 35, 10, 0.28);
+      /* Bleeds off the bottom edge: the tab bar and the empty lower part go. */
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="title" id="title"></h1>
+  <p class="sub" id="sub"></p>
+  <img class="shot" id="shot" alt="">
+  <script>
+    const q = new URLSearchParams(location.search);
+    // *word* in a title is highlighted in the brand orange.
+    document.getElementById('title').innerHTML = q.get('title')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>').replace(/\|/g, '<br>');
+    document.getElementById('sub').textContent = q.get('sub');
+    document.getElementById('shot').src = q.get('img');
+  </script>
+</body>
+</html>

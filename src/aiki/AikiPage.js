@@ -5,19 +5,24 @@ import styled from "styled-components";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
-import { PageTitle } from "../components/PageTitle";
 import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
 import { MetaStrip, MetaItem } from "../components/MetaStrip.sc";
 import { articleSourceLabel } from "../utils/misc/articleHelpers";
 import { isA0Learner } from "../utils/misc/userCefrLevel";
-import ArticleThumbnail from "../articles/ArticleThumbnail";
 import ReadingCompletion from "../articles/ReadingCompletion";
 import { Kicker } from "../articles/ArticlePreview.sc";
 import * as s from "../articles/SavedArticleRow.sc";
+import AikiCountdown from "./AikiCountdown";
 import { aikiChoices } from "./aikiChoices";
-import { startAikiSession } from "./aikiMinute";
+import { startAikiSession, trackAikiPage } from "./aikiMinute";
 
-const KIND_IMAGES = { exercises: "/static/images/elephants/dumbbell.png", lesson: "/static/images/elephants/headphones.png" };
+// One elephant per kind of activity, so the rows read as a set. The article's
+// own photo would break that; its title and source already say which one.
+const KIND_IMAGES = {
+  exercises: "/static/images/elephants/dumbbell.png",
+  lesson: "/static/images/elephants/headphones.png",
+  article: "/static/images/elephants/ada/elephant-reading.png",
+};
 
 // Longest the page waits for a lookup before showing what it has: the
 // exercise count has taken minutes on a bad day, and the lesson row needs none.
@@ -34,6 +39,12 @@ export default function AikiPage() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const [choices, setChoices] = useState(null);
+
+  // The session starts here, so the countdown shows before anything is picked.
+  useEffect(() => {
+    startAikiSession();
+    return trackAikiPage();
+  }, []);
 
   useEffect(() => {
     // A failed or slow lookup counts as "nothing there"; the lesson row is always shown.
@@ -54,14 +65,15 @@ export default function AikiPage() {
 
   return (
     <PaddedNarrowColumn>
-      <PageTitle>Learn for one minute</PageTitle>
-      <Subtitle>to unlock your paused apps for 5 minutes.</Subtitle>
+      {/* The countdown is the whole heading: how long, and what for. How long
+          the break lasts is in the toast that opens it. */}
+      <Countdown sentence />
       {choices.map((choice) => (
         <ChoiceRow key={choice.kind} choice={choice} />
       ))}
       {/* There is no feed at A0 (see NoFeedAtA0). */}
       {!isA0Learner(userDetails) && (
-        <FeedLink to="/articles" onClick={startAikiSession}>
+        <FeedLink to="/articles">
           or pick something from your feed
         </FeedLink>
       )}
@@ -71,10 +83,7 @@ export default function AikiPage() {
 
 function ChoiceRow({ choice }) {
   const history = useHistory();
-  const open = () => {
-    startAikiSession();
-    history.push(choice.href);
-  };
+  const open = () => history.push(choice.href);
   const onKeyDown = (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -82,16 +91,18 @@ function ChoiceRow({ choice }) {
     }
   };
 
-  const image = choice.article ? (
-    <ArticleThumbnail article={choice.article} />
-  ) : (
+  const image = (
     <s.ThumbnailWrap>
       <s.Placeholder>
         <Elephant src={KIND_IMAGES[choice.kind]} alt="" />
       </s.Placeholder>
     </s.ThumbnailWrap>
   );
-  const meta = choice.article ? <ArticleMeta article={choice.article} /> : <MetaItem>{choice.meta}</MetaItem>;
+  const meta = choice.article ? (
+    <ArticleMeta article={choice.article} />
+  ) : (
+    choice.meta && <MetaItem>{choice.meta}</MetaItem>
+  );
 
   return (
     <s.Row style={{ cursor: "pointer" }} onClick={open} onKeyDown={onKeyDown} role="button" tabIndex={0}>
@@ -99,7 +110,7 @@ function ChoiceRow({ choice }) {
       <s.Content>
         {choice.kicker && <Kicker>{choice.kicker}</Kicker>}
         <s.Title>{choice.title}</s.Title>
-        <MetaStrip>{meta}</MetaStrip>
+        {meta && <MetaStrip>{meta}</MetaStrip>}
       </s.Content>
     </s.Row>
   );
@@ -121,16 +132,14 @@ const Elephant = styled.img`
   object-fit: contain;
 `;
 
-const Subtitle = styled.p`
-  text-align: center;
-  color: var(--text-secondary);
-  margin: 0.5em 0 2em;
+const Countdown = styled(AikiCountdown)`
+  margin: 2rem 0;
 `;
 
 
 const FeedLink = styled(Link)`
   display: block;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--link-color);
   margin: 0.5em 0 2em;
 `;
