@@ -18,7 +18,7 @@ export const ContentContainer = styled.div`
 // (the sentence belongs to the title, not to the filter row below).
 export const TabHeading = styled.header`
   text-align: center;
-  margin: 2rem 0 1rem;
+  margin: 0.5rem 0 1.25rem;
 
   h1 {
     font-weight: 300;
