@@ -5,6 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 import SharedInbox from "../../src/articles/SharedInbox";
 import { APIContext } from "../../src/contexts/APIContext";
 import { SharedArticlesContext } from "../../src/contexts/SharedArticlesContext";
+import { UserContext } from "../../src/contexts/UserContext";
 
 vi.mock("../../src/articles/SharedArticleRow", () => ({
   default: ({ share }) => <div data-testid="row">article: {share.article.title}</div>,
@@ -14,6 +15,7 @@ function setup({ shares = [], texts = [] } = {}) {
   const api = { getShortTexts: vi.fn((ok) => ok(texts)) };
   render(
     <MemoryRouter>
+      <UserContext.Provider value={{ userDetails: { learned_language: "da" } }}>
       <APIContext.Provider value={api}>
         <SharedArticlesContext.Provider
           value={{ sharedArticles: shares, sharedArticlesLoading: false, hasSharesInOtherLanguages: false }}
@@ -21,6 +23,7 @@ function setup({ shares = [], texts = [] } = {}) {
           <SharedInbox />
         </SharedArticlesContext.Provider>
       </APIContext.Provider>
+      </UserContext.Provider>
     </MemoryRouter>,
   );
 }
@@ -45,5 +48,21 @@ describe("Inbox", () => {
     setup();
     expect(screen.getByText(/Share a text or an article from another app/)).toBeTruthy();
     expect(screen.queryByText(/Paste/)).toBeNull();
+  });
+
+  it("shows only the texts in the language being learned", () => {
+    setup({
+      texts: [
+        { id: 7, preview: "Hej", language: "da", last_opened_at: "2026-11-12T10:00:00" },
+        { id: 9, preview: "Hello there", language: "en", last_opened_at: "2026-11-13T10:00:00" },
+      ],
+    });
+    expect(screen.getByText("Hej")).toBeTruthy();
+    expect(screen.queryByText("Hello there")).toBeNull();
+  });
+
+  it("says so when everything is in another language", () => {
+    setup({ texts: [{ id: 9, preview: "Hello there", language: "en", last_opened_at: "2026-11-13T10:00:00" }] });
+    expect(screen.getByText(/in another language/)).toBeTruthy();
   });
 });
