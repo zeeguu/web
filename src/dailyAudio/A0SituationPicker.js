@@ -11,7 +11,9 @@ import { MAX_SUGGESTION_LENGTH } from "./SuggestionSelector";
 // three in the list (a0Situations.js, ordered the way a newcomer needs them)
 // that they have not had yet: a recommendation, not a sample. Below them,
 // "More situations" shows the whole list and "Type your own" a text field.
-// Each pill says how many lessons they have had in it.
+// Each pill says how many lessons they have had in it. A saved situation the
+// learner typed themselves is a pill too (✏️), selected: opening the dialog on
+// a text field with the keyboard up read as being asked to type something.
 
 const RECOMMENDED = 3;
 
@@ -62,9 +64,12 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
   // null until loaded: the recommendation depends on it, and pills that move
   // under the learner's finger once it arrives would be worse than a moment's wait.
   const [situations, setSituations] = useState(null);
-  // Typing their own: chosen, or a saved subject that is not in the list.
-  const [other, setOther] = useState(() => Boolean(subject && subject.trim()) && !findA0Situation(subject));
+  // Typing their own, after tapping "Type your own".
+  const [other, setOther] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  // The saved situation when the learner typed it themselves, fixed for the
+  // life of the dialog.
+  const [custom] = useState(() => (subject && subject.trim() && !findA0Situation(subject) ? subject.trim() : null));
   // The saved situation, fixed for the life of the dialog: tapping another pill
   // must not reshuffle the recommendation.
   const [current] = useState(() => findA0Situation(subject));
@@ -77,10 +82,28 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
 
   const selected = other ? null : findA0Situation(subject);
   const shown = expanded ? A0_SITUATIONS : recommendedSituations(current, situations);
+  const customSelected = !other && custom !== null && (subject || "").trim() === custom;
+  const customLessons = custom ? lessonsIn(custom, situations) : 0;
 
   return (
     <div>
       <Pills role="radiogroup" aria-label="Situation">
+        {custom && (
+          <SelectablePill
+            type="button"
+            role="radio"
+            aria-checked={customSelected}
+            $selected={customSelected}
+            onClick={() => {
+              setOther(false);
+              setSubject(custom);
+            }}
+          >
+            <span aria-hidden="true">✏️ </span>
+            {custom}
+            {customLessons > 0 && <Count> · {customLessons}</Count>}
+          </SelectablePill>
+        )}
         {shown.map(({ emoji, label, value }) => {
           const n = lessonsIn(value, situations);
           const isSelected = selected?.value === value;

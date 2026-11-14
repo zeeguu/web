@@ -61,7 +61,7 @@ function EpisodeHeader({ lessonData, currentPlaybackTime }) {
  * Reuses LessonPlaybackView for all the player/words/feedback plumbing and
  * injects the Design-B header + footer.
  */
-export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
+export default function TodayEpisodeCard({ onChangeTopic, dailySubject, ...playbackProps }) {
   const { lessonData } = playbackProps;
 
   // "Listen halfway to keep daily lessons coming automatically." — shown only
@@ -95,7 +95,7 @@ export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
       {showEngagementHint && (
         <FooterMessage $small>Listen halfway to keep daily lessons coming automatically.</FooterMessage>
       )}
-      <DailyLessonSettingsPill onClick={onChangeTopic} />
+      <DailyLessonSettingsPill onClick={onChangeTopic} subject={dailySubject} />
     </FooterWrapper>
   );
 

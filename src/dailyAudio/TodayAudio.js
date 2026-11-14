@@ -635,6 +635,7 @@ export default function TodayAudio() {
           currentPlaybackTime={currentPlaybackTime}
           setCurrentPlaybackTime={setCurrentPlaybackTime}
           onChangeTopic={() => setSettingsOpen(true)}
+          dailySubject={dailyType === "three_words_lesson" ? null : dailySuggestion}
         />
         {settingsDialog}
       </>
@@ -707,7 +708,11 @@ export default function TodayAudio() {
           {primaryLabel}
         </BannerButton>
         {showSettingsPill && (
-          <DailyLessonSettingsPill onClick={() => setSettingsOpen(true)} style={{ marginTop: "16px" }} />
+          <DailyLessonSettingsPill
+            onClick={() => setSettingsOpen(true)}
+            subject={dailyType === "three_words_lesson" ? null : dailySuggestion}
+            style={{ marginTop: "16px" }}
+          />
         )}
       </div>
       {settingsDialog}
