@@ -38,7 +38,6 @@ const LinkButton = styled.button`
   font-weight: 600;
   color: ${zeeguuOrange};
   cursor: pointer;
-
 `;
 
 const Count = styled.span`
@@ -57,14 +56,33 @@ export function recommendedSituations(current, situations) {
   return [...(current ? [current] : []), ...rest.slice(0, RECOMMENDED)];
 }
 
+function SituationPill({ emoji, label, lessons, selected, onClick }) {
+  return (
+    <SelectablePill
+      type="button"
+      role="radio"
+      aria-checked={selected}
+      $selected={selected}
+      title={lessons ? `${lessons} ${lessons === 1 ? "lesson" : "lessons"} so far` : "New"}
+      onClick={onClick}
+    >
+      <span aria-hidden="true">{emoji} </span>
+      {label}
+      {lessons > 0 && <Count> · {lessons}</Count>}
+    </SelectablePill>
+  );
+}
+
 export default function A0SituationPicker({ api, language, subject, setSubject }) {
   // null until loaded: the recommendation depends on it, and pills that move
   // under the learner's finger once it arrives would be worse than a moment's wait.
   const [situations, setSituations] = useState(null);
   // Typing their own, after tapping "Type your own".
-  const [other, setOther] = useState(false);
+  const [typing, setTyping] = useState(false);
   // What was selected before "Type your own", put back by "Back to the list".
   const [previous, setPrevious] = useState(subject);
+  // What they typed, kept when they go back to the list, for when they return.
+  const [draft, setDraft] = useState("");
   const [expanded, setExpanded] = useState(false);
   // The saved situation when the learner typed it themselves, fixed for the
   // life of the dialog.
@@ -79,15 +97,10 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
 
   if (situations === null) return null;
 
-  const selected = other ? null : findA0Situation(subject);
-  const shown = expanded ? A0_SITUATIONS : recommendedSituations(current, situations);
-  const customSelected = !other && custom !== null && (subject || "").trim() === custom;
-  const customLessons = custom ? lessonsIn(custom, situations) : 0;
-
   // Typing their own takes the dialog over: the field alone, and a way back.
   // A second popup on top of this one would be two layers on a phone, with
   // the keyboard covering the second.
-  if (other) {
+  if (typing) {
     return (
       <div>
         <ClearableInput
@@ -102,8 +115,9 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
           <LinkButton
             type="button"
             onClick={() => {
-              setOther(false);
+              setDraft(subject);
               setSubject(previous);
+              setTyping(false);
             }}
           >
             ← Back to the list
@@ -113,47 +127,32 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
     );
   }
 
+  const selected = findA0Situation(subject);
+  const shown = expanded ? A0_SITUATIONS : recommendedSituations(current, situations);
+  const isCustom = custom !== null && (subject || "").trim() === custom;
+
   return (
     <div>
       <Pills role="radiogroup" aria-label="Situation">
         {custom && (
-          <SelectablePill
-            type="button"
-            role="radio"
-            aria-checked={customSelected}
-            $selected={customSelected}
-            onClick={() => {
-              setOther(false);
-              setSubject(custom);
-            }}
-          >
-            <span aria-hidden="true">✏️ </span>
-            {custom}
-            {customLessons > 0 && <Count> · {customLessons}</Count>}
-          </SelectablePill>
+          <SituationPill
+            emoji="✏️"
+            label={custom}
+            lessons={lessonsIn(custom, situations)}
+            selected={isCustom}
+            onClick={() => setSubject(custom)}
+          />
         )}
-        {shown.map(({ emoji, label, value }) => {
-          const n = lessonsIn(value, situations);
-          const isSelected = selected?.value === value;
-          return (
-            <SelectablePill
-              key={value}
-              type="button"
-              role="radio"
-              aria-checked={isSelected}
-              $selected={isSelected}
-              title={n ? `${n} ${n === 1 ? "lesson" : "lessons"} so far` : "New"}
-              onClick={() => {
-                setOther(false);
-                setSubject(value);
-              }}
-            >
-              <span aria-hidden="true">{emoji} </span>
-              {label}
-              {n > 0 && <Count> · {n}</Count>}
-            </SelectablePill>
-          );
-        })}
+        {shown.map(({ emoji, label, value }) => (
+          <SituationPill
+            key={value}
+            emoji={emoji}
+            label={label}
+            lessons={lessonsIn(value, situations)}
+            selected={selected?.value === value}
+            onClick={() => setSubject(value)}
+          />
+        ))}
       </Pills>
       <Links>
         {!expanded && (
@@ -165,8 +164,10 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
           type="button"
           onClick={() => {
             setPrevious(subject);
-            setSubject("");
-            setOther(true);
+            // Their own situation, or what they typed before going back, to
+            // edit rather than retype.
+            setSubject(draft || (isCustom ? subject : ""));
+            setTyping(true);
           }}
         >
           Type your own

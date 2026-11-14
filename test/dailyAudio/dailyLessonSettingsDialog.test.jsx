@@ -96,6 +96,16 @@ describe("DailyLessonSettingsDialog", () => {
     fireEvent.click(screen.getByText("← Back to the list"));
     expect(screen.queryByPlaceholderText(/post office/)).toBeNull();
     expect(screen.getByRole("radio", { name: /At the café/ }).getAttribute("aria-checked")).toBe("true");
+
+    // What they typed is still there when they come back.
+    fireEvent.click(screen.getByText("Type your own"));
+    expect(screen.getByPlaceholderText(/post office/).value).toBe("at the zoo");
+  });
+
+  it("at A0 Type your own starts from the learner's own situation, to edit", () => {
+    setup(0, { initialType: "situation", initialSuggestion: "Gaming" });
+    fireEvent.click(screen.getByText("Type your own"));
+    expect(screen.getByPlaceholderText(/post office/).value).toBe("Gaming");
   });
 
   it("at A0 shows the learner's own situation as a selected pill, without a text field", () => {
