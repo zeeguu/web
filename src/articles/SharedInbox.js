@@ -1,8 +1,4 @@
 import { useContext } from "react";
-import styled from "styled-components";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import ReactLink from "../components/ReactLink.sc";
-import strings from "../i18n/definitions";
 import { SharedArticlesContext } from "../contexts/SharedArticlesContext";
 import SharedArticleRow from "./SharedArticleRow";
 import { InboxList } from "./SharedArticleRow.sc";
@@ -12,24 +8,7 @@ import * as s from "../components/TopMessage.sc";
 // saved-article row styling. Lives as its own tab in the reading area; the list
 // comes from SharedArticlesContext (refetched on navigation and polled while visible).
 //
-// The inbox is where reading arrives from outside, so it is also where the
-// learner brings in a text of their own (/texts; texts shared from other apps
-// land there directly).
-
-const OwnTextLinkRow = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-function OwnTextLink() {
-  return (
-    <OwnTextLinkRow>
-      <ReactLink className="small" to="/texts">
-        <AddRoundedIcon /> {strings.readYourOwnText}
-      </ReactLink>
-    </OwnTextLinkRow>
-  );
-}
+// Texts the learner brings in themselves have their own tab, "Your texts".
 
 export default function SharedInbox() {
   const { sharedArticles, sharedArticlesLoading, hasSharesInOtherLanguages } =
@@ -48,7 +27,6 @@ export default function SharedInbox() {
       : "Nothing shared with you yet. When a friend sends you an article, it shows up here — in the language you're learning, at your level.";
     return (
       <>
-        <OwnTextLink />
         <s.YellowMessageBox>{emptyMessage}</s.YellowMessageBox>
       </>
     );
@@ -56,7 +34,6 @@ export default function SharedInbox() {
 
   return (
     <InboxList>
-      <OwnTextLink />
       {sharedArticles.map((share) => (
         <SharedArticleRow key={share.id} share={share} />
       ))}

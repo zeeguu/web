@@ -21,6 +21,8 @@ import ParkRoundedIcon from "@mui/icons-material/ParkRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import MoveToInboxRoundedIcon from "@mui/icons-material/MoveToInboxRounded";
+import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
+import ShortTexts from "../texts/ShortTexts";
 import NotificationIcon from "../components/NotificationIcon";
 import { SharedArticlesContext } from "../contexts/SharedArticlesContext";
 import SharedInbox from "./SharedInbox";
@@ -46,6 +48,7 @@ const READ_TAB_PATHS = [
   "/articles/bookmarked",
   "/articles/classroom",
   "/articles/shared",
+  "/articles/texts",
 ];
 
 // At A0 even the easiest evergreen article is out of reach, as with the feed.
@@ -59,6 +62,10 @@ function EvergreenFeed(props) {
 function HomeFeed(props) {
   const { userDetails } = useContext(UserContext);
   return isA0Learner(userDetails) ? <NoFeedAtA0 /> : <ArticleListBrowser {...props} />;
+}
+
+function ShortTextsTab() {
+  return <ShortTexts inTab />;
 }
 
 export default function ArticlesRouter({ hasExtension, isChrome }) {
@@ -125,6 +132,12 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     </s.IconSpan>
   );
 
+  const textsIcon = (
+    <s.IconSpan style={{ verticalAlign: "middle" }} title={strings.yourTextsTab}>
+      <ChatRoundedIcon {...iconProps} />
+    </s.IconSpan>
+  );
+
   const tabs = [
     { text: newsIcon, link: "/articles", name: strings.news, intro: strings.newsIntro },
     { text: evergreenIcon, link: "/articles/evergreen", name: strings.evergreenTitle, intro: strings.evergreenIntro },
@@ -139,6 +152,9 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
       isActive: (_, loc) => loc.pathname === "/articles/mySearches" || loc.pathname === "/search",
     },
     { text: inboxIcon, link: "/articles/shared", name: strings.inboxTab, intro: strings.inboxIntro },
+    // What the learner brought in themselves: pasted, or shared from another
+    // app (a WhatsApp message). Inbox is what friends sent.
+    { text: textsIcon, link: "/articles/texts", name: strings.yourTextsTab, intro: strings.yourTextsIntro },
   ].filter(Boolean);
 
   // The tabs are icons only, and the newer ones (Evergreen's tree) don't
@@ -218,6 +234,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
           <PrivateRoute path="/articles/mySearches" component={MySearches} />
 
           <PrivateRoute exact path="/articles/shared" component={SharedInbox} />
+          <PrivateRoute exact path="/articles/texts" component={ShortTextsTab} />
 
           <PrivateRoute path="/search" component={Search} />
         </s.ContentContainer>

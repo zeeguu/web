@@ -120,7 +120,7 @@ export default function TextReader() {
     setIsTranslating(false);
     setError("");
     if (!id) {
-      history.replace("/texts");
+      history.replace("/articles/texts");
       return;
     }
     api.getShortText(
@@ -179,7 +179,7 @@ export default function TextReader() {
 
   const header = (
     <TextHeader>
-      <BackArrow redirectLink="/texts" />
+      <BackArrow redirectLink="/articles/texts" />
       {shortText &&
         (learnableLanguages ? (
           <TextLanguagePicker

@@ -22,7 +22,6 @@ import WordsRouter from "./words/_WordsRouter";
 import TranslateRouter from "./translate/_TranslateRouter";
 import ReadingHistory from "./words/WordHistory";
 import ActivityRouter from "./activity/_ActivityRouter";
-import ShortTexts from "./texts/ShortTexts";
 import TextReader from "./texts/TextReader";
 import SharedArticleHandler from "./reader/SharedArticleHandler";
 import SharedVideoHandler from "./reader/SharedVideoHandler";
@@ -166,8 +165,15 @@ export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
         <PrivateRouteWithLayout path="/shared-article" component={SharedArticleHandler} />
         <PrivateRouteWithLayout path="/shared-video" component={SharedVideoHandler} />
         {/* Short texts the learner brings (pasted, or shared from another
-            app): not articles, so not under /articles or /read. */}
-        <PrivateRouteWithLayout exact path="/texts" component={ShortTexts} />
+            app). The list is the "Your texts" tab in Read; /texts, where
+            older links and shares go, leads there. */}
+        {/* Keeps ?text= and ?url=: the installed web app's share target
+            (manifest.json) still sends shares to /texts. */}
+        <Route
+          exact
+          path="/texts"
+          render={({ location }) => <Redirect to={{ pathname: "/articles/texts", search: location.search }} />}
+        />
         <PrivateRouteWithLayout path="/texts/read" component={TextReader} />
         <ReadArticleRouteEntry path="/read/article" />
         {/* Must follow /read/article, which it would otherwise swallow, and

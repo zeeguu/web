@@ -21,6 +21,7 @@ let strings = new LocalizedStrings(
       classroomIntro: "Texts from your teacher.",
       searchIntro: "Find articles on any subject.",
       inboxIntro: "Articles friends shared with you.",
+      yourTextsIntro: "Texts you brought in, to read word by word.",
       evergreenAddKeyword: "Add a keyword",
       evergreenAdd: "Add",
       evergreenAddKeywordPrompt: "What do you want to read about?",
@@ -379,6 +380,7 @@ let strings = new LocalizedStrings(
       bookmarkedTab: "Bookmarked",
       saved: "Saved",
       inboxTab: "Inbox",
+      yourTextsTab: "Your texts",
       forYou: "For You",
       search: "Search",
 
@@ -1081,6 +1083,7 @@ let strings = new LocalizedStrings(
       classroomIntro: "Tekster fra din lærer.",
       searchIntro: "Find artikler om et hvilket som helst emne.",
       inboxIntro: "Artikler, dine venner har delt med dig.",
+      yourTextsIntro: "Tekster, du selv har hentet ind, til at læse ord for ord.",
       evergreenAddKeyword: "Tilføj et nøgleord",
       evergreenAdd: "Tilføj",
       evergreenAddKeywordPrompt: "Hvad vil du læse om?",
@@ -1364,6 +1367,7 @@ let strings = new LocalizedStrings(
       bookmarkedTab: "Bogmærker",
       saved: "Gemt",
       inboxTab: "Indbakke",
+      yourTextsTab: "Dine tekster",
       searches: "Mine Søgninger",
 
       //WordsRouter

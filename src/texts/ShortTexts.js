@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
@@ -19,7 +19,8 @@ import { readableApiError } from "../utils/misc/readableApiError";
 import strings from "../i18n/definitions";
 import { classifySharedText, takePendingSharedText, onSharedText, MAX_SHARED_TEXT_CHARS } from "./sharedText";
 
-// /texts: bring a short text to read (paste it, or share it here from another
+// /articles/texts (the "Your texts" tab in Read; /texts redirects there):
+// bring a short text to read (paste it, or share it here from another
 // app, e.g. a WhatsApp message), and the texts brought before. Long texts with
 // a title are articles, and open in the article reader instead.
 
@@ -37,7 +38,7 @@ const TextList = styled.div`
   margin-top: 1rem;
 `;
 
-export default function ShortTexts() {
+export default function ShortTexts({ inTab = false }) {
   const api = useContext(APIContext);
   const history = useHistory();
   const location = useLocation();
@@ -82,7 +83,7 @@ export default function ShortTexts() {
     if (params.has("text") || params.has("url")) {
       // Out of the URL straight away: it would otherwise sit in the history
       // and in error reports.
-      history.replace("/texts");
+      history.replace("/articles/texts");
       bring(params.get("text"), params.get("url"));
     }
 
@@ -103,9 +104,11 @@ export default function ShortTexts() {
 
   if (isAdding) return <LoadingAnimation />;
 
+  // As a Read tab the tab row already names the page, and gives the column.
+  const Wrapper = inTab ? Fragment : PaddedNarrowColumn;
   return (
-    <PaddedNarrowColumn>
-      <PageTitle>{strings.readTextTitle}</PageTitle>
+    <Wrapper>
+      {!inTab && <PageTitle>{strings.readTextTitle}</PageTitle>}
       <ShareHint>{strings.readTextHint}</ShareHint>
       <ClearableInput
         value={draft}
@@ -152,6 +155,6 @@ export default function ShortTexts() {
           ))}
         </TextList>
       )}
-    </PaddedNarrowColumn>
+    </Wrapper>
   );
 }
