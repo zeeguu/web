@@ -87,6 +87,17 @@ describe("DailyLessonSettingsDialog", () => {
     expect(onSubmit).toHaveBeenCalledWith("situation", "at the post office", true);
   });
 
+  it("at A0 Type your own shows only the field, and Back puts the list and the choice back", () => {
+    setup(0, { initialType: "situation", initialSuggestion: "ordering at a café" });
+    fireEvent.click(screen.getByText("Type your own"));
+    expect(screen.queryByRole("radio", { name: /At the café/ })).toBeNull();
+    fireEvent.change(screen.getByPlaceholderText(/post office/), { target: { value: "at the zoo" } });
+
+    fireEvent.click(screen.getByText("← Back to the list"));
+    expect(screen.queryByPlaceholderText(/post office/)).toBeNull();
+    expect(screen.getByRole("radio", { name: /At the café/ }).getAttribute("aria-checked")).toBe("true");
+  });
+
   it("at A0 shows the learner's own situation as a selected pill, without a text field", () => {
     const { onSubmit } = setup(0, { initialType: "situation", initialSuggestion: "Gaming" });
     const pill = screen.getByRole("radio", { name: /Gaming/ });

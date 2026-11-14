@@ -39,9 +39,6 @@ const LinkButton = styled.button`
   color: ${zeeguuOrange};
   cursor: pointer;
 
-  &[aria-pressed="true"] {
-    text-decoration: underline;
-  }
 `;
 
 const Count = styled.span`
@@ -66,6 +63,8 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
   const [situations, setSituations] = useState(null);
   // Typing their own, after tapping "Type your own".
   const [other, setOther] = useState(false);
+  // What was selected before "Type your own", put back by "Back to the list".
+  const [previous, setPrevious] = useState(subject);
   const [expanded, setExpanded] = useState(false);
   // The saved situation when the learner typed it themselves, fixed for the
   // life of the dialog.
@@ -84,6 +83,35 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
   const shown = expanded ? A0_SITUATIONS : recommendedSituations(current, situations);
   const customSelected = !other && custom !== null && (subject || "").trim() === custom;
   const customLessons = custom ? lessonsIn(custom, situations) : 0;
+
+  // Typing their own takes the dialog over: the field alone, and a way back.
+  // A second popup on top of this one would be two layers on a phone, with
+  // the keyboard covering the second.
+  if (other) {
+    return (
+      <div>
+        <ClearableInput
+          placeholder="A situation to get through, e.g. at the post office"
+          maxLength={MAX_SUGGESTION_LENGTH}
+          value={subject}
+          onChange={(e) => setSubject(e.target.value.replace(/\n/g, " "))}
+          onClear={() => setSubject("")}
+          autoFocus
+        />
+        <Links>
+          <LinkButton
+            type="button"
+            onClick={() => {
+              setOther(false);
+              setSubject(previous);
+            }}
+          >
+            ← Back to the list
+          </LinkButton>
+        </Links>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -135,27 +163,15 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
         )}
         <LinkButton
           type="button"
-          aria-pressed={other}
           onClick={() => {
-            if (!other) setSubject("");
+            setPrevious(subject);
+            setSubject("");
             setOther(true);
           }}
         >
           Type your own
         </LinkButton>
       </Links>
-      {other && (
-        <div style={{ marginTop: "0.8rem" }}>
-          <ClearableInput
-            placeholder="A situation to get through, e.g. at the post office"
-            maxLength={MAX_SUGGESTION_LENGTH}
-            value={subject}
-            onChange={(e) => setSubject(e.target.value.replace(/\n/g, " "))}
-            onClear={() => setSubject("")}
-            autoFocus
-          />
-        </div>
-      )}
     </div>
   );
 }
