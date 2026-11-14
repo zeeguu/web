@@ -62,8 +62,8 @@ describe("DailyLessonSettingsDialog", () => {
 
   it("at A0 shows how many lessons the learner had in each situation", () => {
     setup(0);
-    expect(screen.getByRole("radio", { name: /At the café/ }).textContent).toBe("At the café · 3");
-    expect(screen.getByRole("radio", { name: /At the bakery/ }).textContent).toBe("At the bakery");
+    expect(screen.getByRole("radio", { name: /At the café/ }).textContent).toBe("☕ At the café · 3");
+    expect(screen.getByRole("radio", { name: /At the bakery/ }).textContent).toBe("🥐 At the bakery");
   });
 
   it("at A0 keeps the learner's own situation under Other", () => {

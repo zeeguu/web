@@ -34,7 +34,7 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
   return (
     <div>
       <Pills role="radiogroup" aria-label="Situation">
-        {A0_SITUATIONS.map(({ label, value }) => {
+        {A0_SITUATIONS.map(({ emoji, label, value }) => {
           const n = lessonsIn(value, situations);
           const isSelected = selected?.value === value;
           return (
@@ -50,6 +50,7 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
                 setSubject(value);
               }}
             >
+              <span aria-hidden="true">{emoji} </span>
               {label}
               {n > 0 && <Count> · {n}</Count>}
             </SelectablePill>
