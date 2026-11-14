@@ -1,5 +1,4 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import SweetAlert from "react18-bootstrap-sweetalert";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
@@ -15,6 +14,7 @@ import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import useSelectInterest from "../hooks/useSelectInterest";
+import AddKeywordModal from "./AddKeywordModal";
 import * as s from "./EvergreenArticles.sc";
 
 // The Evergreen tab: articles that don't go out of date (the crawler labels
@@ -67,8 +67,7 @@ export default function EvergreenArticles() {
 
   function addKeyword(keyword) {
     setAsking(false);
-    const trimmed = (keyword || "").trim();
-    if (trimmed) subscribeToSearch(trimmed);
+    subscribeToSearch(keyword);
   }
 
   const keywordRow = (
@@ -92,16 +91,7 @@ export default function EvergreenArticles() {
           {strings.evergreenAddKeyword}
         </Tag>
       </FilterRow>
-      {asking && (
-        <SweetAlert
-          input
-          showCancel
-          title={strings.evergreenAddKeywordPrompt}
-          placeHolder={strings.evergreenKeywordPlaceholder}
-          onConfirm={addKeyword}
-          onCancel={() => setAsking(false)}
-        />
-      )}
+      <AddKeywordModal open={asking} onClose={() => setAsking(false)} onAdd={addKeyword} />
     </s.KeywordSection>
   );
 
