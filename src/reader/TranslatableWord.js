@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect, useRef } from "react";
+import { Fragment, useState, useEffect, useLayoutEffect, useRef } from "react";
 import AlterMenu from "./AlterMenu";
 import extractDomain from "../utils/web/extractDomain";
 import addProtocolToLink from "../utils/web/addProtocolToLink";
@@ -48,6 +48,18 @@ export default function TranslatableWord({
   const [prevWord, setPreviousWord] = useState("");
   const [isTranslationVisible, setIsTranslationVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // The chip of a split expression spills to the right of its first word
+  // (mwe-split-head). Near the end of a line on a phone it would be cut off
+  // by the screen's edge, so shift it back by as much as it overhangs.
+  useLayoutEffect(() => {
+    const container = refToTranslation.current?.querySelector(".translationContainer");
+    if (!container) return;
+    container.style.transform = "";
+    if (!refToTranslation.current.closest("z-tag")?.classList.contains("mwe-split-head")) return;
+    const overhang = container.getBoundingClientRect().right - (document.documentElement.clientWidth - 8);
+    if (overhang > 0) container.style.transform = `translateX(-${overhang}px)`;
+  });
   // Bookmark-shaped snapshot handed to EditBookmarkModal; non-null while the
   // edit dialog is open.
   const [bookmarkBeingEdited, setBookmarkBeingEdited] = useState(null);
@@ -404,6 +416,13 @@ export default function TranslatableWord({
     return marker;
   }
 
+  // After a marker, the space goes in an inline-block, which the word's
+  // underline doesn't reach: otherwise it reads "en¹ _".
+  function spaceAfter(space) {
+    if (!space || !splitMweMarker()) return space;
+    return <span className="splitMweSpace">{space}</span>;
+  }
+
   // Get CSS classes for special tokens (punctuation, numbers, symbols)
   function getSpecialTokenClasses(word) {
     const classes = [];
@@ -441,6 +460,9 @@ export default function TranslatableWord({
 
     if (translated) {
       classes.push(colorClass || "mwe-adjacent");
+      // The whole expression's translation sits on its first word; see
+      // mwe-split-head in TranslatableText.sc.js.
+      if (word.token.mwe_is_separated && word.translation) classes.push("mwe-split-head");
     } else {
       classes.push("mwe-hover-hint", colorClass);
     }
@@ -516,7 +538,7 @@ export default function TranslatableWord({
               {splitMweMarker()}
             </sup>
           )}
-          {word.token.has_space === true && !word.word.endsWith("-") && !word.next?.word?.startsWith("-") ? " " : ""}
+          {spaceAfter(word.token.has_space === true && !word.word.endsWith("-") && !word.next?.word?.startsWith("-") ? " " : "")}
         </z-tag>
       </>
     );
@@ -601,7 +623,7 @@ export default function TranslatableWord({
           {/* The space between words sits outside the underlined span:
               z-tag keeps it at full width (break-spaces), so inside the span
               the underline ran on under the gap towards the next word. */}
-          {!isWordTranslating && " "}
+          {!isWordTranslating && spaceAfter(" ")}
           {showingAlterMenu && (
             <AlterMenu
               word={word}
