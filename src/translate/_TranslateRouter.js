@@ -8,6 +8,7 @@ import strings from "../i18n/definitions";
 import Translate from "./Translate";
 import TranslateHistory from "./TranslateHistory";
 import ShortTexts from "../texts/ShortTexts";
+import useTabbedRoute from "../hooks/useTabbedRoute";
 
 function ShortTextsTab() {
   return <ShortTexts inTab />;
@@ -17,6 +18,11 @@ const TRANSLATE_TAB_PATHS = ["/translate", "/translate/history", "/translate/tex
 
 export default function TranslateRouter() {
   const location = useLocation();
+  // Swipe left/right between the tabs, as in Read and Listen. Tuned like Read:
+  // the history and the texts are vertical lists.
+  const swipeRef = useTabbedRoute(TRANSLATE_TAB_PATHS, {
+    swipeOptions: { threshold: 90, deadzone: 12, lockRatio: 1.6, qualifyRatio: 2 },
+  });
 
   // Remember the tab, so the Translate button opens it again (as Read does).
   useEffect(() => {
@@ -47,9 +53,11 @@ export default function TranslateRouter() {
       <PaddedNarrowColumn>
         <TopTabs tabsAndLinks={tabsAndLinks} />
 
-        <PrivateRoute exact path="/translate" component={Translate} />
-        <PrivateRoute exact path="/translate/history" component={TranslateHistory} />
-        <PrivateRoute exact path="/translate/texts" component={ShortTextsTab} />
+        <div ref={swipeRef}>
+          <PrivateRoute exact path="/translate" component={Translate} />
+          <PrivateRoute exact path="/translate/history" component={TranslateHistory} />
+          <PrivateRoute exact path="/translate/texts" component={ShortTextsTab} />
+        </div>
       </PaddedNarrowColumn>
     </Switch>
   );
