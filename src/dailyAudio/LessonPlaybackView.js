@@ -3,7 +3,7 @@ import CustomAudioPlayer from "../components/CustomAudioPlayer";
 import FeedbackModal from "../components/FeedbackModal";
 import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackConstants";
 import Word from "../words/Word";
-import { successGreen } from "../components/colors";
+import Confetti from "react-confetti";
 import { AUDIO_STATUS } from "./AudioLessonConstants";
 import { LessonWrapper, LessonTitle, LessonMetadata, CompletionCheck, SubtleTextButton, LessonActions } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
@@ -25,6 +25,10 @@ export default function LessonPlaybackView({
   footer,
 }) {
   const [openFeedback, setOpenFeedback] = useState(false);
+  // Confetti when the learner reaches the end, once, not on every visit to a
+  // finished lesson. It replaced a "Lesson completed!" box that stayed on the
+  // page above the feedback questions.
+  const [celebrating, setCelebrating] = useState(false);
   const words = lessonData.words || [];
 
   // Callers (e.g. the daily episode card) can replace the default title block
@@ -86,6 +90,7 @@ export default function LessonPlaybackView({
                   last_completed_at: new Date().toISOString(),
                 }));
                 setUserDetails((prev) => ({ ...prev, daily_audio_status: AUDIO_STATUS.COMPLETED }));
+                setCelebrating(true);
               });
             }
           }}
@@ -100,21 +105,14 @@ export default function LessonPlaybackView({
           <ShareLessonButton api={api} lessonId={lessonData.lesson_id} title={lessonData.title} shareUuid={lessonData.share_uuid} />
         </CustomAudioPlayer>
 
-        {lessonData.is_completed && (
-          <div
-            style={{
-              marginBottom: "20px",
-              marginTop: "20px",
-              padding: "12px",
-              backgroundColor: "var(--bg-secondary)",
-              border: "1px solid #28a745",
-              borderRadius: "4px",
-            }}
-          >
-            <span style={{ color: successGreen, fontWeight: "500", fontSize: "14px" }}>
-              ✓ Lesson completed! Great job on finishing today's lesson.
-            </span>
-          </div>
+        {celebrating && (
+          <Confetti
+            width={window.innerWidth}
+            height={window.innerHeight}
+            recycle={false}
+            style={{ position: "fixed", top: 0, left: 0, zIndex: 1000, pointerEvents: "none" }}
+            onConfettiComplete={() => setCelebrating(false)}
+          />
         )}
 
         {/* Only A0 lessons can be tuned: the other levels' prompts have no

@@ -91,7 +91,10 @@ export default function TodayEpisodeCard({ onChangeTopic, dailySubject, a0, ...p
   // The gear opens lesson-TYPE config (frequency config is future work).
   const footer = (
     <FooterWrapper>
-      {lessonData.paused && <FooterMessage>Finish this lesson to have a new one tomorrow!</FooterMessage>}
+      {/* Not once it is finished: that is exactly what it asked for. */}
+      {lessonData.paused && !lessonData.is_completed && (
+        <FooterMessage>Finish this lesson to have a new one tomorrow!</FooterMessage>
+      )}
       {showEngagementHint && (
         <FooterMessage $small>Listen halfway to keep daily lessons coming automatically.</FooterMessage>
       )}
