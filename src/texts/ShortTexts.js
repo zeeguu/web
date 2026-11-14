@@ -15,7 +15,9 @@ import { languageName } from "../utils/misc/languageCodeToName";
 import { timeAgo } from "../utils/misc/readableTime";
 import { readableApiError } from "../utils/misc/readableApiError";
 import strings from "../i18n/definitions";
-import { classifySharedText, takePendingSharedText, onSharedText } from "./sharedText";
+import ContentPasteRoundedIcon from "@mui/icons-material/ContentPasteRounded";
+import { StyledButton } from "../components/allButtons.sc";
+import { classifySharedText, takePendingSharedText, onSharedText, MAX_SHARED_TEXT_CHARS } from "./sharedText";
 
 // /translate/texts (the "Your texts" tab in Translate; /texts redirects there): the
 // short texts the learner shared with Zeeguu from other apps (e.g. a WhatsApp
@@ -25,6 +27,11 @@ import { classifySharedText, takePendingSharedText, onSharedText } from "./share
 const ShareHint = styled.p`
   color: var(--text-secondary);
   text-align: center;
+`;
+
+const TextActions = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 const TextList = styled.div`
@@ -96,12 +103,34 @@ export default function ShortTexts({ inTab = false }) {
 
   if (isAdding) return <LoadingAnimation />;
 
+  // For a text that is easier to copy than to share. The clipboard is read
+  // only on the tap: the browser (and the iOS app's web view) allows it then,
+  // and asks nothing up front. Whether it holds text cannot be known before,
+  // so the button is always there, and says so when there is nothing.
+  async function pasteFromClipboard() {
+    setError("");
+    try {
+      const text = await navigator.clipboard.readText();
+      // The API keeps at most this much of a text.
+      if (text && text.trim()) bring(text.slice(0, MAX_SHARED_TEXT_CHARS));
+      else setError(strings.nothingToPaste);
+    } catch {
+      setError(strings.nothingToPaste);
+    }
+  }
+
   // As a tab the tab row already names the page and gives the column.
   const Wrapper = inTab ? Fragment : PaddedNarrowColumn;
   return (
     <Wrapper>
       {!inTab && <PageTitle>{strings.readTextTitle}</PageTitle>}
       <ShareHint>{strings.yourTextsIntro}</ShareHint>
+      <TextActions>
+        <StyledButton onClick={pasteFromClipboard}>
+          <ContentPasteRoundedIcon style={{ fontSize: "1.1rem", verticalAlign: "-0.2em", marginRight: "0.3rem" }} />
+          {strings.pasteFromClipboard}
+        </StyledButton>
+      </TextActions>
       {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
 
       {texts && texts.length > 0 && (
