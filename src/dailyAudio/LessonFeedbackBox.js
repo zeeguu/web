@@ -1,7 +1,8 @@
 import { useState } from "react";
 import styled from "styled-components";
 import PillSelector from "../components/PillSelector";
-import { zeeguuRed } from "../components/colors";
+import { zeeguuRed, zeeguuOrange } from "../components/colors";
+import { playHappyChime, playDoneChime } from "../utils/chimes";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 
 // After an A0 lesson: what the learner thought of it. Pace, repetition and
@@ -40,6 +41,35 @@ const ROWS = [
     ],
   },
 ];
+
+// What the answers do to the next lesson, in words. They move each setting one
+// step (api: lesson_tuning.py), hence "a bit".
+const EFFECTS = {
+  pace: { faster: "a bit faster", slower: "a bit slower" },
+  repetition: { less: "with less repetition", more: "with more repetition" },
+  length: { shorter: "a bit shorter", longer: "a bit longer" },
+};
+
+export function feedbackSummary(feedback) {
+  const parts = ROWS.map(({ aspect }) => EFFECTS[aspect][feedback[aspect]]).filter(Boolean);
+  if (parts.length === 0) return "Your next lesson will be just like this one.";
+  const list = parts.length === 1 ? parts[0] : `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
+  return `Based on your feedback, your next lesson will be ${list}.`;
+}
+
+const allAnswered = (feedback) => ROWS.every(({ aspect }) => feedback[aspect]);
+
+const ChangeLink = styled.button`
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: ${zeeguuOrange};
+  cursor: pointer;
+`;
 
 const Box = styled.div`
   margin: 20px 0;
@@ -88,13 +118,23 @@ const ErrorMsg = styled.p`
 
 export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
   const [error, setError] = useState(null);
+  // Once the three are answered the box folds into what they will change;
+  // "Change" opens the questions again.
+  const [editing, setEditing] = useState(false);
   const feedback = lessonData.feedback || {};
   const nextSituations = lessonData.next_situations || [];
   const current = lessonData.canonical_suggestion;
 
   function answer(aspect, value) {
     const previous = feedback[aspect];
+    const next = { ...feedback, [aspect]: value };
     setError(null);
+    if (aspect !== "situation" && allAnswered(next) && !allAnswered(feedback)) {
+      playDoneChime();
+      setEditing(false);
+    } else {
+      playHappyChime();
+    }
     setLessonData((prev) => ({ ...prev, feedback: { ...(prev.feedback || {}), [aspect]: value } }));
     api.sendLessonFeedback(lessonData.lesson_id, aspect, value, null, () => {
       setLessonData((prev) => ({ ...prev, feedback: { ...(prev.feedback || {}), [aspect]: previous } }));
@@ -104,18 +144,32 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
 
   return (
     <Box>
-      <Heading>How was this lesson?</Heading>
-      <Note>Your answers shape your next lessons.</Note>
+      {allAnswered(feedback) && !editing ? (
+        <>
+          <Heading>Thanks!</Heading>
+          <Note style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-primary)" }}>
+            {feedbackSummary(feedback)}
+          </Note>
+          <ChangeLink type="button" onClick={() => setEditing(true)}>
+            Change
+          </ChangeLink>
+        </>
+      ) : (
+        <>
+          <Heading>How was this lesson?</Heading>
+          <Note>Your answers shape your next lessons.</Note>
 
-      {ROWS.map(({ aspect, label, options }) => (
-        <PillSelector
-          key={aspect}
-          label={label}
-          options={options}
-          selectedValue={feedback[aspect]}
-          onChange={(value) => answer(aspect, value)}
-        />
-      ))}
+          {ROWS.map(({ aspect, label, options }) => (
+            <PillSelector
+              key={aspect}
+              label={label}
+              options={options}
+              selectedValue={feedback[aspect]}
+              onChange={(value) => answer(aspect, value)}
+            />
+          ))}
+        </>
+      )}
 
       {nextSituations.length > 0 && current && (
         <div>

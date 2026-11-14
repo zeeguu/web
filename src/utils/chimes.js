@@ -33,3 +33,40 @@ export function playStreakChime() {
 export function playTapChime() {
   blip({ from: 700, ramp: [[500, 0.08]], peak: 0.05 });
 }
+
+// A sine note starting `at` seconds from now, fading out over `duration`.
+function note(freq, at, duration = 0.18, peak = 0.08) {
+  const c = getCtx();
+  const start = c.currentTime + at;
+  const osc = c.createOscillator();
+  const gain = c.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(freq, start);
+  gain.gain.setValueAtTime(0.0001, start);
+  gain.gain.exponentialRampToValueAtTime(peak, start + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+  osc.connect(gain).connect(c.destination);
+  osc.start(start);
+  osc.stop(start + duration);
+}
+
+// Two quick rising notes (C6, E6): an answer was taken.
+export function playHappyChime() {
+  try {
+    note(1047, 0);
+    note(1319, 0.07);
+  } catch {
+    // No audio (e.g. AudioContext unavailable): the tap still counts.
+  }
+}
+
+// Three rising notes (C6, E6, G6): all the questions are answered.
+export function playDoneChime() {
+  try {
+    note(1047, 0);
+    note(1319, 0.08);
+    note(1568, 0.16, 0.3);
+  } catch {
+    // No audio: nothing to do.
+  }
+}
