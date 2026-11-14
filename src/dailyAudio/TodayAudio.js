@@ -465,12 +465,10 @@ export default function TodayAudio() {
     if (cameOnline && connectionError) loadToday();
   }, [isOffline, connectionError, loadToday]);
 
-  // Seed the dialog with the saved preference; if none is stored yet (e.g. a
-  // lesson generated before preferences existed), fall back to today's lesson
-  // so the learner always sees their current type/subject pre-selected.
   // The subject the dialog opens on, and the settings pill names: the saved
-  // preference, or for a lesson from before preferences, the lesson's own.
-  // Vocabulary has none.
+  // preference; if none is stored yet (e.g. a lesson generated before
+  // preferences existed), today's lesson's own, so the learner always sees
+  // their current subject. Vocabulary has none.
   const currentSubject = (dailyType ? dailySuggestion : lessonData?.canonical_suggestion) || "";
   const pillSubject = dailyType === "three_words_lesson" ? null : currentSubject;
   const a0 = isA0Learner(userDetails);
