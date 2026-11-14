@@ -11,7 +11,9 @@ import { MAX_SUGGESTION_LENGTH } from "./SuggestionSelector";
 // three in the list (a0Situations.js, ordered the way a newcomer needs them)
 // that they have not had yet: a recommendation, not a sample. Below them,
 // "More situations" shows the whole list and "Type your own" a text field.
-// Each pill says how many lessons they have had in it.
+// Each pill says how many lessons they have had in it. A saved situation the
+// learner typed themselves is a pill too (✏️), selected: opening the dialog on
+// a text field with the keyboard up read as being asked to type something.
 
 const RECOMMENDED = 3;
 
@@ -36,10 +38,6 @@ const LinkButton = styled.button`
   font-weight: 600;
   color: ${zeeguuOrange};
   cursor: pointer;
-
-  &[aria-pressed="true"] {
-    text-decoration: underline;
-  }
 `;
 
 const Count = styled.span`
@@ -58,13 +56,37 @@ export function recommendedSituations(current, situations) {
   return [...(current ? [current] : []), ...rest.slice(0, RECOMMENDED)];
 }
 
+function SituationPill({ emoji, label, lessons, selected, onClick }) {
+  return (
+    <SelectablePill
+      type="button"
+      role="radio"
+      aria-checked={selected}
+      $selected={selected}
+      title={lessons ? `${lessons} ${lessons === 1 ? "lesson" : "lessons"} so far` : "New"}
+      onClick={onClick}
+    >
+      <span aria-hidden="true">{emoji} </span>
+      {label}
+      {lessons > 0 && <Count> · {lessons}</Count>}
+    </SelectablePill>
+  );
+}
+
 export default function A0SituationPicker({ api, language, subject, setSubject }) {
   // null until loaded: the recommendation depends on it, and pills that move
   // under the learner's finger once it arrives would be worse than a moment's wait.
   const [situations, setSituations] = useState(null);
-  // Typing their own: chosen, or a saved subject that is not in the list.
-  const [other, setOther] = useState(() => Boolean(subject && subject.trim()) && !findA0Situation(subject));
+  // Typing their own, after tapping "Type your own".
+  const [typing, setTyping] = useState(false);
+  // What was selected before "Type your own", put back by "Back to the list".
+  const [previous, setPrevious] = useState(subject);
+  // What they typed, kept when they go back to the list, for when they return.
+  const [draft, setDraft] = useState("");
   const [expanded, setExpanded] = useState(false);
+  // The saved situation when the learner typed it themselves, fixed for the
+  // life of the dialog.
+  const [custom] = useState(() => (subject && subject.trim() && !findA0Situation(subject) ? subject.trim() : null));
   // The saved situation, fixed for the life of the dialog: tapping another pill
   // must not reshuffle the recommendation.
   const [current] = useState(() => findA0Situation(subject));
@@ -75,34 +97,62 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
 
   if (situations === null) return null;
 
-  const selected = other ? null : findA0Situation(subject);
+  // Typing their own takes the dialog over: the field alone, and a way back.
+  // A second popup on top of this one would be two layers on a phone, with
+  // the keyboard covering the second.
+  if (typing) {
+    return (
+      <div>
+        <ClearableInput
+          placeholder="A situation to get through, e.g. at the post office"
+          maxLength={MAX_SUGGESTION_LENGTH}
+          value={subject}
+          onChange={(e) => setSubject(e.target.value.replace(/\n/g, " "))}
+          onClear={() => setSubject("")}
+          autoFocus
+        />
+        <Links>
+          <LinkButton
+            type="button"
+            onClick={() => {
+              setDraft(subject);
+              setSubject(previous);
+              setTyping(false);
+            }}
+          >
+            ← Back to the list
+          </LinkButton>
+        </Links>
+      </div>
+    );
+  }
+
+  const selected = findA0Situation(subject);
   const shown = expanded ? A0_SITUATIONS : recommendedSituations(current, situations);
+  const isCustom = custom !== null && (subject || "").trim() === custom;
 
   return (
     <div>
       <Pills role="radiogroup" aria-label="Situation">
-        {shown.map(({ emoji, label, value }) => {
-          const n = lessonsIn(value, situations);
-          const isSelected = selected?.value === value;
-          return (
-            <SelectablePill
-              key={value}
-              type="button"
-              role="radio"
-              aria-checked={isSelected}
-              $selected={isSelected}
-              title={n ? `${n} ${n === 1 ? "lesson" : "lessons"} so far` : "New"}
-              onClick={() => {
-                setOther(false);
-                setSubject(value);
-              }}
-            >
-              <span aria-hidden="true">{emoji} </span>
-              {label}
-              {n > 0 && <Count> · {n}</Count>}
-            </SelectablePill>
-          );
-        })}
+        {custom && (
+          <SituationPill
+            emoji="✏️"
+            label={custom}
+            lessons={lessonsIn(custom, situations)}
+            selected={isCustom}
+            onClick={() => setSubject(custom)}
+          />
+        )}
+        {shown.map(({ emoji, label, value }) => (
+          <SituationPill
+            key={value}
+            emoji={emoji}
+            label={label}
+            lessons={lessonsIn(value, situations)}
+            selected={selected?.value === value}
+            onClick={() => setSubject(value)}
+          />
+        ))}
       </Pills>
       <Links>
         {!expanded && (
@@ -112,27 +162,17 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
         )}
         <LinkButton
           type="button"
-          aria-pressed={other}
           onClick={() => {
-            if (!other) setSubject("");
-            setOther(true);
+            setPrevious(subject);
+            // Their own situation, or what they typed before going back, to
+            // edit rather than retype.
+            setSubject(draft || (isCustom ? subject : ""));
+            setTyping(true);
           }}
         >
           Type your own
         </LinkButton>
       </Links>
-      {other && (
-        <div style={{ marginTop: "0.8rem" }}>
-          <ClearableInput
-            placeholder="A situation to get through, e.g. at the post office"
-            maxLength={MAX_SUGGESTION_LENGTH}
-            value={subject}
-            onChange={(e) => setSubject(e.target.value.replace(/\n/g, " "))}
-            onClear={() => setSubject("")}
-            autoFocus
-          />
-        </div>
-      )}
     </div>
   );
 }

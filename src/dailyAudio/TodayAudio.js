@@ -13,6 +13,7 @@ import { AUDIO_STATUS, GENERATION_PROGRESS } from "./AudioLessonConstants";
 import TodayEpisodeCard from "./TodayEpisodeCard";
 import DailyLessonSettingsDialog from "./DailyLessonSettingsDialog";
 import DailyLessonSettingsPill from "./DailyLessonSettingsPill";
+import { isA0Learner } from "../utils/misc/userCefrLevel";
 import { SubtleTextButton } from "./LessonView.sc";
 import { BannerButton } from "./SharedLessonView.sc";
 import { wordsAsTile, shortDate } from "./audioUtils";
@@ -464,14 +465,19 @@ export default function TodayAudio() {
     if (cameOnline && connectionError) loadToday();
   }, [isOffline, connectionError, loadToday]);
 
-  // Seed the dialog with the saved preference; if none is stored yet (e.g. a
-  // lesson generated before preferences existed), fall back to today's lesson
-  // so the learner always sees their current type/subject pre-selected.
+  // The subject the dialog opens on, and the settings pill names: the saved
+  // preference; if none is stored yet (e.g. a lesson generated before
+  // preferences existed), today's lesson's own, so the learner always sees
+  // their current subject. Vocabulary has none.
+  const currentSubject = (dailyType ? dailySuggestion : lessonData?.canonical_suggestion) || "";
+  const pillSubject = dailyType === "three_words_lesson" ? null : currentSubject;
+  const a0 = isA0Learner(userDetails);
+
   const settingsDialog = settingsOpen && (
     <DailyLessonSettingsDialog
       api={api}
       initialType={dailyType || lessonData?.lesson_type || null}
-      initialSuggestion={(dailyType ? dailySuggestion : lessonData?.canonical_suggestion) || ""}
+      initialSuggestion={currentSubject}
       alreadySubscribed={
         isConfigured || subscription?.subscription_status === "active" || subscription?.subscription_status === "off"
       }
@@ -635,6 +641,8 @@ export default function TodayAudio() {
           currentPlaybackTime={currentPlaybackTime}
           setCurrentPlaybackTime={setCurrentPlaybackTime}
           onChangeTopic={() => setSettingsOpen(true)}
+          dailySubject={pillSubject}
+          a0={a0}
         />
         {settingsDialog}
       </>
@@ -707,7 +715,12 @@ export default function TodayAudio() {
           {primaryLabel}
         </BannerButton>
         {showSettingsPill && (
-          <DailyLessonSettingsPill onClick={() => setSettingsOpen(true)} style={{ marginTop: "16px" }} />
+          <DailyLessonSettingsPill
+            onClick={() => setSettingsOpen(true)}
+            subject={pillSubject}
+            a0={a0}
+            style={{ marginTop: "16px" }}
+          />
         )}
       </div>
       {settingsDialog}

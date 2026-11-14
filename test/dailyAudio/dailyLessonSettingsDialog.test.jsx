@@ -87,12 +87,36 @@ describe("DailyLessonSettingsDialog", () => {
     expect(onSubmit).toHaveBeenCalledWith("situation", "at the post office", true);
   });
 
-  it("at A0 shows the learner's own situation in the text field", () => {
-    const { onSubmit } = setup(0, { initialType: "situation", initialSuggestion: "Gaming" });
-    const input = screen.getByPlaceholderText(/post office/);
-    expect(input.value).toBe("Gaming");
+  it("at A0 Type your own shows only the field, and Back puts the list and the choice back", () => {
+    setup(0, { initialType: "situation", initialSuggestion: "ordering at a café" });
+    fireEvent.click(screen.getByText("Type your own"));
+    expect(screen.queryByRole("radio", { name: /At the café/ })).toBeNull();
+    fireEvent.change(screen.getByPlaceholderText(/post office/), { target: { value: "at the zoo" } });
 
-    fireEvent.change(input, { target: { value: "at the post office" } });
+    fireEvent.click(screen.getByText("← Back to the list"));
+    expect(screen.queryByPlaceholderText(/post office/)).toBeNull();
+    expect(screen.getByRole("radio", { name: /At the café/ }).getAttribute("aria-checked")).toBe("true");
+
+    // What they typed is still there when they come back.
+    fireEvent.click(screen.getByText("Type your own"));
+    expect(screen.getByPlaceholderText(/post office/).value).toBe("at the zoo");
+  });
+
+  it("at A0 Type your own starts from the learner's own situation, to edit", () => {
+    setup(0, { initialType: "situation", initialSuggestion: "Gaming" });
+    fireEvent.click(screen.getByText("Type your own"));
+    expect(screen.getByPlaceholderText(/post office/).value).toBe("Gaming");
+  });
+
+  it("at A0 shows the learner's own situation as a selected pill, without a text field", () => {
+    const { onSubmit } = setup(0, { initialType: "situation", initialSuggestion: "Gaming" });
+    const pill = screen.getByRole("radio", { name: /Gaming/ });
+    expect(pill.textContent).toBe("✏️ Gaming · 1");
+    expect(pill.getAttribute("aria-checked")).toBe("true");
+    expect(screen.queryByPlaceholderText(/post office/)).toBeNull();
+
+    fireEvent.click(screen.getByText("Type your own"));
+    fireEvent.change(screen.getByPlaceholderText(/post office/), { target: { value: "at the post office" } });
     fireEvent.click(screen.getByText("Save settings"));
     expect(onSubmit).toHaveBeenCalledWith("situation", "at the post office", true);
   });
