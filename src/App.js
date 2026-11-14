@@ -485,8 +485,11 @@ function App() {
                           open={moreTranslationsModal.open}
                           handleCancel={moreTranslationsModal.close}
                         />
+                        {/* Top, under the top bar (see .Toastify rule in index.css): at the
+                            bottom of a phone they sat on the tab bar, clipped by the rounded
+                            corners and the home indicator. */}
                         <ToastContainer
-                          position="bottom-right"
+                          position="top-center"
                           autoClose={2000}
                           hideProgressBar={true}
                           newestOnTop={false}

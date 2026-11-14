@@ -323,3 +323,13 @@ a {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+
+/* Toasts sit just under the top bar, on every width. On phones react-toastify
+   pins the container to top: 0, which would put it under the clock and the
+   Dynamic Island. The top bar sits below the safe area and publishes its
+   height; screens without one (desktop, full-screen pages) remove the
+   variable, so the toast falls back to just under the safe area. The doubled
+   class outranks the library's own rule, whichever stylesheet loads last. */
+.Toastify__toast-container.Toastify__toast-container--top-center {
+  top: calc(env(safe-area-inset-top) + var(--top-bar-height, 0px) + 0.5rem);
+}
