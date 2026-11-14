@@ -2,12 +2,18 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ClearableInput from "../components/ClearableInput";
 import { SelectablePill } from "./SuggestionSelector.sc";
+import { SubtleTextButton } from "./LessonView.sc";
 import { A0_SITUATIONS, findA0Situation, lessonsIn } from "./a0Situations";
 import { MAX_SUGGESTION_LENGTH } from "./SuggestionSelector";
 
-// An A0 learner picks their daily situation from a list (a0Situations.js), or
-// "Other…" to type their own. Each pill says how many lessons they have had in
-// it, so they can see where they have been and what is still new.
+// An A0 learner picks their daily situation. Twelve at once is too many to
+// choose from, so the picker first shows their current situation and the next
+// three in the list (a0Situations.js, ordered the way a newcomer needs them)
+// that they have not had yet: a recommendation, not a sample. "More
+// situations…" shows the whole list and "Other…" to type their own. Each pill
+// says how many lessons they have had in it.
+
+const RECOMMENDED = 3;
 
 const Pills = styled.div`
   display: flex;
@@ -20,21 +26,41 @@ const Count = styled.span`
   opacity: 0.7;
 `;
 
+export function recommendedSituations(current, situations) {
+  const notHad = A0_SITUATIONS.filter((s) => s !== current && lessonsIn(s.value, situations) === 0);
+  // Had them all: the ones they had least.
+  const rest = notHad.length
+    ? notHad
+    : A0_SITUATIONS.filter((s) => s !== current).sort(
+        (a, b) => lessonsIn(a.value, situations) - lessonsIn(b.value, situations),
+      );
+  return [...(current ? [current] : []), ...rest.slice(0, RECOMMENDED)];
+}
+
 export default function A0SituationPicker({ api, language, subject, setSubject }) {
-  const [situations, setSituations] = useState([]);
+  // null until loaded: the recommendation depends on it, and pills that move
+  // under the learner's finger once it arrives would be worse than a moment's wait.
+  const [situations, setSituations] = useState(null);
   // Typing their own: chosen, or a saved subject that is not in the list.
   const [other, setOther] = useState(() => Boolean(subject && subject.trim()) && !findA0Situation(subject));
+  const [expanded, setExpanded] = useState(other);
+  // The saved situation, fixed for the life of the dialog: tapping another pill
+  // must not reshuffle the recommendation.
+  const [current] = useState(() => findA0Situation(subject));
 
   useEffect(() => {
     api.getAudioLessonSituations(language, setSituations, () => setSituations([]));
   }, [api, language]);
 
+  if (situations === null) return null;
+
   const selected = other ? null : findA0Situation(subject);
+  const shown = expanded ? A0_SITUATIONS : recommendedSituations(current, situations);
 
   return (
     <div>
       <Pills role="radiogroup" aria-label="Situation">
-        {A0_SITUATIONS.map(({ emoji, label, value }) => {
+        {shown.map(({ emoji, label, value }) => {
           const n = lessonsIn(value, situations);
           const isSelected = selected?.value === value;
           return (
@@ -56,19 +82,26 @@ export default function A0SituationPicker({ api, language, subject, setSubject }
             </SelectablePill>
           );
         })}
-        <SelectablePill
-          type="button"
-          role="radio"
-          aria-checked={other}
-          $selected={other}
-          onClick={() => {
-            if (!other) setSubject("");
-            setOther(true);
-          }}
-        >
-          Other…
-        </SelectablePill>
+        {expanded && (
+          <SelectablePill
+            type="button"
+            role="radio"
+            aria-checked={other}
+            $selected={other}
+            onClick={() => {
+              if (!other) setSubject("");
+              setOther(true);
+            }}
+          >
+            Other…
+          </SelectablePill>
+        )}
       </Pills>
+      {!expanded && (
+        <SubtleTextButton type="button" onClick={() => setExpanded(true)} style={{ marginTop: "0.5rem", paddingLeft: 0 }}>
+          More situations…
+        </SubtleTextButton>
+      )}
       {other && (
         <div style={{ marginTop: "0.8rem" }}>
           <ClearableInput
