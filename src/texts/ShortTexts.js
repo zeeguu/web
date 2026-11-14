@@ -17,7 +17,7 @@ import { readableApiError } from "../utils/misc/readableApiError";
 import strings from "../i18n/definitions";
 import { classifySharedText, takePendingSharedText, onSharedText } from "./sharedText";
 
-// /articles/texts (the "Your texts" tab in Read; /texts redirects there): the
+// /translate/texts (the "Your texts" tab in Translate; /texts redirects there): the
 // short texts the learner shared with Zeeguu from other apps (e.g. a WhatsApp
 // message). A share opens here and goes straight to the reader. Long texts
 // with a title are articles, and open in the article reader instead.
@@ -75,7 +75,7 @@ export default function ShortTexts({ inTab = false }) {
     if (params.has("text") || params.has("url")) {
       // Out of the URL straight away: it would otherwise sit in the history
       // and in error reports.
-      history.replace("/articles/texts");
+      history.replace("/translate/texts");
       bring(params.get("text"), params.get("url"));
     }
 
@@ -96,12 +96,12 @@ export default function ShortTexts({ inTab = false }) {
 
   if (isAdding) return <LoadingAnimation />;
 
-  // As a Read tab the tab row already names the page and says what it holds.
+  // As a tab the tab row already names the page and gives the column.
   const Wrapper = inTab ? Fragment : PaddedNarrowColumn;
   return (
     <Wrapper>
       {!inTab && <PageTitle>{strings.readTextTitle}</PageTitle>}
-      {!inTab && <ShareHint>{strings.yourTextsIntro}</ShareHint>}
+      <ShareHint>{strings.yourTextsIntro}</ShareHint>
       {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
 
       {texts && texts.length > 0 && (

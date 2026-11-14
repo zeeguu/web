@@ -37,7 +37,7 @@ describe("usePendingShare", () => {
 
     const { result } = render(true);
 
-    await waitFor(() => expect(result.current.pathname).toBe("/articles/texts"));
+    await waitFor(() => expect(result.current.pathname).toBe("/translate/texts"));
     expect(takePendingSharedText()).toBe("Hej alle! Træningen er aflyst.");
     expect(store.has(PENDING_SHARE_KEY)).toBe(false);
   });
@@ -60,7 +60,7 @@ describe("usePendingShare", () => {
     expect(store.has(PENDING_SHARE_KEY)).toBe(true);
 
     rerender({ loggedIn: true });
-    await waitFor(() => expect(result.current.pathname).toBe("/articles/texts"));
+    await waitFor(() => expect(result.current.pathname).toBe("/translate/texts"));
   });
 
   it("takes a share that arrives while the app runs, on the native nudge", async () => {
@@ -70,7 +70,7 @@ describe("usePendingShare", () => {
     store.set(PENDING_SHARE_KEY, JSON.stringify({ text: "Husk madpakke." }));
     act(() => window.dispatchEvent(new Event(SHARE_WAITING_EVENT)));
 
-    await waitFor(() => expect(result.current.pathname).toBe("/articles/texts"));
+    await waitFor(() => expect(result.current.pathname).toBe("/translate/texts"));
     expect(takePendingSharedText()).toBe("Husk madpakke.");
   });
 });
