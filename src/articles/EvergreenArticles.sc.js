@@ -4,7 +4,7 @@ const Intro = styled.p`
   color: var(--text-secondary);
   font-size: 0.95rem;
   line-height: 1.5;
-  margin: 1.5rem 0 0.5rem;
+  margin: 0 0 0.5rem;
   text-align: center;
 `;
 
