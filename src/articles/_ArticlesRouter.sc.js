@@ -13,3 +13,22 @@ export const IconSpan = styled.span`
 export const ContentContainer = styled.div`
   min-height: 70vh;
 `;
+
+// The active tab's name and one sentence on what it holds, kept together
+// (the sentence belongs to the title, not to the filter row below).
+export const TabHeading = styled.header`
+  text-align: center;
+  margin: 2rem 0 1rem;
+
+  h1 {
+    font-weight: 300;
+    margin: 0 0 0.25rem;
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin: 0;
+  }
+`;

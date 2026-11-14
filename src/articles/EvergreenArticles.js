@@ -12,7 +12,6 @@ import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import useSelectInterest from "../hooks/useSelectInterest";
-import * as s from "./EvergreenArticles.sc";
 
 // The Evergreen tab: articles that don't go out of date (the crawler labels
 // each article news or general), ranked by the learner's keywords and topics
@@ -83,7 +82,6 @@ export default function EvergreenArticles() {
 
   const header = (
     <>
-      <s.Intro>{strings.evergreenIntro}</s.Intro>
       <FeedFilterBar
         activeFilter={activeFilter}
         onSelectFilter={setActiveFilter}

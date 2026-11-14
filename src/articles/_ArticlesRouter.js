@@ -8,7 +8,6 @@ import { PrivateRoute } from "../PrivateRoute";
 import { Redirect } from "react-router-dom";
 import ClassroomArticles from "./ClassroomArticles";
 import TopTabs from "../components/TopTabs";
-import { PageTitle } from "../components/PageTitle";
 import strings from "../i18n/definitions";
 
 import OwnArticles from "./OwnArticles";
@@ -127,22 +126,24 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   );
 
   const tabs = [
-    { text: newsIcon, link: "/articles", name: strings.news },
-    { text: evergreenIcon, link: "/articles/evergreen", name: strings.evergreenTitle },
-    { text: bookmarkIcon, link: "/articles/bookmarked", name: strings.saved },
-    isStudent && { text: classroomIcon, link: "/articles/classroom", name: strings.classroomTab },
+    { text: newsIcon, link: "/articles", name: strings.news, intro: strings.newsIntro },
+    { text: evergreenIcon, link: "/articles/evergreen", name: strings.evergreenTitle, intro: strings.evergreenIntro },
+    { text: bookmarkIcon, link: "/articles/bookmarked", name: strings.saved, intro: strings.savedIntro },
+    isStudent && { text: classroomIcon, link: "/articles/classroom", name: strings.classroomTab, intro: strings.classroomIntro },
     {
       text: searchIcon,
       link: "/articles/mySearches",
       name: strings.search,
+      intro: strings.searchIntro,
       // Stay active on /search too — results are conceptually the search tab.
       isActive: (_, loc) => loc.pathname === "/articles/mySearches" || loc.pathname === "/search",
     },
-    { text: inboxIcon, link: "/articles/shared", name: strings.inboxTab },
+    { text: inboxIcon, link: "/articles/shared", name: strings.inboxTab, intro: strings.inboxIntro },
   ].filter(Boolean);
 
   // The tabs are icons only, and the newer ones (Evergreen's tree) don't
-  // explain themselves: every tab says its name above its content.
+  // explain themselves: every tab says its name, and in one short sentence
+  // what it holds, above its content.
   const activeTab = tabs.find((t) =>
     t.isActive
       ? t.isActive(null, location)
@@ -190,7 +191,12 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
       {/* Rendering top menu first, then routing to corresponding page */}
       <columnS.NarrowColumn>
         <TopTabs title={strings.articles} tabsAndLinks={tabs} hasBackground={false} isCompact={true} />
-        {activeTab && <PageTitle>{activeTab.name}</PageTitle>}
+        {activeTab && (
+          <s.TabHeading>
+            <h1>{activeTab.name}</h1>
+            <p>{activeTab.intro}</p>
+          </s.TabHeading>
+        )}
 
         <s.ContentContainer ref={swipeRef}>
           <PrivateRoute
