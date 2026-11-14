@@ -223,6 +223,13 @@ Zeeguu_API.prototype.searchMore = function (
   );
 };
 
+// The Evergreen tab: articles that don't go out of date, on the learner's
+// topics and keywords. Not cached: every visit records what was shown, and
+// the next day's list depends on it.
+Zeeguu_API.prototype.getEvergreenArticles = function (callback, onError) {
+  this._getJSON("user_articles/evergreen", callback, { onError });
+};
+
 Zeeguu_API.prototype.getBookmarkedArticles = function (callback) {
   this._getJSON("user_articles/my_articles", callback);
 };

@@ -13,9 +13,11 @@ import strings from "../i18n/definitions";
 import OwnArticles from "./OwnArticles";
 import ReadingHistory from "../words/WordHistory";
 import MySearches from "./MySearches";
+import EvergreenArticles from "./EvergreenArticles";
 import Search from "./Search";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import ParkRoundedIcon from "@mui/icons-material/ParkRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import MoveToInboxRoundedIcon from "@mui/icons-material/MoveToInboxRounded";
@@ -39,11 +41,18 @@ import TranslationOnboardingPopup from "../pages/onboarding/notifications/Transl
 
 const READ_TAB_PATHS = [
   "/articles",
+  "/articles/evergreen",
   "/articles/mySearches",
   "/articles/bookmarked",
   "/articles/classroom",
   "/articles/shared",
 ];
+
+// At A0 even the easiest evergreen article is out of reach, as with the feed.
+function EvergreenFeed(props) {
+  const { userDetails } = useContext(UserContext);
+  return isA0Learner(userDetails) ? <NoFeedAtA0 /> : <EvergreenArticles {...props} />;
+}
 
 // At A0 there is no news feed: see NoFeedAtA0. Decided here rather than inside
 // ArticleListBrowser, whose hooks must all run on every render.
@@ -79,6 +88,12 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     </s.IconSpan>
   );
 
+  const evergreenIcon = (
+    <s.IconSpan style={{ verticalAlign: "middle" }} title={strings.evergreenTitle}>
+      <ParkRoundedIcon {...iconProps} />
+    </s.IconSpan>
+  );
+
   const bookmarkIcon = (
     <s.IconSpan style={{ verticalAlign: "middle" }}>
       <BookmarkRoundedIcon {...iconProps} />
@@ -110,6 +125,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
 
   const tabs = [
     { text: homeIcon, link: "/articles" },
+    { text: evergreenIcon, link: "/articles/evergreen" },
     { text: bookmarkIcon, link: "/articles/bookmarked" },
     isStudent && { text: classroomIcon, link: "/articles/classroom" },
     {
@@ -169,6 +185,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
             hasExtension={hasExtension}
             isChrome={isChrome}
           />
+          <PrivateRoute exact path="/articles/evergreen" component={EvergreenFeed} />
           <PrivateRoute exact path="/articles/bookmarked" component={BookmarkedArticles} />
           <PrivateRoute path="/articles/bookmarked/hidden" component={HiddenArticles} />
           <PrivateRoute path="/articles/classroom" component={ClassroomArticles} />
