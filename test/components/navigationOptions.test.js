@@ -3,9 +3,9 @@ import { isNavOptionActive } from "../../src/components/MainNav/navigationOption
 
 describe("isNavOptionActive", () => {
   it("keeps Translate active on every Translate tab, whichever it opens", () => {
-    expect(isNavOptionActive("/translate/texts", "/translate")).toBe(true);
-    expect(isNavOptionActive("/translate", "/translate/texts")).toBe(true);
-    expect(isNavOptionActive("/translate/texts", "/articles")).toBe(false);
+    expect(isNavOptionActive("/translate/history", "/translate")).toBe(true);
+    expect(isNavOptionActive("/translate", "/translate/history")).toBe(true);
+    expect(isNavOptionActive("/translate/history", "/articles")).toBe(false);
   });
 
   it("keeps Read active on every Read tab", () => {

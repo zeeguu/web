@@ -1,42 +1,72 @@
 import { useContext } from "react";
+import styled from "styled-components";
+import ContentPasteRoundedIcon from "@mui/icons-material/ContentPasteRounded";
+
 import { SharedArticlesContext } from "../contexts/SharedArticlesContext";
 import SharedArticleRow from "./SharedArticleRow";
 import { InboxList } from "./SharedArticleRow.sc";
 import * as s from "../components/TopMessage.sc";
+import LoadingAnimation from "../components/LoadingAnimation";
+import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
+import { StyledButton } from "../components/allButtons.sc";
+import ShortTextRow from "../texts/ShortTextRow";
+import useShortTexts from "../texts/useShortTexts";
+import strings from "../i18n/definitions";
 
-// "Shared with you" inbox — articles friends have sent, rendered with the
-// saved-article row styling. Lives as its own tab in the reading area; the list
-// comes from SharedArticlesContext (refetched on navigation and polled while visible).
-//
-// Texts the learner brings in themselves have their own tab, "Your texts".
+// Inbox: everything that comes into Zeeguu from outside, newest first. The
+// articles friends send (SharedArticlesContext, per language), and the texts
+// the learner shares from another app or pastes (useShortTexts). Most learners
+// get nothing from friends, so their own texts are what makes it useful.
+
+const Actions = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const when = (iso) => (iso ? Date.parse(iso) || 0 : 0);
 
 export default function SharedInbox() {
   const { sharedArticles, sharedArticlesLoading, hasSharesInOtherLanguages } =
     useContext(SharedArticlesContext);
+  const { texts, isAdding, error, forget, pasteFromClipboard } = useShortTexts();
 
-  // Render nothing until we're actually loaded — otherwise the empty-state
-  // message flashes for a beat before the shares (or the real empty state)
-  // resolve.
-  if (sharedArticlesLoading) return null;
+  if (isAdding) return <LoadingAnimation />;
 
-  if (!sharedArticles || sharedArticles.length === 0) {
-    // The inbox is per-language, so "nothing here" can mean two different
-    // things — say which, so it isn't misleading when shares exist elsewhere.
-    const emptyMessage = hasSharesInOtherLanguages
-      ? "No shared articles in the language you're studying right now. Friends have sent you some in another language — switch languages to see them."
-      : "Nothing shared with you yet. When a friend sends you an article, it shows up here — in the language you're learning, at your level.";
-    return (
-      <>
-        <s.YellowMessageBox>{emptyMessage}</s.YellowMessageBox>
-      </>
-    );
-  }
+  const items = [
+    ...(sharedArticles || []).map((share) => ({ key: `a${share.id}`, at: when(share.created_at), share })),
+    ...(texts || []).map((text) => ({ key: `t${text.id}`, at: when(text.last_opened_at), text })),
+  ].sort((a, b) => b.at - a.at);
+
+  // Render the list only once both have loaded: otherwise rows jump in, or
+  // the empty state flashes before them.
+  const loaded = !sharedArticlesLoading && texts !== null;
 
   return (
-    <InboxList>
-      {sharedArticles.map((share) => (
-        <SharedArticleRow key={share.id} share={share} />
-      ))}
-    </InboxList>
+    <>
+      <Actions>
+        <StyledButton onClick={pasteFromClipboard}>
+          <ContentPasteRoundedIcon style={{ fontSize: "1.1rem", verticalAlign: "-0.2em", marginRight: "0.3rem" }} />
+          {strings.pasteFromClipboard}
+        </StyledButton>
+      </Actions>
+      {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
+
+      {loaded && items.length === 0 && <s.YellowMessageBox>{strings.inboxEmpty}</s.YellowMessageBox>}
+      {loaded && items.length > 0 && (
+        <InboxList>
+          {items.map((item) =>
+            item.share ? (
+              <SharedArticleRow key={item.key} share={item.share} />
+            ) : (
+              <ShortTextRow key={item.key} text={item.text} onForget={forget} />
+            ),
+          )}
+        </InboxList>
+      )}
+      {/* The friends' articles are per language; the texts are not. */}
+      {loaded && hasSharesInOtherLanguages && (!sharedArticles || sharedArticles.length === 0) && (
+        <s.YellowMessageBox>{strings.inboxSharesInOtherLanguages}</s.YellowMessageBox>
+      )}
+    </>
   );
 }

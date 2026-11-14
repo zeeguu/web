@@ -7,14 +7,10 @@ import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
 import Translate from "./Translate";
 import TranslateHistory from "./TranslateHistory";
-import ShortTexts from "../texts/ShortTexts";
 import useTabbedRoute from "../hooks/useTabbedRoute";
 
-function ShortTextsTab() {
-  return <ShortTexts inTab />;
-}
 
-const TRANSLATE_TAB_PATHS = ["/translate", "/translate/history", "/translate/texts"];
+const TRANSLATE_TAB_PATHS = ["/translate", "/translate/history"];
 
 export default function TranslateRouter() {
   const location = useLocation();
@@ -40,12 +36,6 @@ export default function TranslateRouter() {
       text: strings.historyTab,
       link: "/translate/history",
     },
-    // Text snippets the learner shared with Zeeguu from another app (a
-    // WhatsApp message), to translate word by word.
-    {
-      text: strings.yourTextsTab,
-      link: "/translate/texts",
-    },
   ];
 
   return (
@@ -56,7 +46,6 @@ export default function TranslateRouter() {
         <div ref={swipeRef}>
           <PrivateRoute exact path="/translate" component={Translate} />
           <PrivateRoute exact path="/translate/history" component={TranslateHistory} />
-          <PrivateRoute exact path="/translate/texts" component={ShortTextsTab} />
         </div>
       </PaddedNarrowColumn>
     </Switch>

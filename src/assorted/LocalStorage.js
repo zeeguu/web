@@ -360,8 +360,10 @@ const LocalStorage = {
     localStorage[this.Keys.LastVisitedReadPath] = path;
   },
 
+  // Only a tab that exists: a tab that was removed would open a blank page.
   getLastVisitedTranslatePath: function () {
-    return localStorage[this.Keys.LastVisitedTranslatePath] || "/translate";
+    const path = localStorage[this.Keys.LastVisitedTranslatePath];
+    return ["/translate", "/translate/history"].includes(path) ? path : "/translate";
   },
 
   setLastVisitedTranslatePath: function (path) {
