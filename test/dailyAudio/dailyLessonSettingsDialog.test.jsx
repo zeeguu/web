@@ -71,17 +71,24 @@ describe("DailyLessonSettingsDialog", () => {
     expect(screen.getByRole("radio", { name: /At the café/ }).getAttribute("aria-checked")).toBe("true");
   });
 
-  it("at A0 shows the whole list, and Other, on More situations", () => {
+  it("at A0 shows the whole list on More situations", () => {
     setup(0);
     expect(screen.queryByRole("radio", { name: /At the bakery/ })).toBeNull();
-    fireEvent.click(screen.getByText("More situations…"));
+    fireEvent.click(screen.getByText("More situations"));
     expect(screen.getByRole("radio", { name: /At the bakery/ }).textContent).toBe("🥐 At the bakery");
-    expect(screen.getByRole("radio", { name: "Other…" })).toBeTruthy();
+    expect(screen.queryByText("More situations")).toBeNull();
   });
 
-  it("at A0 keeps the learner's own situation under Other", () => {
+  it("at A0 opens a text field on Type your own", () => {
+    const { onSubmit } = setup(0);
+    fireEvent.click(screen.getByText("Type your own"));
+    fireEvent.change(screen.getByPlaceholderText(/post office/), { target: { value: "at the post office" } });
+    fireEvent.click(screen.getByText("Save settings"));
+    expect(onSubmit).toHaveBeenCalledWith("situation", "at the post office", true);
+  });
+
+  it("at A0 shows the learner's own situation in the text field", () => {
     const { onSubmit } = setup(0, { initialType: "situation", initialSuggestion: "Gaming" });
-    expect(screen.getByRole("radio", { name: "Other…" }).getAttribute("aria-checked")).toBe("true");
     const input = screen.getByPlaceholderText(/post office/);
     expect(input.value).toBe("Gaming");
 
