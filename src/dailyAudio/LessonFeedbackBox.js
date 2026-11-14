@@ -4,37 +4,39 @@ import PillSelector from "../components/PillSelector";
 import { zeeguuRed } from "../components/colors";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 
-// After an A0 lesson: what the learner thought of it. Pace, repetition and new
-// words tune their next lessons (api: audio_lessons/lesson_tuning.py); the
+// After an A0 lesson: what the learner thought of it. Pace, repetition and
+// length tune their next lessons (api: audio_lessons/lesson_tuning.py); the
 // situation row moves the daily lessons on, or keeps them where they are.
 // Each tap is saved at once; nothing tapped changes nothing.
 
+// The answers describe this lesson ("Too slow"), which is what the question
+// asks; the value sent is what the next lesson should do about it ("faster").
 const ROWS = [
   {
     aspect: "pace",
     label: "Pace",
     options: [
-      { value: "slower", pillLabel: "Slower", hintDescription: "Longer pauses to answer and repeat." },
+      { value: "faster", pillLabel: "Too slow" },
       { value: "just_right", pillLabel: "Just right" },
-      { value: "faster", pillLabel: "Faster", hintDescription: "Shorter pauses." },
+      { value: "slower", pillLabel: "Too fast" },
     ],
   },
   {
     aspect: "repetition",
     label: "Repetition",
     options: [
-      { value: "more", pillLabel: "More", hintDescription: "Each word comes back more often." },
+      { value: "more", pillLabel: "Too little" },
       { value: "just_right", pillLabel: "Just right" },
-      { value: "less", pillLabel: "Less", hintDescription: "Fewer repeats, and a shorter lesson." },
+      { value: "less", pillLabel: "Too much" },
     ],
   },
   {
-    aspect: "new_words",
-    label: "New words",
+    aspect: "length",
+    label: "Length",
     options: [
-      { value: "fewer", pillLabel: "Fewer", hintDescription: "A shorter conversation, fewer words to learn." },
+      { value: "longer", pillLabel: "Too short" },
       { value: "just_right", pillLabel: "Just right" },
-      { value: "more", pillLabel: "More", hintDescription: "A longer conversation, more words to learn." },
+      { value: "shorter", pillLabel: "Too long" },
     ],
   },
 ];

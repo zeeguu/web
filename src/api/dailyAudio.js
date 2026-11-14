@@ -233,7 +233,7 @@ Zeeguu_API.prototype.updateLessonState = function (lessonId, action, positionSec
 
 // What the learner thought of a lesson, one aspect at a time:
 // pace (slower | just_right | faster), repetition (more | just_right | less),
-// new_words (fewer | just_right | more), situation (stay | one of the lesson's
+// length (longer | just_right | shorter), situation (stay | one of the lesson's
 // next_situations). The answer is {lesson_id, feedback: {aspect: value}}.
 Zeeguu_API.prototype.sendLessonFeedback = function (lessonId, aspect, value, callback, onError) {
   this.apiLog(`POST audio_lesson_feedback/${lessonId}`);

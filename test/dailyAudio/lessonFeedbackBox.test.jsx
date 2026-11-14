@@ -30,12 +30,12 @@ const pill = (group, name) =>
   );
 
 describe("LessonFeedbackBox", () => {
-  it("saves a tap and shows it selected", () => {
+  it("saves what the next lesson should do, and shows the answer selected", () => {
     const api = setup();
-    fireEvent.click(pill("Pace", "Faster"));
+    fireEvent.click(pill("Pace", "Too slow"));
 
     expect(api.sendLessonFeedback).toHaveBeenCalledWith(7, "pace", "faster", null, expect.any(Function));
-    expect(pill("Pace", "Faster").getAttribute("aria-checked")).toBe("true");
+    expect(pill("Pace", "Too slow").getAttribute("aria-checked")).toBe("true");
   });
 
   it("offers staying and the three suggested situations", () => {
@@ -50,9 +50,9 @@ describe("LessonFeedbackBox", () => {
 
   it("puts the old answer back when saving fails", () => {
     setup({ fails: true });
-    fireEvent.click(pill("Repetition", "Less"));
+    fireEvent.click(pill("Repetition", "Too much"));
 
-    expect(pill("Repetition", "Less").getAttribute("aria-checked")).toBe("false");
+    expect(pill("Repetition", "Too much").getAttribute("aria-checked")).toBe("false");
     expect(screen.getByText(/Could not save/)).toBeTruthy();
   });
 
