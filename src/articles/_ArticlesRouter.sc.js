@@ -14,25 +14,24 @@ export const ContentContainer = styled.div`
   min-height: 70vh;
 `;
 
-// The active tab's name and one sentence on what it holds. It labels the
-// active icon, so it sits right under the tab row and stays smaller than the
-// article titles below it: tab -> name (tight), name -> sentence (tight),
-// then a clear gap before the filters and the list.
+// The active tab's name and one sentence on what it holds, in the light
+// page-title style (PageTitle). Grouped by spacing: air under the tab row,
+// the sentence close under the name it explains, then a larger gap before
+// the filters and the list.
 export const TabHeading = styled.header`
   text-align: center;
-  margin: 0.25rem 0 1rem;
+  margin: 1.25rem 0 1.5rem;
 
   h1 {
-    font-size: 1.35rem;
-    font-weight: 600;
-    line-height: 1.2;
+    font-weight: 300;
+    line-height: 1.15;
     margin: 0;
   }
 
   p {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     line-height: 1.4;
-    margin: 0.15rem 0 0;
+    margin: 0.4rem 0 0;
   }
 `;
