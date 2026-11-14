@@ -1,6 +1,4 @@
 import { useContext } from "react";
-import styled from "styled-components";
-import ContentPasteRoundedIcon from "@mui/icons-material/ContentPasteRounded";
 
 import { SharedArticlesContext } from "../contexts/SharedArticlesContext";
 import SharedArticleRow from "./SharedArticleRow";
@@ -8,27 +6,21 @@ import { InboxList } from "./SharedArticleRow.sc";
 import * as s from "../components/TopMessage.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
-import { StyledButton } from "../components/allButtons.sc";
 import ShortTextRow from "../texts/ShortTextRow";
 import useShortTexts from "../texts/useShortTexts";
 import strings from "../i18n/definitions";
 
 // Inbox: everything that comes into Zeeguu from outside, newest first. The
 // articles friends send (SharedArticlesContext, per language), and the texts
-// the learner shares from another app or pastes (useShortTexts). Most learners
+// the learner shares from another app (useShortTexts). Most learners
 // get nothing from friends, so their own texts are what makes it useful.
-
-const Actions = styled.div`
-  display: flex;
-  justify-content: center;
-`;
 
 const when = (iso) => (iso ? Date.parse(iso) || 0 : 0);
 
 export default function SharedInbox() {
   const { sharedArticles, sharedArticlesLoading, hasSharesInOtherLanguages } =
     useContext(SharedArticlesContext);
-  const { texts, isAdding, error, forget, pasteFromClipboard } = useShortTexts();
+  const { texts, isAdding, error, forget } = useShortTexts();
 
   if (isAdding) return <LoadingAnimation />;
 
@@ -43,12 +35,6 @@ export default function SharedInbox() {
 
   return (
     <>
-      <Actions>
-        <StyledButton onClick={pasteFromClipboard}>
-          <ContentPasteRoundedIcon style={{ fontSize: "1.1rem", verticalAlign: "-0.2em", marginRight: "0.3rem" }} />
-          {strings.pasteFromClipboard}
-        </StyledButton>
-      </Actions>
       {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
 
       {loaded && items.length === 0 && <s.YellowMessageBox>{strings.inboxEmpty}</s.YellowMessageBox>}

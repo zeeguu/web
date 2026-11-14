@@ -4,16 +4,16 @@ import { useHistory, useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import { readableApiError } from "../utils/misc/readableApiError";
 import strings from "../i18n/definitions";
-import { classifySharedText, takePendingSharedText, onSharedText, MAX_SHARED_TEXT_CHARS } from "./sharedText";
+import { classifySharedText, takePendingSharedText, onSharedText } from "./sharedText";
 
 // The short texts the learner brings in (shared from another app, e.g. a
-// WhatsApp message, or pasted), shown in Inbox with what friends share.
+// WhatsApp message), shown in Inbox with what friends share.
 // Taking a text in: a link opens as an article; any other text is kept and
 // opened in the text reader.
 //
-// Text arrives three ways: the native share sheet (index.js puts it in the
-// pending store), the installed web app's share target (?text=, which /texts
-// passes on to here), or pasting from the clipboard.
+// Text arrives two ways: the native share sheet (index.js puts it in the
+// pending store), or the installed web app's share target (?text=, which
+// /texts passes on to here).
 export const INBOX_PATH = "/articles/shared";
 
 export default function useShortTexts() {
@@ -73,21 +73,5 @@ export default function useShortTexts() {
     );
   }
 
-  // For a text that is easier to copy than to share. The clipboard is read
-  // only on the tap: the browser (and the iOS app's web view) allows it then,
-  // and asks nothing up front. Whether it holds text cannot be known before,
-  // so the button is always there, and says so when there is nothing.
-  async function pasteFromClipboard() {
-    setError("");
-    try {
-      const text = await navigator.clipboard.readText();
-      // The API keeps at most this much of a text.
-      if (text && text.trim()) bring(text.slice(0, MAX_SHARED_TEXT_CHARS));
-      else setError(strings.nothingToPaste);
-    } catch {
-      setError(strings.nothingToPaste);
-    }
-  }
-
-  return { texts, isAdding, error, forget, pasteFromClipboard };
+  return { texts, isAdding, error, forget };
 }

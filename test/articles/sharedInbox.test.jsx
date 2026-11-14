@@ -44,6 +44,6 @@ describe("Inbox", () => {
   it("says how things get here when there is nothing yet", () => {
     setup();
     expect(screen.getByText(/Share a text or an article from another app/)).toBeTruthy();
-    expect(screen.getByText("Paste from clipboard")).toBeTruthy();
+    expect(screen.queryByText(/Paste/)).toBeNull();
   });
 });
