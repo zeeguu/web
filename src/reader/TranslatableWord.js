@@ -287,9 +287,11 @@ export default function TranslatableWord({
     const articleId = interactiveText.contextIdentifier?.article_id;
     const mweExpression = word.mweExpression;
     const sentenceText = word.getSentenceText?.() || "";
+    // A separated expression ("blev ... ydmyget") has no bookmark: the API
+    // doesn't save one for it. It must still ungroup, so the id is optional.
     const bookmarkId = word.bookmark_id;
 
-    if (!articleId || !mweExpression || !sentenceText || !bookmarkId) {
+    if (!articleId || !mweExpression || !sentenceText) {
       console.error("Missing data for MWE ungroup:", { articleId, mweExpression, sentenceText, bookmarkId });
       return;
     }
