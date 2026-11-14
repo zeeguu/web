@@ -9,6 +9,7 @@ import { LessonWrapper, LessonTitle, LessonMetadata, CompletionCheck, SubtleText
 import { wordsAsTile } from "./audioUtils";
 import { knownLanguageName } from "../utils/misc/languageCodeToName";
 import ShareLessonButton from "./ShareLessonButton";
+import LessonFeedbackBox from "./LessonFeedbackBox";
 
 export default function LessonPlaybackView({
   lessonData,
@@ -114,6 +115,12 @@ export default function LessonPlaybackView({
               ✓ Lesson completed! Great job on finishing today's lesson.
             </span>
           </div>
+        )}
+
+        {/* Only A0 lessons can be tuned: the other levels' prompts have no
+            pace or repetition to change. */}
+        {lessonData.is_completed && lessonData.cefr_level === "A0" && lessonData.lesson_id && (
+          <LessonFeedbackBox lessonData={lessonData} setLessonData={setLessonData} api={api} />
         )}
 
         {words && words.length > 0 && (
