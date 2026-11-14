@@ -2,7 +2,9 @@ import { describe, it, expect, vi } from "vitest";
 import { useState } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 
-import LessonFeedbackBox from "../../src/dailyAudio/LessonFeedbackBox";
+import LessonFeedbackBox, { feedbackSummary } from "../../src/dailyAudio/LessonFeedbackBox";
+
+vi.mock("../../src/utils/chimes", () => ({ playHappyChime: vi.fn(), playDoneChime: vi.fn() }));
 
 const LESSON = {
   lesson_id: 7,
@@ -59,5 +61,37 @@ describe("LessonFeedbackBox", () => {
   it("has no situation row without suggestions", () => {
     setup({ lesson: { ...LESSON, next_situations: [] } });
     expect(screen.queryByRole("radiogroup", { name: "Next lesson" })).toBeNull();
+  });
+
+  it("folds into what the answers change once all three are answered, and opens again on Change", () => {
+    setup();
+    fireEvent.click(pill("Pace", "Too slow"));
+    fireEvent.click(pill("Repetition", "Too much"));
+    fireEvent.click(pill("Length", "Just right"));
+
+    expect(screen.getByText("Thanks!")).toBeTruthy();
+    expect(
+      screen.getByText("Based on your feedback, your next lesson will be a bit faster and with less repetition."),
+    ).toBeTruthy();
+    expect(screen.queryByRole("radiogroup", { name: "Pace" })).toBeNull();
+    // The situation choice stays open.
+    expect(screen.getByRole("radiogroup", { name: "Next lesson" })).toBeTruthy();
+
+    fireEvent.click(screen.getByText("Change"));
+    expect(pill("Pace", "Too slow").getAttribute("aria-checked")).toBe("true");
+  });
+});
+
+describe("feedbackSummary", () => {
+  it("says what changes", () => {
+    expect(feedbackSummary({ pace: "slower", repetition: "more", length: "shorter" })).toBe(
+      "Based on your feedback, your next lesson will be a bit slower, with more repetition and a bit shorter.",
+    );
+  });
+
+  it("says nothing changes when everything was just right", () => {
+    expect(feedbackSummary({ pace: "just_right", repetition: "just_right", length: "just_right" })).toBe(
+      "Your next lesson will be just like this one.",
+    );
   });
 });
