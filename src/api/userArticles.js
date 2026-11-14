@@ -223,6 +223,22 @@ Zeeguu_API.prototype.searchMore = function (
   );
 };
 
+// The Evergreen tab: articles that don't go out of date, on the learner's
+// topics and keywords. Not cached: every visit records what was shown, and
+// the next day's list depends on it.
+// Sends the language on screen, as getUserArticles does, so a language switch
+// doesn't race the save of the new language on the server.
+// filter: { topic: <title> } or { keyword: <text> } narrows it to one pill.
+Zeeguu_API.prototype.getEvergreenArticles = function (callback, onError, filter = {}) {
+  const params = [];
+  const learnedLanguage = LocalStorage.getLearnedLanguage();
+  if (learnedLanguage) params.push("language=" + learnedLanguage);
+  if (filter.topic) params.push("topic=" + encodeURIComponent(filter.topic));
+  if (filter.keyword) params.push("keyword=" + encodeURIComponent(filter.keyword));
+  const query = params.length ? "?" + params.join("&") : "";
+  this._getJSON("user_articles/evergreen" + query, callback, { onError });
+};
+
 Zeeguu_API.prototype.getBookmarkedArticles = function (callback) {
   this._getJSON("user_articles/my_articles", callback);
 };
