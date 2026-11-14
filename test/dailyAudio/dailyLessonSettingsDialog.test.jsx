@@ -12,6 +12,12 @@ function setup(level, { initialType = null, initialSuggestion = "", preferences 
   const api = {
     checkDailyLessonFeasibility: vi.fn((ok) => ok({ feasible: true })),
     getUserPreferences: vi.fn(() => Promise.resolve(preferences)),
+    getAudioLessonSituations: vi.fn((language, ok) =>
+      ok([
+        { raw_suggestion: "ordering at a café", canonical_suggestion: "café", lessons: 3 },
+        { raw_suggestion: "Gaming", canonical_suggestion: "gaming", lessons: 1 },
+      ]),
+    ),
     saveUserPreferences: vi.fn((prefs, ok, fail) => {
       calls.push("preferences");
       saveFails ? fail("HTTP 500") : ok("OK");
@@ -43,17 +49,52 @@ describe("DailyLessonSettingsDialog", () => {
     expect(api.getUserPreferences).not.toHaveBeenCalled();
   });
 
-  it("offers only situations at A0, even to someone who had chosen a topic", () => {
+  it("offers only situations at A0, from a list, even to someone who had chosen a topic", () => {
     const { api, onSubmit } = setup(0, { initialType: "topic", initialSuggestion: "football" });
-    expect(screen.queryAllByRole("radio")).toEqual([]);
+    expect(screen.queryByRole("radio", { name: "Topic" })).toBeNull();
     expect(screen.getByText("Daily situation")).toBeTruthy();
     expect(api.checkDailyLessonFeasibility).not.toHaveBeenCalled();
 
-    const input = screen.getByPlaceholderText(/ordering a coffee/);
-    expect(input.value).toBe("");
-    fireEvent.change(input, { target: { value: "at the bakery" } });
+    fireEvent.click(screen.getByRole("radio", { name: /I don't understand/ }));
     fireEvent.click(screen.getByText("Save settings"));
-    expect(onSubmit).toHaveBeenCalledWith("situation", "at the bakery", true);
+    expect(onSubmit).toHaveBeenCalledWith("situation", "saying you don't understand and asking for English", true);
+  });
+
+  it("at A0 recommends the current situation and the next three not had yet", () => {
+    setup(0, { initialType: "situation", initialSuggestion: "ordering at a café" });
+    expect(screen.getAllByRole("radio", { name: /^(?!A man|A woman|Either)/ }).map((r) => r.textContent)).toEqual([
+      "☕ At the café · 3",
+      "👋 Hello and introductions",
+      "🤷 I don't understand",
+      "🛒 At the supermarket",
+    ]);
+    expect(screen.getByRole("radio", { name: /At the café/ }).getAttribute("aria-checked")).toBe("true");
+  });
+
+  it("at A0 shows the whole list on More situations", () => {
+    setup(0);
+    expect(screen.queryByRole("radio", { name: /At the bakery/ })).toBeNull();
+    fireEvent.click(screen.getByText("More situations"));
+    expect(screen.getByRole("radio", { name: /At the bakery/ }).textContent).toBe("🥐 At the bakery");
+    expect(screen.queryByText("More situations")).toBeNull();
+  });
+
+  it("at A0 opens a text field on Type your own", () => {
+    const { onSubmit } = setup(0);
+    fireEvent.click(screen.getByText("Type your own"));
+    fireEvent.change(screen.getByPlaceholderText(/post office/), { target: { value: "at the post office" } });
+    fireEvent.click(screen.getByText("Save settings"));
+    expect(onSubmit).toHaveBeenCalledWith("situation", "at the post office", true);
+  });
+
+  it("at A0 shows the learner's own situation in the text field", () => {
+    const { onSubmit } = setup(0, { initialType: "situation", initialSuggestion: "Gaming" });
+    const input = screen.getByPlaceholderText(/post office/);
+    expect(input.value).toBe("Gaming");
+
+    fireEvent.change(input, { target: { value: "at the post office" } });
+    fireEvent.click(screen.getByText("Save settings"));
+    expect(onSubmit).toHaveBeenCalledWith("situation", "at the post office", true);
   });
 
   it("at A0 shows the saved role, and saving only a new role leaves the situation alone", async () => {
@@ -83,7 +124,7 @@ describe("DailyLessonSettingsDialog", () => {
       expect(screen.getByRole("radio", { name: "Either" }).getAttribute("aria-checked")).toBe("true"),
     );
     fireEvent.click(screen.getByRole("radio", { name: "A woman" }));
-    fireEvent.change(screen.getByPlaceholderText(/ordering a coffee/), { target: { value: "at the bakery" } });
+    fireEvent.click(screen.getByRole("radio", { name: /Hello/ }));
     fireEvent.click(screen.getByText("Save settings"));
     expect(calls).toEqual(["preferences", "situation"]);
   });

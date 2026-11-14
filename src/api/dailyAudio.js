@@ -231,6 +231,40 @@ Zeeguu_API.prototype.updateLessonState = function (lessonId, action, positionSec
     });
 };
 
+// What the learner thought of a lesson, one aspect at a time:
+// pace (slower | just_right | faster), repetition (more | just_right | less),
+// length (longer | just_right | shorter), situation (stay | one of the lesson's
+// next_situations). The answer is {lesson_id, feedback: {aspect: value}}.
+Zeeguu_API.prototype.sendLessonFeedback = function (lessonId, aspect, value, callback, onError) {
+  this.apiLog(`POST audio_lesson_feedback/${lessonId}`);
+  fetch(this._appendSessionToUrl(`audio_lesson_feedback/${lessonId}`), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ aspect, value }),
+  })
+    .then((response) =>
+      response.json().then((data) => {
+        if (!response.ok) throw new Error(data.error || "Network response was not ok");
+        return data;
+      }),
+    )
+    .then((data) => {
+      if (callback) callback(data);
+    })
+    .catch((error) => {
+      console.error("Error sending lesson feedback:", error);
+      Sentry.captureException(error, { tags: { endpoint: "audio_lesson_feedback" } });
+      if (onError) onError(error);
+    });
+};
+
+// How many lessons the learner has had in each situation, in one language:
+// [{raw_suggestion, canonical_suggestion, lessons}].
+Zeeguu_API.prototype.getAudioLessonSituations = function (language, callback, onError) {
+  const params = language ? `?language=${encodeURIComponent(language)}` : "";
+  this._getJSON(`audio_lesson_situations${params}`, callback, { onError });
+};
+
 Zeeguu_API.prototype.checkDailyLessonFeasibility = function (callback, onError) {
   this._getJSON("check_daily_lesson_feasibility", callback, { onError });
 };
