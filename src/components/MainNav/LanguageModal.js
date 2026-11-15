@@ -33,6 +33,7 @@ export default function LanguageModal({ open, setOpen }) {
   const [streaksByCode, setStreaksByCode] = useState({});
   const [practicedByCode, setPracticedByCode] = useState({});
   const [lastPracticedByCode, setLastPracticedByCode] = useState({});
+  const [msToStreakByCode, setMsToStreakByCode] = useState({});
   const [isSwitching, setIsSwitching] = useState(false);
 
   useEffect(() => {
@@ -50,14 +51,17 @@ export default function LanguageModal({ open, setOpen }) {
       const streakMap = {};
       const practicedMap = {};
       const lastPracticedMap = {};
+      const msToStreakMap = {};
       data.forEach((l) => {
         streakMap[l.code] = l.daily_streak;
         practicedMap[l.code] = l.practiced_today;
         lastPracticedMap[l.code] = l.last_practiced_date;
+        msToStreakMap[l.code] = l.ms_to_streak;
       });
       setStreaksByCode(streakMap);
       setPracticedByCode(practicedMap);
       setLastPracticedByCode(lastPracticedMap);
+      setMsToStreakByCode(msToStreakMap);
     });
 
     return () => {
@@ -144,6 +148,7 @@ export default function LanguageModal({ open, setOpen }) {
               languageName={e.language}
               streak={streaksByCode[e.code] || 0}
               practiced={practicedByCode[e.code]}
+              msToStreak={msToStreakByCode[e.code]}
               cefrLevelValue={getCefrLevelValueForLanguage(e.code)}
               onCefrLevelChange={(newLevel, ev) => handleCefrLevelChange(e.code, newLevel, ev)}
             />
