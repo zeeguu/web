@@ -86,21 +86,11 @@ Zeeguu_API.prototype.logIn = function (email, password, onError, onSuccess) {
   let url = this.baseAPIurl + `/session/${email}`;
   this.apiLog(`/session/${email}`);
 
-  const post = (body) =>
-    fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body,
-    });
-
-  post(qs.stringify({ password, platform: getPlatform() }))
-    // Signup used to send the password unencoded, so an account made with
-    // & + or % in it stored a mangled password. Try that form once too.
-    .then((response) =>
-      response.status === 401 && /[&+%]/.test(password)
-        ? post(`password=${password}&platform=${getPlatform()}`)
-        : response,
-    )
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: qs.stringify({ password, platform: getPlatform() }),
+  })
     .then((response) => {
       // https://stackoverflow.com/a/45366905/1200070
       response.json().then((data) => {
