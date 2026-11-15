@@ -275,8 +275,8 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
       <Bar>
         {visible.map((lang) => {
           const isActive = lang.code === currentCode;
-          // The ring is on the current language; while a switch is pending,
-          // ms_to_streak still belongs to the language being left.
+          // The ring is on the current language. While a switch is pending the
+          // numbers are from before it, so the ring waits for the switch to land.
           const countingDown = isActive && !switchingTo && isCountingDown(lang.practiced_today, lang.ms_to_streak);
           const title = countingDown
             ? `${lang.language}: ${streakCountdownHint(lang.ms_to_streak, lang.daily_streak)}`
