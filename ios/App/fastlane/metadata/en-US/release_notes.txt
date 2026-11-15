@@ -1,17 +1,4 @@
-Tell your audio lessons how they went, read your own texts, and get a daily reminder to study.
+See how close you are to keeping your streak today.
 
-Audio lessons
-- Finishing a lesson now comes with a little celebration.
-- After a beginner lesson, say how it was: pace, repetition and length. Zeeguu tells you how your next lesson will change.
-- Choose where your lessons take place from a short list of everyday situations, with how many lessons you have had in each, or type your own. After a lesson, Zeeguu also suggests where to go next.
-- The button under the player now shows what your lessons are about.
-
-Reading
-- Share a short text from another app to Zeeguu, like a message, and tap any word to translate it. Your texts are in Inbox, next to what friends share.
-- New Evergreen tab, next to News: articles that stay worth reading, filtered by your topics and keywords.
-- Phrases whose words are apart are now numbered, so you can see which words belong together. Their text no longer jumps when translated, and you can ungroup them.
-
-Practice
-- In the exercise with three audio options, a wrong pick now tells you which word you picked and what it means.
-- A daily study reminder, on the Notifications page.
-- Aiki shows how many seconds of study unlock your paused apps.
+- Until today counts, a ring around the streak flame fills up as you study toward your daily goal, and the tooltip says how many minutes are left.
+- The language menu shows the same: how many more minutes of study keep your streak.

@@ -1,17 +1,4 @@
-Dis à tes leçons audio comment elles se sont passées, lis tes propres textes, et reçois un rappel quotidien pour étudier.
+Vois à quel point tu es proche de garder ta série aujourd'hui.
 
-Leçons audio
-- Terminer une leçon est maintenant un petit moment de fête.
-- Après une leçon pour débutants, dis comment elle était : rythme, répétitions et durée. Zeeguu te dit comment ta prochaine leçon va changer.
-- Choisis où se passent tes leçons dans une courte liste de situations du quotidien, avec le nombre de leçons que tu as eues dans chacune, ou écris la tienne. Après une leçon, Zeeguu te propose aussi où continuer.
-- Le bouton sous le lecteur montre maintenant le sujet de tes leçons.
-
-Lecture
-- Partage un court texte d'une autre app vers Zeeguu, comme un message, et touche un mot pour le traduire. Tes textes sont dans Inbox, avec ce que tes amis partagent.
-- Nouvel onglet Evergreen, à côté des Actualités : des articles qui valent toujours la peine d'être lus, filtrés selon tes sujets et mots-clés.
-- Les expressions dont les mots sont séparés sont maintenant numérotées, pour voir quels mots vont ensemble. Leur texte ne saute plus quand il est traduit, et tu peux les dissocier.
-
-Exercices
-- Dans l'exercice avec trois choix audio, un mauvais choix te dit maintenant quel mot tu as choisi et ce qu'il veut dire.
-- Un rappel quotidien pour étudier, sur la page Notifications.
-- Aiki montre combien de secondes d'étude débloquent tes apps en pause.
+- Tant que la journée ne compte pas encore, un anneau autour de la flamme de ta série se remplit à mesure que tu étudies vers ton objectif quotidien, et l'info-bulle indique combien de minutes il reste.
+- Le menu des langues montre la même chose : combien de minutes d'étude il te reste pour garder ta série.
