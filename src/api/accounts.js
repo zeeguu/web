@@ -19,7 +19,7 @@ Zeeguu_API.prototype.validateInviteCode = function (invite_code, onSuccess, onEr
 };
 
 Zeeguu_API.prototype.addUser = function (invite_code, password, userInfo, onSuccess, onError) {
-  let url = this.baseAPIurl + `/add_user/${userInfo.email}`;
+  let url = this.baseAPIurl + `/add_user/${encodeURIComponent(userInfo.email)}`;
   return fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -57,7 +57,7 @@ Zeeguu_API.prototype.deleteUser = function (onSuccess, onError) {
 };
 
 Zeeguu_API.prototype.addBasicUser = function (invite_code, password, userInfo, onSuccess, onError) {
-  let url = this.baseAPIurl + `/add_basic_user/${userInfo.email}`;
+  let url = this.baseAPIurl + `/add_basic_user/${encodeURIComponent(userInfo.email)}`;
   return fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -83,7 +83,7 @@ Zeeguu_API.prototype.addBasicUser = function (invite_code, password, userInfo, o
 };
 
 Zeeguu_API.prototype.logIn = function (email, password, onError, onSuccess) {
-  let url = this.baseAPIurl + `/session/${email}`;
+  let url = this.baseAPIurl + `/session/${encodeURIComponent(email)}`;
   this.apiLog(`/session/${email}`);
 
   fetch(url, {
@@ -111,12 +111,12 @@ Zeeguu_API.prototype.logIn = function (email, password, onError, onSuccess) {
 };
 
 Zeeguu_API.prototype.sendCode = function (email, callback, onError) {
-  this._post(`send_code/${email}`, "", callback, onError);
+  this._post(`send_code/${encodeURIComponent(email)}`, "", callback, onError);
 };
 
 Zeeguu_API.prototype.resetPassword = function (email, code, newPass, callback, onError) {
   this._post(
-    `reset_password/${email}`,
+    `reset_password/${encodeURIComponent(email)}`,
     `code=${encodeURIComponent(code)}&password=${encodeURIComponent(newPass)}`,
     callback,
     onError,
