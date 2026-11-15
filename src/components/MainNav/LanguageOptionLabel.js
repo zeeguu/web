@@ -2,6 +2,7 @@ import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import styled from "styled-components";
 import { streakFireOrange } from "../colors.js";
 import { CEFR_LEVELS } from "../../assorted/cefrLevels.js";
+import { isCountingDown, streakCountdownHint } from "../../utils/streakCountdown.js";
 
 const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
 const fireIconGraySx = { color: "var(--text-faint, #999)", fontSize: "0.9rem" };
@@ -14,6 +15,23 @@ const StreakBadge = styled.span`
   font-size: 0.85em;
   font-weight: 600;
   color: ${({ $practiced }) => ($practiced ? streakFireOrange : "var(--text-faint, #999)")};
+`;
+
+// The name with its streak badge, and under it, until today counts, how much
+// study is left to keep the streak.
+const LanguageNameColumn = styled.span`
+  display: flex;
+  flex-direction: column;
+`;
+
+const LanguageNameLine = styled.span`
+  display: flex;
+  align-items: center;
+`;
+
+const StreakHint = styled.span`
+  font-size: 0.75em;
+  color: var(--text-muted);
 `;
 
 const CefrSection = styled.span`
@@ -48,18 +66,25 @@ export default function LanguageOptionLabel({
   languageName,
   streak,
   practiced,
+  msToStreak,
   cefrLevelValue,
   onCefrLevelChange,
 }) {
+  const hint = isCountingDown(practiced, msToStreak) ? streakCountdownHint(msToStreak, streak) : null;
   return (
     <>
-      {languageName}
-      {streak >= 1 && (
-        <StreakBadge $practiced={practiced}>
-          <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
-          {streak}
-        </StreakBadge>
-      )}
+      <LanguageNameColumn>
+        <LanguageNameLine>
+          {languageName}
+          {streak >= 1 && (
+            <StreakBadge $practiced={practiced}>
+              <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
+              {streak}
+            </StreakBadge>
+          )}
+        </LanguageNameLine>
+        {hint && <StreakHint>{hint}</StreakHint>}
+      </LanguageNameColumn>
       <CefrSection>
         <CefrSelect
           value={cefrLevelValue}

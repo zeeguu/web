@@ -10,6 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import styled, { keyframes } from "styled-components";
 import { playStreakChime } from "../utils/chimes";
 import { noteStreaks } from "../reminder/useStudyReminder";
+import { isCountingDown, streakCountdownHint, studiedPercent } from "../utils/streakCountdown";
 
 const POLL_FAST_MS = 5_000;
 const POLL_SLOW_MS = 60_000;
@@ -103,6 +104,43 @@ const StreakNumber = styled.span`
 const fireIconSx = { color: streakFireOrange, fontSize: "0.9rem" };
 const fireIconGraySx = { color: "var(--text-faint, #999)", fontSize: "0.9rem" };
 
+// The flame inside a ring that fills as today's study time adds up toward the
+// daily goal.
+const FlameRing = styled.span`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.3rem;
+  height: 1.3rem;
+`;
+
+const ringSx = { position: "absolute", inset: 0, color: streakFireOrange };
+const ringTrackSx = { ...ringSx, color: "var(--streak-banner-border)" };
+
+function StreakFlame({ lang, goalMinutes, countingDown, animating }) {
+  const practiced = lang.practiced_today;
+  const icon = <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />;
+  const percent = studiedPercent(lang.ms_to_streak, goalMinutes);
+  const flame = countingDown ? (
+    <FlameRing>
+      <CircularProgress variant="determinate" value={100} size="1.3rem" thickness={3} sx={ringTrackSx} />
+      <CircularProgress variant="determinate" value={percent} size="1.3rem" thickness={3} sx={ringSx} />
+      {icon}
+    </FlameRing>
+  ) : (
+    icon
+  );
+  return (
+    <>
+      {flame}
+      <StreakNumber $practiced={practiced} $justPracticed={animating}>
+        {lang.daily_streak}
+      </StreakNumber>
+    </>
+  );
+}
+
 function computeMaxSlots(wrapperEl) {
   if (!wrapperEl) return 4;
   const available = wrapperEl.parentElement.clientWidth - wrapperEl.offsetLeft - MORE_BUTTON_PX;
@@ -131,7 +169,7 @@ function pickVisible(allLangs, currentCode, maxSlots) {
 
 export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) {
   const api = useContext(APIContext);
-  const { userDetails } = useContext(UserContext);
+  const { userDetails, userPreferences } = useContext(UserContext);
   const { requestSwitch, confirmModal, willConfirm } = useGuardedLanguageSwitch();
   const [languageStreaks, setLanguageStreaks] = useState([]);
   const [justPracticed, setJustPracticed] = useState({});
@@ -237,13 +275,18 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
       <Bar>
         {visible.map((lang) => {
           const isActive = lang.code === currentCode;
-          const practiced = lang.practiced_today;
+          // The ring is on the current language. While a switch is pending the
+          // numbers are from before it, so the ring waits for the switch to land.
+          const countingDown = isActive && !switchingTo && isCountingDown(lang.practiced_today, lang.ms_to_streak);
+          const title = countingDown
+            ? `${lang.language}: ${streakCountdownHint(lang.ms_to_streak, lang.daily_streak)}`
+            : lang.language;
           const animating = justPracticed[lang.code];
           return (
             <LanguageItem
               key={lang.code}
               onClick={() => handleClick(lang.code)}
-              title={lang.language}
+              title={title}
               style={{
                 opacity: isActive ? 1 : 0.7,
                 background: isActive && visible.length > 1 ? `${lightPurple}33` : "transparent",
@@ -261,12 +304,12 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
                 />
               )}
               {(lang.daily_streak >= 1 || isActive) && (
-                <>
-                  <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
-                  <StreakNumber $practiced={practiced} $justPracticed={animating}>
-                    {lang.daily_streak}
-                  </StreakNumber>
-                </>
+                <StreakFlame
+                  lang={lang}
+                  goalMinutes={userPreferences?.daily_goal_minutes}
+                  countingDown={countingDown}
+                  animating={animating}
+                />
               )}
             </LanguageItem>
           );
