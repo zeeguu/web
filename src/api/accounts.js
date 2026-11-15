@@ -23,13 +23,15 @@ Zeeguu_API.prototype.addUser = function (invite_code, password, userInfo, onSucc
   return fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body:
-      `password=${password}&invite_code=${invite_code}` +
-      `&username=${userInfo.name}` +
-      `&learned_language=${userInfo.learned_language}` +
-      `&native_language=${userInfo.native_language}` +
-      `&learned_cefr_level=${userInfo.learned_cefr_level}` +
-      `&platform=${getPlatform()}`,
+    body: qs.stringify({
+      password,
+      invite_code,
+      username: userInfo.name,
+      learned_language: userInfo.learned_language,
+      native_language: userInfo.native_language,
+      learned_cefr_level: userInfo.learned_cefr_level,
+      platform: getPlatform(),
+    }),
   })
     .then((response) => {
       if (response.ok) {
@@ -59,8 +61,7 @@ Zeeguu_API.prototype.addBasicUser = function (invite_code, password, userInfo, o
   return fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body:
-      `password=${password}&invite_code=${invite_code}` + `&username=${userInfo.name}` + `&platform=${getPlatform()}`,
+    body: qs.stringify({ password, invite_code, username: userInfo.name, platform: getPlatform() }),
   })
     .then((response) => {
       if (response.ok) {
@@ -88,7 +89,7 @@ Zeeguu_API.prototype.logIn = function (email, password, onError, onSuccess) {
   fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `password=${password}`,
+    body: qs.stringify({ password, platform: getPlatform() }),
   })
     .then((response) => {
       // https://stackoverflow.com/a/45366905/1200070
@@ -124,7 +125,7 @@ Zeeguu_API.prototype.resetPassword = function (email, code, newPass, callback, o
 
 Zeeguu_API.prototype.addAnonUser = function (uuid, password, invite_code, languagePrefs, onSuccess, onError) {
   let url = this.baseAPIurl + `/add_anon_user`;
-  let body = `uuid=${uuid}&password=${password}&platform=${getPlatform()}`;
+  let body = qs.stringify({ uuid, password, platform: getPlatform() });
 
   if (invite_code) {
     body += `&invite_code=${encodeURIComponent(invite_code)}`;
@@ -170,7 +171,7 @@ Zeeguu_API.prototype.logInAnon = function (uuid, password, onSuccess, onError) {
   fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `password=${password}`,
+    body: qs.stringify({ password, platform: getPlatform() }),
   })
     .then((response) => {
       if (response.ok) {

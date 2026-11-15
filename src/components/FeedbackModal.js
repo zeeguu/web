@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { getPlatform } from "../utils/misc/browserDetection.js";
 import { useContext, useEffect, useMemo } from "react";
 import useFormField from "../hooks/useFormField.js";
 import { APIContext } from "../contexts/APIContext";
@@ -63,6 +64,7 @@ export default function FeedbackModal({
       origin: prefixMsg,
       feedbackComponentName: FEEDBACK_CODES[feedbackComponentSelected],
       currentUrl: contextualInfo?.url || window.location.href,
+      platform: getPlatform(),
       isMobile: isMobile,
     };
     console.log('Sending feedback payload:', payload);
