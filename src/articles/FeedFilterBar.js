@@ -4,6 +4,7 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import BookmarkAddRoundedIcon from "@mui/icons-material/BookmarkAddRounded";
+import BookmarkAddedRoundedIcon from "@mui/icons-material/BookmarkAddedRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { APIContext } from "../contexts/APIContext";
 import Tag from "../pages/_pages_shared/Tag.sc";
@@ -21,18 +22,22 @@ import * as s from "./FeedFilterBar.sc";
 //
 // Search sits next to the gear: the magnifier turns the row into a text field,
 // and Enter selects the typed text like any other pill. What a search looks in
-// is the tab's business -- the bar only says so in `searchPlaceholder`.
+// is the tab's business -- the bar only says so in `searchPlaceholder`, and
+// names the tab in the logged search (`searchSource`).
 //
+// `onSaveSearch` adds a button that keeps a search as a keyword (pass it only
+// once the keywords have loaded); `isSearchKept` shows that it is kept.
 // Keyword pills are opt-in (the Evergreen tab): pass `keywords` to list them
-// after the topics, `onSaveSearch` for a button that keeps a search as a
-// keyword, and `onRemoveKeyword` for a delete button while a keyword is
-// selected. The news feed shows topics only.
+// after the topics, and `onRemoveKeyword` for a delete button while a keyword
+// is selected. The news feed shows topics only.
 export default function FeedFilterBar({
   activeFilter,
   onSelectFilter,
   searchPlaceholder,
+  searchSource,
   keywords,
   onSaveSearch,
+  isSearchKept,
   onRemoveKeyword,
 }) {
   const api = useContext(APIContext);
@@ -45,6 +50,12 @@ export default function FeedFilterBar({
     api.getSubscribedTopics((data) => setTopics(data || []));
   }, [api]);
 
+  // A selection made elsewhere (a topic on a card, Back) closes the field,
+  // or it would hide the pill just selected.
+  useEffect(() => {
+    setTyping(false);
+  }, [activeFilter]);
+
   const clearToAll = () => onSelectFilter({ type: "all" });
 
   function startTyping() {
@@ -56,7 +67,7 @@ export default function FeedFilterBar({
     e.preventDefault();
     const trimmed = term.trim();
     if (!trimmed) return;
-    api.logUserActivity(api.SEARCH_QUERY, "", trimmed, "");
+    api.logUserActivity(api.SEARCH_QUERY, "", trimmed, searchSource || "");
     setTyping(false);
     onSelectFilter({ type: "search", value: { search: trimmed } });
   }
@@ -143,7 +154,12 @@ export default function FeedFilterBar({
       <s.RoundButton onClick={clearToAll} title="Show all" aria-label="Clear filter">
         <CloseRoundedIcon style={{ fontSize: "1.1rem" }} />
       </s.RoundButton>
-      {activeFilter.type === "search" && onSaveSearch && (
+      {activeFilter.type === "search" && isSearchKept && (
+        <s.RoundButton disabled title={strings.keptAsKeyword} aria-label={strings.keptAsKeyword}>
+          <BookmarkAddedRoundedIcon style={{ fontSize: "1.1rem" }} />
+        </s.RoundButton>
+      )}
+      {activeFilter.type === "search" && !isSearchKept && onSaveSearch && (
         <s.RoundButton
           onClick={() => onSaveSearch(activeFilter.value.search)}
           title={strings.keepAsKeyword}

@@ -22,6 +22,7 @@ import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
 import VideoPreview from "../videos/VideoPreview";
 import { getUserCefrLevel, numericToCefr } from "../utils/misc/userCefrLevel";
+import useSelectInterest from "../hooks/useSelectInterest";
 export default function ArticleListBrowser({
   content,
   searchQuery,
@@ -100,6 +101,10 @@ export default function ArticleListBrowser({
     return savedTopic ? { type: "topic", value: savedTopic } : { type: "all" };
   });
   const activeFilterRef = useShadowRef(activeFilter);
+
+  // A search can be kept as a keyword: it then shapes this feed's ranking and
+  // gets its own pill on the Evergreen tab.
+  const { subscribedSearches, subscribeToSearch } = useSelectInterest(api);
 
   // What to search for, if anything: the /search route's query, or a search
   // typed in the filter row. Searched from the news tab, the newest come first.
@@ -357,13 +362,33 @@ export default function ArticleListBrowser({
     return <LoadingAnimation delay={300} />;
   }
 
+  const searchKept =
+    activeFilter.type === "search" &&
+    !!subscribedSearches?.some((k) => k.search.toLowerCase() === activeFilter.value.search.toLowerCase());
+
+  function keepSearch(term) {
+    api.logUserActivity(api.SUBSCRIBE_TO_SEARCH, "", term, "news");
+    subscribeToSearch(term);
+  }
+
+  const filterBar = (
+    <FeedFilterBar
+      activeFilter={activeFilter}
+      onSelectFilter={selectFilter}
+      searchPlaceholder={strings.searchNews}
+      searchSource="news"
+      onSaveSearch={subscribedSearches ? keepSearch : null}
+      isSearchKept={searchKept}
+    />
+  );
+
   // A search from the filter row keeps the row, so × goes back to the feed.
   const searchErrorHeader = searchQuery ? (
     <s.SearchHolder>
       <SearchField query={searchQuery} />
     </s.SearchHolder>
   ) : (
-    <FeedFilterBar activeFilter={activeFilter} onSelectFilter={selectFilter} searchPlaceholder={strings.searchNews} />
+    filterBar
   );
 
   if (searchError) {
@@ -391,11 +416,7 @@ export default function ArticleListBrowser({
           not above them. */}
       {!searchQuery && !kioskMode && (
         <>
-          <FeedFilterBar
-            activeFilter={activeFilter}
-            onSelectFilter={selectFilter}
-            searchPlaceholder={strings.searchNews}
-          />
+          {filterBar}
           {areVideosAvailable && (
             <s.SortHolder
               style={{
@@ -463,6 +484,14 @@ export default function ArticleListBrowser({
                 filterInUrl
                   ? (topicTitle) => {
                       selectFilter(topicFilter(topicTitle));
+                      window.scrollTo({ top: 0 });
+                    }
+                  : null
+              }
+              onSelectSearch={
+                filterInUrl
+                  ? (search) => {
+                      selectFilter({ type: "search", value: { search } });
                       window.scrollTo({ top: 0 });
                     }
                   : null

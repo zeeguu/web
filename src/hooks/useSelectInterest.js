@@ -57,8 +57,10 @@ export default function useSelectInterest(api) {
 
   //subscribe to custom interest filter
   function subscribeToSearch(response) {
+    // Functional update: the answer can land before the keyword list has
+    // loaded, or after it changed again.
     api.subscribeToSearch(response, (data) => {
-      setSubscribedSearches([...subscribedSearches, data]);
+      setSubscribedSearches((searches) => [...(searches || []), data]);
       api.invalidateCache("user_articles/recommended");
     });
   }
@@ -66,8 +68,8 @@ export default function useSelectInterest(api) {
   //remove custom interest filter
   function removeSearch(search) {
     console.log("unsubscribing from search" + search);
-    setSubscribedSearches(
-      subscribedSearches.filter((each) => each.id !== search.id),
+    setSubscribedSearches((searches) =>
+      (searches || []).filter((each) => each.id !== search.id),
     );
     api.unsubscribeFromSearch(search);
     api.invalidateCache("user_articles/recommended");

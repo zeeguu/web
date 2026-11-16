@@ -77,13 +77,27 @@ export default function EvergreenArticles() {
   }, [keywordCount]);
 
   // Keeping a search that already is a keyword just selects that keyword.
+  // Only offered once the keywords have loaded (see header), so this check
+  // sees them all.
   function keepSearch(term) {
-    const existing = (subscribedSearches || []).find((k) => k.search.toLowerCase() === term.toLowerCase());
-    if (existing) setActiveFilter({ type: "keyword", value: existing });
-    else subscribeToSearch(term);
+    const existing = subscribedSearches.find((k) => k.search.toLowerCase() === term.toLowerCase());
+    if (existing) {
+      setActiveFilter({ type: "keyword", value: existing });
+      return;
+    }
+    api.logUserActivity(api.SUBSCRIBE_TO_SEARCH, "", term, "evergreen");
+    subscribeToSearch(term);
+  }
+
+  // A 🔍 term on a card is one of the learner's keywords: select its pill.
+  function selectSearch(term) {
+    const keyword = (subscribedSearches || []).find((k) => k.search.toLowerCase() === term.toLowerCase());
+    setActiveFilter(keyword ? { type: "keyword", value: keyword } : { type: "search", value: { search: term } });
+    window.scrollTo({ top: 0 });
   }
 
   function removeKeyword(keyword) {
+    api.logUserActivity(api.UNSUBSCRIBE_FROM_SEARCH, "", keyword.search, "evergreen");
     removeSearch(keyword);
     setActiveFilter({ type: "all" });
   }
@@ -93,8 +107,9 @@ export default function EvergreenArticles() {
       activeFilter={activeFilter}
       onSelectFilter={setActiveFilter}
       searchPlaceholder={strings.searchEvergreen}
+      searchSource="evergreen"
       keywords={subscribedSearches}
-      onSaveSearch={keepSearch}
+      onSaveSearch={subscribedSearches ? keepSearch : null}
       onRemoveKeyword={removeKeyword}
     />
   );
@@ -103,7 +118,7 @@ export default function EvergreenArticles() {
     return (
       <>
         {header}
-        <EmptyState message={strings.evergreenEmpty} fillHeight={false} />
+        <EmptyState message={strings.evergreenLoadFailed} fillHeight={false} />
       </>
     );
   }
@@ -117,14 +132,26 @@ export default function EvergreenArticles() {
     );
   }
 
+  // A search that finds nothing says so; the general advice is for the
+  // unfiltered tab.
+  const emptyMessage =
+    activeFilter.type === "search"
+      ? strings.formatString(strings.evergreenNoMatches, activeFilter.value.search)
+      : strings.evergreenEmpty;
+
   // New today first (the server already orders them so), no headings: the
   // order says it.
   return (
     <>
       {header}
-      {articles.length === 0 && <EmptyState message={strings.evergreenEmpty} fillHeight={false} />}
+      {articles.length === 0 && <EmptyState message={emptyMessage} fillHeight={false} />}
       {articles.map((each) => (
-        <ArticlePreview key={each.id} article={each} {...browsingModeProps(LocalStorage.getBrowsingMode())} />
+        <ArticlePreview
+          key={each.id}
+          article={each}
+          onSelectSearch={selectSearch}
+          {...browsingModeProps(LocalStorage.getBrowsingMode())}
+        />
       ))}
     </>
   );
