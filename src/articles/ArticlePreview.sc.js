@@ -418,6 +418,28 @@ const PreviewClampedSummary = styled(ClampedSummary)`
   -webkit-line-clamp: 2;
 `;
 
+// On a search result: the passage of the text where the search matched, so a
+// card whose title doesn't mention the term shows why it is there. Muted and
+// two lines at most -- it explains the card, it is not its summary.
+const SearchSnippet = styled.p`
+  font-size: 1.2em;
+  line-height: 1.45em;
+  color: var(--text-secondary);
+  margin: 0.36em 0 0;
+  max-width: 40em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
+// The matched words in it: the text's own color and weight, no highlighter.
+const SnippetMatch = styled.mark`
+  background: none;
+  color: var(--text-primary);
+  font-weight: 600;
+`;
+
 // What the article IS -- topic, AI provenance, saved -- as a kicker above
 // the headline, the way news sites set the section over a title. Uppercase,
 // letter-spaced and muted so it is read as a label, never as a second title
@@ -641,6 +663,8 @@ export {
   PreviewCardClickable,
   PreviewSummary,
   PreviewClampedSummary,
+  SearchSnippet,
+  SnippetMatch,
   CompactCard,
   CompactText,
   CompactMedia,
