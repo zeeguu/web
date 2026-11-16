@@ -2,7 +2,6 @@ import { useContext, useEffect, useRef, useState } from "react";
 
 import ArticlePreview from "./ArticlePreview";
 import FeedFilterBar from "./FeedFilterBar";
-import AddKeywordModal from "./AddKeywordModal";
 import { browsingModeProps } from "./browsingMode";
 import LocalStorage from "../assorted/LocalStorage";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -20,13 +19,14 @@ import useSelectInterest from "../hooks/useSelectInterest";
 //
 // The filter row is the news feed's (FeedFilterBar), with the keywords added:
 // they are what make this tab personal, so they are added and removed here.
+// A search typed in the row narrows the tab like a keyword does, without
+// keeping it; the bookmark button next to it keeps it as a keyword pill.
 export default function EvergreenArticles() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
   const { subscribedSearches, subscribeToSearch, removeSearch } = useSelectInterest(api);
   const [articles, setArticles] = useState(null);
   const [failed, setFailed] = useState(false);
-  const [asking, setAsking] = useState(false);
   const [activeFilter, setActiveFilter] = useState({ type: "all" });
   const [reloadToken, setReloadToken] = useState(0);
 
@@ -43,7 +43,7 @@ export default function EvergreenArticles() {
     const filter =
       activeFilter.type === "topic"
         ? { topic: activeFilter.value.title }
-        : activeFilter.type === "keyword"
+        : activeFilter.type === "keyword" || activeFilter.type === "search"
           ? { keyword: activeFilter.value.search }
           : {};
     api.getEvergreenArticles(
@@ -59,20 +59,28 @@ export default function EvergreenArticles() {
   // subscribeToSearch updates the list of keywords when the server answers;
   // refetch once that list changes, so the new keyword's articles show.
   // The first load of the keywords is not a change: skip it, or the page
-  // loads twice.
+  // loads twice. A search just kept becomes its keyword pill instead, which
+  // refetches by itself (and gets the pill its delete button).
   const keywordCount = subscribedSearches ? subscribedSearches.length : null;
   const previousKeywordCount = useRef(null);
   useEffect(() => {
     if (keywordCount === null) return;
     if (previousKeywordCount.current !== null && previousKeywordCount.current !== keywordCount) {
-      setReloadToken((t) => t + 1);
+      const kept =
+        activeFilter.type === "search" &&
+        subscribedSearches.find((k) => k.search.toLowerCase() === activeFilter.value.search.toLowerCase());
+      if (kept) setActiveFilter({ type: "keyword", value: kept });
+      else setReloadToken((t) => t + 1);
     }
     previousKeywordCount.current = keywordCount;
+    // eslint-disable-next-line
   }, [keywordCount]);
 
-  function addKeyword(keyword) {
-    setAsking(false);
-    subscribeToSearch(keyword);
+  // Keeping a search that already is a keyword just selects that keyword.
+  function keepSearch(term) {
+    const existing = (subscribedSearches || []).find((k) => k.search.toLowerCase() === term.toLowerCase());
+    if (existing) setActiveFilter({ type: "keyword", value: existing });
+    else subscribeToSearch(term);
   }
 
   function removeKeyword(keyword) {
@@ -81,16 +89,14 @@ export default function EvergreenArticles() {
   }
 
   const header = (
-    <>
-      <FeedFilterBar
-        activeFilter={activeFilter}
-        onSelectFilter={setActiveFilter}
-        keywords={subscribedSearches}
-        onAddKeyword={() => setAsking(true)}
-        onRemoveKeyword={removeKeyword}
-      />
-      <AddKeywordModal open={asking} onClose={() => setAsking(false)} onAdd={addKeyword} />
-    </>
+    <FeedFilterBar
+      activeFilter={activeFilter}
+      onSelectFilter={setActiveFilter}
+      searchPlaceholder={strings.searchEvergreen}
+      keywords={subscribedSearches}
+      onSaveSearch={keepSearch}
+      onRemoveKeyword={removeKeyword}
+    />
   );
 
   if (failed) {

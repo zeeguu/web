@@ -33,3 +33,29 @@ export const RoundButton = styled.button`
     }
   }
 `;
+
+// The search field takes the pills' place in the row, so it grows to fill it
+// (the shared row keeps its other children at their natural width).
+export const SearchForm = styled.form`
+  && {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+`;
+
+export const SearchInput = styled.input`
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  height: 2.5rem;
+  padding: 0 1rem;
+  border: 1.5px solid ${zeeguuOrange};
+  border-radius: 999px;
+  font-size: 1rem; /* >= 16px, or iOS zooms in on focus */
+  color: var(--text-primary);
+
+  /* The row's own × closes the field; drop the browser's clear button. */
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
+`;

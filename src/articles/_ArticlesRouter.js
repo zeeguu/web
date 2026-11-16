@@ -3,7 +3,7 @@ import ArticleListBrowser from "./ArticleListBrowser";
 import BookmarkedArticles from "./BookmarkedArticles";
 import HiddenArticles from "../myArticles/HiddenArticles";
 
-import { useLocation, Switch } from "react-router-dom";
+import { useLocation, Switch, Route } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
 import { Redirect } from "react-router-dom";
 import ClassroomArticles from "./ClassroomArticles";
@@ -12,10 +12,7 @@ import strings from "../i18n/definitions";
 
 import OwnArticles from "./OwnArticles";
 import ReadingHistory from "../words/WordHistory";
-import MySearches from "./MySearches";
 import EvergreenArticles from "./EvergreenArticles";
-import Search from "./Search";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import NewspaperRoundedIcon from "@mui/icons-material/NewspaperRounded";
 import ParkRoundedIcon from "@mui/icons-material/ParkRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
@@ -42,7 +39,6 @@ import TranslationOnboardingPopup from "../pages/onboarding/notifications/Transl
 const READ_TAB_PATHS = [
   "/articles",
   "/articles/evergreen",
-  "/articles/mySearches",
   "/articles/bookmarked",
   "/articles/classroom",
   "/articles/shared",
@@ -108,12 +104,6 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     </s.IconSpan>
   );
 
-  const searchIcon = (
-    <s.IconSpan style={{ verticalAlign: "middle" }}>
-      <SearchRoundedIcon {...iconProps} />
-    </s.IconSpan>
-  );
-
   // Inbox of articles friends have shared. Always shown (a visible inbox invites
   // people to share); the badge carries the unread count.
   const inboxIcon = (
@@ -130,14 +120,6 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     { text: evergreenIcon, link: "/articles/evergreen", name: strings.evergreenTitle, intro: strings.evergreenIntro },
     { text: bookmarkIcon, link: "/articles/bookmarked", name: strings.saved, intro: strings.savedIntro },
     isStudent && { text: classroomIcon, link: "/articles/classroom", name: strings.classroomTab, intro: strings.classroomIntro },
-    {
-      text: searchIcon,
-      link: "/articles/mySearches",
-      name: strings.search,
-      intro: strings.searchIntro,
-      // Stay active on /search too — results are conceptually the search tab.
-      isActive: (_, loc) => loc.pathname === "/articles/mySearches" || loc.pathname === "/search",
-    },
     { text: inboxIcon, link: "/articles/shared", name: strings.inboxTab, intro: strings.inboxIntro },
   ].filter(Boolean);
 
@@ -159,7 +141,6 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const swipeRef = useTabbedRoute(
     tabs.map((t) => t.link),
     {
-      pathAliases: { "/search": "/articles/mySearches" },
       swipeOptions: { threshold: 90, deadzone: 12, lockRatio: 1.6, qualifyRatio: 2 },
     },
   );
@@ -215,11 +196,15 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
 
           <PrivateRoute path="/articles/history" component={ReadingHistory} />
 
-          <PrivateRoute path="/articles/mySearches" component={MySearches} />
+          {/* Search lives in the News and Evergreen filter rows now. The old
+              addresses stay, for links on cards and in older app builds: a
+              search lands in News (same ?search= parameter), the saved-search
+              list in Evergreen, whose keywords are those saved searches. */}
+          <Route path="/articles/mySearches" render={() => <Redirect to="/articles/evergreen" />} />
 
           <PrivateRoute exact path="/articles/shared" component={SharedInbox} />
 
-          <PrivateRoute path="/search" component={Search} />
+          <Route path="/search" render={({ location }) => <Redirect to={`/articles${location.search}`} />} />
         </s.ContentContainer>
       </columnS.NarrowColumn>
       <TranslationOnboardingPopup open={translationModal.open} handleCancel={translationModal.close} />
