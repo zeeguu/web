@@ -38,9 +38,9 @@ Zeeguu_API.prototype.unsubscribeFromTopic = function (topic) {
   Subscribes to a search term (e.g. "Trump", "Corona", etc.)
   */
 // The term is one path segment: encoded, so "c#" or "50%" arrive whole. A "/"
-// still splits it (Flask decodes %2F before routing).
-Zeeguu_API.prototype.subscribeToSearch = function (searchTerm, callback) {
-  return this._getJSON(`subscribe_search/${encodeURIComponent(searchTerm)}`, callback);
+// still splits it (Flask decodes %2F before routing), so callers drop those.
+Zeeguu_API.prototype.subscribeToSearch = function (searchTerm, callback, onError) {
+  return this._getJSON(`subscribe_search/${encodeURIComponent(searchTerm)}`, callback, { onError });
 };
 /* Opposite of unsubscribe */
 Zeeguu_API.prototype.unsubscribeFromSearch = function (search) {

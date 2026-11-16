@@ -65,7 +65,9 @@ export default function FeedFilterBar({
 
   function submitSearch(e) {
     e.preventDefault();
-    const trimmed = term.trim();
+    // The term travels as one URL path segment, which a "/" would split (see
+    // subscribeToSearch in api/userInterests.js): "covid/19" searches "covid 19".
+    const trimmed = term.replace(/\//g, " ").replace(/\s+/g, " ").trim();
     if (!trimmed) return;
     api.logUserActivity(api.SEARCH_QUERY, "", trimmed, searchSource || "");
     setTyping(false);
@@ -135,22 +137,17 @@ export default function FeedFilterBar({
       : activeFilter.type === "keyword" || activeFilter.type === "search"
         ? activeFilter.value.search
         : null;
-  const searchPill = (
-    <Tag className="small selected" onClick={clearToAll}>
-      <SearchRoundedIcon style={{ fontSize: "1rem", verticalAlign: "middle", marginRight: "0.25rem" }} />
-      {selectedLabel}
-    </Tag>
-  );
-  const plainPill = (
-    <Tag className="small selected" onClick={clearToAll}>
-      {selectedLabel}
-    </Tag>
+  const searchIcon = activeFilter.type === "search" && (
+    <SearchRoundedIcon style={{ fontSize: "1rem", verticalAlign: "middle", marginRight: "0.25rem" }} />
   );
   // × sits after the pill so clearing isn't adjacent to the gear (avoids
   // accidentally opening settings when reaching for "clear").
   const selectionView = (
     <>
-      {activeFilter.type === "search" ? searchPill : plainPill}
+      <Tag className="small selected" onClick={clearToAll}>
+        {searchIcon}
+        {selectedLabel}
+      </Tag>
       <s.RoundButton onClick={clearToAll} title="Show all" aria-label="Clear filter">
         <CloseRoundedIcon style={{ fontSize: "1.1rem" }} />
       </s.RoundButton>

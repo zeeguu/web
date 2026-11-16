@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import ArticlePreview from "./ArticlePreview";
 import FeedFilterBar from "./FeedFilterBar";
@@ -10,7 +10,7 @@ import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
-import useSelectInterest from "../hooks/useSelectInterest";
+import useSubscribedSearches from "../hooks/useSubscribedSearches";
 
 // The Evergreen tab: articles that don't go out of date (the crawler labels
 // each article news or general), ranked by the learner's keywords and topics
@@ -24,75 +24,59 @@ import useSelectInterest from "../hooks/useSelectInterest";
 export default function EvergreenArticles() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
-  const { subscribedSearches, subscribeToSearch, removeSearch } = useSelectInterest(api);
+  const { subscribedSearches, findSearch, isSearchKept, subscribeToSearch, removeSearch } = useSubscribedSearches(api);
   const [articles, setArticles] = useState(null);
   const [failed, setFailed] = useState(false);
   const [activeFilter, setActiveFilter] = useState({ type: "all" });
-  const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
     setTitle(strings.evergreenTitle);
   }, []);
 
-  // Refetch on language switch, on a pill, and after the keywords change. The
-  // ignore flag drops a response that lands after a newer request.
+  // What the server is asked for. A search and the keyword of the same text
+  // ask for the same list, so turning one into the other refetches nothing.
+  const requestFilter =
+    activeFilter.type === "topic"
+      ? { topic: activeFilter.value.title }
+      : activeFilter.type === "keyword" || activeFilter.type === "search"
+        ? { keyword: activeFilter.value.search }
+        : {};
+  const requestKey = JSON.stringify(requestFilter);
+
+  // Refetch on language switch and on a pill. The ignore flag drops a
+  // response that lands after a newer request.
   useEffect(() => {
     let ignore = false;
     setArticles(null);
     setFailed(false);
-    const filter =
-      activeFilter.type === "topic"
-        ? { topic: activeFilter.value.title }
-        : activeFilter.type === "keyword" || activeFilter.type === "search"
-          ? { keyword: activeFilter.value.search }
-          : {};
     api.getEvergreenArticles(
       (list) => !ignore && setArticles(list),
       () => !ignore && setFailed(true),
-      filter,
+      requestFilter,
     );
     return () => {
       ignore = true;
     }; // eslint-disable-next-line
-  }, [userDetails, reloadToken, activeFilter]);
+  }, [userDetails, requestKey]);
 
-  // subscribeToSearch updates the list of keywords when the server answers;
-  // refetch once that list changes, so the new keyword's articles show.
-  // The first load of the keywords is not a change: skip it, or the page
-  // loads twice. A search just kept becomes its keyword pill instead, which
-  // refetches by itself (and gets the pill its delete button).
-  const keywordCount = subscribedSearches ? subscribedSearches.length : null;
-  const previousKeywordCount = useRef(null);
+  // A search that is one of the keywords shows as that keyword's pill, with
+  // its delete button: right away, once the keywords load (a card's term
+  // tapped early), or once a kept search is saved.
   useEffect(() => {
-    if (keywordCount === null) return;
-    if (previousKeywordCount.current !== null && previousKeywordCount.current !== keywordCount) {
-      const kept =
-        activeFilter.type === "search" &&
-        subscribedSearches.find((k) => k.search.toLowerCase() === activeFilter.value.search.toLowerCase());
-      if (kept) setActiveFilter({ type: "keyword", value: kept });
-      else setReloadToken((t) => t + 1);
-    }
-    previousKeywordCount.current = keywordCount;
+    if (activeFilter.type !== "search") return;
+    const keyword = findSearch(activeFilter.value.search);
+    if (keyword) setActiveFilter({ type: "keyword", value: keyword });
     // eslint-disable-next-line
-  }, [keywordCount]);
+  }, [subscribedSearches, activeFilter]);
 
-  // Keeping a search that already is a keyword just selects that keyword.
-  // Only offered once the keywords have loaded (see header), so this check
-  // sees them all.
+  // Offered only once the keywords have loaded (see header).
   function keepSearch(term) {
-    const existing = subscribedSearches.find((k) => k.search.toLowerCase() === term.toLowerCase());
-    if (existing) {
-      setActiveFilter({ type: "keyword", value: existing });
-      return;
-    }
-    api.logUserActivity(api.SUBSCRIBE_TO_SEARCH, "", term, "evergreen");
-    subscribeToSearch(term);
+    if (subscribeToSearch(term)) api.logUserActivity(api.SUBSCRIBE_TO_SEARCH, "", term, "evergreen");
   }
 
-  // A 🔍 term on a card is one of the learner's keywords: select its pill.
+  // A 🔍 term on a card: the effect above turns it into its keyword pill.
   function selectSearch(term) {
-    const keyword = (subscribedSearches || []).find((k) => k.search.toLowerCase() === term.toLowerCase());
-    setActiveFilter(keyword ? { type: "keyword", value: keyword } : { type: "search", value: { search: term } });
+    setActiveFilter({ type: "search", value: { search: term } });
     window.scrollTo({ top: 0 });
   }
 
@@ -110,6 +94,7 @@ export default function EvergreenArticles() {
       searchSource="evergreen"
       keywords={subscribedSearches}
       onSaveSearch={subscribedSearches ? keepSearch : null}
+      isSearchKept={activeFilter.type === "search" && isSearchKept(activeFilter.value.search)}
       onRemoveKeyword={removeKeyword}
     />
   );

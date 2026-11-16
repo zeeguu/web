@@ -21,7 +21,7 @@ import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
 import VideoPreview from "../videos/VideoPreview";
 import { getUserCefrLevel, numericToCefr } from "../utils/misc/userCefrLevel";
-import useSelectInterest from "../hooks/useSelectInterest";
+import useSubscribedSearches from "../hooks/useSubscribedSearches";
 export default function ArticleListBrowser({
   // Kiosk mode: hide the topic filter bar and force articles to open in the
   // in-app reader (never the external publisher site).
@@ -99,7 +99,7 @@ export default function ArticleListBrowser({
 
   // A search can be kept as a keyword: it then shapes this feed's ranking and
   // gets its own pill on the Evergreen tab.
-  const { subscribedSearches, subscribeToSearch } = useSelectInterest(api);
+  const { subscribedSearches, isSearchKept, subscribeToSearch } = useSubscribedSearches(api, { enabled: !kioskMode });
 
   // What to search for, if anything: a search typed in the filter row (or
   // reached through /search, which redirects here). The search endpoint is
@@ -316,21 +316,20 @@ export default function ArticleListBrowser({
     });
   }
 
+  // The scroll listener is registered once, on mount (above): a second one
+  // here made a single scroll load the next page twice.
   useEffect(() => {
     loadArticles();
-    window.addEventListener("scroll", handleScroll, true);
-    return () => {
-      window.removeEventListener("scroll", handleScroll, true);
-    };
     // eslint-disable-next-line
   }, [activeFilter]);
 
   useEffect(() => {
     if (cefrLevel === lastCefrLevelRef.current) return;
     lastCefrLevelRef.current = cefrLevel;
-    if (query) return;
-    // The cached feed was built for the previous level.
+    // The cached feed was built for the previous level: drop it even while a
+    // search is on screen, or leaving the search shows the old level's feed.
     api.invalidateCache("user_articles/recommended");
+    if (query) return;
     loadArticles({ inPlace: true });
     // eslint-disable-next-line
   }, [cefrLevel]);
@@ -341,13 +340,10 @@ export default function ArticleListBrowser({
     return <LoadingAnimation delay={300} />;
   }
 
-  const searchKept =
-    activeFilter.type === "search" &&
-    !!subscribedSearches?.some((k) => k.search.toLowerCase() === activeFilter.value.search.toLowerCase());
+  const searchKept = activeFilter.type === "search" && isSearchKept(activeFilter.value.search);
 
   function keepSearch(term) {
-    api.logUserActivity(api.SUBSCRIBE_TO_SEARCH, "", term, "news");
-    subscribeToSearch(term);
+    if (subscribeToSearch(term)) api.logUserActivity(api.SUBSCRIBE_TO_SEARCH, "", term, "news");
   }
 
   const filterBar = (

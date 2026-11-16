@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import useSubscribedSearches from "./useSubscribedSearches";
 
 export default function useSelectInterest(api) {
   const [availableTopics, setAvailableTopics] = useState([]);
   const [subscribedTopics, setSubscribedTopics] = useState([]);
   const [allTopics, setAllTopics] = useState([]);
-  const [subscribedSearches, setSubscribedSearches] = useState();
+  const { subscribedSearches, setSubscribedSearches, subscribeToSearch, removeSearch } = useSubscribedSearches(api);
   const [showingSpecialInterestModal, setshowingSpecialInterestModal] =
     useState(false);
 
@@ -15,11 +16,6 @@ export default function useSelectInterest(api) {
 
     api.getSubscribedTopics((data) => {
       setSubscribedTopics(data);
-    });
-
-    //custom interest filters
-    api.getSubscribedSearchers((data) => {
-      setSubscribedSearches(data);
     });
   }, [api]);
 
@@ -55,25 +51,6 @@ export default function useSelectInterest(api) {
     }
   }
 
-  //subscribe to custom interest filter
-  function subscribeToSearch(response) {
-    // Functional update: the answer can land before the keyword list has
-    // loaded, or after it changed again.
-    api.subscribeToSearch(response, (data) => {
-      setSubscribedSearches((searches) => [...(searches || []), data]);
-      api.invalidateCache("user_articles/recommended");
-    });
-  }
-
-  //remove custom interest filter
-  function removeSearch(search) {
-    console.log("unsubscribing from search" + search);
-    setSubscribedSearches((searches) =>
-      (searches || []).filter((each) => each.id !== search.id),
-    );
-    api.unsubscribeFromSearch(search);
-    api.invalidateCache("user_articles/recommended");
-  }
 
   function isSubscribed(topic) {
     return subscribedTopics

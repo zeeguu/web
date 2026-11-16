@@ -441,15 +441,6 @@ let strings = new LocalizedStrings(
       interests: "Interests",
       nonInterests: "Non-interests",
 
-      //SearchField
-      searchAllArticles: "Search all articles",
-
-      //Search
-
-      youSearchedFor: "You searched for: ",
-      NoSavedSearches: "You haven't saved any searches.",
-      NoSearchMatch: "No articles found that match your search.",
-
       //ClassroomArticles
       noArticlesInClassroom: "There are no articles in your classroom.",
 
@@ -1417,13 +1408,6 @@ let strings = new LocalizedStrings(
       //Interests
       interests: "Interesseret",
       nonInterests: "Uinteresseret",
-
-      //SearchField
-      searchAllArticles: "Søg i alle artikler",
-
-      //Search
-
-      youSearchedFor: "Du søgte på: ",
 
       //ClassroomArticles
       noArticlesInClassroom: "Der er ingen artikler i denne klasse.",
