@@ -421,16 +421,12 @@ const PreviewClampedSummary = styled(ClampedSummary)`
 // On a search result: the passage of the text where the search matched, so a
 // card whose title doesn't mention the term shows why it is there. Muted and
 // two lines at most -- it explains the card, it is not its summary.
-const SearchSnippet = styled.p`
+const SnippetText = styled(PreviewClampedSummary)`
   font-size: 1.2em;
   line-height: 1.45em;
   color: var(--text-secondary);
   margin: 0.36em 0 0;
   max-width: 40em;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 `;
 
 // The matched words in it: the text's own color and weight, no highlighter.
@@ -663,7 +659,7 @@ export {
   PreviewCardClickable,
   PreviewSummary,
   PreviewClampedSummary,
-  SearchSnippet,
+  SnippetText,
   SnippetMatch,
   CompactCard,
   CompactText,
