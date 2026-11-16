@@ -16,10 +16,6 @@ const SortHolder = styled.div`
   justify-content: space-between;
 `;
 
-const SearchHolder = styled.div`
-  display: block;
-`;
-
 const ShowVideoOnlyButton = styled(SortButton)`
   &.selected {
     background-color: grey;
@@ -67,7 +63,6 @@ const LevelChangePill = styled.div`
 export {
   MaterialSelection,
   SortHolder,
-  SearchHolder,
   ShowVideoOnlyButton,
   FeedArea,
   FeedCards,

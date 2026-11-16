@@ -2,15 +2,11 @@ import { useHistory, useLocation } from "react-router-dom";
 import useTabSwipe from "./useTabSwipe";
 
 // Wires horizontal swipe gestures to navigation between tab routes.
-// `pathAliases` maps non-tab paths to the tab they conceptually belong to
-// (e.g. /search → /articles/mySearches), so swipes from a child route
-// still know where to go next.
 // `swipeOptions` is forwarded to useTabSwipe to tune sensitivity per surface.
-export default function useTabbedRoute(tabPaths, { pathAliases = {}, swipeOptions } = {}) {
+export default function useTabbedRoute(tabPaths, { swipeOptions } = {}) {
   const history = useHistory();
   const location = useLocation();
-  const effectivePath = pathAliases[location.pathname] || location.pathname;
-  const currentTabIndex = tabPaths.indexOf(effectivePath);
+  const currentTabIndex = tabPaths.indexOf(location.pathname);
 
   const canSwipe = (direction) => {
     const next = currentTabIndex + direction;

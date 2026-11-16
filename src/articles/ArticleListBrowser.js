@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useHistory, useLocation } from "react-router-dom";
 import ArticlePreview from "./ArticlePreview";
-import SearchField from "./SearchField";
 import * as s from "./ArticleListBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FeedFilterBar from "./FeedFilterBar";
@@ -24,10 +23,6 @@ import VideoPreview from "../videos/VideoPreview";
 import { getUserCefrLevel, numericToCefr } from "../utils/misc/userCefrLevel";
 import useSelectInterest from "../hooks/useSelectInterest";
 export default function ArticleListBrowser({
-  content,
-  searchQuery,
-  searchPublishPriority,
-  searchDifficultyPriority,
   // Kiosk mode: hide the topic filter bar and force articles to open in the
   // in-app reader (never the external publisher site).
   kioskMode,
@@ -88,7 +83,7 @@ export default function ArticleListBrowser({
   // the last pick, so leaving the tab and coming back restores it.
   const location = useLocation();
   const history = useHistory();
-  const filterInUrl = !searchQuery && !kioskMode;
+  const filterInUrl = !kioskMode;
   const urlParams = filterInUrl ? new URLSearchParams(location.search) : null;
   const urlTopic = urlParams ? urlParams.get("topic") : null;
   const urlSearch = urlParams ? urlParams.get("search") : null;
@@ -106,12 +101,11 @@ export default function ArticleListBrowser({
   // gets its own pill on the Evergreen tab.
   const { subscribedSearches, subscribeToSearch } = useSelectInterest(api);
 
-  // What to search for, if anything: the /search route's query, or a search
-  // typed in the filter row. Searched from the news tab, the newest come first.
+  // What to search for, if anything: a search typed in the filter row (or
+  // reached through /search, which redirects here). The search endpoint is
+  // asked to rank by date and by difficulty, as the old search page did.
   const searchFromFilter = (filter) => (filter.type === "search" ? filter.value.search : null);
-  const query = searchQuery || searchFromFilter(activeFilter);
-  const publishPriority = searchQuery ? searchPublishPriority : true;
-  const difficultyPriority = searchQuery ? searchDifficultyPriority : true;
+  const query = searchFromFilter(activeFilter);
 
   // A remembered topic restored on arrival goes into the URL too, replacing
   // (not pushing) so Back still leaves the feed rather than un-filtering it.
@@ -164,11 +158,6 @@ export default function ArticleListBrowser({
   // actually selected.
   const loadTokenRef = useRef(0);
 
-  // getNewArticlesForPage is captured once by the pagination hook: read
-  // what it needs through refs.
-  const searchPublishPriorityRef = useShadowRef(publishPriority);
-  const searchDifficultyPriorityRef = useShadowRef(difficultyPriority);
-
   // Next three vars required for the "Show Videos Only" toggle button
   const [areVideosAvailable, setAreVideosAvailable] = useState(false);
   const [isShowVideosOnlyEnabled, setIsShowVideosOnlyEnabled] = useState(false);
@@ -177,16 +166,9 @@ export default function ArticleListBrowser({
   const isShowVideosOnlyEnabledRef = useShadowRef(isShowVideosOnlyEnabled);
 
   function getNewArticlesForPage(pageNumber, handleArticleInsertion) {
-    const pageQuery = searchQuery || searchFromFilter(activeFilterRef.current);
+    const pageQuery = searchFromFilter(activeFilterRef.current);
     if (pageQuery) {
-      api.searchMore(
-        pageQuery,
-        pageNumber,
-        searchPublishPriorityRef.current,
-        searchDifficultyPriorityRef.current,
-        handleArticleInsertion,
-        (error) => {},
-      );
+      api.searchMore(pageQuery, pageNumber, true, true, handleArticleInsertion, (error) => {});
       return;
     }
     const filter = activeFilterRef.current;
@@ -274,17 +256,16 @@ export default function ArticleListBrowser({
       const isStale = () => myToken !== loadTokenRef.current;
       resetPagination();
       setSearchError(false);
-      // The external /search route drives the search endpoint; the home-feed
-      // pills (topic / all) go through the recommended feed, with topic passed
-      // as a filter.
+      // A search goes to the search endpoint; the other pills (topic / all) go
+      // through the recommended feed, with topic passed as a filter.
       if (query) {
         setTitle(strings.titleSearch + ` '${query}'`);
         setFeedLoading(false);
         setReloadingSearchArticles(true);
         api.search(
           query,
-          publishPriority,
-          difficultyPriority,
+          true,
+          true,
           (articles) => {
             if (isStale()) return resolve();
             setArticlesAndVideosList(articles);
@@ -337,14 +318,12 @@ export default function ArticleListBrowser({
 
   useEffect(() => {
     loadArticles();
-    if (!searchQuery) {
-      window.addEventListener("scroll", handleScroll, true);
-      return () => {
-        window.removeEventListener("scroll", handleScroll, true);
-      };
-    }
+    window.addEventListener("scroll", handleScroll, true);
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
     // eslint-disable-next-line
-  }, [searchQuery, searchPublishPriority, searchDifficultyPriority, activeFilter]);
+  }, [activeFilter]);
 
   useEffect(() => {
     if (cefrLevel === lastCefrLevelRef.current) return;
@@ -382,19 +361,11 @@ export default function ArticleListBrowser({
     />
   );
 
-  // A search from the filter row keeps the row, so × goes back to the feed.
-  const searchErrorHeader = searchQuery ? (
-    <s.SearchHolder>
-      <SearchField query={searchQuery} />
-    </s.SearchHolder>
-  ) : (
-    filterBar
-  );
-
+  // A failed search keeps the filter row, so × goes back to the feed.
   if (searchError) {
     return (
       <>
-        {searchErrorHeader}
+        {filterBar}
 
         <b>An error occurred with this query. Please try a different keyword.</b>
       </>
@@ -414,7 +385,7 @@ export default function ArticleListBrowser({
       {/* The topic pills stay pinned above the refresh area, so pulling down
           shows the loading indicator below the pills (near the articles),
           not above them. */}
-      {!searchQuery && !kioskMode && (
+      {!kioskMode && (
         <>
           {filterBar}
           {areVideosAvailable && (
@@ -440,14 +411,6 @@ export default function ArticleListBrowser({
 
       <PullToRefresh onRefresh={refreshFromNetwork} pullingContent="">
         <>
-      {searchQuery && (
-        <s.SearchHolder>
-          <SearchField query={searchQuery} />
-        </s.SearchHolder>
-      )}
-
-      {/* This is where the content of the Search component will be rendered */}
-      {content}
       {(reloadingSearchArticles || feedLoading) && <LoadingAnimation delay={300}></LoadingAnimation>}
       <s.FeedArea>
       {levelReloading && (

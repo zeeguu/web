@@ -443,7 +443,6 @@ let strings = new LocalizedStrings(
 
       //SearchField
       searchAllArticles: "Search all articles",
-      searchAllArticlesAndVideos: "Search all articles and videos",
 
       //Search
 
@@ -1421,7 +1420,6 @@ let strings = new LocalizedStrings(
 
       //SearchField
       searchAllArticles: "Søg i alle artikler",
-      searchAllArticlesAndVideos: "Søg i alle artikler og videoer",
 
       //Search
 
