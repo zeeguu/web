@@ -4,6 +4,8 @@ import strings from "../i18n/definitions";
 
 // A toast saying what just happened, with an Undo. The toast closes first, then
 // `onUndo` runs. `type` picks react-toastify's variant ("success", "info", ...).
+// Unlike other toasts it sits at the bottom, above the tab bar (see index.css):
+// Undo has to be tapped, and the top is out of thumb reach.
 export function showUndoToast(message, onUndo, { type = "default", autoClose = 5000 } = {}) {
   return toast(
     ({ closeToast }) => (
@@ -19,6 +21,6 @@ export function showUndoToast(message, onUndo, { type = "default", autoClose = 5
         </TextLinkButton>
       </UndoToastRow>
     ),
-    { type, autoClose },
+    { type, autoClose, position: "bottom-center" },
   );
 }
