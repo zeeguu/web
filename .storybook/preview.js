@@ -6,6 +6,8 @@ import { createElement } from "react";
 import { MemoryRouter } from "react-router-dom";
 
 const preview = {
+  // A Docs page per component, showing all its stories on one page.
+  tags: ["autodocs"],
   globalTypes: {
     theme: {
       description: "Color theme",

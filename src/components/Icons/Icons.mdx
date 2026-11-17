@@ -1,0 +1,35 @@
+import { Meta, IconGallery, IconItem } from "@storybook/addon-docs/blocks";
+import { muiIcons, staticIcons } from "./iconsInUse.generated";
+
+<Meta title="Icons" />
+
+# Icons
+
+Every icon the app uses, on one page. Before adding an icon, look here first:
+if one already means what you need, use it rather than a near-identical second one.
+
+The list is generated from the code. After adding an icon, run `npm run icons:gallery`.
+
+## Material icons
+
+Imported from `@mui/icons-material`, e.g. `import CloseIcon from "@mui/icons-material/Close"`.
+
+<IconGallery>
+  {Object.entries(muiIcons).map(([name, Icon]) => (
+    <IconItem key={name} name={name}>
+      <Icon />
+    </IconItem>
+  ))}
+</IconGallery>
+
+## Image icons
+
+Files in `public/static/icons/`.
+
+<IconGallery>
+  {staticIcons.map((src) => (
+    <IconItem key={src} name={src.split("/").pop()}>
+      <img src={src} alt="" style={{ maxWidth: "100%", maxHeight: "100%" }} />
+    </IconItem>
+  ))}
+</IconGallery>

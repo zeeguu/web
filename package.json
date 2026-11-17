@@ -131,7 +131,8 @@
     "ios:render-screenshots": "node ios/App/appstore-screenshots/render.js",
     "ios:render-live-screenshots": "node ios/App/appstore-screenshots/render-live.js",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "icons:gallery": "node scripts/generate-icon-gallery.js"
   },
   "browserslist": {
     "production": [
