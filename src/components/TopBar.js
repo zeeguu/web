@@ -16,8 +16,6 @@ import { BadgeCounterContext } from "../contexts/BadgeCounterContext";
 import { FriendRequestContext } from "../contexts/FriendRequestContext";
 import NotificationIcon from "./NotificationIcon";
 import Feature from "../features/Feature";
-import SettingsIconButton from "./Icons/SettingsIconButton";
-import strings from "../i18n/definitions";
 import styled from "styled-components";
 import AikiCountdown from "../aiki/AikiCountdown";
 
@@ -72,8 +70,7 @@ export default function TopBar() {
   const openLanguageModal = useCallback(() => setShowLanguageModal(true), []);
 
   // A guest has no profile yet, and the Settings page is where they can
-  // create the account (and the only way there now that the nav has no
-  // Settings entry).
+  // create the account.
   const handleProfileClick = () => {
     history.push(userDetails?.is_anonymous ? "/account_settings" : "/profile");
   };
@@ -92,7 +89,6 @@ export default function TopBar() {
             The Aiki page shows it under its own title instead. */}
         <CountdownNextToStreak hidden={pathname === "/aiki"} />
         <s.TopBarActions>
-          <SettingsIconButton onClick={() => history.push("/account_settings")} title={strings.settings} />
           {Feature.has_gamification() && (
             <s.ProfileAvatarButton onClick={handleProfileClick} aria-label="Go to profile">
               <s.TopBarNavAvatar $backgroundColor={avatarBackgroundColor}>
