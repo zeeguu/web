@@ -3,7 +3,7 @@
 // Storybook "Icons" page (Icons.mdx) renders as a gallery:
 //   - every @mui/icons-material icon imported anywhere in src/, with the files using it
 //   - every image in public/static/icons/
-// Run after adding an icon:  npm run icons:gallery
+// Run after adding an icon:  npm run icons:gallery   (--check: only verify)
 
 const fs = require("fs");
 const path = require("path");
@@ -66,6 +66,16 @@ export const staticIcons = {
 ${staticIcons.map((f) => `  "${f}": ${JSON.stringify(staticUsage[f])},`).join("\n")}
 };
 `;
+
+// --check: fail instead of writing when the committed file is stale (used by test/storybook).
+if (process.argv.includes("--check")) {
+  const current = fs.existsSync(outFile) ? fs.readFileSync(outFile, "utf8") : "";
+  if (current !== out) {
+    console.error(`${path.relative(root, outFile)} is out of date: run \`npm run icons:gallery\`.`);
+    process.exit(1);
+  }
+  process.exit(0);
+}
 
 fs.writeFileSync(outFile, out);
 console.log(`${names.length} MUI icons, ${staticIcons.length} static icons → ${path.relative(root, outFile)}`);
