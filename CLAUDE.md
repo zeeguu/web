@@ -38,6 +38,9 @@ already, and a second one is a cost the whole app pays. Before writing one:
    component (`X.stories.js` beside `X.js`), so a component's story is a file
    check away. For icons, the **Icons** page shows every icon in use and the
    files using it (`src/components/Icons/iconsInUse.generated.js`).
+   Not every component has a story yet: also scan
+   `test/storybook/componentsWithoutStories.json`, which names the older ones
+   that don't.
 2. If the closest match needs *more overrides than it contributes*, that is the
    base component missing a variant. Add the variant there (`Tag` gained
    `.tiny` this way), with a story for it, rather than restating its box at
@@ -56,7 +59,9 @@ story: the copy drifts from the real thing and nobody notices.
 `src/components/` or `src/pages/_pages_shared/` without a story fails the
 tests, and so does a new icon until `npm run icons:gallery` is run.
 `componentsWithoutStories.json` lists the components that predate the
-catalog; it only shrinks — never add to it.
+catalog; it only shrinks — never add to it. When you use or change one of
+them, give it a story and take it off the list (the test makes you remove it),
+so the catalog fills in wherever work happens.
 
 There is no need for another CSS or component library. MUI is already a
 dependency for icons and modals, and styled-components carries the house look.
