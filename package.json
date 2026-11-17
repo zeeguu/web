@@ -129,7 +129,9 @@
     "ios:release-force": "npm run ios:build && cd ios/App && fastlane release_force",
     "ios:copy-screenshots": "node ios/App/appstore-screenshots/copy-to-fastlane.js",
     "ios:render-screenshots": "node ios/App/appstore-screenshots/render.js",
-    "ios:render-live-screenshots": "node ios/App/appstore-screenshots/render-live.js"
+    "ios:render-live-screenshots": "node ios/App/appstore-screenshots/render-live.js",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "browserslist": {
     "production": [
@@ -146,6 +148,9 @@
   "devDependencies": {
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.28.5",
+    "@storybook/addon-a11y": "^10.6.6",
+    "@storybook/addon-docs": "^10.6.6",
+    "@storybook/react-vite": "^10.6.6",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.7",
@@ -154,6 +159,7 @@
     "babel-plugin-styled-components": "^2.1.4",
     "jsdom": "^27.0.1",
     "prettier": "3.2.5",
+    "storybook": "^10.6.6",
     "svg-inline-loader": "^0.8.2",
     "typescript": "^5.9.3",
     "vite": "^7.2.6",
