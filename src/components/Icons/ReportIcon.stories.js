@@ -1,7 +1,7 @@
 import ReportIcon from "./ReportIcon";
 
 export default {
-  title: "Icons/ReportIcon",
+  title: "Buttons/ReportIcon",
   component: ReportIcon,
 };
 

@@ -1,7 +1,7 @@
 import ShareArticleIcon from "./ShareArticle";
 
 export default {
-  title: "Icons/ShareArticleIcon",
+  title: "Buttons/ShareArticle",
   component: ShareArticleIcon,
 };
 

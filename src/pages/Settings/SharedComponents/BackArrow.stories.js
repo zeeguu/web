@@ -1,7 +1,7 @@
 import BackArrow from "./BackArrow";
 
 export default {
-  title: "Icons/BackArrow",
+  title: "Buttons/BackArrow",
   component: BackArrow,
 };
 
