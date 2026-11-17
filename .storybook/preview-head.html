@@ -5,3 +5,14 @@
   href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
   rel="stylesheet"
 />
+
+<!-- index.css locks html/body (height: 100%; overflow: hidden) because the
+     app scrolls inside its own container. Storybook pages need to scroll
+     themselves; the higher specificity beats index.css. -->
+<style>
+  html:root,
+  body.sb-show-main {
+    height: auto;
+    overflow: auto;
+  }
+</style>
