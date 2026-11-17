@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { useState } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 
-import LessonFeedbackBox, { feedbackSummary } from "../../src/dailyAudio/LessonFeedbackBox";
+import LessonFeedbackBox, { feedbackSummary, showsLessonFeedback } from "../../src/dailyAudio/LessonFeedbackBox";
 
 vi.mock("../../src/utils/chimes", () => ({ playHappyChime: vi.fn(), playDoneChime: vi.fn() }));
 
@@ -93,5 +93,23 @@ describe("feedbackSummary", () => {
     expect(feedbackSummary({ pace: "just_right", repetition: "just_right", length: "just_right" })).toBe(
       "Your next lesson will be just like this one.",
     );
+  });
+});
+
+describe("showsLessonFeedback", () => {
+  const heard = { lesson_id: 7, is_completed: true, takes_feedback: true };
+
+  it("shows after a heard dialogue lesson, whatever its level", () => {
+    expect(showsLessonFeedback({ ...heard, cefr_level: "A0" })).toBe(true);
+    expect(showsLessonFeedback({ ...heard, cefr_level: "B1" })).toBe(true);
+  });
+
+  it("waits until the lesson is heard", () => {
+    expect(showsLessonFeedback({ ...heard, is_completed: false })).toBe(false);
+  });
+
+  it("is not shown for lessons the api does not tune (word lessons)", () => {
+    expect(showsLessonFeedback({ ...heard, takes_feedback: false })).toBe(false);
+    expect(showsLessonFeedback({ lesson_id: 7, is_completed: true })).toBe(false);
   });
 });

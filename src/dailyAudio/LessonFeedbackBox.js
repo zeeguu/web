@@ -5,10 +5,16 @@ import { zeeguuRed, zeeguuOrange } from "../components/colors";
 import { playHappyChime, playDoneChime } from "../utils/chimes";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 
-// After an A0 lesson: what the learner thought of it. Pace, repetition and
-// length tune their next lessons (api: audio_lessons/lesson_tuning.py); the
-// situation row moves the daily lessons on, or keeps them where they are.
-// Each tap is saved at once; nothing tapped changes nothing.
+// After a dialogue lesson, at any level: what the learner thought of it. Pace,
+// repetition and length tune their next lessons (api:
+// audio_lessons/lesson_tuning.py); at A0 the situation row moves the daily
+// lessons on, or keeps them where they are. Each tap is saved at once; nothing
+// tapped changes nothing.
+
+// Once the lesson is heard, and only for the lessons the api tunes (dialogue
+// lessons: word lessons are shared by every learner of the word).
+export const showsLessonFeedback = (lessonData) =>
+  Boolean(lessonData.is_completed && lessonData.lesson_id && lessonData.takes_feedback);
 
 // The answers describe this lesson ("Too slow"), which is what the question
 // asks; the value sent is what the next lesson should do about it ("faster").
