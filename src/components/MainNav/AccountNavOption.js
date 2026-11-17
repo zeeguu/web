@@ -33,8 +33,8 @@ const Username = styled.div`
 `;
 
 // The username row at the bottom of the nav, preceded on the sidebar by a
-// Settings row (the phone has a gear in the top bar instead). Log out is at
-// the bottom of Settings.
+// Settings row (the phone's More panel adds its own, since it shows this row
+// only without gamification). Log out is at the bottom of Settings.
 export default function AccountNavOption({ screenWidth, onNavigate = () => {} }) {
   const { userDetails } = useContext(UserContext);
   const path = useLocation().pathname;

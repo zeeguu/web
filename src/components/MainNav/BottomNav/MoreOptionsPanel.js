@@ -64,6 +64,8 @@ export default function MoreOptionsPanel({
 
           <FeedbackButton />
 
+          <NavOption {...NavigationOptions.settings} currentPath={currentPath} onClick={handleHideMoreOptions} />
+
           {/* The TopBar already shows the language flag and, with gamification,
               the avatar -- so the panel only repeats the account row when the
               TopBar has no avatar to reach the profile from. */}
