@@ -209,7 +209,7 @@ export default function ReplaceExampleModal({
       // If this part matches the target word (case insensitive), highlight it
       if (part.toLowerCase() === targetWord.toLowerCase()) {
         return (
-          <span key={index} style={{ color: "#ff8c42", fontWeight: "bold" }}>
+          <span key={index} style={{ color: "var(--link-color)", fontWeight: "bold" }}>
             {part}
           </span>
         );
@@ -232,7 +232,7 @@ export default function ReplaceExampleModal({
             handleOpen();
           }}
           style={{
-            color: "#666",
+            color: "var(--text-secondary)",
             textDecoration: "underline",
             cursor: "pointer",
             fontSize: "inherit",
@@ -251,8 +251,8 @@ export default function ReplaceExampleModal({
       <s.ModalContent onClick={(e) => e.stopPropagation()}>
         <s.ModalHeader>
           <h3>
-            Select example for <span style={{ color: "orange" }}>{exerciseBookmark?.from}</span> /{" "}
-            <span style={{ color: "darkblue" }}>{exerciseBookmark?.to}</span>
+            Select example for <span style={{ color: "var(--link-color)" }}>{exerciseBookmark?.from}</span> /{" "}
+            <span style={{ color: "var(--text-secondary)" }}>{exerciseBookmark?.to}</span>
           </h3>
           <s.CloseButton onClick={handleClose}>
             <CloseIcon />
@@ -277,7 +277,7 @@ export default function ReplaceExampleModal({
                     <s.SentenceText>
                       {highlightTargetWord(example.sentence, exerciseBookmark?.from)}
                       {saving && selectedExample === example && (
-                        <span style={{ marginLeft: "0.5rem", fontSize: "0.8rem", color: "#666" }}>Saving...</span>
+                        <span style={{ marginLeft: "0.5rem", fontSize: "0.8rem", color: "var(--text-secondary)" }}>Saving...</span>
                       )}
                     </s.SentenceText>
                     {example.title && (
@@ -314,7 +314,7 @@ export default function ReplaceExampleModal({
                     <s.SentenceText>
                       {highlightTargetWord(example.sentence, exerciseBookmark?.from)}
                       {saving && selectedExample === example && (
-                        <span style={{ marginLeft: "0.5rem", fontSize: "0.8rem", color: "#666" }}>Saving...</span>
+                        <span style={{ marginLeft: "0.5rem", fontSize: "0.8rem", color: "var(--text-secondary)" }}>Saving...</span>
                       )}
                     </s.SentenceText>
                     {example.title && <s.ContextTitle>From: {example.title}</s.ContextTitle>}

@@ -22,22 +22,46 @@ original had (a gesture, a theme, a separator).
 | Empty state | `EmptyState` | — |
 | Switching learned language | `useGuardedLanguageSwitch` | calling `switchLanguage` directly (skips the mid-article confirmation) |
 
-`grep -rn "styled.div" src/components` before adding one. If the closest match
-is *almost* right, extend that family (as `FullWidthInfoMsg` was added beside
-its two siblings) rather than starting a sixth variant.
+For UI, look in Storybook (next section) before adding one. If the closest
+match is *almost* right, extend that family (as `FullWidthInfoMsg` was added
+beside its two siblings) rather than starting a sixth variant.
 
-## Ask before adding a shared visual component
+## Storybook is the catalog: check it before building UI
 
 Layout that belongs to one screen (a row, a body column, a list) is local
 scaffolding — write it. But a **visual primitive** — a pill, badge, banner,
-button, empty state, page header — almost certainly exists already, and a
-second one is a cost the whole app pays. Before writing one:
+button, empty state, page header, dialog, icon — almost certainly exists
+already, and a second one is a cost the whole app pays. Before writing one:
 
-1. Grep `src/components`, `src/pages/_pages_shared` and the table above.
+1. **Look in Storybook.** `npm run storybook` (http://localhost:6006), or
+   `grep -rn "title:" src --include='*.stories.js'`. Stories sit next to their
+   component (`X.stories.js` beside `X.js`), so a component's story is a file
+   check away. For icons, the **Icons** page shows every icon in use and the
+   files using it (`src/components/Icons/iconsInUse.generated.js`).
+   Not every component has a story yet: also scan
+   `test/storybook/componentsWithoutStories.json`, which names the older ones
+   that don't.
 2. If the closest match needs *more overrides than it contributes*, that is the
    base component missing a variant. Add the variant there (`Tag` gained
-   `.tiny` this way) rather than restating its box at the call site.
-3. If nothing fits, say so and get it agreed before building it.
+   `.tiny` this way), with a story for it, rather than restating its box at
+   the call site.
+3. If nothing fits, say so and get it agreed. Then build the component **and
+   its story first**, check it in Storybook in Light and Dark, and only then
+   use it in the feature.
+
+A story renders the **real component** with fake props or data — callbacks as
+`fn()` from `storybook/test`, API calls answered by a fake (see
+`ReplaceExampleModal.stories.js`), states reached with a `play` function (see
+`RemoveBookmarkModal.stories.js`). Never copy a component's markup into a
+story: the copy drifts from the real thing and nobody notices.
+
+`test/storybook/storyCoverage.test.js` enforces this: a new component in
+`src/components/` or `src/pages/_pages_shared/` without a story fails the
+tests, and so does a new icon until `npm run icons:gallery` is run.
+`componentsWithoutStories.json` lists the components that predate the
+catalog; it only shrinks — never add to it. When you use or change one of
+them, give it a story and take it off the list (the test makes you remove it),
+so the catalog fills in wherever work happens.
 
 There is no need for another CSS or component library. MUI is already a
 dependency for icons and modals, and styled-components carries the house look.
@@ -93,7 +117,8 @@ npx vitest run test/        # unit tests
 ```
 
 Dark mode is toggled by `data-theme="dark"` on the root element, not by the OS
-setting alone.
+setting alone. For a single component, Storybook's **Theme** toolbar button
+does the same, faster.
 
 ## iOS
 

@@ -1,0 +1,58 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { muiIcons, muiIconUsage, staticIcons } from "./iconsInUse.generated";
+
+<Meta title="Icons" />
+
+export const Grid = ({ children }) => (
+  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "16px 24px" }}>
+    {children}
+  </div>
+);
+
+export const Cell = ({ icon, name, files }) => (
+  <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+    <div style={{ flex: "0 0 32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {icon}
+    </div>
+    <div style={{ minWidth: 0, fontSize: "13px" }}>
+      <div style={{ fontWeight: 600 }}>{name}</div>
+      <div style={{ fontSize: "11px", lineHeight: 1.4, overflowWrap: "anywhere", color: files.length ? "#777" : "crimson" }}>
+        {files.length ? files.join(", ") : "not referenced by name"}
+      </div>
+    </div>
+  </div>
+);
+
+# Icons
+
+Every icon the app uses, with the files that use it (paths relative to `src/`).
+Before adding an icon, look here first: if one already means what you need, use it rather than a
+near-identical second one.
+
+The list is generated from the code. After adding an icon, run `npm run icons:gallery`.
+
+## Material icons
+
+Imported from `@mui/icons-material`, e.g. `import CloseIcon from "@mui/icons-material/Close"`.
+
+<Grid>
+  {Object.entries(muiIcons).map(([name, Icon]) => (
+    <Cell key={name} icon={<Icon />} name={name} files={muiIconUsage[name]} />
+  ))}
+</Grid>
+
+## Image icons
+
+Files in `public/static/icons/`. A name built at runtime is not found by the scan: the
+`A1`…`C2-level-icon.png` files are used by `videos/VideoStatInfo.js` as `` `${cefr_level}-level-icon.png` ``.
+
+<Grid>
+  {Object.entries(staticIcons).map(([file, files]) => (
+    <Cell
+      key={file}
+      icon={<img src={`/static/icons/${file}`} alt="" style={{ maxWidth: "32px", maxHeight: "32px" }} />}
+      name={file}
+      files={files}
+    />
+  ))}
+</Grid>
