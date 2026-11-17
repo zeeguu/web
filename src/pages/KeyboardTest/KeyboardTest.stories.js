@@ -1,5 +1,4 @@
-import KeyboardTest from "../../pages/KeyboardTest/KeyboardTest";
-import "../../index.css";
+import KeyboardTest from "./KeyboardTest";
 
 export default {
   title: "Pages/KeyboardTest",
