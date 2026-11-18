@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [Unreleased]
+
+### Changed
+- Sending a page to Zeeguu (toolbar button or right-click "Read with Zeeguu") now opens it in the same tab instead of a new one, so learners are not left with many tabs.
+
 ## [2.5.15] - 2026-04-29
 
 ### Fixed
