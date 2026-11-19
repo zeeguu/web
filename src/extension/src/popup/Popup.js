@@ -53,7 +53,7 @@ export default function Popup({ loggedIn }) {
         if (isYouTubeTab(tab)) {
           const url = await shareYouTubeTab(api, tab, WEB_URL);
           setState(STATES.OPENING);
-          await BROWSER_API.tabs.create({ url });
+          await BROWSER_API.tabs.update(tab.id, { url });
           window.close();
           return;
         }
@@ -61,7 +61,9 @@ export default function Popup({ loggedIn }) {
         const upload = await sendTabToZeeguu(api, tab);
 
         setState(STATES.OPENING);
-        await BROWSER_API.tabs.create({ url: `${WEB_URL}/shared-article?upload_id=${upload.id}` });
+        // Open in the article's own tab: a new tab per article leaves learners
+        // with many tabs and unsure which one to read in.
+        await BROWSER_API.tabs.update(tab.id, { url: `${WEB_URL}/shared-article?upload_id=${upload.id}` });
         window.close();
       } catch (e) {
         console.error("Extension upload flow failed:", e);

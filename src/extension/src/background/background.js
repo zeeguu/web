@@ -135,12 +135,13 @@ async function startReader() {
 
     if (isYouTubeTab(tab)) {
       const url = await shareYouTubeTab(api, tab, WEB_URL);
-      BROWSER_API.tabs.create({ url });
+      BROWSER_API.tabs.update(tab.id, { url });
       return;
     }
 
     const upload = await sendTabToZeeguu(api, tab);
-    BROWSER_API.tabs.create({
+    // Same tab as the article, like the popup (see Popup.js).
+    BROWSER_API.tabs.update(tab.id, {
       url: `${WEB_URL}/shared-article?upload_id=${upload.id}`,
     });
   } catch (err) {
