@@ -41,7 +41,7 @@ export default function DailyLessonSettingsDialog({
 }) {
   // At A0 every lesson is a situation the learner learns to get through (see
   // future-work/a0-audio-lessons.md in the docs repo): no Vocabulary, no Topic.
-  const { userDetails } = useContext(UserContext);
+  const { userDetails, setUserPreferences } = useContext(UserContext);
   const a0 = isA0Learner(userDetails);
   const types = a0 ? ["situation"] : undefined;
 
@@ -130,7 +130,16 @@ export default function DailyLessonSettingsDialog({
     const preferences = {};
     if (characterChanged) preferences.audio_lesson_character = character;
     if (minutesChanged) preferences.audio_lesson_minutes = minutes;
-    api.saveUserPreferences(preferences, saveSituation, () => setSaveError(true));
+    api.saveUserPreferences(
+      preferences,
+      () => {
+        // Others read these from the context: the lesson length shown after
+        // a lesson (LessonFeedbackBox).
+        setUserPreferences?.((current) => (current ? { ...current, ...preferences } : current));
+        saveSituation();
+      },
+      () => setSaveError(true),
+    );
   };
 
   const buttonStyle = { width: "100%", padding: "12px", fontSize: "1rem", fontWeight: 600 };

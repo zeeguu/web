@@ -5,7 +5,14 @@ import { FEEDBACK_OPTIONS, FEEDBACK_CODES_NAME } from "../components/FeedbackCon
 import Word from "../words/Word";
 import Confetti from "react-confetti";
 import { AUDIO_STATUS } from "./AudioLessonConstants";
-import { LessonWrapper, LessonTitle, LessonMetadata, CompletionCheck, SubtleTextButton, LessonActions } from "./LessonView.sc";
+import {
+  LessonWrapper,
+  LessonTitle,
+  LessonMetadata,
+  CompletionCheck,
+  SubtleTextButton,
+  LessonActions,
+} from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 import { knownLanguageName } from "../utils/misc/languageCodeToName";
 import ShareLessonButton from "./ShareLessonButton";
@@ -23,6 +30,7 @@ export default function LessonPlaybackView({
   setCurrentPlaybackTime,
   header,
   footer,
+  onOpenSettings,
 }) {
   const [openFeedback, setOpenFeedback] = useState(false);
   // Confetti when the learner reaches the end, once, not on every visit to a
@@ -37,10 +45,17 @@ export default function LessonPlaybackView({
     <>
       <LessonTitle>
         {lessonData.title}
-        {lessonData.is_completed && <> <CompletionCheck>✓</CompletionCheck></>}
+        {lessonData.is_completed && (
+          <>
+            {" "}
+            <CompletionCheck>✓</CompletionCheck>
+          </>
+        )}
       </LessonTitle>
       {lessonData.canonical_suggestion && (
-        <LessonMetadata>{lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b></LessonMetadata>
+        <LessonMetadata>
+          {lessonData.lesson_type === "situation" ? "Situation" : "Topic"}: <b>{lessonData.canonical_suggestion}</b>
+        </LessonMetadata>
       )}
     </>
   );
@@ -52,7 +67,6 @@ export default function LessonPlaybackView({
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
 
       <div>
-
         <CustomAudioPlayer
           src={lessonData.audio_url}
           initialProgress={
@@ -102,7 +116,12 @@ export default function LessonPlaybackView({
             margin: "0 auto 20px auto",
           }}
         >
-          <ShareLessonButton api={api} lessonId={lessonData.lesson_id} title={lessonData.title} shareUuid={lessonData.share_uuid} />
+          <ShareLessonButton
+            api={api}
+            lessonId={lessonData.lesson_id}
+            title={lessonData.title}
+            shareUuid={lessonData.share_uuid}
+          />
         </CustomAudioPlayer>
 
         {celebrating && (
@@ -118,7 +137,12 @@ export default function LessonPlaybackView({
         {/* Only A0 lessons can be tuned: the other levels' prompts have no
             pace or repetition to change. */}
         {lessonData.is_completed && lessonData.cefr_level === "A0" && lessonData.lesson_id && (
-          <LessonFeedbackBox lessonData={lessonData} setLessonData={setLessonData} api={api} />
+          <LessonFeedbackBox
+            lessonData={lessonData}
+            setLessonData={setLessonData}
+            api={api}
+            onOpenSettings={onOpenSettings}
+          />
         )}
 
         {words && words.length > 0 && (
@@ -127,13 +151,7 @@ export default function LessonPlaybackView({
               Words in this lesson
             </h3>
             {words.map((word, index) => (
-              <Word
-                key={index}
-                bookmark={word}
-                disableEdit={true}
-                compact={true}
-                showRanking={false}
-              />
+              <Word key={index} bookmark={word} disableEdit={true} compact={true} showRanking={false} />
             ))}
           </div>
         )}
@@ -141,9 +159,7 @@ export default function LessonPlaybackView({
         {footer}
 
         <LessonActions>
-          <SubtleTextButton onClick={() => setOpenFeedback(true)}>
-            Feedback
-          </SubtleTextButton>
+          <SubtleTextButton onClick={() => setOpenFeedback(true)}>Feedback</SubtleTextButton>
           <SubtleTextButton
             onClick={() => {
               if (window.confirm("Delete this lesson?")) {
@@ -160,9 +176,10 @@ export default function LessonPlaybackView({
         </LessonActions>
 
         <FeedbackModal
-          prefixMsg={lessonData
-            ? `Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, '0')} | Lesson ID: ${lessonData.lesson_id} | Words: ${wordsAsTile(lessonData.words)} | Date: ${new Date(lessonData.created_at || Date.now()).toLocaleDateString()}`
-            : "Daily Audio Lesson Feedback"
+          prefixMsg={
+            lessonData
+              ? `Daily Audio Lesson - Playback time: ${Math.floor(currentPlaybackTime / 60)}:${(currentPlaybackTime % 60).toFixed(0).padStart(2, "0")} | Lesson ID: ${lessonData.lesson_id} | Words: ${wordsAsTile(lessonData.words)} | Date: ${new Date(lessonData.created_at || Date.now()).toLocaleDateString()}`
+              : "Daily Audio Lesson Feedback"
           }
           open={openFeedback}
           setOpen={setOpenFeedback}
