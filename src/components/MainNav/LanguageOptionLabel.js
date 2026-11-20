@@ -22,6 +22,10 @@ const StreakBadge = styled.span`
 const LanguageNameColumn = styled.span`
   display: flex;
   flex-direction: column;
+  /* Lets the column shrink below the hint's one-line width, so the hint wraps
+     instead of pushing the row past the modal's edge. */
+  min-width: 0;
+  padding: 0.35rem 0;
 `;
 
 const LanguageNameLine = styled.span`
@@ -31,6 +35,9 @@ const LanguageNameLine = styled.span`
 
 const StreakHint = styled.span`
   font-size: 0.75em;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: normal;
   color: var(--text-muted);
 `;
 

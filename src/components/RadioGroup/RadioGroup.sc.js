@@ -26,9 +26,12 @@ const StyledRadioGroup = styled.div`
             display: none;
           }
 
+          /* Stacked on a phone, every pill takes the column's full width, so
+             the list reads as one aligned stack. Centred at their own widths,
+             one wide row (a streak hint) pushed the rest off-centre. */
           @media (max-width: 768px) {
             flex-direction: column;
-            align-items: center;
+            align-items: stretch;
             max-height: none;
             overflow-y: visible;
           }
@@ -69,7 +72,10 @@ const OptionLabel = styled.label`
   font-size: 1rem;
   font-weight: 600;
   padding: 0 1.2rem;
-  height: 2.75rem;
+  box-sizing: border-box;
+  /* min-height, not height: a row with a second line (the streak hint) grows
+     instead of spilling out of its border. */
+  min-height: 2.75rem;
   border-radius: 2rem;
   border: solid 0.1rem var(--border-color);
   box-shadow: 0px 0.1rem var(--border-color);
@@ -95,7 +101,7 @@ const OptionLabel = styled.label`
          column by both. */
       box-sizing: border-box;
       min-width: 0;
-      height: auto;
+      min-height: 0;
       justify-content: flex-start;
       align-items: flex-start;
       text-align: left;
