@@ -27,16 +27,20 @@ function setup({ fails = false, lesson = LESSON } = {}) {
 }
 
 const pill = (group, name) =>
-  [...screen.getByRole("radiogroup", { name: group }).querySelectorAll("button")].find(
-    (b) => b.textContent === name,
-  );
+  [...screen.getByRole("radiogroup", { name: group }).querySelectorAll("button")].find((b) => b.textContent === name);
 
 describe("LessonFeedbackBox", () => {
   it("saves what the next lesson should do, and shows the answer selected", () => {
     const api = setup();
     fireEvent.click(pill("Pace", "Too slow"));
 
-    expect(api.sendLessonFeedback).toHaveBeenCalledWith(7, "pace", "faster", null, expect.any(Function));
+    expect(api.sendLessonFeedback).toHaveBeenCalledWith(
+      7,
+      "pace",
+      "faster",
+      expect.any(Function),
+      expect.any(Function),
+    );
     expect(pill("Pace", "Too slow").getAttribute("aria-checked")).toBe("true");
   });
 
@@ -45,7 +49,13 @@ describe("LessonFeedbackBox", () => {
     expect(screen.getByText(/11 lessons in "grocery shopping"/)).toBeTruthy();
 
     fireEvent.click(pill("Next lesson", 'Try "asking the time"'));
-    expect(api.sendLessonFeedback).toHaveBeenCalledWith(7, "situation", "asking the time", null, expect.any(Function));
+    expect(api.sendLessonFeedback).toHaveBeenCalledWith(
+      7,
+      "situation",
+      "asking the time",
+      expect.any(Function),
+      expect.any(Function),
+    );
     expect(pill("Next lesson", 'Try "asking the time"').getAttribute("aria-checked")).toBe("true");
     expect(pill("Next lesson", 'Stay with "grocery shopping"').getAttribute("aria-checked")).toBe("false");
   });
@@ -86,6 +96,12 @@ describe("feedbackSummary", () => {
   it("says what changes", () => {
     expect(feedbackSummary({ pace: "slower", repetition: "more", length: "shorter" })).toBe(
       "Based on your feedback, your next lesson will be a bit slower, with more repetition and a bit shorter.",
+    );
+  });
+
+  it("says the length in minutes once the server has said it", () => {
+    expect(feedbackSummary({ pace: "just_right", repetition: "less", length: "longer" }, "15")).toBe(
+      "Based on your feedback, your next lesson will be with less repetition and about 15 minutes long.",
     );
   });
 

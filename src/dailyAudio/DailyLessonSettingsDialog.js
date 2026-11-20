@@ -8,6 +8,7 @@ import { zeeguuOrange } from "../components/colors";
 import { UserContext } from "../contexts/UserContext";
 import { isA0Learner } from "../utils/misc/userCefrLevel";
 import A0SituationPicker from "./A0SituationPicker";
+import LessonLengthSlider from "./LessonLengthSlider";
 
 // At A0 the learner drills their own role in the dialogue. Who they speak as is
 // theirs to say, never guessed from their name; "either" lets the lessons take
@@ -60,6 +61,10 @@ export default function DailyLessonSettingsDialog({
   const [savedCharacter, setSavedCharacter] = useState(null);
   const [character, setCharacter] = useState(null);
   const [saveError, setSaveError] = useState(false);
+  // The A0 lesson length, in minutes; the API always sends it (the daily
+  // goal when the learner never set one). Kept as a string, as stored.
+  const [savedMinutes, setSavedMinutes] = useState(null);
+  const [minutes, setMinutes] = useState(null);
 
   useEffect(() => {
     if (!a0) return;
@@ -69,6 +74,10 @@ export default function DailyLessonSettingsDialog({
         const value = preferences.audio_lesson_character || "either";
         setSavedCharacter(value);
         setCharacter(value);
+        if (preferences.audio_lesson_minutes) {
+          setSavedMinutes(preferences.audio_lesson_minutes);
+          setMinutes(preferences.audio_lesson_minutes);
+        }
       })
       .catch(() => {});
   }, [api, a0]);
@@ -102,7 +111,9 @@ export default function DailyLessonSettingsDialog({
   const changed =
     pillToBackend(pillType) !== (initialType || null) || (needsSubject ? currentSubject.trim() : "") !== initialSubject;
   const characterChanged = a0 && character !== savedCharacter;
-  const canSave = (canSubmit && changed) || characterChanged;
+  const minutesChanged = a0 && minutes !== savedMinutes;
+  const preferencesChanged = characterChanged || minutesChanged;
+  const canSave = (canSubmit && changed) || preferencesChanged;
 
   // First-ever setup generates today's lesson now; reconfiguring an existing
   // subscription only saves — the change applies from the next scheduled lesson
@@ -113,10 +124,13 @@ export default function DailyLessonSettingsDialog({
       if (canSubmit && changed) submit(!alreadySubscribed);
       else onDismiss();
     };
-    if (!characterChanged) return saveSituation();
-    // The character first: a lesson generated right after must already use it.
+    if (!preferencesChanged) return saveSituation();
+    // The preferences first: a lesson generated right after must already use them.
     setSaveError(false);
-    api.saveUserPreferences({ audio_lesson_character: character }, saveSituation, () => setSaveError(true));
+    const preferences = {};
+    if (characterChanged) preferences.audio_lesson_character = character;
+    if (minutesChanged) preferences.audio_lesson_minutes = minutes;
+    api.saveUserPreferences(preferences, saveSituation, () => setSaveError(true));
   };
 
   const buttonStyle = { width: "100%", padding: "12px", fontSize: "1rem", fontWeight: 600 };
@@ -202,6 +216,8 @@ export default function DailyLessonSettingsDialog({
           </PillRow>
         </div>
       )}
+
+      {a0 && minutes && <LessonLengthSlider minutes={minutes} onChange={setMinutes} />}
 
       <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
         {primaryButton}

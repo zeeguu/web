@@ -4,17 +4,10 @@ import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { zeeguuOrange } from "./colors";
 import { MIN_SPEED, MAX_SPEED, SPEED_STEP, SPEED_PRESETS, formatSpeed, snapSpeed } from "./audioSpeeds";
-import {
-  SpeedPill,
-  SpeedPanel,
-  SpeedReadout,
-  SliderRow,
-  StepButton,
-  PresetRow,
-  PresetPill,
-} from "./SpeedPicker.sc";
+import { SpeedPill, SpeedPanel, SpeedReadout, SliderRow, StepButton, PresetRow, PresetPill } from "./SpeedPicker.sc";
 
-const sliderSx = {
+// The house look of an MUI Slider; also the lesson length slider's.
+export const sliderSx = {
   color: zeeguuOrange,
   "& .MuiSlider-rail": { backgroundColor: "var(--border-color)", opacity: 1 },
 };
