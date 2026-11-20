@@ -3,6 +3,7 @@ import { useState } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 
 import LessonFeedbackBox, { feedbackSummary } from "../../src/dailyAudio/LessonFeedbackBox";
+import { UserContext } from "../../src/contexts/UserContext";
 
 vi.mock("../../src/utils/chimes", () => ({ playHappyChime: vi.fn(), playDoneChime: vi.fn() }));
 
@@ -14,22 +15,29 @@ const LESSON = {
   feedback: {},
 };
 
-function setup({ fails = false, lesson = LESSON } = {}) {
+function setup({ fails = false, lesson = LESSON, preferences = {}, onOpenSettings } = {}) {
   const api = {
     sendLessonFeedback: vi.fn((id, aspect, value, ok, fail) => (fails ? fail(new Error("500")) : ok && ok())),
   };
   function Harness() {
     const [lessonData, setLessonData] = useState(lesson);
-    return <LessonFeedbackBox lessonData={lessonData} setLessonData={setLessonData} api={api} />;
+    return (
+      <UserContext.Provider value={{ userPreferences: preferences }}>
+        <LessonFeedbackBox
+          lessonData={lessonData}
+          setLessonData={setLessonData}
+          api={api}
+          onOpenSettings={onOpenSettings}
+        />
+      </UserContext.Provider>
+    );
   }
   render(<Harness />);
   return api;
 }
 
 const pill = (group, name) =>
-  [...screen.getByRole("radiogroup", { name: group }).querySelectorAll("button")].find(
-    (b) => b.textContent === name,
-  );
+  [...screen.getByRole("radiogroup", { name: group }).querySelectorAll("button")].find((b) => b.textContent === name);
 
 describe("LessonFeedbackBox", () => {
   it("saves what the next lesson should do, and shows the answer selected", () => {
@@ -63,11 +71,10 @@ describe("LessonFeedbackBox", () => {
     expect(screen.queryByRole("radiogroup", { name: "Next lesson" })).toBeNull();
   });
 
-  it("folds into what the answers change once all three are answered, and opens again on Change", () => {
+  it("folds into what the answers change once both are answered, and opens again on Change", () => {
     setup();
     fireEvent.click(pill("Pace", "Too slow"));
     fireEvent.click(pill("Repetition", "Too much"));
-    fireEvent.click(pill("Length", "Just right"));
 
     expect(screen.getByText("Thanks!")).toBeTruthy();
     expect(
@@ -80,17 +87,27 @@ describe("LessonFeedbackBox", () => {
     fireEvent.click(screen.getByText("Change"));
     expect(pill("Pace", "Too slow").getAttribute("aria-checked")).toBe("true");
   });
+
+  it("does not ask about length: it says the chosen length and links to the setting", () => {
+    const onOpenSettings = vi.fn();
+    setup({ preferences: { audio_lesson_minutes: "15" }, onOpenSettings });
+    expect(screen.queryByRole("radiogroup", { name: "Length" })).toBeNull();
+    expect(screen.getByText(/Lessons are about 15 minutes/)).toBeTruthy();
+
+    fireEvent.click(screen.getByText("Change"));
+    expect(onOpenSettings).toHaveBeenCalled();
+  });
 });
 
 describe("feedbackSummary", () => {
   it("says what changes", () => {
-    expect(feedbackSummary({ pace: "slower", repetition: "more", length: "shorter" })).toBe(
-      "Based on your feedback, your next lesson will be a bit slower, with more repetition and a bit shorter.",
+    expect(feedbackSummary({ pace: "slower", repetition: "more" })).toBe(
+      "Based on your feedback, your next lesson will be a bit slower and with more repetition.",
     );
   });
 
   it("says nothing changes when everything was just right", () => {
-    expect(feedbackSummary({ pace: "just_right", repetition: "just_right", length: "just_right" })).toBe(
+    expect(feedbackSummary({ pace: "just_right", repetition: "just_right" })).toBe(
       "Your next lesson will be just like this one.",
     );
   });

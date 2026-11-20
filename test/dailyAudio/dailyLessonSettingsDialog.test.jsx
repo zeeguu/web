@@ -162,4 +162,27 @@ describe("DailyLessonSettingsDialog", () => {
     expect(onSubmit).not.toHaveBeenCalled();
     expect(onDismiss).not.toHaveBeenCalled();
   });
+
+  it("at A0 shows the lesson length and saves a new one", async () => {
+    const { api } = setup(0, {
+      initialType: "situation",
+      initialSuggestion: "ordering at a café",
+      preferences: { audio_lesson_minutes: "10" },
+    });
+    await waitFor(() => expect(screen.getByText("about 10 minutes")).toBeTruthy());
+    const slider = screen.getByRole("slider");
+    fireEvent.change(slider, { target: { value: 15 } });
+    expect(screen.getByText("about 15 minutes")).toBeTruthy();
+    fireEvent.click(screen.getByText("Save settings"));
+    expect(api.saveUserPreferences).toHaveBeenCalledWith(
+      { audio_lesson_minutes: "15" },
+      expect.any(Function),
+      expect.any(Function),
+    );
+  });
+
+  it("shows no lesson length above A0", () => {
+    setup(1);
+    expect(screen.queryByRole("slider")).toBeNull();
+  });
 });

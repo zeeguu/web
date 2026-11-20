@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
 import PillSelector from "../components/PillSelector";
 import { zeeguuRed, zeeguuOrange } from "../components/colors";
 import { playHappyChime, playDoneChime } from "../utils/chimes";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
+import { UserContext } from "../contexts/UserContext";
 
-// After an A0 lesson: what the learner thought of it. Pace, repetition and
-// length tune their next lessons (api: audio_lessons/lesson_tuning.py); the
-// situation row moves the daily lessons on, or keeps them where they are.
+// After an A0 lesson: what the learner thought of it. Pace and repetition
+// tune their next lessons (api: audio_lessons/lesson_tuning.py); the situation
+// row moves the daily lessons on, or keeps them where they are. Length is not
+// a question here: it is a setting the learner chooses (lesson settings,
+// LessonLengthSlider), and this box says what it is and links to it.
 // Each tap is saved at once; nothing tapped changes nothing.
 
 // The answers describe this lesson ("Too slow"), which is what the question
@@ -31,15 +34,6 @@ const ROWS = [
       { value: "less", pillLabel: "Too much" },
     ],
   },
-  {
-    aspect: "length",
-    label: "Length",
-    options: [
-      { value: "longer", pillLabel: "Too short" },
-      { value: "just_right", pillLabel: "Just right" },
-      { value: "shorter", pillLabel: "Too long" },
-    ],
-  },
 ];
 
 // What the answers do to the next lesson, in words. They move each setting one
@@ -47,7 +41,6 @@ const ROWS = [
 const EFFECTS = {
   pace: { faster: "a bit faster", slower: "a bit slower" },
   repetition: { less: "with less repetition", more: "with more repetition" },
-  length: { shorter: "a bit shorter", longer: "a bit longer" },
 };
 
 export function feedbackSummary(feedback) {
@@ -116,7 +109,34 @@ const ErrorMsg = styled.p`
   color: ${zeeguuRed};
 `;
 
-export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
+// The lesson length the learner chose, with a way to change it: the length is
+// a setting, not a question about this lesson.
+function LessonLength({ onOpenSettings }) {
+  const { userPreferences } = useContext(UserContext);
+  const minutes = userPreferences?.audio_lesson_minutes;
+  if (!minutes) return null;
+  return (
+    <LengthLine>
+      Lessons are about {minutes} minutes.
+      {onOpenSettings && (
+        <>
+          {" "}
+          <ChangeLink type="button" onClick={onOpenSettings} style={{ alignSelf: "auto" }}>
+            Change
+          </ChangeLink>
+        </>
+      )}
+    </LengthLine>
+  );
+}
+
+const LengthLine = styled.p`
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+`;
+
+export default function LessonFeedbackBox({ lessonData, setLessonData, api, onOpenSettings }) {
   const [error, setError] = useState(null);
   // Once the three are answered the box folds into what they will change;
   // "Change" opens the questions again.
@@ -204,6 +224,8 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
           </SituationPills>
         </div>
       )}
+
+      <LessonLength onOpenSettings={onOpenSettings} />
 
       {error && <ErrorMsg>{error}</ErrorMsg>}
     </Box>
