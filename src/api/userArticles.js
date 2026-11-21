@@ -163,7 +163,7 @@ Zeeguu_API.prototype.search = function (
     use_readability_priority: searchDifficultyPriority,
   };
   return this._post(
-    `search/${term}`,
+    `search/${encodeURIComponent(term)}`,
     qs.stringify(preferences),
     (response) => {
       let articles = JSON.parse(response);
@@ -181,7 +181,7 @@ Zeeguu_API.prototype.search = function (
 };
 
 Zeeguu_API.prototype.latestSearch = function (term, callback, onError) {
-  return this._getJSON(`latest_search/${term}`, (articles) => {
+  return this._getJSON(`latest_search/${encodeURIComponent(term)}`, (articles) => {
     // sometimes we get duplicates from the server
     // deduplicate them here
     // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
@@ -206,7 +206,7 @@ Zeeguu_API.prototype.searchMore = function (
     use_readability_priority: searchDifficultyPriority,
   };
   return this._post(
-    `search/${term}/${page}`,
+    `search/${encodeURIComponent(term)}/${page}`,
     qs.stringify(preferences),
     (response) => {
       let articles = JSON.parse(response);
