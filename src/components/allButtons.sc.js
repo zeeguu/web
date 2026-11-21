@@ -51,39 +51,6 @@ const SearchIcon = styled(MUISearchIcon)`
   }
 `;
 
-// from: https://stackoverflow.com/questions/10019797/pure-css-close-button
-const ClearSearchButton = styled.div`
-  float: left;
-  margin-top: 2px;
-  margin-left: -3rem;
-  margin-right: 1rem;
-  box-sizing: border-box;
-  width: 1.4em;
-  height: 1.4em;
-  cursor: pointer;
-  border-width: 3px;
-  border-style: solid;
-  border-color: white;
-  border-radius: 100%;
-  @media (hover: hover) {
-    &:hover {
-      filter: brightness(120%);
-    }
-  }
-  background:
-    -webkit-linear-gradient(
-      -45deg,
-      transparent 0%,
-      transparent 46%,
-      gray 46%,
-      gray 56%,
-      transparent 56%,
-      transparent 100%
-    ),
-    -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, gray 46%, gray 56%, transparent 56%, transparent
-          100%);
-  background-color: white;
-`;
 
 const BigSquareButton = styled(RoundButton)`
   margin: 5px;
@@ -191,7 +158,6 @@ export {
   OrangeRoundButton,
   WhiteRoundButton,
   BigSquareButton,
-  ClearSearchButton,
   StyledButton,
   HideWhenDisabledButton,
   SearchIcon,

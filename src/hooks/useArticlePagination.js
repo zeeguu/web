@@ -24,6 +24,9 @@ export default function useArticlePagination(
   const currentPageRef = useShadowRef(currentPage);
   const articleListRef = useShadowRef(articleList);
   const isPaginationPausedRef = useShadowRef(isPaginationPaused);
+  // The scroll listener keeps the first render's handleScroll, so the title
+  // (News vs a search) is read through a ref too.
+  const pageTitleRef = useShadowRef(pageTitle);
 
   function insertNewArticlesIntoArticleList(
     fetchedArticles,
@@ -69,7 +72,7 @@ export default function useArticlePagination(
           newCurrentPage,
           articleListCopy,
         );
-        setTitle(pageTitle);
+        setTitle(pageTitleRef.current);
       });
 
       return true;

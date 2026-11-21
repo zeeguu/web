@@ -1,8 +1,7 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import ArticlePreview from "./ArticlePreview";
 import FeedFilterBar from "./FeedFilterBar";
-import AddKeywordModal from "./AddKeywordModal";
 import { browsingModeProps } from "./browsingMode";
 import LocalStorage from "../assorted/LocalStorage";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -11,7 +10,7 @@ import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
-import useSelectInterest from "../hooks/useSelectInterest";
+import useSubscribedSearches from "../hooks/useSubscribedSearches";
 
 // The Evergreen tab: articles that don't go out of date (the crawler labels
 // each article news or general), ranked by the learner's keywords and topics
@@ -20,84 +19,91 @@ import useSelectInterest from "../hooks/useSelectInterest";
 //
 // The filter row is the news feed's (FeedFilterBar), with the keywords added:
 // they are what make this tab personal, so they are added and removed here.
+// A search typed in the row narrows the tab like a keyword does, without
+// keeping it; the bookmark button next to it keeps it as a keyword pill.
 export default function EvergreenArticles() {
   const api = useContext(APIContext);
   const { userDetails } = useContext(UserContext);
-  const { subscribedSearches, subscribeToSearch, removeSearch } = useSelectInterest(api);
+  const { subscribedSearches, findSearch, isSearchKept, subscribeToSearch, removeSearch } = useSubscribedSearches(api);
   const [articles, setArticles] = useState(null);
   const [failed, setFailed] = useState(false);
-  const [asking, setAsking] = useState(false);
   const [activeFilter, setActiveFilter] = useState({ type: "all" });
-  const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
     setTitle(strings.evergreenTitle);
   }, []);
 
-  // Refetch on language switch, on a pill, and after the keywords change. The
-  // ignore flag drops a response that lands after a newer request.
+  // What the server is asked for. A search and the keyword of the same text
+  // ask for the same list, so turning one into the other refetches nothing.
+  const requestFilter =
+    activeFilter.type === "topic"
+      ? { topic: activeFilter.value.title }
+      : activeFilter.type === "keyword" || activeFilter.type === "search"
+        ? { keyword: activeFilter.value.search }
+        : {};
+  const requestKey = JSON.stringify(requestFilter);
+
+  // Refetch on language switch and on a pill. The ignore flag drops a
+  // response that lands after a newer request.
   useEffect(() => {
     let ignore = false;
     setArticles(null);
     setFailed(false);
-    const filter =
-      activeFilter.type === "topic"
-        ? { topic: activeFilter.value.title }
-        : activeFilter.type === "keyword"
-          ? { keyword: activeFilter.value.search }
-          : {};
     api.getEvergreenArticles(
       (list) => !ignore && setArticles(list),
       () => !ignore && setFailed(true),
-      filter,
+      requestFilter,
     );
     return () => {
       ignore = true;
     }; // eslint-disable-next-line
-  }, [userDetails, reloadToken, activeFilter]);
+  }, [userDetails, requestKey]);
 
-  // subscribeToSearch updates the list of keywords when the server answers;
-  // refetch once that list changes, so the new keyword's articles show.
-  // The first load of the keywords is not a change: skip it, or the page
-  // loads twice.
-  const keywordCount = subscribedSearches ? subscribedSearches.length : null;
-  const previousKeywordCount = useRef(null);
+  // A search that is one of the keywords shows as that keyword's pill, with
+  // its delete button: right away, once the keywords load (a card's term
+  // tapped early), or once a kept search is saved.
   useEffect(() => {
-    if (keywordCount === null) return;
-    if (previousKeywordCount.current !== null && previousKeywordCount.current !== keywordCount) {
-      setReloadToken((t) => t + 1);
-    }
-    previousKeywordCount.current = keywordCount;
-  }, [keywordCount]);
+    if (activeFilter.type !== "search") return;
+    const keyword = findSearch(activeFilter.value.search);
+    if (keyword) setActiveFilter({ type: "keyword", value: keyword });
+    // eslint-disable-next-line
+  }, [subscribedSearches, activeFilter]);
 
-  function addKeyword(keyword) {
-    setAsking(false);
-    subscribeToSearch(keyword);
+  // Offered only once the keywords have loaded (see header).
+  function keepSearch(term) {
+    if (subscribeToSearch(term)) api.logUserActivity(api.SUBSCRIBE_TO_SEARCH, "", term, "evergreen");
+  }
+
+  // A 🔍 term on a card: the effect above turns it into its keyword pill.
+  function selectSearch(term) {
+    setActiveFilter({ type: "search", value: { search: term } });
+    window.scrollTo({ top: 0 });
   }
 
   function removeKeyword(keyword) {
+    api.logUserActivity(api.UNSUBSCRIBE_FROM_SEARCH, "", keyword.search, "evergreen");
     removeSearch(keyword);
     setActiveFilter({ type: "all" });
   }
 
   const header = (
-    <>
-      <FeedFilterBar
-        activeFilter={activeFilter}
-        onSelectFilter={setActiveFilter}
-        keywords={subscribedSearches}
-        onAddKeyword={() => setAsking(true)}
-        onRemoveKeyword={removeKeyword}
-      />
-      <AddKeywordModal open={asking} onClose={() => setAsking(false)} onAdd={addKeyword} />
-    </>
+    <FeedFilterBar
+      activeFilter={activeFilter}
+      onSelectFilter={setActiveFilter}
+      searchPlaceholder={strings.searchEvergreen}
+      searchSource="evergreen"
+      keywords={subscribedSearches}
+      onSaveSearch={subscribedSearches ? keepSearch : null}
+      isSearchKept={activeFilter.type === "search" && isSearchKept(activeFilter.value.search)}
+      onRemoveKeyword={removeKeyword}
+    />
   );
 
   if (failed) {
     return (
       <>
         {header}
-        <EmptyState message={strings.evergreenEmpty} fillHeight={false} />
+        <EmptyState message={strings.evergreenLoadFailed} fillHeight={false} />
       </>
     );
   }
@@ -111,14 +117,26 @@ export default function EvergreenArticles() {
     );
   }
 
+  // A search that finds nothing says so; the general advice is for the
+  // unfiltered tab.
+  const emptyMessage =
+    activeFilter.type === "search"
+      ? strings.formatString(strings.evergreenNoMatches, activeFilter.value.search)
+      : strings.evergreenEmpty;
+
   // New today first (the server already orders them so), no headings: the
   // order says it.
   return (
     <>
       {header}
-      {articles.length === 0 && <EmptyState message={strings.evergreenEmpty} fillHeight={false} />}
+      {articles.length === 0 && <EmptyState message={emptyMessage} fillHeight={false} />}
       {articles.map((each) => (
-        <ArticlePreview key={each.id} article={each} {...browsingModeProps(LocalStorage.getBrowsingMode())} />
+        <ArticlePreview
+          key={each.id}
+          article={each}
+          onSelectSearch={selectSearch}
+          {...browsingModeProps(LocalStorage.getBrowsingMode())}
+        />
       ))}
     </>
   );

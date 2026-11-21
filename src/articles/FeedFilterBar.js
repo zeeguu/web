@@ -1,8 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import BookmarkAddRoundedIcon from "@mui/icons-material/BookmarkAddRounded";
+import BookmarkAddedRoundedIcon from "@mui/icons-material/BookmarkAddedRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { APIContext } from "../contexts/APIContext";
 import Tag from "../pages/_pages_shared/Tag.sc";
@@ -16,21 +18,61 @@ import * as s from "./FeedFilterBar.sc";
 // activeFilter shape: { type: "all" }
 //                   | { type: "topic", value: <topic {id, title}> }
 //                   | { type: "keyword", value: <search {id, search}> }
+//                   | { type: "search", value: { search: <typed text> } }
 //
+// Search sits next to the gear: the magnifier turns the row into a text field,
+// and Enter selects the typed text like any other pill. What a search looks in
+// is the tab's business -- the bar only says so in `searchPlaceholder`, and
+// names the tab in the logged search (`searchSource`).
+//
+// `onSaveSearch` adds a button that keeps a search as a keyword (pass it only
+// once the keywords have loaded); `isSearchKept` shows that it is kept.
 // Keyword pills are opt-in (the Evergreen tab): pass `keywords` to list them
-// after the topics, `onAddKeyword` for a "+" next to the gear, and
-// `onRemoveKeyword` for a delete button while a keyword is selected. The news
-// feed shows topics only (saved-search pills were dropped from it in Jun 2026).
-export default function FeedFilterBar({ activeFilter, onSelectFilter, keywords, onAddKeyword, onRemoveKeyword }) {
+// after the topics, and `onRemoveKeyword` for a delete button while a keyword
+// is selected. The news feed shows topics only.
+export default function FeedFilterBar({
+  activeFilter,
+  onSelectFilter,
+  searchPlaceholder,
+  searchSource,
+  keywords,
+  onSaveSearch,
+  isSearchKept,
+  onRemoveKeyword,
+}) {
   const api = useContext(APIContext);
   const history = useHistory();
   const [topics, setTopics] = useState([]);
+  const [typing, setTyping] = useState(false);
+  const [term, setTerm] = useState("");
 
   useEffect(() => {
     api.getSubscribedTopics((data) => setTopics(data || []));
   }, [api]);
 
+  // A selection made elsewhere (a topic on a card, Back) closes the field,
+  // or it would hide the pill just selected.
+  useEffect(() => {
+    setTyping(false);
+  }, [activeFilter]);
+
   const clearToAll = () => onSelectFilter({ type: "all" });
+
+  function startTyping() {
+    setTerm("");
+    setTyping(true);
+  }
+
+  function submitSearch(e) {
+    e.preventDefault();
+    // The term travels as one URL path segment, which a "/" would split (see
+    // subscribeToSearch in api/userInterests.js): "covid/19" searches "covid 19".
+    const trimmed = term.replace(/\//g, " ").replace(/\s+/g, " ").trim();
+    if (!trimmed) return;
+    api.logUserActivity(api.SEARCH_QUERY, "", trimmed, searchSource || "");
+    setTyping(false);
+    onSelectFilter({ type: "search", value: { search: trimmed } });
+  }
 
   const gearButton = (
     <s.RoundButton
@@ -42,20 +84,37 @@ export default function FeedFilterBar({ activeFilter, onSelectFilter, keywords, 
     </s.RoundButton>
   );
 
-  const addButton = onAddKeyword && (
-    <s.RoundButton onClick={onAddKeyword} title={strings.evergreenAddKeyword} aria-label={strings.evergreenAddKeyword}>
-      <AddRoundedIcon style={{ fontSize: "1.1rem" }} />
+  const searchButton = searchPlaceholder && (
+    <s.RoundButton onClick={startTyping} title={searchPlaceholder} aria-label={searchPlaceholder}>
+      <SearchRoundedIcon style={{ fontSize: "1.1rem" }} />
     </s.RoundButton>
+  );
+
+  // The row while typing: the field takes the place of the pills, × gives up.
+  const typingView = (
+    <>
+      <s.SearchForm onSubmit={submitSearch} role="search">
+        <s.SearchInput
+          type="search"
+          inputMode="search"
+          enterKeyHint="search"
+          placeholder={searchPlaceholder}
+          value={term}
+          onChange={(e) => setTerm(e.target.value)}
+          autoFocus
+          autoComplete="off"
+        />
+      </s.SearchForm>
+      <s.RoundButton onClick={() => setTyping(false)} title={strings.cancel} aria-label={strings.cancel}>
+        <CloseRoundedIcon style={{ fontSize: "1.1rem" }} />
+      </s.RoundButton>
+    </>
   );
 
   // Default: one pill per subscribed topic, then one per keyword.
   const choosablePills = [
     ...topics.map((topic) => (
-      <Tag
-        key={`topic-${topic.id}`}
-        className="small"
-        onClick={() => onSelectFilter({ type: "topic", value: topic })}
-      >
+      <Tag key={`topic-${topic.id}`} className="small" onClick={() => onSelectFilter({ type: "topic", value: topic })}>
         {topic.title}
       </Tag>
     )),
@@ -75,19 +134,37 @@ export default function FeedFilterBar({ activeFilter, onSelectFilter, keywords, 
   const selectedLabel =
     activeFilter.type === "topic"
       ? activeFilter.value.title
-      : activeFilter.type === "keyword"
+      : activeFilter.type === "keyword" || activeFilter.type === "search"
         ? activeFilter.value.search
         : null;
+  const searchIcon = activeFilter.type === "search" && (
+    <SearchRoundedIcon style={{ fontSize: "1rem", verticalAlign: "middle", marginRight: "0.25rem" }} />
+  );
   // × sits after the pill so clearing isn't adjacent to the gear (avoids
   // accidentally opening settings when reaching for "clear").
   const selectionView = (
     <>
       <Tag className="small selected" onClick={clearToAll}>
+        {searchIcon}
         {selectedLabel}
       </Tag>
       <s.RoundButton onClick={clearToAll} title="Show all" aria-label="Clear filter">
         <CloseRoundedIcon style={{ fontSize: "1.1rem" }} />
       </s.RoundButton>
+      {activeFilter.type === "search" && isSearchKept && (
+        <s.RoundButton disabled title={strings.keptAsKeyword} aria-label={strings.keptAsKeyword}>
+          <BookmarkAddedRoundedIcon style={{ fontSize: "1.1rem" }} />
+        </s.RoundButton>
+      )}
+      {activeFilter.type === "search" && !isSearchKept && onSaveSearch && (
+        <s.RoundButton
+          onClick={() => onSaveSearch(activeFilter.value.search)}
+          title={strings.keepAsKeyword}
+          aria-label={strings.keepAsKeyword}
+        >
+          <BookmarkAddRoundedIcon style={{ fontSize: "1.1rem" }} />
+        </s.RoundButton>
+      )}
       {activeFilter.type === "keyword" && onRemoveKeyword && (
         <s.RoundButton
           onClick={() => onRemoveKeyword(activeFilter.value)}
@@ -100,13 +177,23 @@ export default function FeedFilterBar({ activeFilter, onSelectFilter, keywords, 
     </>
   );
 
+  const rowContent = typing ? (
+    typingView
+  ) : activeFilter.type === "all" ? (
+    <>
+      {searchButton}
+      {choosablePills}
+    </>
+  ) : (
+    selectionView
+  );
+
   return (
     // The row scrolls horizontally on its own; opt it out of the parent
     // tab-swipe so dragging the pills scrolls topics instead of switching tabs.
     <s.FilterRow data-tab-swipe-ignore>
       {gearButton}
-      {activeFilter.type === "all" && addButton}
-      {activeFilter.type === "all" ? choosablePills : selectionView}
+      {rowContent}
     </s.FilterRow>
   );
 }

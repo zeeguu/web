@@ -19,16 +19,17 @@ let strings = new LocalizedStrings(
       newsIntro: "What's happening now.",
       savedIntro: "Articles you kept for later.",
       classroomIntro: "Texts from your teacher.",
-      searchIntro: "Find articles on any subject.",
       inboxIntro: "What you and your friends share with Zeeguu.",
       inboxEmpty: "Nothing here yet. Share a text or an article from another app to Zeeguu, and it shows up here.",
       inboxSharesInOtherLanguages: "There are things here in another language. Switch languages to see them.",
       sharedByYou: "Shared by you",
-      evergreenAddKeyword: "Add a keyword",
-      evergreenAdd: "Add",
-      evergreenAddKeywordPrompt: "What do you want to read about?",
-      evergreenKeywordPlaceholder: "e.g. nature, history, music",
-      evergreenEmpty: "Nothing here yet. Add a keyword, or pick more topics in the news feed.",
+      searchNews: "Search the news",
+      searchEvergreen: "Search evergreen articles",
+      keepAsKeyword: "Keep as a keyword",
+      keptAsKeyword: "Kept as a keyword",
+      evergreenNoMatches: "No evergreen articles mention \"{0}\".",
+      evergreenLoadFailed: "Could not load the articles. Please try again.",
+      evergreenEmpty: "Nothing here yet. Search for something and keep it as a keyword, or pick more topics in the news feed.",
       evergreenRemoveKeyword: "Remove",
       showMore: "Show more",
       showLess: "Show less",
@@ -439,16 +440,6 @@ let strings = new LocalizedStrings(
       //Interests
       interests: "Interests",
       nonInterests: "Non-interests",
-
-      //SearchField
-      searchAllArticles: "Search all articles",
-      searchAllArticlesAndVideos: "Search all articles and videos",
-
-      //Search
-
-      youSearchedFor: "You searched for: ",
-      NoSavedSearches: "You haven't saved any searches.",
-      NoSearchMatch: "No articles found that match your search.",
 
       //ClassroomArticles
       noArticlesInClassroom: "There are no articles in your classroom.",
@@ -1080,16 +1071,17 @@ let strings = new LocalizedStrings(
       newsIntro: "Det, der sker lige nu.",
       savedIntro: "Artikler, du har gemt til senere.",
       classroomIntro: "Tekster fra din lærer.",
-      searchIntro: "Find artikler om et hvilket som helst emne.",
       inboxIntro: "Det, du og dine venner deler med Zeeguu.",
       inboxEmpty: "Her er ikke noget endnu. Del en tekst eller en artikel fra en anden app til Zeeguu, så dukker den op her.",
       inboxSharesInOtherLanguages: "Der er noget her på et andet sprog. Skift sprog for at se det.",
       sharedByYou: "Delt af dig",
-      evergreenAddKeyword: "Tilføj et nøgleord",
-      evergreenAdd: "Tilføj",
-      evergreenAddKeywordPrompt: "Hvad vil du læse om?",
-      evergreenKeywordPlaceholder: "fx natur, historie, musik",
-      evergreenEmpty: "Intet her endnu. Tilføj et nøgleord, eller vælg flere emner under nyheder.",
+      searchNews: "Søg i nyhederne",
+      searchEvergreen: "Søg i tidløse artikler",
+      keepAsKeyword: "Behold som nøgleord",
+      keptAsKeyword: "Gemt som nøgleord",
+      evergreenNoMatches: "Ingen tidløse artikler nævner \"{0}\".",
+      evergreenLoadFailed: "Kunne ikke indlæse artiklerne. Prøv igen.",
+      evergreenEmpty: "Intet her endnu. Søg efter noget og behold det som nøgleord, eller vælg flere emner under nyheder.",
       evergreenRemoveKeyword: "Fjern",
       showMore: "Vis mere",
       showLess: "Vis mindre",
@@ -1416,14 +1408,6 @@ let strings = new LocalizedStrings(
       //Interests
       interests: "Interesseret",
       nonInterests: "Uinteresseret",
-
-      //SearchField
-      searchAllArticles: "Søg i alle artikler",
-      searchAllArticlesAndVideos: "Søg i alle artikler og videoer",
-
-      //Search
-
-      youSearchedFor: "Du søgte på: ",
 
       //ClassroomArticles
       noArticlesInClassroom: "Der er ingen artikler i denne klasse.",

@@ -65,6 +65,9 @@ export default function ArticlePreview({
   // Narrow the feed to a topic (by title). Only the home feed can, so only it
   // passes this; elsewhere the card's topic stays a plain label.
   onSelectTopic = null,
+  // Where the feed can search in place, a card's 🔍 term searches there
+  // instead of going to /search (which lands in News).
+  onSelectSearch = null,
   // Preview browsing mode: when false, the card is a plain (non-interactive)
   // teaser and a tap opens the interactive ArticlePreviewOverlay instead of
   // rendering the interactive title/summary inline. Default true keeps today's
@@ -141,6 +144,26 @@ export default function ArticlePreview({
   // Empty for a text a teacher typed in: it has no publisher to name, and the
   // card already says who shared it.
   const sourceLabel = articleSourceLabel(article);
+
+  // A 🔍 term the card matched: searched in place where the feed can, else a
+  // link to /search. Either way the tap stays off the card itself.
+  const searchLink = (search) =>
+    onSelectSearch ? (
+      <MetaLink
+        as="button"
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelectSearch(search);
+        }}
+      >
+        {search}
+      </MetaLink>
+    ) : (
+      <MetaLink as={Link} to={`/search?search=${encodeURIComponent(search)}`} onClick={(e) => e.stopPropagation()}>
+        {search}
+      </MetaLink>
+    );
   // One card-level mark for machine-written text; see aiProvenanceLabel.
   const aiLabel = aiProvenanceLabel(article);
 
@@ -579,13 +602,7 @@ export default function ArticlePreview({
           article.matched_searches.map((search) => (
             <MetaItem key={`search-${search}`}>
               🔍&nbsp;
-              <MetaLink
-                as={Link}
-                to={`/search?search=${encodeURIComponent(search)}`}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {search}
-              </MetaLink>
+              {searchLink(search)}
             </MetaItem>
           ))}
         <SourceItem article={article} sourceLabel={sourceLabel} />
@@ -864,9 +881,7 @@ export default function ArticlePreview({
               article.matched_searches.map((search) => (
                 <MetaItem key={`search-${search}`}>
                   🔍&nbsp;
-                  <MetaLink as={Link} to={`/search?search=${encodeURIComponent(search)}`}>
-                    {search}
-                  </MetaLink>
+                  {searchLink(search)}
                 </MetaItem>
               ))}
             {aiLabel && <MetaTag>{aiLabel}</MetaTag>}

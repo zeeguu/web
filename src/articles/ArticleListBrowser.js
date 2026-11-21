@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useHistory, useLocation } from "react-router-dom";
 import ArticlePreview from "./ArticlePreview";
-import SearchField from "./SearchField";
 import * as s from "./ArticleListBrowser.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FeedFilterBar from "./FeedFilterBar";
@@ -22,11 +21,8 @@ import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
 import VideoPreview from "../videos/VideoPreview";
 import { getUserCefrLevel, numericToCefr } from "../utils/misc/userCefrLevel";
+import useSubscribedSearches from "../hooks/useSubscribedSearches";
 export default function ArticleListBrowser({
-  content,
-  searchQuery,
-  searchPublishPriority,
-  searchDifficultyPriority,
   // Kiosk mode: hide the topic filter bar and force articles to open in the
   // in-app reader (never the external publisher site).
   kioskMode,
@@ -74,35 +70,47 @@ export default function ArticleListBrowser({
   // changes before the new list arrives (see the ArticlePreview key).
   const [listCefrLevel, setListCefrLevel] = useState(cefrLevel);
 
-  const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
-  const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
 
   // Home-feed filter pills (only shown when this isn't an external search).
-  // { type: "all" } | { type: "topic", value }.
+  // { type: "all" } | { type: "topic", value } | { type: "search", value: { search } }.
   // A ref mirror is needed because getNewArticlesForPage is captured once by
   // the pagination hook and would otherwise see a stale filter.
   //
   // On the home feed the topic lives in the URL (/articles?topic=Culture%20%26%20Art),
+  // and so does a search typed in the filter row (/articles?search=klima),
   // so Back undoes a filter -- which matters once a topic on any card can set
   // one -- and a filtered feed can be linked to. LocalStorage still remembers
   // the last pick, so leaving the tab and coming back restores it.
   const location = useLocation();
   const history = useHistory();
-  const filterInUrl = !searchQuery && !kioskMode;
-  const urlTopic = filterInUrl ? new URLSearchParams(location.search).get("topic") : null;
+  const filterInUrl = !kioskMode;
+  const urlParams = filterInUrl ? new URLSearchParams(location.search) : null;
+  const urlTopic = urlParams ? urlParams.get("topic") : null;
+  const urlSearch = urlParams ? urlParams.get("search") : null;
   const topicFilter = (title) => (title ? { type: "topic", value: { title } } : { type: "all" });
+  const urlFilter = () => (urlSearch ? { type: "search", value: { search: urlSearch } } : topicFilter(urlTopic));
 
   const [activeFilter, setActiveFilter] = useState(() => {
-    if (urlTopic) return topicFilter(urlTopic);
+    if (urlTopic || urlSearch) return urlFilter();
     const savedTopic = LocalStorage.getSelectedFeedTopic();
     return savedTopic ? { type: "topic", value: savedTopic } : { type: "all" };
   });
   const activeFilterRef = useShadowRef(activeFilter);
 
+  // A search can be kept as a keyword: it then shapes this feed's ranking and
+  // gets its own pill on the Evergreen tab.
+  const { subscribedSearches, isSearchKept, subscribeToSearch } = useSubscribedSearches(api, { enabled: !kioskMode });
+
+  // What to search for, if anything: a search typed in the filter row (or
+  // reached through /search, which redirects here). The search endpoint is
+  // asked to rank by date and by difficulty, as the old search page did.
+  const searchFromFilter = (filter) => (filter.type === "search" ? filter.value.search : null);
+  const query = searchFromFilter(activeFilter);
+
   // A remembered topic restored on arrival goes into the URL too, replacing
   // (not pushing) so Back still leaves the feed rather than un-filtering it.
   useEffect(() => {
-    if (filterInUrl && !urlTopic && activeFilter.type === "topic") {
+    if (filterInUrl && !urlTopic && !urlSearch && activeFilter.type === "topic") {
       history.replace({ search: `?topic=${encodeURIComponent(activeFilter.value.title)}` });
     }
     // eslint-disable-next-line
@@ -118,19 +126,26 @@ export default function ArticleListBrowser({
       urlSyncStarted.current = true;
       return;
     }
-    const current = activeFilter.type === "topic" ? activeFilter.value.title : null;
-    if (urlTopic === current) return;
-    LocalStorage.setSelectedFeedTopic(urlTopic ? { title: urlTopic } : null);
-    setActiveFilter(topicFilter(urlTopic));
+    const currentTopic = activeFilter.type === "topic" ? activeFilter.value.title : null;
+    const currentSearch = activeFilter.type === "search" ? activeFilter.value.search : null;
+    if (urlTopic === currentTopic && urlSearch === currentSearch) return;
+    // A search is not remembered: coming back to the tab shows the feed.
+    if (!urlSearch) LocalStorage.setSelectedFeedTopic(urlTopic ? { title: urlTopic } : null);
+    setActiveFilter(urlFilter());
     // eslint-disable-next-line
-  }, [urlTopic]);
+  }, [urlTopic, urlSearch]);
 
   // Persist topic selections (clear on "all") and update state -- via the URL
   // on the home feed, so each pick is a history entry Back can undo.
   function selectFilter(filter) {
     if (filterInUrl) {
-      const title = filter.type === "topic" ? filter.value.title : null;
-      history.push({ search: title ? `?topic=${encodeURIComponent(title)}` : "" });
+      const urlQuery =
+        filter.type === "topic"
+          ? `?topic=${encodeURIComponent(filter.value.title)}`
+          : filter.type === "search"
+            ? `?search=${encodeURIComponent(filter.value.search)}`
+            : "";
+      history.push({ search: urlQuery });
       return;
     }
     LocalStorage.setSelectedFeedTopic(filter.type === "topic" ? filter.value : null);
@@ -151,15 +166,9 @@ export default function ArticleListBrowser({
   const isShowVideosOnlyEnabledRef = useShadowRef(isShowVideosOnlyEnabled);
 
   function getNewArticlesForPage(pageNumber, handleArticleInsertion) {
-    if (searchQuery) {
-      api.searchMore(
-        searchQuery,
-        pageNumber,
-        searchPublishPriorityRef.current,
-        searchDifficultyPriorityRef.current,
-        handleArticleInsertion,
-        (error) => {},
-      );
+    const pageQuery = searchFromFilter(activeFilterRef.current);
+    if (pageQuery) {
+      api.searchMore(pageQuery, pageNumber, true, true, handleArticleInsertion, (error) => {});
       return;
     }
     const filter = activeFilterRef.current;
@@ -180,7 +189,7 @@ export default function ArticleListBrowser({
   const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow, resetPagination] = useArticlePagination(
     articlesAndVideosList,
     updateOnPagination,
-    searchQuery ? "Article Search" : strings.news,
+    query ? "Article Search" : strings.news,
     getNewArticlesForPage,
     // Pause infinite scroll while the feed itself is (re)loading, so the hidden
     // list / collapsed page doesn't trigger a spurious load-more + 2nd spinner.
@@ -247,17 +256,16 @@ export default function ArticleListBrowser({
       const isStale = () => myToken !== loadTokenRef.current;
       resetPagination();
       setSearchError(false);
-      // The external /search route drives the search endpoint; the home-feed
-      // pills (topic / all) go through the recommended feed, with topic passed
-      // as a filter.
-      if (searchQuery) {
-        setTitle(strings.titleSearch + ` '${searchQuery}'`);
+      // A search goes to the search endpoint; the other pills (topic / all) go
+      // through the recommended feed, with topic passed as a filter.
+      if (query) {
+        setTitle(strings.titleSearch + ` '${query}'`);
         setFeedLoading(false);
         setReloadingSearchArticles(true);
         api.search(
-          searchQuery,
-          searchPublishPriority,
-          searchDifficultyPriority,
+          query,
+          true,
+          true,
           (articles) => {
             if (isStale()) return resolve();
             setArticlesAndVideosList(articles);
@@ -308,23 +316,20 @@ export default function ArticleListBrowser({
     });
   }
 
+  // The scroll listener is registered once, on mount (above): a second one
+  // here made a single scroll load the next page twice.
   useEffect(() => {
     loadArticles();
-    if (!searchQuery) {
-      window.addEventListener("scroll", handleScroll, true);
-      return () => {
-        window.removeEventListener("scroll", handleScroll, true);
-      };
-    }
     // eslint-disable-next-line
-  }, [searchQuery, searchPublishPriority, searchDifficultyPriority, activeFilter]);
+  }, [activeFilter]);
 
   useEffect(() => {
     if (cefrLevel === lastCefrLevelRef.current) return;
     lastCefrLevelRef.current = cefrLevel;
-    if (searchQuery) return;
-    // The cached feed was built for the previous level.
+    // The cached feed was built for the previous level: drop it even while a
+    // search is on screen, or leaving the search shows the old level's feed.
     api.invalidateCache("user_articles/recommended");
+    if (query) return;
     loadArticles({ inPlace: true });
     // eslint-disable-next-line
   }, [cefrLevel]);
@@ -335,12 +340,28 @@ export default function ArticleListBrowser({
     return <LoadingAnimation delay={300} />;
   }
 
+  const searchKept = activeFilter.type === "search" && isSearchKept(activeFilter.value.search);
+
+  function keepSearch(term) {
+    if (subscribeToSearch(term)) api.logUserActivity(api.SUBSCRIBE_TO_SEARCH, "", term, "news");
+  }
+
+  const filterBar = (
+    <FeedFilterBar
+      activeFilter={activeFilter}
+      onSelectFilter={selectFilter}
+      searchPlaceholder={strings.searchNews}
+      searchSource="news"
+      onSaveSearch={subscribedSearches ? keepSearch : null}
+      isSearchKept={searchKept}
+    />
+  );
+
+  // A failed search keeps the filter row, so × goes back to the feed.
   if (searchError) {
     return (
       <>
-        <s.SearchHolder>
-          <SearchField query={searchQuery} />
-        </s.SearchHolder>
+        {filterBar}
 
         <b>An error occurred with this query. Please try a different keyword.</b>
       </>
@@ -360,9 +381,9 @@ export default function ArticleListBrowser({
       {/* The topic pills stay pinned above the refresh area, so pulling down
           shows the loading indicator below the pills (near the articles),
           not above them. */}
-      {!searchQuery && !kioskMode && (
+      {!kioskMode && (
         <>
-          <FeedFilterBar activeFilter={activeFilter} onSelectFilter={selectFilter} />
+          {filterBar}
           {areVideosAvailable && (
             <s.SortHolder
               style={{
@@ -386,14 +407,6 @@ export default function ArticleListBrowser({
 
       <PullToRefresh onRefresh={refreshFromNetwork} pullingContent="">
         <>
-      {searchQuery && (
-        <s.SearchHolder>
-          <SearchField query={searchQuery} />
-        </s.SearchHolder>
-      )}
-
-      {/* This is where the content of the Search component will be rendered */}
-      {content}
       {(reloadingSearchArticles || feedLoading) && <LoadingAnimation delay={300}></LoadingAnimation>}
       <s.FeedArea>
       {levelReloading && (
@@ -434,6 +447,14 @@ export default function ArticleListBrowser({
                     }
                   : null
               }
+              onSelectSearch={
+                filterInUrl
+                  ? (search) => {
+                      selectFilter({ type: "search", value: { search } });
+                      window.scrollTo({ top: 0 });
+                    }
+                  : null
+              }
               notifyArticleClick={() => handleArticleClick(each.id, each.source_id, index)}
             />
           ),
@@ -450,7 +471,7 @@ export default function ArticleListBrowser({
         </div>
       )}
 
-      {!searchQuery && (
+      {!query && (
         <>
           {/* A feed emptied by a variety preference has its own explanation, and
               the generic "here are some news sites" advice would be wrong for it:

@@ -14,7 +14,7 @@ const BADGE_VISIBLE_INTERVAL_MS = 1000;
 const ELSEWHERE_INTERVAL_MS = 60 * 1000;
 
 function badgeIsOnScreen(path) {
-  return path.startsWith("/articles") || path === "/search";
+  return path.startsWith("/articles");
 }
 
 // Drives the "Shared with you" inbox + its unread badge. Refetches on

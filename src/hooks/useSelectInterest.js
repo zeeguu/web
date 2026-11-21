@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import useSubscribedSearches from "./useSubscribedSearches";
 
 export default function useSelectInterest(api) {
   const [availableTopics, setAvailableTopics] = useState([]);
   const [subscribedTopics, setSubscribedTopics] = useState([]);
   const [allTopics, setAllTopics] = useState([]);
-  const [subscribedSearches, setSubscribedSearches] = useState();
+  const { subscribedSearches, setSubscribedSearches, subscribeToSearch, removeSearch } = useSubscribedSearches(api);
   const [showingSpecialInterestModal, setshowingSpecialInterestModal] =
     useState(false);
 
@@ -15,11 +16,6 @@ export default function useSelectInterest(api) {
 
     api.getSubscribedTopics((data) => {
       setSubscribedTopics(data);
-    });
-
-    //custom interest filters
-    api.getSubscribedSearchers((data) => {
-      setSubscribedSearches(data);
     });
   }, [api]);
 
@@ -55,23 +51,6 @@ export default function useSelectInterest(api) {
     }
   }
 
-  //subscribe to custom interest filter
-  function subscribeToSearch(response) {
-    api.subscribeToSearch(response, (data) => {
-      setSubscribedSearches([...subscribedSearches, data]);
-      api.invalidateCache("user_articles/recommended");
-    });
-  }
-
-  //remove custom interest filter
-  function removeSearch(search) {
-    console.log("unsubscribing from search" + search);
-    setSubscribedSearches(
-      subscribedSearches.filter((each) => each.id !== search.id),
-    );
-    api.unsubscribeFromSearch(search);
-    api.invalidateCache("user_articles/recommended");
-  }
 
   function isSubscribed(topic) {
     return subscribedTopics
@@ -81,25 +60,6 @@ export default function useSelectInterest(api) {
       : false;
   }
 
-  function subscribeToEmail(search) {
-    api.subscribeToEmailSearch(search, (data) => {
-      setSubscribedSearches((prevSearches) =>
-        prevSearches.map((entry) =>
-          entry.search === search ? { ...entry, receive_email: true } : entry,
-        ),
-      );
-    });
-  }
-
-  function unsubscribeFromEmail(search) {
-    api.unsubscribeFromEmailSearch(search, (data) => {
-      setSubscribedSearches((prevSearches) =>
-        prevSearches.map((entry) =>
-          entry.search === search ? { ...entry, receive_email: false } : entry,
-        ),
-      );
-    });
-  }
 
   return {
     allTopics,
@@ -113,8 +73,6 @@ export default function useSelectInterest(api) {
     setSubscribedSearches,
     subscribeToSearch,
     removeSearch,
-    subscribeToEmail,
-    unsubscribeFromEmail,
 
     showingSpecialInterestModal,
     setshowingSpecialInterestModal,
