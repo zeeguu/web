@@ -1,4 +1,8 @@
-Vois à quel point tu es proche de garder ta série aujourd'hui.
+Choisis la durée de tes leçons audio pour débutants, et cherche là où tu lis.
 
-- Tant que la journée ne compte pas encore, un anneau autour de la flamme de ta série se remplit à mesure que tu étudies vers ton objectif quotidien, et l'info-bulle indique combien de minutes il reste.
-- Le menu des langues montre la même chose : combien de minutes d'étude il te reste pour garder ta série.
+- Leçons audio pour débutants : un curseur dans les réglages de la leçon fixe la durée de ta leçon du jour, de 5 à 25 minutes. Quand tu dis qu'une leçon était trop courte ou trop longue, il se déplace, et le résumé t'indique la nouvelle durée.
+- La recherche se trouve maintenant dans Actualités et Evergreen, à côté de la roue dentée, et chaque résultat montre où ta recherche a trouvé une correspondance.
+- Sur téléphone, les Réglages sont de retour dans le panneau Plus.
+- Les messages apparaissent maintenant en haut, juste sous la barre supérieure ; les messages d'annulation restent en bas, au-dessus de la barre d'onglets.
+- La flèche de retour est plus facile à toucher.
+- Corrections : le choix de la langue s'aligne bien sur les petits écrans, et la fenêtre pour remplacer un exemple s'affiche correctement en mode sombre.

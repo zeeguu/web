@@ -1,4 +1,8 @@
-Sieh, wie nah du heute daran bist, deine Serie zu halten.
+Wähle, wie lang deine Audio-Lektionen für Anfänger sind, und suche direkt dort, wo du liest.
 
-- Bis der Tag zählt, füllt sich ein Ring um die Serien-Flamme, während du auf dein Tagesziel hinlernst, und der Tooltip zeigt, wie viele Minuten noch fehlen.
-- Das Sprachmenü zeigt dasselbe: wie viele Minuten Lernen deine Serie noch halten.
+- Audio-Lektionen für Anfänger: Ein Schieberegler in den Lektionseinstellungen legt fest, wie lang deine tägliche Lektion ist, von 5 bis 25 Minuten. Sagst du, dass eine Lektion zu kurz oder zu lang war, verschiebt er sich, und die Zusammenfassung nennt dir die neue Länge.
+- Die Suche ist jetzt in News und Evergreen, neben dem Zahnrad, und jedes Ergebnis zeigt, wo deine Suche getroffen hat.
+- Auf dem Handy sind die Einstellungen wieder im Mehr-Bereich.
+- Meldungen erscheinen jetzt oben, direkt unter der oberen Leiste; Rückgängig-Meldungen bleiben unten, über der Tab-Leiste.
+- Der Zurück-Pfeil ist leichter zu tippen.
+- Korrekturen: Die Sprachauswahl ist auf kleinen Bildschirmen sauber ausgerichtet, und der Dialog zum Ersetzen eines Beispiels sieht im Dunkelmodus richtig aus.

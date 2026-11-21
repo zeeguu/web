@@ -1,4 +1,8 @@
-Guarda quanto ti manca per mantenere la tua serie oggi.
+Scegli quanto durano le tue lezioni audio per principianti, e cerca proprio dove leggi.
 
-- Finché la giornata non conta, un anello intorno alla fiamma della serie si riempie mentre studi verso il tuo obiettivo giornaliero, e il suggerimento dice quanti minuti mancano.
-- Il menu delle lingue mostra lo stesso: quanti minuti di studio ti servono ancora per mantenere la serie.
+- Lezioni audio per principianti: un cursore nelle impostazioni della lezione stabilisce quanto dura la tua lezione quotidiana, da 5 a 25 minuti. Se dici che una lezione era troppo corta o troppo lunga, il cursore si sposta, e il riepilogo ti dice la nuova durata.
+- La ricerca ora si trova dentro Notizie ed Evergreen, accanto all'ingranaggio, e ogni risultato mostra dove la tua ricerca ha trovato corrispondenza.
+- Sul telefono, le Impostazioni sono di nuovo nel pannello Altro.
+- I messaggi ora compaiono in alto, subito sotto la barra superiore; i messaggi per annullare restano in basso, sopra la barra delle schede.
+- La freccia per tornare indietro è più facile da toccare.
+- Correzioni: la scelta della lingua è allineata bene sugli schermi piccoli, e la finestra per sostituire un esempio si vede correttamente in modalità scura.

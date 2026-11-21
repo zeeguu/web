@@ -1,4 +1,8 @@
-See how close you are to keeping your streak today.
+Choose how long your beginner audio lessons are, and search right where you read.
 
-- Until today counts, a ring around the streak flame fills up as you study toward your daily goal, and the tooltip says how many minutes are left.
-- The language menu shows the same: how many more minutes of study keep your streak.
+- Beginner audio lessons: a slider in the lesson settings sets how long your daily lesson is, from 5 to 25 minutes. Saying a lesson was too short or too long moves it, and the summary tells you the new length.
+- Search now lives inside News and Evergreen, next to the settings gear, and each result shows where your search matched.
+- On the phone, Settings is back in the More panel.
+- Messages now appear at the top, just under the top bar; undo messages stay at the bottom, above the tab bar.
+- The back arrow is easier to tap.
+- Fixes: the language picker lines up on small screens, and the replace-example dialog looks right in dark mode.

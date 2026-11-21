@@ -1,4 +1,8 @@
-Se, hvor tæt du er på at holde din stime i dag.
+Vælg, hvor lange dine begynderlektioner med lyd er, og søg lige der, hvor du læser.
 
-- Indtil dagen tæller, fyldes en ring om stime-flammen, mens du øver dig mod dit daglige mål, og værktøjstippet siger, hvor mange minutter der er tilbage.
-- Sprogmenuen viser det samme: hvor mange minutters øvelse mere der holder din stime.
+- Begynderlektioner med lyd: en skyder i lektionsindstillingerne bestemmer, hvor lang din daglige lektion er, fra 5 til 25 minutter. Siger du, at en lektion var for kort eller for lang, flytter den sig, og opsummeringen fortæller dig den nye længde.
+- Søgning ligger nu inde i Nyheder og Evergreen, ved siden af tandhjulet, og hvert resultat viser, hvor din søgning passede.
+- På telefonen er Indstillinger tilbage i Mere-panelet.
+- Beskeder vises nu øverst, lige under topbjælken; fortryd-beskeder bliver nederst, over fanebjælken.
+- Tilbage-pilen er nemmere at trykke på.
+- Rettelser: sprogvælgeren står pænt på små skærme, og dialogen til at erstatte et eksempel ser rigtig ud i mørk tilstand.
