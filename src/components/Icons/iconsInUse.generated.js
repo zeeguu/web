@@ -11,6 +11,8 @@ import ArrowForwardRounded from "@mui/icons-material/ArrowForwardRounded";
 import Article from "@mui/icons-material/Article";
 import ArticleOutlined from "@mui/icons-material/ArticleOutlined";
 import AutoAwesome from "@mui/icons-material/AutoAwesome";
+import BookmarkAddRounded from "@mui/icons-material/BookmarkAddRounded";
+import BookmarkAddedRounded from "@mui/icons-material/BookmarkAddedRounded";
 import BookmarkBorder from "@mui/icons-material/BookmarkBorder";
 import BookmarkBorderRounded from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRounded from "@mui/icons-material/BookmarkRounded";
@@ -124,6 +126,8 @@ export const muiIcons = {
   Article,
   ArticleOutlined,
   AutoAwesome,
+  BookmarkAddRounded,
+  BookmarkAddedRounded,
   BookmarkBorder,
   BookmarkBorderRounded,
   BookmarkRounded,
@@ -232,13 +236,15 @@ export const muiIconUsage = {
   AccountBalance: ["utils/misc/topicIcon.js"],
   AddCircle: ["articles/TagsOfFilters.js","articles/TagsOfInterests.js"],
   AddCircleOutline: ["articles/TagsOfFilters.js","articles/TagsOfInterests.js"],
-  AddRounded: ["articles/FeedFilterBar.js","components/MainNav/LanguageModal.js","components/SpeedPicker.js","pages/Settings/Pages/FeedPreferences.js"],
+  AddRounded: ["components/MainNav/LanguageModal.js","components/SpeedPicker.js","pages/Settings/Pages/FeedPreferences.js"],
   Android: ["dailyAudio/PublicSharedLessonPage.js","landingPage/InstallationInstructions.js"],
   Apple: ["dailyAudio/PublicSharedLessonPage.js","landingPage/InstallationInstructions.js"],
   ArrowForwardRounded: ["components/progress_tracking/ProgressModal.js","components/redirect_notification/SupportedNotificationNotInstalled.js","landingPage/LandingPage.js","pages/Settings/SharedComponents/SettingsItem.js","pages/Settings/SharedComponents/SettingsItemButton.js","pages/onboarding/InstallExtension.js","pages/onboarding/InviteCode.js","pages/onboarding/LanguagePreferences.js","pages/onboarding/LanguageVarietyPreferences.js","pages/onboarding/SelectInterests.js"],
   Article: ["components/MainNav/NavIcon.js"],
   ArticleOutlined: ["utils/misc/topicIcon.js"],
   AutoAwesome: ["reader/AlterMenu.js","reader/TranslatableWord.js"],
+  BookmarkAddRounded: ["articles/FeedFilterBar.js"],
+  BookmarkAddedRounded: ["articles/FeedFilterBar.js"],
   BookmarkBorder: ["components/redirect_notification/UnsupportedNotification.js"],
   BookmarkBorderRounded: ["articles/ArticlePreview.js","articles/ArticlePreviewOverlay.js"],
   BookmarkRounded: ["articles/ArticlePreview.js","articles/ArticlePreviewOverlay.js","articles/_ArticlesRouter.js"],
@@ -320,7 +326,7 @@ export const muiIconUsage = {
   Science: ["utils/misc/topicIcon.js"],
   ScienceOutlined: ["pages/Settings/Pages/Settings.js"],
   Search: ["components/allButtons.sc.js"],
-  SearchRounded: ["articles/_ArticlesRouter.js"],
+  SearchRounded: ["articles/FeedFilterBar.js"],
   Send: ["components/ReportDialog.js","exercises/exerciseTypes/ReportExerciseDialog.js","friends/FriendRow.js","reader/ShareArticle.js","reader/ShareToFriendModal.js"],
   SettingsRounded: ["articles/FeedFilterBar.js","components/Icons/SettingsIconButton.js","components/MainNav/NavIcon.js","dailyAudio/DailyLessonSettingsPill.js"],
   Share: ["components/redirect_notification/MobileNotification.js"],
