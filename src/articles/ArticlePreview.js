@@ -1,4 +1,5 @@
 import { Link, useHistory } from "react-router-dom";
+import SearchSnippet from "./SearchSnippet";
 import { useContext, useRef, useState } from "react";
 import useClampedOverflow from "../hooks/useClampedOverflow";
 import { toast } from "react-toastify";
@@ -766,6 +767,7 @@ export default function ArticlePreview({
                 {kicker}
                 {compactTitle}
                 {metaRow}
+                <SearchSnippet snippet={article.search_snippet} />
                 {!hasMedia && feedActions}
               </s.CompactText>
             </s.CompactCard>
@@ -782,6 +784,7 @@ export default function ArticlePreview({
                     <s.Title>{article.title}</s.Title>
                   </s.TitleContainer>
                   {metaRow}
+                  <SearchSnippet snippet={article.search_snippet} />
                   {article.summary && (
                     <s.PreviewSummary>
                       <s.PreviewClampedSummary>{article.summary}</s.PreviewClampedSummary>
@@ -899,6 +902,7 @@ export default function ArticlePreview({
           </MetaStrip>
           {overflowButton(showHide && !isHiddenView && !inSavedView)}
         </s.MetaRow>
+        <SearchSnippet snippet={article.search_snippet} />
 
           {!inSavedView &&
             (() => {
