@@ -14,13 +14,21 @@ import strings from "../i18n/definitions";
 import { historyItems } from "./historyItems";
 import * as s from "./Translate.sc";
 
-// A text's row: the start of it, quieter than a searched word, which is short
+// A text's row: when (and the language, if not the learned one) on the left
+// and × on the right, on one line; the start of the text below, full width
+const TextMeta = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+`;
+
 const TextPreview = styled.div`
   font-size: 1rem;
   color: var(--text-primary);
   line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 `;
@@ -32,15 +40,9 @@ const RemoveText = styled.button`
   padding: 0 0.25rem;
   font-size: 1.3em;
   line-height: 1;
+  margin-left: auto;
   color: var(--text-muted);
   cursor: pointer;
-`;
-
-const TextMeta = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-shrink: 0;
 `;
 
 // A row opens with a tap, Enter or Space; only keys aimed at the row itself,
@@ -111,25 +113,21 @@ export default function TranslateHistory() {
           </s.TranslationCard>
         ) : (
           <s.TranslationCard key={item.key} {...rowOpens(() => history.push(`/texts/read?id=${item.text.id}`))}>
-            <s.TranslationHeader>
-              <s.TranslationInfo>
-                <TextPreview>{item.text.preview}</TextPreview>
-              </s.TranslationInfo>
-              <TextMeta>
-                {item.otherLanguage && <s.TranslationSource>{languageName(item.otherLanguage)}</s.TranslationSource>}
-                <s.TranslationSource>{formatTime(item.text.last_opened_at)}</s.TranslationSource>
-                <RemoveText
-                  aria-label={strings.removeText}
-                  title={strings.removeText}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    forget(item.text.id);
-                  }}
-                >
-                  ×
-                </RemoveText>
-              </TextMeta>
-            </s.TranslationHeader>
+            <TextMeta>
+              <s.TranslationSource>{formatTime(item.text.last_opened_at)}</s.TranslationSource>
+              {item.otherLanguage && <s.TranslationSource>{languageName(item.otherLanguage)}</s.TranslationSource>}
+              <RemoveText
+                aria-label={strings.removeText}
+                title={strings.removeText}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  forget(item.text.id);
+                }}
+              >
+                ×
+              </RemoveText>
+            </TextMeta>
+            <TextPreview>{item.text.preview}</TextPreview>
           </s.TranslationCard>
         ),
       )}
