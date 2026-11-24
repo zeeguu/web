@@ -3,11 +3,15 @@
 // Lookups cover words and phrases up to a few words (examples are fetched
 // only up to 3); a line break means a message, whatever its length.
 export const MAX_WORDS_TO_TRANSLATE = 6;
+// Also by length, for what has few spaces: a key held down, a URL, a code.
+// Real phrases stay under it ("Geschwindigkeitsbegrenzung beachten" is 35).
+export const MAX_CHARS_TO_TRANSLATE = 42;
 
 export function isTooLongToTranslate(text) {
   const body = (text || "").trim();
   if (!body) return false;
   if (/\n/.test(body)) return true;
+  if (body.length > MAX_CHARS_TO_TRANSLATE) return true;
   return body.split(/\s+/).length > MAX_WORDS_TO_TRANSLATE;
 }
 
