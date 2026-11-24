@@ -142,6 +142,25 @@ function StreakFlame({ lang, goalMinutes, countingDown, animating }) {
   );
 }
 
+// A tap on a language in the bar: on the current one (whose flame carries the
+// ring toward today's goal) it opens the languages, on another it switches.
+// Logged with where the day stood, so a study can tell whether the ring was
+// looked at before or after the goal was met.
+export const STREAK_BAR_TAPPED = "STREAK_BAR_TAPPED";
+
+export function streakBarTapDetails(lang, isCurrent) {
+  return JSON.stringify({
+    current: isCurrent,
+    practiced_today: Boolean(lang?.practiced_today),
+    ms_to_streak: lang?.ms_to_streak ?? null,
+    streak: lang?.daily_streak ?? null,
+  });
+}
+
+function logStreakBarTap(api, lang, isCurrent) {
+  api.logUserActivity(STREAK_BAR_TAPPED, "", lang?.code || "", streakBarTapDetails(lang, isCurrent));
+}
+
 function computeMaxSlots(wrapperEl) {
   if (!wrapperEl) return 4;
   const available = wrapperEl.parentElement.clientWidth - wrapperEl.offsetLeft - MORE_BUTTON_PX;
@@ -264,6 +283,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
   const hasHiddenStreaks = eligible.length > visible.length;
 
   function handleClick(langCode) {
+    logStreakBarTap(api, languageStreaks.find((l) => l.code === langCode), langCode === currentCode);
     if (langCode === currentCode) {
       onOpenModal();
     } else {

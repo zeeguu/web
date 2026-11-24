@@ -22,6 +22,7 @@ import useShadowRef from "../hooks/useShadowRef";
 import VideoPreview from "../videos/VideoPreview";
 import { getUserCefrLevel, numericToCefr } from "../utils/misc/userCefrLevel";
 import useSubscribedSearches from "../hooks/useSubscribedSearches";
+import { noteArticleListFilter } from "../reader/articleOrigin";
 export default function ArticleListBrowser({
   // Kiosk mode: hide the topic filter bar and force articles to open in the
   // in-app reader (never the external publisher site).
@@ -106,6 +107,11 @@ export default function ArticleListBrowser({
   // asked to rank by date and by difficulty, as the old search page did.
   const searchFromFilter = (filter) => (filter.type === "search" ? filter.value.search : null);
   const query = searchFromFilter(activeFilter);
+
+  // Said in OPEN ARTICLE: an article opened from a search is not one from the feed
+  useEffect(() => {
+    noteArticleListFilter(activeFilter.type === "all" ? null : activeFilter.type);
+  }, [activeFilter.type]);
 
   // A remembered topic restored on arrival goes into the URL too, replacing
   // (not pushing) so Back still leaves the feed rather than un-filtering it.

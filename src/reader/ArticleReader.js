@@ -32,6 +32,7 @@ import { APIContext } from "../contexts/APIContext";
 import ArticleLanguageModal from "./ArticleLanguageModal";
 import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/userCefrLevel";
 import ReviewWordsPopup from "../pages/onboarding/notifications/ReviewWordsPopup";
+import { articleOpenOrigin } from "./articleOrigin";
 
 // UMR stands for historical reasons for: Unified Multilingual Reader
 export const WEB_READER = "UMR";
@@ -263,7 +264,9 @@ export default function ArticleReader({ teacherArticleID, articleId: linkArticle
 
       // Session is now created by useReadingSession hook when articleInfo becomes available
       api.setArticleOpened(articleInfo.id);
-      api.logUserActivity(api.OPEN_ARTICLE, articleID, "", WEB_READER);
+      // value: where it was opened from (articleOrigin.js); a share or a
+      // deep link says so itself
+      api.logUserActivity(api.OPEN_ARTICLE, articleID, entrySource || articleOpenOrigin(), WEB_READER);
       window.dispatchEvent(new CustomEvent("zeeguu-article-opened"));
 
       // Show the article's link (/read/<code>) in the address bar, so
