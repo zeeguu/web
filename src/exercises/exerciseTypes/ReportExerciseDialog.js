@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import { isSubmitEnter } from "../../utils/input/keys";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -178,7 +179,7 @@ export default function ReportExerciseDialog({
               onChange={(e) => setComment(e.target.value)}
               disabled={isSubmitting}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
+                if (isSubmitEnter(e)) {
                   e.preventDefault();
                   handleSubmitOther();
                 }

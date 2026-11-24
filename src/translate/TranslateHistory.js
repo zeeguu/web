@@ -91,6 +91,7 @@ export default function TranslateHistory() {
         item.search ? (
           <s.TranslationCard
             key={item.key}
+            style={{ cursor: "pointer" }}
             {...opensLikeAButton(() => history.push("/translate", { searchWord: item.search.search_word }))}
           >
             <s.TranslationHeader>
@@ -101,7 +102,11 @@ export default function TranslateHistory() {
             </s.TranslationHeader>
           </s.TranslationCard>
         ) : (
-          <s.TranslationCard key={item.key} {...opensLikeAButton(() => history.push(`/texts/read?id=${item.text.id}`))}>
+          <s.TranslationCard
+            key={item.key}
+            style={{ cursor: "pointer" }}
+            {...opensLikeAButton(() => history.push(`/texts/read?id=${item.text.id}`))}
+          >
             <TextMeta>
               <s.TranslationSource>{formatTime(item.text.last_opened_at)}</s.TranslationSource>
               {item.otherLanguage && <s.TranslationSource>{languageName(item.otherLanguage)}</s.TranslationSource>}

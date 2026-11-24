@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useState, useContext, useRef } from "react";
+import { isSubmitEnter } from "../../utils/input/keys";
 import levenshtein from "fast-levenshtein";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
@@ -262,9 +263,7 @@ export default function BottomInput({
               }
             }}
             onKeyUp={(e) => {
-              if (e.key === "Enter") {
-                checkResult();
-              }
+              if (isSubmitEnter(e)) checkResult();
             }}
             onAnimationEnd={() => setIsIncorrect(false)}
             autoFocus

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { opensLikeAButton } from "../utils/input/keys";
 import LocalStorage from "../assorted/LocalStorage";
 import { getDrillVocab } from "../assorted/drillCache";
 import fisherYatesShuffle from "../assorted/fisherYatesShuffle";
@@ -58,12 +59,7 @@ export default function WaitDrill() {
 
   return (
     <DrillPair
-      onClick={step}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") step();
-      }}
+      {...opensLikeAButton(step)}
     >
       <strong>{current.o}</strong>
       {"  →  "}
