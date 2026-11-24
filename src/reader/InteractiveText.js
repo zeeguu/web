@@ -7,6 +7,7 @@ import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 import { updateTokensWithBookmarks } from "./bookmarkRestoration";
 import { pushDrillVocab } from "../assorted/drillCache";
 import { isDev } from "../config";
+import { translationDeadline } from "./translationDeadline";
 
 // Set to true to enable verbose MWE/bookmark debugging
 const MWE_DEBUG = false;
@@ -126,6 +127,10 @@ export default class InteractiveText {
     const browsingSessionId = this.getBrowsingSessionId?.();
     const readingSessionId = this.getReadingSessionId?.();
 
+    // Without an answer in time, the caller stops the loading animation. A
+    // late answer is still shown.
+    const deadline = translationDeadline(() => onError && onError());
+
     this.api
       .getOneTranslation(
         this.language,
@@ -200,11 +205,14 @@ export default class InteractiveText {
           );
         }
 
+        // Settled only now: a throw above lands in .catch, which still has
+        // to report it.
+        deadline.settle();
         onSuccess();
       })
       .catch((e) => {
         console.error("Translation failed:", e);
-        onError && onError();
+        if (deadline.settle()) onError && onError();
       });
 
     this.api.logUserActivity(this.translationEvent, null, word.word, this.source, this.sourceId);

@@ -118,15 +118,18 @@ export default function TranslatableWord({
           setPreviousWord(word.word); // word.word is now the fused MWE text
           wordUpdated();
         } : null;
-        interactiveText.translate(word, true, () => {
+        const stopLoading = () => {
           wordUpdated();
           setIsLoading(false);
           setIsWordTranslating(false);
-          setIsTranslationVisible(true);
           // Clear MWE loading state
           if (mweGroupId && setLoadingMWEGroupId) {
             setLoadingMWEGroupId(null);
           }
+        };
+        interactiveText.translate(word, true, () => {
+          stopLoading();
+          setIsTranslationVisible(true);
           // Backend flagged a provider disagreement. Either an LLM settles
           // it in the background, or the alternatives menu opens so the
           // learner can pick.
@@ -134,7 +137,7 @@ export default function TranslatableWord({
             if (Feature.resolve_disagreements()) settleDisagreement(word);
             else openAlterMenu(word);
           }
-        }, onFusionComplete);
+        }, onFusionComplete, stopLoading);
       } else {
         // For non-translatable words in exercises, track the click
         if (interactiveText.trackWordClick) {

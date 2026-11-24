@@ -1,3 +1,4 @@
+import { translationDeadline } from "./translationDeadline";
 import InteractiveText from "./InteractiveText";
 
 // InteractiveText for the account-less shared-article page. Taps translate
@@ -64,17 +65,22 @@ export default class PublicInteractiveText extends InteractiveText {
       partner_token_i: isSeparatedMwe ? word.token.mwe_partner_indices?.[0] ?? -1 : -1,
     };
 
+    // Without an answer in time, onSuccess stops the loading animation, as
+    // it does on a failure. A late answer is still shown.
+    const deadline = translationDeadline(onSuccess);
+
     this.api
       .publicTranslateWord(this.link, this.getTargetLanguage(), position)
       .then((data) => {
         word.updateTranslation(data.translation, data.source, null, null, false, null);
         word.isTranslationVisible = true;
+        deadline.settle();
         onSuccess();
       })
       .catch((e) => {
         if (e.status === 429) this.meter.onBlocked("rate");
         else console.error("Public translation failed:", e);
-        onSuccess();
+        if (deadline.settle()) onSuccess();
       });
   }
 
