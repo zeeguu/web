@@ -12,7 +12,9 @@ export default function useLocationTracker() {
     const pathname = location.pathname;
     if (pathname && 
         (pathname.startsWith('/articles') || 
-         pathname.startsWith('/practice') || 
+         pathname.startsWith('/practice') ||
+         pathname.startsWith('/translate') ||
+         pathname.startsWith('/words') ||
          pathname.startsWith('/daily-audio'))) {
       
       LocalStorage.setLastVisitedPage(pathname);
