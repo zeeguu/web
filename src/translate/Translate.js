@@ -6,6 +6,8 @@ import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { setTitle } from "../assorted/setTitle";
 import useSpeech from "../hooks/useSpeech";
+import useSoftKeyboardOpen from "../hooks/useSoftKeyboardOpen";
+import useUndoKeyboardScroll from "../hooks/useUndoKeyboardScroll";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
@@ -65,6 +67,9 @@ export default function Translate() {
   const { updateExercisesCounter } = useContext(ExercisesCounterContext);
   const location = useLocation();
   const history = useHistory();
+  // iOS scrolls the page up when the keyboard opens, even though the input
+  // near the top is already in view; put it back.
+  useUndoKeyboardScroll(useSoftKeyboardOpen());
 
   const learnedLang = userDetails?.learned_language;
   const nativeLang = userDetails?.native_language;
