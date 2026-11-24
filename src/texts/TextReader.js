@@ -13,7 +13,6 @@ import BackArrow from "../pages/Settings/SharedComponents/BackArrow";
 import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
-import FullWidthInfoMsg from "../components/FullWidthInfoMsg.sc";
 import { TabHeading } from "../articles/_ArticlesRouter.sc";
 import useUserPreferences from "../hooks/useUserPreferences";
 import useReaderFontSize from "../hooks/useReaderFontSize";
@@ -86,28 +85,11 @@ const QuietLink = styled.button`
   text-underline-offset: 0.25em;
   cursor: pointer;
 
-  &:disabled {
-    cursor: default;
-    text-decoration: none;
-  }
-
   @media (hover: hover) {
-    &:hover:not(:disabled) {
+    &:hover {
       color: var(--text-secondary);
     }
   }
-`;
-
-// When a few lines won't come together
-const WholeTextLink = styled(QuietLink)`
-  display: block;
-  margin-top: 1.5rem;
-`;
-
-const WholeTextTranslation = styled(FullWidthInfoMsg)`
-  white-space: pre-wrap;
-  font-weight: normal;
-  margin-top: 1rem;
 `;
 
 export default function TextReader() {
@@ -128,26 +110,17 @@ export default function TextReader() {
   const [shortText, setShortText] = useState(null); // as GET /short_texts/<id> answers
   const [interactiveText, setInteractiveText] = useState(null);
   const [error, setError] = useState("");
-  const [translation, setTranslation] = useState(null);
-  const [isTranslating, setIsTranslating] = useState(false);
 
   // The text on screen; answers for any other (an earlier, slower request,
   // or a text replaced by "Read as") are dropped
   const shownId = useRef(id);
   shownId.current = id;
 
-  // Where InteractiveText sends the word taps, so the whole text and its words
-  // come back in the same language; userDetails may not have loaded yet on a
-  // cold-start share.
-  const nativeLanguage = localStorage.native_language || userDetails?.native_language;
-
   useEffect(() => setTitle(strings.readTextTitle), []);
 
   useEffect(() => {
     setShortText(null);
     setInteractiveText(null);
-    setTranslation(null);
-    setIsTranslating(false);
     setError("");
     if (!id) {
       history.replace("/translate/history");
@@ -185,25 +158,6 @@ export default function TextReader() {
       { language, insteadOf: shortText.id },
       (added) => history.replace(`/texts/read?id=${added.id}`, location.state),
       (errorMessage) => setError(readableApiError(errorMessage, strings.couldNotReadText)),
-    );
-  }
-
-  function translateWholeText() {
-    const forId = shortText.id;
-    setIsTranslating(true);
-    api.translateShortText(
-      forId,
-      nativeLanguage,
-      (result) => {
-        if (forId !== shownId.current) return;
-        setTranslation(result.translation);
-        setIsTranslating(false);
-      },
-      () => {
-        if (forId !== shownId.current) return;
-        setIsTranslating(false);
-        setError(strings.couldNotTranslateText);
-      },
     );
   }
 
@@ -281,17 +235,7 @@ export default function TextReader() {
         </MainText>
       </TextBody>
 
-      {translation && <WholeTextTranslation>{translation}</WholeTextTranslation>}
       {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
-
-      {/* Only on request, and only for a message-sized text (the API says
-          which): a way out when a few lines won't come together, not a
-          substitute for reading */}
-      {shortText.can_translate_whole && !translation && (
-        <WholeTextLink disabled={isTranslating || !nativeLanguage} onClick={translateWholeText}>
-          {isTranslating ? strings.translatingText : strings.translateWholeText}
-        </WholeTextLink>
-      )}
     </PaddedNarrowColumn>
   );
 }
