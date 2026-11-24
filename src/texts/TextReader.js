@@ -112,7 +112,7 @@ export default function TextReader() {
   const [error, setError] = useState("");
 
   // The text on screen; answers for any other (an earlier, slower request,
-  // or a text replaced by "Read as") are dropped
+  // or a text re-read in another language) are dropped
   const shownId = useRef(id);
   shownId.current = id;
 

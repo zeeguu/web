@@ -12,6 +12,7 @@ import useShortTexts from "../texts/useShortTexts";
 import { languageName } from "../utils/misc/languageCodeToName";
 import strings from "../i18n/definitions";
 import { historyItems } from "./historyItems";
+import { opensLikeAButton } from "../utils/input/keys";
 import * as s from "./Translate.sc";
 
 // A text's row: when (and the language, if not the learned one) on the left
@@ -44,18 +45,6 @@ const RemoveText = styled.button`
   color: var(--text-muted);
   cursor: pointer;
 `;
-
-// A row opens with a tap, Enter or Space; only keys aimed at the row itself,
-// since Enter on its × bubbles up here too
-function rowOpens(open) {
-  return {
-    role: "button",
-    tabIndex: 0,
-    onClick: open,
-    onKeyDown: (e) => e.target === e.currentTarget && (e.key === "Enter" || e.key === " ") && open(),
-    style: { cursor: "pointer" },
-  };
-}
 
 export default function TranslateHistory() {
   const api = useContext(APIContext);
@@ -102,7 +91,7 @@ export default function TranslateHistory() {
         item.search ? (
           <s.TranslationCard
             key={item.key}
-            {...rowOpens(() => history.push("/translate", { searchWord: item.search.search_word }))}
+            {...opensLikeAButton(() => history.push("/translate", { searchWord: item.search.search_word }))}
           >
             <s.TranslationHeader>
               <s.TranslationInfo>
@@ -112,7 +101,7 @@ export default function TranslateHistory() {
             </s.TranslationHeader>
           </s.TranslationCard>
         ) : (
-          <s.TranslationCard key={item.key} {...rowOpens(() => history.push(`/texts/read?id=${item.text.id}`))}>
+          <s.TranslationCard key={item.key} {...opensLikeAButton(() => history.push(`/texts/read?id=${item.text.id}`))}>
             <TextMeta>
               <s.TranslationSource>{formatTime(item.text.last_opened_at)}</s.TranslationSource>
               {item.otherLanguage && <s.TranslationSource>{languageName(item.otherLanguage)}</s.TranslationSource>}

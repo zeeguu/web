@@ -20,6 +20,7 @@ import { needsVirtualKeyboard } from "../utils/misc/languageScripts";
 import VirtualKeyboard from "../components/VirtualKeyboard/VirtualKeyboard";
 import SpecialCharacterBar, { hasSpecialCharacters } from "../components/VirtualKeyboard/SpecialCharacterBar";
 import { readClipboard } from "../utils/clipboard/readClipboard";
+import { isSubmitEnter } from "../utils/input/keys";
 import { readableApiError } from "../utils/misc/readableApiError";
 import { MAX_SHARED_TEXT_CHARS } from "../texts/sharedText";
 import strings from "../i18n/definitions";
@@ -270,9 +271,7 @@ export default function Translate() {
   // Enter translates, as in a one-line field; Shift+Enter starts a new line.
   // handleSearch directly: form.requestSubmit() is missing before iOS 16.
   function submitOnEnter(e) {
-    // keyCode 229: Safari's Enter that confirms an IME composition
-    const composing = e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229;
-    if (e.key === "Enter" && !e.shiftKey && !composing) handleSearch(e);
+    if (isSubmitEnter(e)) handleSearch(e);
   }
 
   // One line to start with, growing with the text (typed, pasted, or from
@@ -286,8 +285,8 @@ export default function Translate() {
 
   // One tap: a word or a phrase on the clipboard is looked up at once;
   // anything else (a longer text, or something that isn't words) waits in the
-  // field, for the learner to decide. When the
-  // clipboard can't be read, the field is ready for a paste by hand.
+  // field, for the learner to decide. When the clipboard can't be read, the
+  // field is ready for a paste by hand.
   async function pasteFromClipboard() {
     if (isLoading) return;
     const text = (await readClipboard()).trim();
