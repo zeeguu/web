@@ -9,11 +9,13 @@ import { setTitle } from "../../../assorted/setTitle";
 import { UserContext } from "../../../contexts/UserContext";
 import { languageName } from "../../../utils/misc/languageCodeToName";
 import { sendTestReminder, studyReminderAvailable } from "../../../reminder/studyReminder";
+import useReminderOffer from "../../../reminder/useReminderOffer";
 
 export default function Developer() {
   const api = useContext(APIContext);
   const { userDetails, userPreferences } = useContext(UserContext);
   const [status, setStatus] = useState(null);
+  const { showOffer, offerModal } = useReminderOffer();
 
   useEffect(() => {
     setTitle("Developer");
@@ -71,8 +73,10 @@ export default function Developer() {
           <Button onClick={() => openApiPage("/crawl_stats/dashboard")}>Crawl stats</Button>
           <Button onClick={handleCopySession}>Copy session (for widget)</Button>
           {studyReminderAvailable() && <Button onClick={handleTestReminder}>Test study reminder (1 min)</Button>}
+          {studyReminderAvailable() && <Button onClick={() => showOffer(1)}>Show reminder offer</Button>}
         </ButtonContainer>
         {status && <p style={{ marginTop: "1em" }}>{status}</p>}
+        {offerModal}
       </Main>
     </CardPage>
   );

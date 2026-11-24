@@ -9,10 +9,9 @@ import { SectionContainer, SectionHeading } from "./FeedPreferences.sc";
 import * as s from "./StudyReminderSetting.sc";
 import { ChangeLink } from "./AikiMode.sc"; // the same inline action
 import {
-  allowReminders,
+  askAndReportPermission,
   notificationPermission,
   reminderSettingFrom,
-  rescheduleStudyReminders,
 } from "../../../reminder/studyReminder";
 import onAppResume, { onAppPause } from "../../../utils/misc/onAppResume";
 import { savePreferences } from "../../../utils/preferences/savePreferences";
@@ -83,12 +82,9 @@ export default function StudyReminderSetting() {
   }, []);
 
   async function askPermission() {
-    const allowed = await allowReminders();
-    const now = allowed ? "granted" : "denied";
-    setPermission(now);
+    const allowed = await askAndReportPermission(api);
+    setPermission(allowed ? "granted" : "denied");
     setBlocked(!allowed);
-    api.saveUserPreferences({ notifications_permission: now }, () => {});
-    if (allowed) rescheduleStudyReminders(); // whatever failed to schedule before can now
     return allowed;
   }
 

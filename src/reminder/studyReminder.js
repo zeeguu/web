@@ -143,6 +143,16 @@ export async function allowReminders() {
   return display === "granted";
 }
 
+// Asks (if the phone still can), tells the server the answer and, when allowed,
+// schedules whatever could not be scheduled before. Resolves to whether
+// notifications may be shown.
+export async function askAndReportPermission(api) {
+  const allowed = await allowReminders();
+  api.saveUserPreferences({ notifications_permission: allowed ? "granted" : "denied" }, () => {});
+  if (allowed) rescheduleStudyReminders();
+  return allowed;
+}
+
 // The last facts the app knows, so a resume or a changed setting can
 // reschedule without asking the API again. `doneOn` is the day (dayKey) the
 // goal was last known to be met, so "done" expires at midnight by itself.

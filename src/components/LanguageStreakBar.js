@@ -10,6 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import styled, { keyframes } from "styled-components";
 import { playStreakChime } from "../utils/chimes";
 import { noteStreaks } from "../reminder/useStudyReminder";
+import useReminderOffer from "../reminder/useReminderOffer";
 import { isCountingDown, streakCountdownHint, studiedPercent } from "../utils/streakCountdown";
 
 const POLL_FAST_MS = 5_000;
@@ -179,6 +180,11 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
   const prevPracticedRef = useRef({});
   const intervalRef = useRef(null);
   const wrapperRef = useRef(null);
+  // The poll below is set up once per language; the offer reads the latest
+  // preferences through this ref.
+  const { offer, offerModal } = useReminderOffer();
+  const offerRef = useRef(offer);
+  offerRef.current = offer;
 
   const updateSlots = useCallback(() => {
     setMaxSlots(computeMaxSlots(wrapperRef.current));
@@ -219,6 +225,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
           const lang = data.find((l) => newJustPracticed[l.code]);
           if (lang) {
             toast(`🔥 ${lang.daily_streak} day streak!`, { autoClose: 3000 });
+            offerRef.current(lang.daily_streak);
           }
         }
 
@@ -272,6 +279,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
   return (
     <Wrapper ref={wrapperRef}>
       {confirmModal}
+      {offerModal}
       <Bar>
         {visible.map((lang) => {
           const isActive = lang.code === currentCode;
