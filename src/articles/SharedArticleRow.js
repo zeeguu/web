@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { opensLikeAButton } from "../utils/input/keys";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -48,13 +49,6 @@ export default function SharedArticleRow({ share }) {
     });
   }
 
-  function handleKeyDown(e) {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleOpen();
-    }
-  }
-
   function handleDismiss(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -77,7 +71,7 @@ export default function SharedArticleRow({ share }) {
   }
 
   return (
-    <Row onClick={handleOpen} onKeyDown={handleKeyDown} role="button" tabIndex={0}>
+    <Row {...opensLikeAButton(handleOpen)}>
       <ArticleThumbnail article={article} />
       <s.Content>
         <Title $unread={unread}>

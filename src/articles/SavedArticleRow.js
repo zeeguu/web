@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { opensLikeAButton } from "../utils/input/keys";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -53,20 +54,10 @@ export default function SavedArticleRow({ article, onArticleRemoved }) {
     history.push(articleHref);
   }
 
-  function handleRowKeyDown(e) {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleRowOpen();
-    }
-  }
-
   return (
     <s.Row
       style={{ ...animatingStyle, cursor: "pointer" }}
-      onClick={handleRowOpen}
-      onKeyDown={handleRowKeyDown}
-      role="button"
-      tabIndex={0}
+      {...opensLikeAButton(handleRowOpen)}
     >
       <ArticleThumbnail article={article} />
       <s.Content>

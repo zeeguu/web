@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { opensLikeAButton } from "../utils/input/keys";
 import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
 
@@ -84,12 +85,6 @@ export default function AikiPage() {
 function ChoiceRow({ choice }) {
   const history = useHistory();
   const open = () => history.push(choice.href);
-  const onKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      open();
-    }
-  };
 
   const image = (
     <s.ThumbnailWrap>
@@ -105,7 +100,7 @@ function ChoiceRow({ choice }) {
   );
 
   return (
-    <s.Row style={{ cursor: "pointer" }} onClick={open} onKeyDown={onKeyDown} role="button" tabIndex={0}>
+    <s.Row style={{ cursor: "pointer" }} {...opensLikeAButton(open)}>
       {image}
       <s.Content>
         {choice.kicker && <Kicker>{choice.kicker}</Kicker>}

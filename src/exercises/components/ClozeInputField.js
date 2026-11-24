@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useContext } from "react";
+import { isSubmitEnter } from "../../utils/input/keys";
 import * as s from "../../reader/TranslatableText.sc";
 import { SpeechContext } from "../../contexts/SpeechContext.js";
 import ClozeCorrection from "./ClozeCorrection.js";
@@ -50,7 +51,7 @@ export default function ClozeInputField({
   }, [suppressOSKeyboard]);
 
   function handleKeyPress(e) {
-    if (e.key === 'Enter') {
+    if (isSubmitEnter(e)) {
       e.preventDefault();
       if (onInputSubmit) {
         onInputSubmit(e.target.value, e.target);

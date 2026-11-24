@@ -1,4 +1,5 @@
 import { Link, useHistory } from "react-router-dom";
+import { opensLikeAButton } from "../utils/input/keys";
 import SearchSnippet from "./SearchSnippet";
 import { useContext, useRef, useState } from "react";
 import useClampedOverflow from "../hooks/useClampedOverflow";
@@ -747,15 +748,7 @@ export default function ArticlePreview({
         )}
 
         <s.PreviewCardClickable
-          role="button"
-          tabIndex={0}
-          onClick={openPreview}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              openPreview();
-            }
-          }}
+          {...opensLikeAButton(openPreview)}
         >
           {compact ? (
             // Headlines: the image leads, then title + meta + actions. On

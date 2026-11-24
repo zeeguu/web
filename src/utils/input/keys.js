@@ -23,6 +23,5 @@ export function opensLikeAButton(open) {
       e.preventDefault(); // Space would scroll the page
       open();
     },
-    style: { cursor: "pointer" },
   };
 }
