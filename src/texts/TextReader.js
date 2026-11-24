@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import { APIContext } from "../contexts/APIContext";
@@ -14,8 +14,11 @@ import { PaddedNarrowColumn } from "../components/ColumnWidth.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import FullWidthInfoMsg from "../components/FullWidthInfoMsg.sc";
+import { TabHeading } from "../articles/_ArticlesRouter.sc";
 import useUserPreferences from "../hooks/useUserPreferences";
+import useReaderFontSize from "../hooks/useReaderFontSize";
 import useQuery from "../hooks/useQuery";
+import useGuardedLanguageSwitch from "../hooks/useGuardedLanguageSwitch";
 import { setTitle } from "../assorted/setTitle";
 import { languageName } from "../utils/misc/languageCodeToName";
 import { readableApiError } from "../utils/misc/readableApiError";
@@ -40,23 +43,38 @@ const TextHeader = styled.div`
   color: var(--text-secondary);
 `;
 
-// The language the text is read in, and the way to correct it: the guess
-// leans on the learned language, so it can be wrong in either direction.
-const TextLanguagePicker = styled.select`
-  background: var(--bg-primary);
+// The way to correct the guessed language, rarely needed: a small gray link
+// ("Not Danish?") that opens the list of languages. A select, so the phone
+// shows its own picker; it always shows the question, never a language.
+const NotThisLanguage = styled.select`
+  appearance: none;
+  background: none;
   border: none;
-  border-bottom: 1px dashed var(--text-muted);
-  padding: 0.1rem 0;
+  padding: 0.25rem 0;
   font: inherit;
-  color: var(--text-secondary);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 0.25em;
   cursor: pointer;
 `;
 
-// Deliberately quiet, in the muted style of the language picker: a way out
-// when a few lines won't come together, not the page's main action.
-const WholeTextLink = styled.button`
-  display: block;
-  margin-top: 1.5rem;
+// The text at the reader's size, as an article reads (useReaderFontSize is
+// the same setting)
+const TextBody = styled.div``;
+
+// A note, not an alarm: the learner may well have meant to bring this text
+const LanguageNote = styled.p`
+  margin: 0 0 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+`;
+
+// Deliberately quiet, in the muted style of the language picker: a way out,
+// not the page's main action.
+const QuietLink = styled.button`
   padding: 0.25rem 0;
   background: none;
   border: none;
@@ -80,6 +98,12 @@ const WholeTextLink = styled.button`
   }
 `;
 
+// When a few lines won't come together
+const WholeTextLink = styled(QuietLink)`
+  display: block;
+  margin-top: 1.5rem;
+`;
+
 const WholeTextTranslation = styled(FullWidthInfoMsg)`
   white-space: pre-wrap;
   font-weight: normal;
@@ -92,8 +116,14 @@ export default function TextReader() {
   const learnableLanguages = useContext(SystemLanguagesContext)?.sortedSystemLanguages?.learnable_languages;
   const speech = useContext(SpeechContext);
   const history = useHistory();
+  const location = useLocation();
   const id = Number(useQuery().get("id"));
+  // Where the text was opened from: Translate says so; History, a share or a
+  // link don't, and back goes to History, where the text is kept
+  const backTo = location.state?.backTo || "/translate/history";
   const { pronounceInReader, showMweHints } = useUserPreferences(api);
+  const [readerFontSize] = useReaderFontSize();
+  const { requestSwitch, confirmModal } = useGuardedLanguageSwitch();
 
   const [shortText, setShortText] = useState(null); // as GET /short_texts/<id> answers
   const [interactiveText, setInteractiveText] = useState(null);
@@ -120,7 +150,7 @@ export default function TextReader() {
     setIsTranslating(false);
     setError("");
     if (!id) {
-      history.replace("/articles/shared");
+      history.replace("/translate/history");
       return;
     }
     api.getShortText(
@@ -153,7 +183,7 @@ export default function TextReader() {
     api.addShortText(
       shortText.text,
       { language, insteadOf: shortText.id },
-      (added) => history.replace(`/texts/read?id=${added.id}`),
+      (added) => history.replace(`/texts/read?id=${added.id}`, location.state),
       (errorMessage) => setError(readableApiError(errorMessage, strings.couldNotReadText)),
     );
   }
@@ -179,24 +209,42 @@ export default function TextReader() {
 
   const header = (
     <TextHeader>
-      <BackArrow redirectLink="/articles/shared" />
-      {shortText &&
-        (learnableLanguages ? (
-          <TextLanguagePicker
-            aria-label={strings.languageOfThisText}
-            value={shortText.language}
-            onChange={(e) => readAs(e.target.value)}
-          >
-            {learnableLanguages.map((language) => (
+      <BackArrow redirectLink={backTo} />
+      {shortText && learnableLanguages && (
+        <NotThisLanguage
+          aria-label={strings.languageOfThisText}
+          value=""
+          onChange={(e) => e.target.value && readAs(e.target.value)}
+        >
+          <option value="" disabled hidden>
+            {strings.formatString(strings.notThisLanguage, languageName(shortText.language))}
+          </option>
+          {learnableLanguages
+            .filter((language) => language.code !== shortText.language)
+            .map((language) => (
               <option key={language.code} value={language.code}>
                 {languageName(language.code)}
               </option>
             ))}
-          </TextLanguagePicker>
-        ) : (
-          <span>{languageName(shortText.language)}</span>
-        ))}
+        </NotThisLanguage>
+      )}
     </TextHeader>
+  );
+
+  // The guess leans on the learned language, so a text guessed as another one
+  // most likely is: say so, quietly, with the way to read it in that language.
+  // A wrong guess is corrected with the language picker above.
+  const learned = userDetails?.learned_language;
+  const canSwitchToTextLanguage = learnableLanguages?.some((language) => language.code === shortText?.language);
+  const notInLearnedLanguage = learned && shortText && shortText.language !== learned && (
+    <LanguageNote>
+      {strings.formatString(strings.textNotInLearnedLanguage, languageName(shortText.language), languageName(learned))}{" "}
+      {canSwitchToTextLanguage && (
+        <QuietLink onClick={() => requestSwitch(shortText.language)}>
+          {strings.formatString(strings.switchToLanguage, languageName(shortText.language))}
+        </QuietLink>
+      )}
+    </LanguageNote>
   );
 
   if (!shortText) {
@@ -211,17 +259,27 @@ export default function TextReader() {
   return (
     <PaddedNarrowColumn>
       {header}
+      {/* A text has no title of its own: the page says what it is, in the
+          title-and-one-sentence style of the Read tabs */}
+      <TabHeading>
+        <h1>{strings.yourTextTitle}</h1>
+        <p>{strings.yourTextIntro}</p>
+      </TabHeading>
+      {notInLearnedLanguage}
+      {confirmModal}
 
-      <MainText>
-        <TranslatableText
-          interactiveText={interactiveText}
-          // Always on: tapping to translate is what this page is for, even
-          // for a learner who switched it off in the article reader
-          translating={true}
-          pronouncing={pronounceInReader}
-          showMweHints={showMweHints}
-        />
-      </MainText>
+      <TextBody style={{ fontSize: `${readerFontSize}px` }}>
+        <MainText>
+          <TranslatableText
+            interactiveText={interactiveText}
+            // Always on: tapping to translate is what this page is for, even
+            // for a learner who switched it off in the article reader
+            translating={true}
+            pronouncing={pronounceInReader}
+            showMweHints={showMweHints}
+          />
+        </MainText>
+      </TextBody>
 
       {translation && <WholeTextTranslation>{translation}</WholeTextTranslation>}
       {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}

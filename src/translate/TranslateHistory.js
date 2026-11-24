@@ -1,83 +1,138 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import styled from "styled-components";
 import { formatDistanceToNow } from "date-fns";
 import { APIContext } from "../contexts/APIContext";
+import { UserContext } from "../contexts/UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
+import EmptyState from "../components/EmptyState";
+import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import { setTitle } from "../assorted/setTitle";
+import useShortTexts from "../texts/useShortTexts";
+import { languageName } from "../utils/misc/languageCodeToName";
+import strings from "../i18n/definitions";
+import { historyItems } from "./historyItems";
 import * as s from "./Translate.sc";
+
+// A text's row: the start of it, quieter than a searched word, which is short
+const TextPreview = styled.div`
+  font-size: 1rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
+// Not SavedArticleRow's RemoveButton: that one is placed absolutely over its row
+const RemoveText = styled.button`
+  background: none;
+  border: none;
+  padding: 0 0.25rem;
+  font-size: 1.3em;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+`;
+
+const TextMeta = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+`;
+
+// A row opens with a tap, Enter or Space; only keys aimed at the row itself,
+// since Enter on its × bubbles up here too
+function rowOpens(open) {
+  return {
+    role: "button",
+    tabIndex: 0,
+    onClick: open,
+    onKeyDown: (e) => e.target === e.currentTarget && (e.key === "Enter" || e.key === " ") && open(),
+    style: { cursor: "pointer" },
+  };
+}
 
 export default function TranslateHistory() {
   const api = useContext(APIContext);
+  const { userDetails } = useContext(UserContext);
   const history = useHistory();
+  const { texts, error: textsError, forget } = useShortTexts();
 
-  const [historyItems, setHistoryItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [searches, setSearches] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
     setTitle("Translation History");
-    loadHistory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  function loadHistory() {
-    setIsLoading(true);
-    setError("");
-
-    api.getTranslationHistory(50)
-      .then((data) => {
-        setHistoryItems(data);
-        setIsLoading(false);
-      })
+    api
+      .getTranslationHistory(50)
+      .then(setSearches)
       .catch((err) => {
         console.error("Failed to load translation history:", err);
         setError("Failed to load history");
-        setIsLoading(false);
+        setSearches([]);
       });
-  }
-
-  function handleItemClick(item) {
-    history.push("/translate", { searchWord: item.search_word });
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function formatTime(isoString) {
-    return formatDistanceToNow(new Date(isoString), { addSuffix: true })
-      .replace("about ", "");
+    return formatDistanceToNow(new Date(isoString), { addSuffix: true }).replace("about ", "");
   }
 
-  if (isLoading) {
+  // Both lists, or the rows would jump in one after the other
+  if (searches === null || texts === null) {
     return <LoadingAnimation />;
   }
 
-  if (error) {
-    return <s.NoResults>{error}</s.NoResults>;
-  }
+  const items = historyItems(searches, texts, userDetails?.learned_language);
 
-  if (historyItems.length === 0) {
-    return (
-      <s.NoResults>
-        Words searched in the Translate tab will appear here.
-      </s.NoResults>
-    );
+  if (items.length === 0 && !error && !textsError) {
+    return <EmptyState message={strings.translateHistoryEmpty} fillHeight={false} />;
   }
 
   return (
     <s.ResultsContainer>
-      <s.ResultsHeader>Recent Searches</s.ResultsHeader>
-      {historyItems.map((item) => (
-        <s.TranslationCard
-          key={item.id}
-          onClick={() => handleItemClick(item)}
-          style={{ cursor: "pointer" }}
-        >
-          <s.TranslationHeader>
-            <s.TranslationInfo>
-              <s.TranslationText>{item.search_word}</s.TranslationText>
-            </s.TranslationInfo>
-            <s.TranslationSource>{formatTime(item.search_time)}</s.TranslationSource>
-          </s.TranslationHeader>
-        </s.TranslationCard>
-      ))}
+      {error && <FullWidthErrorMsg>{error}</FullWidthErrorMsg>}
+      {textsError && <FullWidthErrorMsg>{textsError}</FullWidthErrorMsg>}
+      {items.map((item) =>
+        item.search ? (
+          <s.TranslationCard
+            key={item.key}
+            {...rowOpens(() => history.push("/translate", { searchWord: item.search.search_word }))}
+          >
+            <s.TranslationHeader>
+              <s.TranslationInfo>
+                <s.TranslationText>{item.search.search_word}</s.TranslationText>
+              </s.TranslationInfo>
+              <s.TranslationSource>{formatTime(item.search.search_time)}</s.TranslationSource>
+            </s.TranslationHeader>
+          </s.TranslationCard>
+        ) : (
+          <s.TranslationCard key={item.key} {...rowOpens(() => history.push(`/texts/read?id=${item.text.id}`))}>
+            <s.TranslationHeader>
+              <s.TranslationInfo>
+                <TextPreview>{item.text.preview}</TextPreview>
+              </s.TranslationInfo>
+              <TextMeta>
+                {item.otherLanguage && <s.TranslationSource>{languageName(item.otherLanguage)}</s.TranslationSource>}
+                <s.TranslationSource>{formatTime(item.text.last_opened_at)}</s.TranslationSource>
+                <RemoveText
+                  aria-label={strings.removeText}
+                  title={strings.removeText}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    forget(item.text.id);
+                  }}
+                >
+                  ×
+                </RemoveText>
+              </TextMeta>
+            </s.TranslationHeader>
+          </s.TranslationCard>
+        ),
+      )}
     </s.ResultsContainer>
   );
 }

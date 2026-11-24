@@ -1,21 +1,27 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useContext, useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { ExercisesCounterContext } from "../exercises/ExercisesCounterContext";
 import { setTitle } from "../assorted/setTitle";
 import useSpeech from "../hooks/useSpeech";
-import InputField from "../components/InputField";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import ContentPasteRoundedIcon from "@mui/icons-material/ContentPasteRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { languageName } from "../utils/misc/languageCodeToName";
 import { needsVirtualKeyboard } from "../utils/misc/languageScripts";
 import VirtualKeyboard from "../components/VirtualKeyboard/VirtualKeyboard";
 import SpecialCharacterBar, { hasSpecialCharacters } from "../components/VirtualKeyboard/SpecialCharacterBar";
+import { readClipboard } from "../utils/clipboard/readClipboard";
+import { readableApiError } from "../utils/misc/readableApiError";
+import { MAX_SHARED_TEXT_CHARS } from "../texts/sharedText";
+import strings from "../i18n/definitions";
+import { isTooLongToTranslate, looksLikeWords } from "./longText";
 import * as s from "./Translate.sc";
 
 const DIRECTION_STORAGE_KEY = "zeeguu_translate_direction";
@@ -58,6 +64,7 @@ export default function Translate() {
   const { userDetails } = useContext(UserContext);
   const { updateExercisesCounter } = useContext(ExercisesCounterContext);
   const location = useLocation();
+  const history = useHistory();
 
   const learnedLang = userDetails?.learned_language;
   const nativeLang = userDetails?.native_language;
@@ -136,24 +143,6 @@ export default function Translate() {
     return translation.toLowerCase();
   }
 
-  // Check if input looks like a real word (not gibberish)
-  function isValidWord(word) {
-    if (!word || word.length < 2) return false;
-
-    // Check each word in potential MWE
-    const words = word.split(/\s+/);
-    for (const w of words) {
-      // Too short
-      if (w.length < 2) return false;
-
-      // Repeated character pattern (e.g., "lalalal", "aaaa")
-      if (/^(.)\1{3,}$/.test(w)) return false; // same char 4+ times
-      if (/^(.{1,2})\1{2,}$/.test(w)) return false; // pattern repeats 3+ times
-    }
-
-    return true;
-  }
-
   // Check if translation is valid (not just echoing input)
   function isValidTranslation(translation, originalWord) {
     if (!translation) return false;
@@ -165,10 +154,7 @@ export default function Translate() {
   }
 
   function performSearch(word, skipHistory = false) {
-    if (!word || !isValidWord(word)) {
-      setError("Please enter a valid word or phrase");
-      return;
-    }
+    if (!word) return;
 
     searchWordRef.current = word;
 
@@ -232,11 +218,82 @@ export default function Translate() {
       });
   }
 
+  // A sentence or a message is read word by word in the text reader, which
+  // also guesses its language (and says so when it is not the learned one)
+  function readAsText(text) {
+    setIsLoading(true);
+    setError("");
+    api.addShortText(
+      text.slice(0, MAX_SHARED_TEXT_CHARS), // the API keeps at most this much
+      {},
+      // Back from the reader returns here, not to History
+      ({ id }) => history.push(`/texts/read?id=${id}`, { backTo: "/translate" }),
+      (errorMessage) => {
+        setIsLoading(false);
+        setError(readableApiError(errorMessage, strings.couldNotReadText));
+      },
+    );
+  }
+
+  // Too long to look up: the button offers to read it interactively instead,
+  // and the learner decides. Whatever the direction: the reader guesses the
+  // text's language itself (a long Danish paste while set to ro→da reads as
+  // Danish), and says when it is not the learned one.
+  const readsInteractively = (text) => isTooLongToTranslate(text);
+
   function handleSearch(e) {
     e.preventDefault();
     const word = searchWord.trim();
-    if (!word) return;
-    performSearch(word);
+    // Not while one is running: Enter reaches here even with the button disabled
+    if (!word || isLoading) return;
+    if (readsInteractively(word)) readAsText(word);
+    else performSearch(word);
+  }
+
+  function clearResults() {
+    setTranslations([]);
+    setHasSearched(false);
+    setError("");
+  }
+
+  function clearInput() {
+    setSearchWord("");
+    clearResults();
+    inputRef.current?.focus();
+  }
+
+  // Enter translates, as in a one-line field; Shift+Enter starts a new line.
+  // handleSearch directly: form.requestSubmit() is missing before iOS 16.
+  function submitOnEnter(e) {
+    // keyCode 229: Safari's Enter that confirms an IME composition
+    const composing = e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229;
+    if (e.key === "Enter" && !e.shiftKey && !composing) handleSearch(e);
+  }
+
+  // One line to start with, growing with the text (typed, pasted, or from
+  // the virtual keyboard)
+  useLayoutEffect(() => {
+    const field = inputRef.current;
+    if (!field) return;
+    field.style.height = "auto";
+    field.style.height = `${field.scrollHeight + 3}px`; // + the borders
+  }, [searchWord]);
+
+  // One tap: a word or a phrase on the clipboard is looked up at once;
+  // anything else (a longer text, or something that isn't words) waits in the
+  // field, for the learner to decide. When the
+  // clipboard can't be read, the field is ready for a paste by hand.
+  async function pasteFromClipboard() {
+    if (isLoading) return;
+    const text = (await readClipboard()).trim();
+    if (!text) {
+      inputRef.current?.focus();
+      return;
+    }
+    // The previous word's results (or its "no translations") are not about this text
+    clearResults();
+    setSearchWord(text);
+    if (looksLikeWords(text)) performSearch(text);
   }
 
   // displayKey: the key used for caching (based on what's displayed in UI)
@@ -348,13 +405,10 @@ export default function Translate() {
         toast.success(
           <span>
             Added "{card.word}" to exercises{" "}
-            <span
-              onClick={handleUndo}
-              style={{ textDecoration: "underline", cursor: "pointer" }}
-            >
+            <span onClick={handleUndo} style={{ textDecoration: "underline", cursor: "pointer" }}>
               Undo
             </span>
-          </span>
+          </span>,
         );
       },
       (error) => {
@@ -401,17 +455,34 @@ export default function Translate() {
 
       <form onSubmit={handleSearch}>
         <s.SearchContainer>
-          <InputField
-            id="translate-input"
-            placeholder={`Type in ${languageName(sourceLang)}...`}
-            value={searchWord}
-            onChange={(e) => setSearchWord(e.target.value)}
-            autoFocus
-            lang={sourceLang}
-            spellCheck={true}
-            inputRef={inputRef}
-            inputMode={showVirtualKeyboard && !isKeyboardCollapsed ? "none" : undefined}
-          />
+          <s.InputRow>
+            <s.FieldWithClear>
+              <s.TranslateInput
+                id="translate-input"
+                rows={1}
+                placeholder={`Type in ${languageName(sourceLang)}...`}
+                value={searchWord}
+                onChange={(e) => setSearchWord(e.target.value)}
+                onKeyDown={submitOnEnter}
+                // Return translates (a phone keyboard has no Shift+Enter), so
+                // the key says so
+                enterKeyHint="go"
+                autoFocus
+                lang={sourceLang}
+                spellCheck={true}
+                ref={inputRef}
+                inputMode={showVirtualKeyboard && !isKeyboardCollapsed ? "none" : undefined}
+              />
+              {searchWord && (
+                <s.ClearButton type="button" onClick={clearInput} aria-label={strings.clear} title={strings.clear}>
+                  <CloseRoundedIcon fontSize="small" />
+                </s.ClearButton>
+              )}
+            </s.FieldWithClear>
+            <s.PasteButton type="button" onClick={pasteFromClipboard} aria-label={strings.paste} title={strings.paste}>
+              <ContentPasteRoundedIcon fontSize="small" />
+            </s.PasteButton>
+          </s.InputRow>
 
           {showVirtualKeyboard && (
             <VirtualKeyboard
@@ -433,7 +504,7 @@ export default function Translate() {
           )}
 
           <s.TranslateButton type="submit" disabled={isLoading || !searchWord.trim()}>
-            {isLoading ? "..." : "Translate"}
+            {isLoading ? "..." : readsInteractively(searchWord) ? strings.translateInteractively : "Translate"}
           </s.TranslateButton>
         </s.SearchContainer>
       </form>
@@ -443,7 +514,7 @@ export default function Translate() {
       {isLoading && <LoadingAnimation />}
 
       {!isLoading && hasSearched && translations.length === 0 && (
-        <s.NoResults>No translations found for "{searchWord}"</s.NoResults>
+        <s.NoResults>No translations found for "{searchWordRef.current}"</s.NoResults>
       )}
 
       {!isLoading && translations.length > 0 && (
@@ -535,8 +606,8 @@ export default function Translate() {
                         );
                       })}
 
-                    {!isCardLoading && (
-                      isReported ? (
+                    {!isCardLoading &&
+                      (isReported ? (
                         <s.ReportedBadge>
                           <FlagOutlinedIcon fontSize="small" />
                           Reported
@@ -548,8 +619,7 @@ export default function Translate() {
                         >
                           <FlagOutlinedIcon fontSize="small" />
                         </s.ReportButton>
-                      )
-                    )}
+                      ))}
                   </s.ExamplesSection>
                 )}
               </s.TranslationCard>

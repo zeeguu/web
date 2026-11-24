@@ -32,6 +32,7 @@ import Close from "@mui/icons-material/Close";
 import CloseRounded from "@mui/icons-material/CloseRounded";
 import CloseSharp from "@mui/icons-material/CloseSharp";
 import CodeOutlined from "@mui/icons-material/CodeOutlined";
+import ContentPasteRounded from "@mui/icons-material/ContentPasteRounded";
 import DarkModeOutlined from "@mui/icons-material/DarkModeOutlined";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import DeleteOutlineRounded from "@mui/icons-material/DeleteOutlineRounded";
@@ -147,6 +148,7 @@ export const muiIcons = {
   CloseRounded,
   CloseSharp,
   CodeOutlined,
+  ContentPasteRounded,
   DarkModeOutlined,
   DeleteOutline,
   DeleteOutlineRounded,
@@ -261,9 +263,10 @@ export const muiIconUsage = {
   ChromeReaderModeRounded: ["components/MainNav/NavIcon.js"],
   Clear: ["friends/FriendRow.js","profile/FriendActionButtons.js"],
   Close: ["exercises/exerciseTypes/ReportExerciseDialog.js","exercises/replaceExample/ReplaceExampleModal.js"],
-  CloseRounded: ["articles/ArticlePreview.js","articles/ArticlePreviewOverlay.js","articles/FeedFilterBar.js","components/CloseIconButton.js","components/FullWidthListItem.js","components/MainNav/BottomNav/MoreOptionsPanel.js","components/modal_shared/Modal.js"],
+  CloseRounded: ["articles/ArticlePreview.js","articles/ArticlePreviewOverlay.js","articles/FeedFilterBar.js","components/CloseIconButton.js","components/FullWidthListItem.js","components/MainNav/BottomNav/MoreOptionsPanel.js","components/modal_shared/Modal.js","translate/Translate.js"],
   CloseSharp: ["components/ReportDialog.js"],
   CodeOutlined: ["pages/Settings/Pages/Settings.js"],
+  ContentPasteRounded: ["translate/Translate.js"],
   DarkModeOutlined: ["pages/Settings/ThemeToggle/DarkModeToggle.js"],
   DeleteOutline: ["pages/Settings/Pages/Settings.js"],
   DeleteOutlineRounded: ["articles/FeedFilterBar.js"],
@@ -359,10 +362,10 @@ export const staticIcons = {
   "active-icon-lightGrey.png": [],
   "add-icon-color.png": ["words/Word.js"],
   "add-icon.png": [],
-  "dan-deselected.png": ["assorted/uiLanguages.js"],
-  "dan-selected.png": ["assorted/uiLanguages.js"],
-  "eng-deselected.png": ["assorted/uiLanguages.js"],
-  "eng-selected.png": ["assorted/uiLanguages.js"],
+  "dan-deselected.png": ["assorted/uiLanguages.js","extension/build/background.js","extension/build/popup.js"],
+  "dan-selected.png": ["assorted/uiLanguages.js","extension/build/background.js","extension/build/popup.js"],
+  "eng-deselected.png": ["assorted/uiLanguages.js","extension/build/background.js","extension/build/popup.js"],
+  "eng-selected.png": ["assorted/uiLanguages.js","extension/build/background.js","extension/build/popup.js"],
   "info-icon.png": [],
   "new-info-icon.png": ["components/ExplainBookmarkSelectionModal.js","components/Infobox.js"],
   "productive-icon.png": [],

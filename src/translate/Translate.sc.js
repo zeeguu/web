@@ -49,6 +49,93 @@ export const SearchContainer = styled.div`
   }
 `;
 
+export const InputRow = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  width: 100%;
+`;
+
+// One line to start with, growing with the text (Translate.js sets the
+// height); the look of InputField's one-line field.
+// The field and its clear (×), which sits in the field's top-right corner
+export const FieldWithClear = styled.div`
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+`;
+
+export const TranslateInput = styled.textarea`
+  box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
+  min-height: 2.5rem;
+  max-height: 40vh;
+  padding: 0.45rem 2.25rem 0.45rem 1rem; /* room on the right for the × */
+  margin: 0;
+  font: inherit;
+  font-size: 1rem; /* Must be >= 16px to prevent iOS auto-zoom on focus */
+  line-height: 1.4;
+  border: 1.5px solid var(--input-border);
+  border-radius: 0.3rem;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  resize: none;
+
+  &:focus {
+    outline: transparent;
+    border-color: ${zeeguuOrange};
+  }
+`;
+
+export const ClearButton = styled.button`
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-muted);
+  cursor: pointer;
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+`;
+
+// Quiet, beside the field: the way in for a word or a message copied from
+// another app (WhatsApp has no share button for text on Android).
+export const PasteButton = styled.button`
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: 1.5px solid var(--input-border);
+  border-radius: 0.3rem;
+  color: var(--text-muted);
+  cursor: pointer;
+
+  @media (hover: hover) {
+    &:hover {
+      color: ${zeeguuOrange};
+      border-color: ${zeeguuOrange};
+    }
+  }
+`;
+
 export const TranslateButton = styled.button`
   background-color: ${zeeguuOrange};
   color: var(--orange-btn-text);
