@@ -61,7 +61,14 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
   const api = useContext(APIContext);
   const location = useLocation();
   const { userDetails } = useContext(UserContext);
-  const { hasSharedNotification, sharedUnreadCount } = useContext(SharedArticlesContext);
+  const { hasSharedNotification, sharedUnreadCount, sharedArticles, hasSharesInOtherLanguages } =
+    useContext(SharedArticlesContext);
+  // Inbox holds only what friends share: no tab until they have shared
+  // something (in any language; the page says when it is another one). Also
+  // while on it: a notification or link can open /articles/shared before the
+  // shares have loaded, and the page keeps its tab and heading.
+  const hasInbox =
+    (sharedArticles || []).length > 0 || hasSharesInOtherLanguages || location.pathname.startsWith("/articles/shared");
   const { getBrowsingSessionId } = useBrowsingSession();
   const classroomOnly = Feature.classroom_only();
   const isStudent = LocalStorage.isStudent();
@@ -104,8 +111,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     </s.IconSpan>
   );
 
-  // Inbox of articles friends have shared. Always shown (a visible inbox invites
-  // people to share); the badge carries the unread count.
+  // Inbox of articles friends have shared; the badge carries the unread count.
   const inboxIcon = (
     <s.IconSpan style={{ verticalAlign: "middle", position: "relative" }}>
       <MoveToInboxRoundedIcon {...iconProps} />
@@ -119,8 +125,13 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
     { text: newsIcon, link: "/articles", name: strings.news, intro: strings.newsIntro },
     { text: evergreenIcon, link: "/articles/evergreen", name: strings.evergreenTitle, intro: strings.evergreenIntro },
     { text: bookmarkIcon, link: "/articles/bookmarked", name: strings.saved, intro: strings.savedIntro },
-    isStudent && { text: classroomIcon, link: "/articles/classroom", name: strings.classroomTab, intro: strings.classroomIntro },
-    { text: inboxIcon, link: "/articles/shared", name: strings.inboxTab, intro: strings.inboxIntro },
+    isStudent && {
+      text: classroomIcon,
+      link: "/articles/classroom",
+      name: strings.classroomTab,
+      intro: strings.classroomIntro,
+    },
+    hasInbox && { text: inboxIcon, link: "/articles/shared", name: strings.inboxTab, intro: strings.inboxIntro },
   ].filter(Boolean);
 
   // The tabs are icons only, and the newer ones (Evergreen's tree) don't
@@ -180,13 +191,7 @@ export default function ArticlesRouter({ hasExtension, isChrome }) {
         )}
 
         <s.ContentContainer ref={swipeRef}>
-          <PrivateRoute
-            path="/articles"
-            exact
-            component={HomeFeed}
-            hasExtension={hasExtension}
-            isChrome={isChrome}
-          />
+          <PrivateRoute path="/articles" exact component={HomeFeed} hasExtension={hasExtension} isChrome={isChrome} />
           <PrivateRoute exact path="/articles/evergreen" component={EvergreenFeed} />
           <PrivateRoute exact path="/articles/bookmarked" component={BookmarkedArticles} />
           <PrivateRoute path="/articles/bookmarked/hidden" component={HiddenArticles} />

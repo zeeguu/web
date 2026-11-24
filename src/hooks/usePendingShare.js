@@ -7,8 +7,9 @@ import { PENDING_SHARE_KEY, SHARE_WAITING_EVENT, parsePendingShare, destinationO
 import { deliverSharedText } from "../texts/sharedText";
 
 // Takes a share another app sent to the native app (see texts/pendingShare.js)
-// and opens it: an article in the share flow, a short text in /texts. Only
-// once logged in, so a share made before signing in waits for it.
+// and opens it: an article in the share flow, a short text in the reader
+// (through /texts). Only once logged in, so a share made before signing in
+// waits for it.
 export default function usePendingShare(loggedIn) {
   const history = useHistory();
 
@@ -27,7 +28,7 @@ export default function usePendingShare(loggedIn) {
         if (destination?.path) history.push(destination.path);
         if (destination?.text) {
           deliverSharedText(destination.text);
-          if (window.location.pathname !== "/articles/shared") history.push("/articles/shared");
+          if (window.location.pathname !== "/texts") history.push("/texts");
         }
       } catch (e) {
         console.error("Could not take the pending share:", e);
