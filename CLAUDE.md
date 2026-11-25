@@ -37,7 +37,7 @@ already, and a second one is a cost the whole app pays. Before writing one:
    `grep -rn "title:" src --include='*.stories.js'`. Stories sit next to their
    component (`X.stories.js` beside `X.js`), so a component's story is a file
    check away. For icons, the **Icons** page shows every icon in use and the
-   files using it (`src/components/Icons/iconsInUse.generated.js`).
+   files using it (generated each time Storybook starts, not committed).
    Not every component has a story yet: also scan
    `test/storybook/componentsWithoutStories.json`, which names the older ones
    that don't.
@@ -57,7 +57,7 @@ story: the copy drifts from the real thing and nobody notices.
 
 `test/storybook/storyCoverage.test.js` enforces this: a new component in
 `src/components/` or `src/pages/_pages_shared/` without a story fails the
-tests, and so does a new icon until `npm run icons:gallery` is run.
+tests.
 `componentsWithoutStories.json` lists the components that predate the
 catalog; it only shrinks — never add to it. When you use or change one of
 them, give it a story and take it off the list (the test makes you remove it),

@@ -74,3 +74,6 @@ android/app/.settings/
 # Storybook
 storybook-static
 *storybook.log
+
+# Storybook's Icons page list: generated when Storybook starts (.storybook/main.mjs)
+src/components/Icons/iconsInUse.generated.js

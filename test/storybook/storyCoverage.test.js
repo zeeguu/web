@@ -1,5 +1,4 @@
 import { describe, it, expect } from "vitest";
-import { execFileSync } from "child_process";
 import fs from "fs";
 import path from "path";
 
@@ -55,12 +54,5 @@ describe("Storybook catalog", () => {
     const stale = componentsWithoutStories.filter((f) => !stillMissing.has(f));
     // These got a story (or were removed): delete them from the list.
     expect(stale).toEqual([]);
-  });
-
-  it("the Icons page lists the icons the code uses", () => {
-    // Fails when an icon was added or removed without `npm run icons:gallery`.
-    expect(() =>
-      execFileSync("node", [path.join(root, "scripts/generate-icon-gallery.js"), "--check"], { stdio: "pipe" }),
-    ).not.toThrow();
   });
 });
