@@ -1,6 +1,5 @@
 import { Link, useHistory } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { FormControlLabel, Checkbox } from "@mui/material";
 import { UserContext } from "../../../contexts/UserContext";
 import Button from "../../_pages_shared/Button.sc";
 import ButtonContainer from "../../_pages_shared/ButtonContainer.sc";
@@ -13,13 +12,31 @@ import strings from "../../../i18n/definitions";
 import { setTitle } from "../../../assorted/setTitle";
 import { APIContext } from "../../../contexts/APIContext";
 import InputField from "../../../components/InputField";
+import RadioGroup from "../../../components/RadioGroup/RadioGroup";
 import useFormField from "../../../hooks/useFormField";
 import { PositiveIntegerValidator } from "../../../utils/ValidatorRule/Validator";
 import validateRules from "../../../assorted/validateRules";
 import { ExercisesCounterContext } from "../../../exercises/ExercisesCounterContext";
 
 const PREF_KEY_MAX_WORDS_TO_SCHEDULE = "max_words_to_schedule";
-const PREF_KEY_FREQUENT_WORDS_FIRST = "frequent_words_first";
+const PREF_KEY_WORD_SCHEDULING_STRATEGY = "word_scheduling_strategy";
+
+// The API's UserPreference.WORD_SCHEDULING_STRATEGIES; unset means first_come.
+const FIRST_COME = "first_come";
+const STRATEGIES = [
+  {
+    value: FIRST_COME,
+    label: "First come, first served",
+    description: "A word you start learning keeps its place until you have learned it.",
+  },
+  {
+    value: "frequency_priority",
+    label: "Frequent words first",
+    description:
+      "A more common word you look up takes the place of a rarer word you have only just started. " +
+      "Words you are getting right (level 2 and up) keep their place.",
+  },
+];
 
 export default function ExerciseSchedulingPreferences() {
   const api = useContext(APIContext);
@@ -30,7 +47,7 @@ export default function ExerciseSchedulingPreferences() {
 
   const [maxWordsToSchedule, setMaxWordsToSchedule, validateMaxWords, isMaxWordsValid, maxWordsErrorMessage] =
     useFormField(-1, PositiveIntegerValidator());
-  const [frequentWordsFirst, setFrequentWordsFirst] = useState(false);
+  const [strategy, setStrategy] = useState(FIRST_COME);
 
   useEffect(() => {
     setTitle("Exercise Scheduling");
@@ -39,7 +56,7 @@ export default function ExerciseSchedulingPreferences() {
   useEffect(() => {
     api.getUserPreferences().then((preferences) => {
       setMaxWordsToSchedule(preferences[PREF_KEY_MAX_WORDS_TO_SCHEDULE]);
-      setFrequentWordsFirst(preferences[PREF_KEY_FREQUENT_WORDS_FIRST] === "true");
+      setStrategy(preferences[PREF_KEY_WORD_SCHEDULING_STRATEGY] || FIRST_COME);
     });
   }, [session, api]);
 
@@ -52,7 +69,7 @@ export default function ExerciseSchedulingPreferences() {
 
     api.saveUserPreferences({
       max_words_to_schedule: maxWordsToSchedule,
-      frequent_words_first: frequentWordsFirst ? "true" : "false",
+      [PREF_KEY_WORD_SCHEDULING_STRATEGY]: strategy,
     });
     history.goBack();
     updateExercisesCounter();
@@ -91,17 +108,18 @@ export default function ExerciseSchedulingPreferences() {
           </FormSection>
 
           <FormSection>
-            <FormControlLabel
-              control={
-                <Checkbox checked={frequentWordsFirst} onChange={(e) => setFrequentWordsFirst(e.target.checked)} />
-              }
-              label="Frequent words first"
-              sx={{ "& .MuiTypography-root": { fontFamily: "inherit" } }}
+            <RadioGroup
+              variant="card"
+              name="word-scheduling-strategy"
+              ariaLabel="Which words get a place in practice"
+              options={STRATEGIES}
+              selectedValue={strategy}
+              onChange={(e) => setStrategy(e.target.value)}
+              optionId={(option) => `word-scheduling-strategy-${option.value}`}
+              optionValue={(option) => option.value}
+              optionLabel={(option) => option.label}
+              optionDescription={(option) => option.description}
             />
-            <small>
-              A more common word you look up takes the place of a rarer word you have only just started learning.
-              Words you are getting right (level 2 and up) keep their place.
-            </small>
           </FormSection>
 
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
