@@ -23,6 +23,8 @@ const PREF_KEY_WORD_SCHEDULING_STRATEGY = "word_scheduling_strategy";
 
 // The API's UserPreference.WORD_SCHEDULING_STRATEGIES; unset means first_come.
 const FIRST_COME = "first_come";
+const FREQUENCY_PRIORITY = "frequency_priority";
+
 const STRATEGIES = [
   {
     value: FIRST_COME,
@@ -30,11 +32,16 @@ const STRATEGIES = [
     description: "Words stay in practice until you've learned them.",
   },
   {
-    value: "frequency_priority",
+    value: FREQUENCY_PRIORITY,
     label: "Most useful words first",
     description: "Common words you look up replace rarer ones you've only just started.",
   },
 ];
+
+// What the stored value means here: unset or unknown reads as first_come.
+function strategyShown(stored) {
+  return STRATEGIES.some((option) => option.value === stored) ? stored : FIRST_COME;
+}
 
 export default function ExerciseSchedulingPreferences() {
   const api = useContext(APIContext);
@@ -46,6 +53,10 @@ export default function ExerciseSchedulingPreferences() {
   const [maxWordsToSchedule, setMaxWordsToSchedule, validateMaxWords, isMaxWordsValid, maxWordsErrorMessage] =
     useFormField(-1, PositiveIntegerValidator());
   const [strategy, setStrategy] = useState(FIRST_COME);
+  // As loaded; the choice is sent only when the learner changed it, so that
+  // pressing Save for the word count does not pin an unset strategy to the
+  // current default.
+  const [loadedStrategy, setLoadedStrategy] = useState(FIRST_COME);
 
   useEffect(() => {
     setTitle("Exercise Scheduling");
@@ -54,7 +65,9 @@ export default function ExerciseSchedulingPreferences() {
   useEffect(() => {
     api.getUserPreferences().then((preferences) => {
       setMaxWordsToSchedule(preferences[PREF_KEY_MAX_WORDS_TO_SCHEDULE]);
-      setStrategy(preferences[PREF_KEY_WORD_SCHEDULING_STRATEGY] || FIRST_COME);
+      const shown = strategyShown(preferences[PREF_KEY_WORD_SCHEDULING_STRATEGY]);
+      setStrategy(shown);
+      setLoadedStrategy(shown);
     });
   }, [session, api]);
 
@@ -65,9 +78,10 @@ export default function ExerciseSchedulingPreferences() {
       return;
     }
 
+    const changedStrategy = strategy !== loadedStrategy ? { [PREF_KEY_WORD_SCHEDULING_STRATEGY]: strategy } : {};
     api.saveUserPreferences({
       max_words_to_schedule: maxWordsToSchedule,
-      [PREF_KEY_WORD_SCHEDULING_STRATEGY]: strategy,
+      ...changedStrategy,
     });
     history.goBack();
     updateExercisesCounter();
