@@ -8,6 +8,7 @@ import strings from "../i18n/definitions";
 import Translate from "./Translate";
 import TranslateHistory from "./TranslateHistory";
 import useTabbedRoute from "../hooks/useTabbedRoute";
+import { ContentContainer } from "../articles/_ArticlesRouter.sc";
 
 
 const TRANSLATE_TAB_PATHS = ["/translate", "/translate/history"];
@@ -43,10 +44,12 @@ export default function TranslateRouter() {
       <PaddedNarrowColumn>
         <TopTabs tabsAndLinks={tabsAndLinks} />
 
-        <div ref={swipeRef}>
+        {/* As tall as Read's, so the swipe works on the empty space under
+            the button too, not only on the field */}
+        <ContentContainer ref={swipeRef}>
           <PrivateRoute exact path="/translate" component={Translate} />
           <PrivateRoute exact path="/translate/history" component={TranslateHistory} />
-        </div>
+        </ContentContainer>
       </PaddedNarrowColumn>
     </Switch>
   );
