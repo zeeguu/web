@@ -11,13 +11,16 @@ import A0SituationPicker from "./A0SituationPicker";
 import LessonLengthSlider from "./LessonLengthSlider";
 
 // At A0 the learner drills their own role in the dialogue. Who they speak as is
-// theirs to say, never guessed from their name; "either" lets the lessons take
-// turns. Stored as the audio_lesson_character user preference.
+// theirs to say, never guessed from their name. There is no "either": in
+// languages where the words depend on the speaker's gender (French, Bulgarian…)
+// it made the learner's gender change from one lesson to the next. Stored as the
+// audio_lesson_character user preference; old app versions may still have
+// stored "either", which counts as not chosen.
 const CHARACTERS = [
   { value: "man", label: "A man" },
   { value: "woman", label: "A woman" },
-  { value: "either", label: "Either" },
 ];
+const isCharacter = (value) => CHARACTERS.some((c) => c.value === value);
 
 /**
  * Setup / "Change daily topic" dialog. Hosts the lesson-type selector and
@@ -58,6 +61,7 @@ export default function DailyLessonSettingsDialog({
   const [autoDisabled, setAutoDisabled] = useState(false);
 
   // null until the saved choice is loaded; the choice is not shown before then.
+  // "" once loaded when the learner has not chosen yet.
   const [savedCharacter, setSavedCharacter] = useState(null);
   const [character, setCharacter] = useState(null);
   const [saveError, setSaveError] = useState(false);
@@ -71,7 +75,7 @@ export default function DailyLessonSettingsDialog({
     api
       .getUserPreferences()
       .then((preferences) => {
-        const value = preferences.audio_lesson_character || "either";
+        const value = isCharacter(preferences.audio_lesson_character) ? preferences.audio_lesson_character : "";
         setSavedCharacter(value);
         setCharacter(value);
         if (preferences.audio_lesson_minutes) {
@@ -113,7 +117,10 @@ export default function DailyLessonSettingsDialog({
   const characterChanged = a0 && character !== savedCharacter;
   const minutesChanged = a0 && minutes !== savedMinutes;
   const preferencesChanged = characterChanged || minutesChanged;
-  const canSave = (canSubmit && changed) || preferencesChanged;
+  const hasChanges = (canSubmit && changed) || preferencesChanged;
+  // At A0 nothing saves until the learner says who they speak as.
+  const characterMissing = a0 && savedCharacter !== null && !character;
+  const canSave = hasChanges && !characterMissing;
 
   // First-ever setup generates today's lesson now; reconfiguring an existing
   // subscription only saves — the change applies from the next scheduled lesson
@@ -147,8 +154,15 @@ export default function DailyLessonSettingsDialog({
   // Unchanged → neutral "Close"; changed → orange "Save settings". Reserving the
   // brand orange for the action that actually persists makes "there's something
   // to save" legible at a glance.
+  // With changes but no character chosen yet, "Save settings" shows but stays
+  // disabled, so what was picked is not lost to a "Close"; the hint by the
+  // character pills says why.
   const primaryButton = canSave ? (
     <BannerButton onClick={handleSaveClick} style={buttonStyle}>
+      Save settings
+    </BannerButton>
+  ) : hasChanges ? (
+    <BannerButton disabled style={{ ...buttonStyle, opacity: 0.5, cursor: "default" }}>
       Save settings
     </BannerButton>
   ) : (
@@ -204,11 +218,16 @@ export default function DailyLessonSettingsDialog({
         />
       )}
 
-      {a0 && character && (
+      {a0 && savedCharacter !== null && (
         <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
           <span id="character-label" style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>
             In the dialogues you speak as
           </span>
+          {!character && (
+            <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", textAlign: "center" }}>
+              Choose one: in many languages the words you say depend on it.
+            </span>
+          )}
           <PillRow role="radiogroup" aria-labelledby="character-label">
             {CHARACTERS.map(({ value, label }) => (
               <SelectablePill

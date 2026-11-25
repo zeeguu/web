@@ -7,7 +7,10 @@ import DailyLessonSettingsDialog from "../../src/dailyAudio/DailyLessonSettingsD
 /**
  * At A0 every daily lesson is a situation, so the dialog offers no other type.
  */
-function setup(level, { initialType = null, initialSuggestion = "", preferences = {}, saveFails = false } = {}) {
+function setup(
+  level,
+  { initialType = null, initialSuggestion = "", preferences = { audio_lesson_character: "man" }, saveFails = false } = {},
+) {
   const calls = [];
   const api = {
     checkDailyLessonFeasibility: vi.fn((ok) => ok({ feasible: true })),
@@ -62,7 +65,7 @@ describe("DailyLessonSettingsDialog", () => {
 
   it("at A0 recommends the current situation and the next three not had yet", () => {
     setup(0, { initialType: "situation", initialSuggestion: "ordering at a café" });
-    expect(screen.getAllByRole("radio", { name: /^(?!A man|A woman|Either)/ }).map((r) => r.textContent)).toEqual([
+    expect(screen.getAllByRole("radio", { name: /^(?!A man|A woman)/ }).map((r) => r.textContent)).toEqual([
       "☕ At the café · 3",
       "👋 Hello and introductions",
       "🤷 I don't understand",
@@ -142,21 +145,60 @@ describe("DailyLessonSettingsDialog", () => {
     expect(onDismiss).toHaveBeenCalled();
   });
 
-  it("starts on Either, and saves the role before the situation", async () => {
-    const { calls } = setup(0);
-    await waitFor(() =>
-      expect(screen.getByRole("radio", { name: "Either" }).getAttribute("aria-checked")).toBe("true"),
-    );
-    fireEvent.click(screen.getByRole("radio", { name: "A woman" }));
-    fireEvent.click(screen.getByRole("radio", { name: /Hello/ }));
+  it("offers only A man and A woman", async () => {
+    setup(0);
+    await screen.findByText("In the dialogues you speak as");
+    expect(screen.getAllByRole("radio", { name: /^(A man|A woman|Either)$/ }).map((r) => r.textContent)).toEqual([
+      "A man",
+      "A woman",
+    ]);
+  });
+
+  it.each([[{}], [{ audio_lesson_character: "either" }]])(
+    "with no role chosen (%o) selects none, asks for one, and saves nothing until then",
+    async (preferences) => {
+      const { api, onSubmit, calls } = setup(0, { preferences });
+      await screen.findByText(/Choose one/);
+      expect(screen.getByRole("radio", { name: "A man" }).getAttribute("aria-checked")).toBe("false");
+      expect(screen.getByRole("radio", { name: "A woman" }).getAttribute("aria-checked")).toBe("false");
+
+      fireEvent.click(screen.getByRole("radio", { name: /Hello/ }));
+      const save = screen.getByText("Save settings");
+      expect(save.disabled).toBe(true);
+      fireEvent.click(save);
+      expect(api.saveUserPreferences).not.toHaveBeenCalled();
+      expect(onSubmit).not.toHaveBeenCalled();
+
+      // Picking one saves it, before the situation.
+      fireEvent.click(screen.getByRole("radio", { name: "A woman" }));
+      expect(screen.queryByText(/Choose one/)).toBeNull();
+      fireEvent.click(screen.getByText("Save settings"));
+      expect(api.saveUserPreferences).toHaveBeenCalledWith(
+        { audio_lesson_character: "woman" },
+        expect.any(Function),
+        expect.any(Function),
+      );
+      expect(calls).toEqual(["preferences", "situation"]);
+    },
+  );
+
+  it("with no role chosen, picking one alone is a change to save", async () => {
+    const { api } = setup(0, { initialType: "situation", initialSuggestion: "at a café", preferences: {} });
+    await screen.findByText(/Choose one/);
+    expect(screen.queryByText("Save settings")).toBeNull();
+    fireEvent.click(screen.getByRole("radio", { name: "A man" }));
     fireEvent.click(screen.getByText("Save settings"));
-    expect(calls).toEqual(["preferences", "situation"]);
+    expect(api.saveUserPreferences).toHaveBeenCalledWith(
+      { audio_lesson_character: "man" },
+      expect.any(Function),
+      expect.any(Function),
+    );
   });
 
   it("says so when the role could not be saved, and goes no further", async () => {
     const { onSubmit, onDismiss } = setup(0, { saveFails: true });
     await screen.findByText("In the dialogues you speak as");
-    fireEvent.click(screen.getByRole("radio", { name: "A man" }));
+    fireEvent.click(screen.getByRole("radio", { name: "A woman" }));
     fireEvent.click(screen.getByText("Save settings"));
     expect(screen.getByRole("alert").textContent).toMatch(/Could not save/);
     expect(onSubmit).not.toHaveBeenCalled();
@@ -167,7 +209,7 @@ describe("DailyLessonSettingsDialog", () => {
     const { api } = setup(0, {
       initialType: "situation",
       initialSuggestion: "ordering at a café",
-      preferences: { audio_lesson_minutes: "10" },
+      preferences: { audio_lesson_character: "man", audio_lesson_minutes: "10" },
     });
     await waitFor(() => expect(screen.getByText("about 10 minutes")).toBeTruthy());
     const slider = screen.getByRole("slider");
