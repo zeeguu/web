@@ -11,6 +11,7 @@ import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import useSubscribedSearches from "../hooks/useSubscribedSearches";
+import { noteArticleListFilter } from "../reader/articleOrigin";
 
 // The Evergreen tab: articles that don't go out of date (the crawler labels
 // each article news or general), ranked by the learner's keywords and topics
@@ -42,6 +43,11 @@ export default function EvergreenArticles() {
         ? { keyword: activeFilter.value.search }
         : {};
   const requestKey = JSON.stringify(requestFilter);
+
+  // Said in OPEN ARTICLE: an article opened under a pill is not one from the tab
+  useEffect(() => {
+    noteArticleListFilter(activeFilter.type === "all" ? null : activeFilter.type);
+  }, [activeFilter.type]);
 
   // Refetch on language switch and on a pill. The ignore flag drops a
   // response that lands after a newer request.

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import LocalStorage from "../assorted/LocalStorage";
+import { noteLocation } from "../reader/articleOrigin";
 
 /* This custom hook tracks the current page location and stores it in localStorage
    so users can be returned to their last visited page after logging in */
@@ -10,6 +11,7 @@ export default function useLocationTracker() {
   useEffect(() => {
     // Only track specific main pages
     const pathname = location.pathname;
+    noteLocation(pathname); // where the next article is opened from
     if (pathname && 
         (pathname.startsWith('/articles') || 
          pathname.startsWith('/practice') ||

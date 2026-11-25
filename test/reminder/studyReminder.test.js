@@ -7,6 +7,7 @@ import {
   reminderSettingFrom,
   reminderText,
   reminderTimes,
+  scheduledReminderLog,
 } from "../../src/reminder/studyReminder";
 
 const morning = new Date(2026, 10, 13, 9, 0);
@@ -64,6 +65,7 @@ describe("openedReminderEvent", () => {
     };
     expect(openedReminderEvent(notification)).toEqual({
       textId: "goal-v1",
+      scheduledFor: "2026-11-13T18:00:00.000Z",
       details: '{"scheduled_for":"2026-11-13T18:00:00.000Z","test":false}',
     });
   });
@@ -99,5 +101,25 @@ describe("permissionToReport", () => {
   it("reports Android's rationale prompt as not asked yet", () => {
     expect(permissionToReport("prompt-with-rationale")).toBe("prompt");
     expect(permissionToReport("granted")).toBe("granted");
+  });
+});
+
+describe("scheduledReminderLog", () => {
+  const times = [new Date(Date.UTC(2026, 10, 24, 18, 0)), new Date(Date.UTC(2026, 10, 25, 18, 0))];
+
+  it("logs the times when they differ from the ones logged last", () => {
+    const log = scheduledReminderLog(times, "2026-11-23T18:00:00.000Z");
+    expect(JSON.parse(log.details)).toEqual({ at: ["2026-11-24T18:00:00.000Z", "2026-11-25T18:00:00.000Z"] });
+    expect(log.key).toBe("2026-11-24T18:00:00.000Z,2026-11-25T18:00:00.000Z");
+  });
+
+  it("logs nothing for the same times again", () => {
+    const { key } = scheduledReminderLog(times, null);
+    expect(scheduledReminderLog(times, key)).toBeNull();
+  });
+
+  it("logs turning the reminders off, but not a reminder that was never on", () => {
+    expect(JSON.parse(scheduledReminderLog([], "2026-11-24T18:00:00.000Z").details)).toEqual({ at: [] });
+    expect(scheduledReminderLog([], null)).toBeNull();
   });
 });

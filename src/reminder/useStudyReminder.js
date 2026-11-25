@@ -4,6 +4,7 @@ import { languageName } from "../utils/misc/languageCodeToName";
 import {
   doneTodayFrom,
   logOpenedReminders,
+  logScheduledRemindersWith,
   noteDoneToday,
   notificationPermission,
   reminderSettingFrom,
@@ -25,7 +26,12 @@ export default function useStudyReminder(api, userDetails, userPreferences) {
 
   useEffect(() => {
     if (!loggedIn) return;
-    return logOpenedReminders(api);
+    logScheduledRemindersWith(api);
+    const stopLoggingOpened = logOpenedReminders(api);
+    return () => {
+      logScheduledRemindersWith(null);
+      stopLoggingOpened();
+    };
   }, [api, loggedIn]);
 
   // Whether the phone may show notifications, checked on start and on resume

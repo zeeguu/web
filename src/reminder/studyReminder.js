@@ -16,7 +16,10 @@ import { Capacitor } from "@capacitor/core";
 // can tell which days a reminder would have fired; the app logs
 // STUDY_REMINDER_OPENED when the learner opens one. iOS shows a scheduled
 // notification without running the app, so whether one was shown is not
-// known, only whether it was opened.
+// known, only whether it was opened, and what was scheduled: the app logs
+// STUDY_REMINDER_SCHEDULED each time the times it scheduled change (a new day
+// comes into the week, the goal is met, the setting changes), so the last one
+// before a time says whether a reminder was due then.
 
 export const DEFAULT_REMINDER_TIME = "19:00";
 const DAYS_AHEAD = 7;
@@ -27,6 +30,7 @@ const TEST_ID = FIRST_ID + 99;
 // compared (and rotated: a repeated text loses its effect).
 export const REMINDER_TEXT_ID = "goal-v1";
 export const REMINDER_OPENED_EVENT = "STUDY_REMINDER_OPENED";
+export const REMINDER_SCHEDULED_EVENT = "STUDY_REMINDER_SCHEDULED";
 
 export function studyReminderAvailable() {
   return Capacitor.isNativePlatform() && Capacitor.isPluginAvailable("LocalNotifications");
@@ -100,8 +104,55 @@ export function openedReminderEvent(notification) {
   if (extra?.kind !== "study_reminder") return null;
   return {
     textId: extra.textId,
+    scheduledFor: extra.scheduledFor,
     details: JSON.stringify({ scheduled_for: extra.scheduledFor, test: Boolean(extra.test) }),
   };
+}
+
+// Android hands the app the tap that last launched it again on later starts
+// (prod: one reminder logged as opened on three days), so a reminder is logged
+// as opened once: the last one logged is remembered on the phone.
+const LAST_OPENED_KEY = "studyReminderLastOpened";
+const LAST_SCHEDULED_KEY = "studyReminderLastScheduled";
+
+function remembered(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function remember(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Not remembered: at worst the next start logs the same thing again.
+  }
+}
+
+// What to log for the times just scheduled, or null when they are the ones
+// logged last. Nothing scheduled and nothing logged before (the reminder was
+// never on here) is no change either.
+export function scheduledReminderLog(times, lastLogged) {
+  const at = times.map((each) => each.toISOString());
+  const key = at.join(",");
+  if (key === (lastLogged ?? "")) return null;
+  return { key, details: JSON.stringify({ at }) };
+}
+
+let logScheduled = null;
+
+// The app's API, for logging what gets scheduled; null on logout.
+export function logScheduledRemindersWith(api) {
+  logScheduled = api
+    ? (times) => {
+        const log = scheduledReminderLog(times, remembered(LAST_SCHEDULED_KEY));
+        if (!log) return;
+        api.logUserActivity(REMINDER_SCHEDULED_EVENT, "", REMINDER_TEXT_ID, log.details);
+        remember(LAST_SCHEDULED_KEY, log.key);
+      }
+    : null;
 }
 
 // Logs each opened reminder. iOS keeps the event of a tap that launched the
@@ -114,7 +165,9 @@ export function logOpenedReminders(api) {
     .then(({ LocalNotifications }) =>
       LocalNotifications.addListener("localNotificationActionPerformed", ({ notification }) => {
         const event = openedReminderEvent(notification);
-        if (event) api.logUserActivity(REMINDER_OPENED_EVENT, "", event.textId, event.details);
+        if (!event || event.scheduledFor === remembered(LAST_OPENED_KEY)) return;
+        remember(LAST_OPENED_KEY, event.scheduledFor);
+        api.logUserActivity(REMINDER_OPENED_EVENT, "", event.textId, event.details);
       }),
     )
     .then((h) => {
@@ -207,7 +260,10 @@ async function reschedule() {
     await LocalNotifications.cancel({ notifications: ids });
 
     const { enabled, time, doneOn, goalMinutes, language } = lastKnown;
-    if (!enabled || !goalMinutes) return;
+    if (!enabled || !goalMinutes) {
+      logScheduled?.([]);
+      return;
+    }
 
     const now = new Date();
     const { id: textId, title, body } = reminderText(goalMinutes, language);
@@ -221,6 +277,7 @@ async function reschedule() {
         extra: reminderExtra(textId, at),
       })),
     });
+    logScheduled?.(times);
   } catch {
     // Best effort: a reminder that does not get scheduled is not worth an error.
   }

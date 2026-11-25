@@ -13,9 +13,10 @@ import { UserContext } from "../../src/contexts/UserContext";
 describe("LanguageStreakBar while switching", () => {
   afterEach(() => vi.useRealTimers());
 
-  function renderBar() {
+  function renderBar(logged = []) {
     const saves = [];
     const api = {
+      logUserActivity: (...args) => logged.push(args),
       getAllLanguageStreaks: (cb) =>
         cb([
           { code: "da", language: "Danish", daily_streak: 1, practiced_today: false },
@@ -64,5 +65,16 @@ describe("LanguageStreakBar while switching", () => {
     act(() => saves[0].onError());
     expect(screen.queryByRole("status")).toBeNull();
     expect(screen.getByAltText("Bulgarian")).toBeTruthy();
+  });
+
+  it("logs a tap on a language with where the day stood", () => {
+    const logged = [];
+    renderBar(logged);
+
+    fireEvent.click(screen.getByTitle("Bulgarian"));
+
+    const [event, articleId, value, details] = logged[0];
+    expect([event, articleId, value]).toEqual(["STREAK_BAR_TAPPED", "", "bg"]);
+    expect(JSON.parse(details)).toEqual({ current: false, practiced_today: true, ms_to_streak: null, streak: 1 });
   });
 });
