@@ -26,15 +26,13 @@ const FIRST_COME = "first_come";
 const STRATEGIES = [
   {
     value: FIRST_COME,
-    label: "First come, first served",
-    description: "A word you start learning keeps its place until you have learned it.",
+    label: "Finish what I started",
+    description: "Words stay in practice until you've learned them.",
   },
   {
     value: "frequency_priority",
-    label: "Frequent words first",
-    description:
-      "A more common word you look up takes the place of a rarer word you have only just started. " +
-      "Words you are getting right (level 2 and up) keep their place.",
+    label: "Most useful words first",
+    description: "Common words you look up replace rarer ones you've only just started.",
   },
 ];
 
@@ -111,7 +109,7 @@ export default function ExerciseSchedulingPreferences() {
             <RadioGroup
               variant="card"
               name="word-scheduling-strategy"
-              ariaLabel="Which words get a place in practice"
+              radioGroupLabel="When you look up new words…"
               options={STRATEGIES}
               selectedValue={strategy}
               onChange={(e) => setStrategy(e.target.value)}
