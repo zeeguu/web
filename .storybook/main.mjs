@@ -1,6 +1,15 @@
 // Storybook is the catalog of shared UI components: before building a new
 // one, check here whether it already exists (see CLAUDE.md).
 // It reuses vite.config.js, so JSX-in-.js and styled-components work as in the app.
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+
+// The Icons page's list of icons in use is generated, not committed, so it is
+// never stale: here, however Storybook is started (dev or build).
+execFileSync(process.execPath, [fileURLToPath(new URL("../scripts/generate-icon-gallery.js", import.meta.url))], {
+  stdio: "inherit",
+});
+
 const config = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx)"],
   // Serves public/ as in the app, so /static/... images load.
