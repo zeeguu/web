@@ -37,7 +37,13 @@ export default function LessonPlaybackView({
   // finished lesson. It replaced a "Lesson completed!" box that stayed on the
   // page above the feedback questions.
   const [celebrating, setCelebrating] = useState(false);
-  const words = lessonData.words || [];
+  // A word the learner no longer has comes back as {origin, translation}
+  // (older API versions sent only that), and <Word> reads from/to.
+  const words = (lessonData.words || []).map((word) => ({
+    from: word.origin,
+    to: word.translation,
+    ...word,
+  }));
 
   // Callers (e.g. the daily episode card) can replace the default title block
   // with their own header; otherwise we show the plain title + topic line.
