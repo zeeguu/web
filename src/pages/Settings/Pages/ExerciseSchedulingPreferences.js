@@ -28,15 +28,23 @@ const FREQUENCY_PRIORITY = "frequency_priority";
 const STRATEGIES = [
   {
     value: FIRST_COME,
-    label: "Finish what I started",
-    description: "Words stay in practice until you've learned them.",
+    label: "…waits its turn.",
+    description: "Your words in learning stay until you've learned them.",
   },
   {
     value: FREQUENCY_PRIORITY,
-    label: "Most useful words first",
-    description: "Common words you look up replace rarer ones you've only just started.",
+    label: "…can replace a rarer word.",
+    description: "If it's more common than a word you've only just started, it takes its place.",
   },
 ];
+
+// The options finish this sentence, so it names the learner's own number
+// from the field above; while that field holds no number, it says so in words.
+function strategyQuestion(maxWords) {
+  const count = Number(maxWords);
+  const words = Number.isInteger(count) && count > 0 ? `${count} words` : "as many words as you chose above";
+  return `Once you have ${words} in learning, a new word you look up…`;
+}
 
 // What the stored value means here: unset or unknown reads as first_come.
 function strategyShown(stored) {
@@ -123,7 +131,7 @@ export default function ExerciseSchedulingPreferences() {
             <RadioGroup
               variant="card"
               name="word-scheduling-strategy"
-              radioGroupLabel="When you look up new words…"
+              radioGroupLabel={strategyQuestion(maxWordsToSchedule)}
               options={STRATEGIES}
               selectedValue={strategy}
               onChange={(e) => setStrategy(e.target.value)}
