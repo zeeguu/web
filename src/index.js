@@ -2,6 +2,8 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
+import CrashFallback from "./components/CrashFallback";
+import LocalStorage from "./assorted/LocalStorage";
 import reportWebVitals from "./reportWebVitals";
 
 import * as Sentry from "@sentry/react";
@@ -26,7 +28,12 @@ Sentry.init({
 const root = createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    {/* Without it a render error unmounts everything and leaves an empty
+        page. Forgetting the last page matters as much: the app reopens on
+        it, so a page that crashes would crash again at every launch. */}
+    <Sentry.ErrorBoundary fallback={<CrashFallback />} onError={() => LocalStorage.forgetLastVisitedPage()}>
+      <App />
+    </Sentry.ErrorBoundary>
   </React.StrictMode>
 );
 

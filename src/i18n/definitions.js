@@ -291,6 +291,9 @@ let strings = new LocalizedStrings(
       //ResetPasswordStep2
       plsProvideCode: "Please provide a code.",
       somethingWentWrong: "Something went wrong!",
+      //CrashFallback
+      crashMessage: "This page stopped working. We have been notified.",
+      backToHome: "Back to home",
       youCanTryTo: "You can try to ",
       again: "again. ",
       orContactUsAt: "Or contact us on ",
@@ -1283,6 +1286,9 @@ let strings = new LocalizedStrings(
       //ResetPasswordStep2
       plsProvideCode: "Angiv venligst engangskoden.",
       somethingWentWrong: "Noget gik galt!",
+      //CrashFallback
+      crashMessage: "Siden holdt op med at virke. Vi har fået besked.",
+      backToHome: "Tilbage til forsiden",
       youCanTryTo: "Du kan prøve at ",
       again: "igen.",
       orContactUsAt: "Ellers kan du kontakte os på: ",
