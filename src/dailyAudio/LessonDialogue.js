@@ -108,13 +108,19 @@ export default function LessonDialogue({ api, lesson }) {
       </DialogueToggle>
       {loading && <LoadingAnimation />}
       {failed && <FullWidthErrorMsg>{strings.couldNotOpenDialogue}</FullWidthErrorMsg>}
-      {shown && <DialogueText api={api} interactiveText={interactiveText} />}
+      {/* Kept mounted once loaded and only hidden, so showing it again
+          does not fetch the reader's preferences again */}
+      {interactiveText && (
+        <div hidden={!shown}>
+          <DialogueText api={api} interactiveText={interactiveText} />
+        </div>
+      )}
     </>
   );
 }
 
 // The text at the reader's settings (translate, pronounce, text size): the
-// same stored preferences, read only once a dialogue is shown.
+// same stored preferences, read once, when the dialogue is first shown.
 function DialogueText({ api, interactiveText }) {
   const { translateInReader, pronounceInReader, showMweHints } = useUserPreferences(api);
   const [readerFontSize] = useReaderFontSize();
