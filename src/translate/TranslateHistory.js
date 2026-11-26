@@ -13,6 +13,7 @@ import { languageName } from "../utils/misc/languageCodeToName";
 import strings from "../i18n/definitions";
 import { historyItems } from "./historyItems";
 import { opensLikeAButton } from "../utils/input/keys";
+import { orange200, orange800 } from "../components/colors";
 import * as s from "./Translate.sc";
 
 // A text's row: when (and the language, if not the learned one) on the left
@@ -32,6 +33,21 @@ const TextPreview = styled.div`
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+`;
+
+// Matches the reader's translated-word color and dashed underline without
+// interactive taps or inline translation chips that would break line clamping.
+const TranslatedWord = styled.span`
+  color: ${orange800};
+  font-weight: 600;
+  text-decoration: underline dashed ${orange800};
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+
+  :root[data-theme="dark"] & {
+    color: ${orange200};
+    text-decoration-color: ${orange200};
+  }
 `;
 
 // Not SavedArticleRow's RemoveButton: that one is placed absolutely over its row
@@ -121,7 +137,13 @@ export default function TranslateHistory() {
                 ×
               </RemoveText>
             </TextMeta>
-            <TextPreview>{item.text.preview}</TextPreview>
+            <TextPreview>
+              {item.text.preview_parts?.length
+                ? item.text.preview_parts.map((part, i) =>
+                    part.translated ? <TranslatedWord key={i}>{part.text}</TranslatedWord> : part.text,
+                  )
+                : item.text.preview}
+            </TextPreview>
           </s.TranslationCard>
         ),
       )}
