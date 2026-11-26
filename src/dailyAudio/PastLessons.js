@@ -10,6 +10,7 @@ import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
 import { completionChecks, formatShortDate, parseLessonDate } from "./audioUtils";
 import ShareLessonButton from "./ShareLessonButton";
+import LessonDialogue from "./LessonDialogue";
 
 // Filter the back catalogue by lesson type. value=null means "All".
 const TYPE_FILTERS = [
@@ -389,6 +390,7 @@ function InlineLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onPro
         onError={() => {}}
       />
       <ShareLessonButton api={api} lessonId={lesson.lesson_id} title={lesson.title} shareUuid={lesson.share_uuid} />
+      <LessonDialogue key={lesson.lesson_id} api={api} lesson={lesson} />
     </>
   );
 }
