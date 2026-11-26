@@ -75,6 +75,10 @@ Zeeguu_API.prototype.OPEN_CONTEXT = "OPEN CONTEXT";
 Zeeguu_API.prototype.OPEN_MODAL = "OPEN MODAL";
 Zeeguu_API.prototype.CLOSE_MODAL = "CLOSE MODAL";
 
+// Audio lessons: "Show the dialogue" clicked (value: lesson id), on every
+// open, including after Hide.
+Zeeguu_API.prototype.OPEN_LESSON_DIALOGUE = "OPEN LESSON DIALOGUE";
+
 // Audio Experiment
 Zeeguu_API.prototype.AUDIO_EXP = "AUDIO_EXP";
 

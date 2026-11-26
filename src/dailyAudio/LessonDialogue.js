@@ -57,8 +57,13 @@ export default function LessonDialogue({ api, lesson }) {
 
   if (!lesson?.lesson_id || !lessonHasDialogue(lesson) || noDialogue) return null;
 
+  function logOpened(sourceId) {
+    api.logUserActivity(api.OPEN_LESSON_DIALOGUE, "", lesson.lesson_id, "", sourceId);
+  }
+
   function show() {
     if (interactiveText) {
+      logOpened(interactiveText.sourceId);
       setOpen(true);
       return;
     }
@@ -81,6 +86,7 @@ export default function LessonDialogue({ api, lesson }) {
             contextIdentifier: LESSON_DIALOGUE_CONTEXT,
           }),
         );
+        logOpened(loaded.source_id);
         setOpen(true);
       },
       () => setNoDialogue(true),
