@@ -186,6 +186,28 @@ Zeeguu_API.prototype.deleteTodaysLesson = function (callback, onError, lessonId)
     });
 };
 
+// The dialogue of one of the learner's lessons:
+// {title, language, source_id, speakers, tokenized_paragraphs, past_bookmarks}.
+// Made on the server the first time anyone asks for it. Plain fetch rather
+// than _getJSON: a 404 is an expected answer (a lesson whose script has no
+// dialogue to read), which _getJSON would report to Sentry.
+Zeeguu_API.prototype.getLessonDialogue = function (lessonId, callback, onNoDialogue, onError) {
+  const endpoint = `lesson_dialogue/${lessonId}`;
+  this.apiLog("GET" + endpoint);
+  fetch(this._appendSessionToUrl(endpoint))
+    .then((response) => {
+      if (response.status === 404) return null;
+      if (!response.ok) {
+        const err = new Error(`HTTP ${response.status} on GET ${endpoint}`);
+        Sentry.captureException(err, { tags: { endpoint, method: "GET" } });
+        throw err;
+      }
+      return response.json();
+    })
+    .then((data) => (data ? callback(data) : onNoDialogue()))
+    .catch((error) => onError && onError(error));
+};
+
 Zeeguu_API.prototype.getPastDailyLessons = function (limit, offset, callback, onError) {
   const params = new URLSearchParams();
   if (limit) params.set("limit", limit);

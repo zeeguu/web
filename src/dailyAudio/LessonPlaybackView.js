@@ -16,6 +16,7 @@ import {
 import { wordsAsTile } from "./audioUtils";
 import { knownLanguageName } from "../utils/misc/languageCodeToName";
 import ShareLessonButton from "./ShareLessonButton";
+import LessonDialogue from "./LessonDialogue";
 import LessonFeedbackBox from "./LessonFeedbackBox";
 
 export default function LessonPlaybackView({
@@ -123,6 +124,8 @@ export default function LessonPlaybackView({
             shareUuid={lessonData.share_uuid}
           />
         </CustomAudioPlayer>
+
+        <LessonDialogue key={lessonData.lesson_id} api={api} lesson={lessonData} />
 
         {celebrating && (
           <Confetti

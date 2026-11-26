@@ -75,3 +75,8 @@ export function lessonDateLabel(createdAt) {
   if (daysAgo > 1 && daysAgo <= RELATIVE_DAYS_LIMIT) return `${daysAgo} days ago · ${formatted}`;
   return formatted;
 }
+
+// Topic and situation lessons are a dialogue; a three-words lesson is not.
+export function lessonHasDialogue(lesson) {
+  return lesson?.lesson_type === "topic" || lesson?.lesson_type === "situation";
+}
