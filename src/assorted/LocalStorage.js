@@ -344,6 +344,10 @@ const LocalStorage = {
     localStorage[this.Keys.LastVisitedPage] = path;
   },
 
+  forgetLastVisitedPage: function () {
+    localStorage.removeItem(this.Keys.LastVisitedPage);
+  },
+
   getLastVisitedTeacherPage: function () {
     return localStorage[this.Keys.LastVisitedTeacherPage] || "/teacher/classes";
   },
