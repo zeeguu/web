@@ -38,6 +38,17 @@ const TranslatableText = styled.div`
     line-height: 29px;
   }
 
+  /* Highlight-only preview (e.g. Translate > History): keeps translated-word
+     styling without competing taps, hover underlines, or reader line-height. */
+  &[data-non-interactive="true"] {
+    pointer-events: none;
+
+    z-tag {
+      cursor: inherit;
+      line-height: inherit;
+    }
+  }
+
   z-tag.number,
   z-tag.no-hover {
     cursor: default;

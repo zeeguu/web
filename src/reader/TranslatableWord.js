@@ -17,6 +17,7 @@ export default function TranslatableWord({
   wordUpdated,
   translating,
   pronouncing,
+  nonInteractive = false,
   disableTranslation,
   highlightedMWEGroupId,
   setHighlightedMWEGroupId,
@@ -73,6 +74,7 @@ export default function TranslatableWord({
   }, [word]);
 
   function clickOnWord(e, word) {
+    if (nonInteractive) return;
     if (word.token.is_like_num || (word.token.is_punct && word.word.length === 1)) return;
     // Already on its way, and translating again would fuse it with its
     // neighbour -- the join the learner just broke.
@@ -499,7 +501,7 @@ export default function TranslatableWord({
   // broken. Shown with the translation, as the word's "focused" state, which
   // keeps them out of the way while reading.
   const showSeams =
-    !readOnly && !inExercise && !!word.translation && (isTranslationVisible || word.isTranslationVisible) && word.seams().length > 0;
+    !nonInteractive && !readOnly && !inExercise && !!word.translation && (isTranslationVisible || word.isTranslationVisible) && word.seams().length > 0;
 
   // Don't render words that have been fused into an MWE (marked for skip)
   // This prevents duplication during loading animation when fuseMWEPartners
@@ -508,7 +510,7 @@ export default function TranslatableWord({
     return null;
   }
 
-  if (word.token.is_like_email)
+  if (!nonInteractive && word.token.is_like_email)
     return (
       <>
         <z-tag>
@@ -516,7 +518,7 @@ export default function TranslatableWord({
         </z-tag>
       </>
     );
-  if (word.token.is_like_url)
+  if (!nonInteractive && word.token.is_like_url)
     return (
       <>
         <z-tag onClick={() => redirect(addProtocolToLink(word.word), true)}>
@@ -568,7 +570,7 @@ export default function TranslatableWord({
             </span>
           </z-tran>
         )}
-        {word.translation && (isTranslationVisible || word.isTranslationVisible) && (
+        {!nonInteractive && word.translation && (isTranslationVisible || word.isTranslationVisible) && (
           <z-tran
             class={tranClass}
             chosen={word.translation}

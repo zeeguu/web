@@ -29,6 +29,7 @@ export function TranslatableText({
   interactiveText,
   translating,
   pronouncing,
+  nonInteractive = false,
   setIsRendered,
   leftEllipsis,
   rightEllipsis,
@@ -169,6 +170,7 @@ export function TranslatableText({
         wordUpdated={wordUpdated}
         translating={translating}
         pronouncing={pronouncing}
+        nonInteractive={nonInteractive}
         highlightedMWEGroupId={highlightedMWEGroupId}
         setHighlightedMWEGroupId={setHighlightedMWEGroupId}
         loadingMWEGroupId={loadingMWEGroupId}
@@ -189,5 +191,12 @@ export function TranslatableText({
     );
   }
 
-  return <s.TranslatableText data-show-mwe-hints={showMweHints === true}>{renderedText}</s.TranslatableText>;
+  return (
+    <s.TranslatableText
+      data-show-mwe-hints={showMweHints === true}
+      data-non-interactive={nonInteractive || undefined}
+    >
+      {renderedText}
+    </s.TranslatableText>
+  );
 }

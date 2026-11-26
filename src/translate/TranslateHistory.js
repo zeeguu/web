@@ -1,9 +1,12 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useMemo, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { formatDistanceToNow } from "date-fns";
 import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
+import { SpeechContext } from "../contexts/SpeechContext";
+import InteractiveText from "../reader/InteractiveText";
+import { TranslatableText } from "../reader/TranslatableText";
 import LoadingAnimation from "../components/LoadingAnimation";
 import EmptyState from "../components/EmptyState";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
@@ -13,7 +16,6 @@ import { languageName } from "../utils/misc/languageCodeToName";
 import strings from "../i18n/definitions";
 import { historyItems } from "./historyItems";
 import { opensLikeAButton } from "../utils/input/keys";
-import { orange200, orange800 } from "../components/colors";
 import * as s from "./Translate.sc";
 
 // A text's row: when (and the language, if not the learned one) on the left
@@ -35,20 +37,33 @@ const TextPreview = styled.div`
   overflow: hidden;
 `;
 
-// Matches the reader's translated-word color and dashed underline without
-// interactive taps or inline translation chips that would break line clamping.
-const TranslatedWord = styled.span`
-  color: ${orange800};
-  font-weight: 600;
-  text-decoration: underline dashed ${orange800};
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
+function ShortTextPreview({ text }) {
+  const api = useContext(APIContext);
+  const speech = useContext(SpeechContext);
+  const interactiveText = useMemo(() => {
+    if (!text.tokenized_preview?.length) return null;
+    return new InteractiveText({
+      tokenizedParagraphs: text.tokenized_preview,
+      previousBookmarks: text.past_bookmarks || [],
+      api,
+      language: text.language,
+      zeeguuSpeech: speech || { language: text.language },
+    });
+  }, [text, api, speech]);
 
-  :root[data-theme="dark"] & {
-    color: ${orange200};
-    text-decoration-color: ${orange200};
-  }
-`;
+  if (!interactiveText) return <TextPreview>{text.preview}</TextPreview>;
+  return (
+    <TextPreview>
+      <TranslatableText
+        interactiveText={interactiveText}
+        translating={false}
+        pronouncing={false}
+        nonInteractive={true}
+        rightEllipsis={text.preview_truncated}
+      />
+    </TextPreview>
+  );
+}
 
 // Not SavedArticleRow's RemoveButton: that one is placed absolutely over its row
 const RemoveText = styled.button`
@@ -137,13 +152,7 @@ export default function TranslateHistory() {
                 ×
               </RemoveText>
             </TextMeta>
-            <TextPreview>
-              {item.text.preview_parts?.length
-                ? item.text.preview_parts.map((part, i) =>
-                    part.translated ? <TranslatedWord key={i}>{part.text}</TranslatedWord> : part.text,
-                  )
-                : item.text.preview}
-            </TextPreview>
+            <ShortTextPreview text={item.text} />
           </s.TranslationCard>
         ),
       )}
