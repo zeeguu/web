@@ -23,6 +23,10 @@ const SectionHeader = styled.h2`
 
 const OptionRow = styled.div`
   margin-bottom: 0.6em;
+
+  & .MuiFormControlLabel-root {
+    align-items: flex-start;
+  }
 `;
 
 const OptionText = styled.span`

@@ -125,7 +125,8 @@ Zeeguu_API.prototype.getAlternativeSentences = function (userWordId) {
 /**
  * Fetch past contexts and AI-generated alternatives for a word,
  * sorted by sentence length, with the current exercise context first.
- * Deduplication is handled server-side by the two endpoints.
+ * Deduplicates against the current context on the client too, so post-exercise
+ * context rotation racing these fetches cannot put the current sentence in twice.
  */
 Zeeguu_API.prototype.fetchAndSortContexts = async function (exerciseBookmark) {
   const [pastData, altData] = await Promise.all([
@@ -135,11 +136,25 @@ Zeeguu_API.prototype.fetchAndSortContexts = async function (exerciseBookmark) {
 
   const byLength = (a, b) => (a.sentence || a.context || "").length
                             - (b.sentence || b.context || "").length;
+  const normalize = (text) => (text || "").trim().toLowerCase();
+  const seenTexts = new Set([normalize(exerciseBookmark.context)].filter(Boolean));
+  const currentId = exerciseBookmark.id;
+
+  const dedupe = (items) =>
+    items.filter((item) => {
+      if (currentId != null && (item.id === currentId || item.bookmark_id === currentId)) {
+        return false;
+      }
+      const key = normalize(item.sentence || item.context);
+      if (key && seenTexts.has(key)) return false;
+      if (key) seenTexts.add(key);
+      return true;
+    });
 
   return [
     { isCurrent: true, bookmark: exerciseBookmark },
-    ...(pastData?.past_contexts || []).sort(byLength),
-    ...(altData?.examples || []).sort(byLength),
+    ...dedupe((pastData?.past_contexts || []).sort(byLength)),
+    ...dedupe((altData?.examples || []).sort(byLength)),
   ];
 };
 
