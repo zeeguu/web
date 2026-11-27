@@ -78,3 +78,33 @@ describe("LanguageStreakBar while switching", () => {
     expect(JSON.parse(details)).toEqual({ current: false, practiced_today: true, ms_to_streak: null, streak: 1 });
   });
 });
+
+describe("LanguageStreakBar with the streak count hidden", () => {
+  function renderBar(userPreferences) {
+    const api = {
+      logUserActivity: () => {},
+      getAllLanguageStreaks: (cb) =>
+        cb([{ code: "da", language: "Danish", daily_streak: 7, practiced_today: true }]),
+    };
+    render(
+      <MemoryRouter initialEntries={["/practice"]}>
+        <APIContext.Provider value={api}>
+          <UserContext.Provider value={{ userDetails: { learned_language: "da" }, userPreferences }}>
+            <LanguageStreakBar />
+          </UserContext.Provider>
+        </APIContext.Provider>
+      </MemoryRouter>,
+    );
+  }
+
+  it("shows the number by default", () => {
+    renderBar({ daily_goal_minutes: "10" });
+    expect(screen.getByText("7")).toBeTruthy();
+  });
+
+  it("keeps the flag and flame but drops the number when show_streak_count is false", () => {
+    renderBar({ daily_goal_minutes: "10", show_streak_count: "false" });
+    expect(screen.queryByText("7")).toBeNull();
+    expect(screen.getByAltText("Danish")).toBeTruthy();
+  });
+});

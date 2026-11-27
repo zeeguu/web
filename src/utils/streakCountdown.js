@@ -18,6 +18,13 @@ export function studiedPercent(msToStreak, goalMinutes) {
   return Math.min(100, Math.max(0, (studied / goalMs) * 100));
 }
 
+// Whether the streak's count of days is shown (Settings → Daily goal), for
+// learners whom a count stresses more than it helps. The flame and the ring
+// toward today's goal stay either way. Unset means shown.
+export function showsStreakCount(preferences) {
+  return preferences?.show_streak_count !== "false";
+}
+
 export function streakCountdownHint(msToStreak, dailyStreak) {
   const minutes = Math.max(1, Math.ceil(msToStreak / 60_000));
   const study = `${minutes} more minute${minutes === 1 ? "" : "s"} of study today`;

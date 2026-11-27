@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isCountingDown, streakCountdownHint, studiedPercent } from "../../src/utils/streakCountdown";
+import { isCountingDown, showsStreakCount, streakCountdownHint, studiedPercent } from "../../src/utils/streakCountdown";
 
 describe("isCountingDown", () => {
   it("counts down until today counts, when the API sent the remaining time", () => {
@@ -42,5 +42,14 @@ describe("streakCountdownHint", () => {
 
   it("talks about starting a streak when there is none", () => {
     expect(streakCountdownHint(120_000, 0)).toBe("2 more minutes of study today starts a streak");
+  });
+});
+
+describe("showsStreakCount", () => {
+  it("shows it unless the learner turned it off", () => {
+    expect(showsStreakCount(undefined)).toBe(true);
+    expect(showsStreakCount({})).toBe(true);
+    expect(showsStreakCount({ show_streak_count: "true" })).toBe(true);
+    expect(showsStreakCount({ show_streak_count: "false" })).toBe(false);
   });
 });

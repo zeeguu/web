@@ -3,6 +3,7 @@ import { APIContext } from "../contexts/APIContext";
 import { UserContext } from "../contexts/UserContext";
 import { savePreferences } from "../utils/preferences/savePreferences";
 import ReminderOfferModal from "./ReminderOfferModal";
+import { showsStreakCount } from "../utils/streakCountdown";
 import { REMINDER_OFFER_EVENT, lastOfferedOn, noteOffered, shouldOfferReminder } from "./reminderOffer";
 import {
   askAndReportPermission,
@@ -71,7 +72,14 @@ export default function useReminderOffer() {
   }
 
   const offerModal = (
-    <ReminderOfferModal open={streak !== null} streak={streak} time={time} onAccept={accept} onDecline={decline} />
+    <ReminderOfferModal
+      open={streak !== null}
+      streak={streak}
+      showStreakCount={showsStreakCount(userPreferences)}
+      time={time}
+      onAccept={accept}
+      onDecline={decline}
+    />
   );
   return { offer, showOffer, offerModal };
 }
