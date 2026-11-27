@@ -17,6 +17,8 @@
  * - `is_mwe` is true when t_total_token > 1 OR when the target token
  *   already has a tokenizer-detected mwe_group_id (handles separated
  *   MWEs whose t_total_token is 1).
+ * - `is_exercise_target` marks the word as the one being practiced, so
+ *   tapping the word next to it never fuses with it.
  */
 export function adaptExerciseBookmark(exerciseBookmark) {
   if (
@@ -56,5 +58,8 @@ export function adaptExerciseBookmark(exerciseBookmark) {
     t_total_token: totalTokens,
     context_sent: exerciseBookmark.context_sent || 0,
     context_token: 0,
+    // Keeps a tap on a neighbor from fusing with this word (see
+    // Word.fuseWithNeighborsIfNeeded).
+    is_exercise_target: true,
   };
 }
