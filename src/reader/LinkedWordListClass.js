@@ -16,6 +16,8 @@ export class Word extends Item {
       // The meaning's origin as stored, possibly in another case than this
       // occurrence (see matchTranslationCase).
       this.origin = bookmark.origin;
+      // The word an exercise is practicing (see adaptExerciseBookmark).
+      if (bookmark.is_exercise_target) this.isExerciseTarget = true;
       if (bookmark.is_mwe) {
         this.translation = bookmark.translation;
         this.bookmark_id = bookmark.id;
@@ -332,11 +334,19 @@ export class Word extends Item {
     const isClosedMWE = (neighbour) =>
       !!neighbour?.token?.mwe_group_id && !!neighbour?.token?.mwe_is_separated;
 
-    if (this.prev && this.prev.translation && !isClosedMWE(this.prev)) {
+    // The word an exercise practices never fuses, in either direction. Its
+    // bookmark is preloaded into the exercise sentence, so it has a
+    // translation even while it is still the blank: fusing onto it would
+    // translate "neighbor + answer" (giving the answer away), detach the word
+    // the blank is drawn on, and delete the bookmark being practiced.
+    if (this.isExerciseTarget) return newWord;
+    const canFuseWith = (neighbor) => !!neighbor?.translation && !isClosedMWE(neighbor) && !neighbor.isExerciseTarget;
+
+    if (canFuseWith(this.prev)) {
       newWord = this.fuseWithPrevious(api);
     }
 
-    if (this.next && this.next.translation && !isClosedMWE(this.next)) {
+    if (canFuseWith(this.next)) {
       newWord = this.fuseWithNext(api);
     }
     return newWord;

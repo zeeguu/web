@@ -122,6 +122,62 @@ describe("a separated MWE is never widened", () => {
 });
 
 /**
+ * An exercise preloads the practiced word's bookmark into its sentence, so the
+ * word has a translation even while it is the blank. Tapping the word next to
+ * the blank used to fuse with it: the translation gave the answer away, the
+ * blank disappeared, and the practiced bookmark was deleted.
+ */
+describe("the word an exercise practices is never fused", () => {
+  const target = (text, token_i) =>
+    new Word(
+      tok(text, token_i, {
+        bookmark: { id: 42, origin: text, translation: "found", t_total_token: 1, is_exercise_target: true },
+      }),
+    );
+
+  it("a tap on the word before it translates that word alone", () => {
+    const [before, answer] = link(word("har", 1), target("fundet", 2));
+    const theApi = api();
+
+    const result = before.fuseWithNeighborsIfNeeded(theApi);
+
+    expect(result.word).toBe("har");
+    expect(answer.detach).not.toHaveBeenCalled();
+    expect(theApi.deleteBookmark).not.toHaveBeenCalled();
+  });
+
+  it("a tap on the word after it translates that word alone", () => {
+    const [answer, after] = link(target("fundet", 2), word("et", 3));
+    const theApi = api();
+
+    const result = after.fuseWithNeighborsIfNeeded(theApi);
+
+    expect(result.word).toBe("et");
+    expect(answer.detach).not.toHaveBeenCalled();
+    expect(theApi.deleteBookmark).not.toHaveBeenCalled();
+  });
+
+  it("does not fuse onto a translated neighbor either", () => {
+    const [before, answer] = link(word("har", 1), target("fundet", 2));
+    before.translation = "has";
+    const theApi = api();
+
+    const result = answer.fuseWithNeighborsIfNeeded(theApi);
+
+    expect(result.word).toBe("fundet");
+    expect(before.detach).not.toHaveBeenCalled();
+    expect(theApi.deleteBookmark).not.toHaveBeenCalled();
+  });
+
+  it("ordinary translated neighbors still fuse", () => {
+    const [before, after] = link(word("har", 1), word("fundet", 2));
+    after.translation = "found";
+
+    expect(before.fuseWithNeighborsIfNeeded(api()).word).toBe("har fundet");
+  });
+});
+
+/**
  * Breaking a fusion at the join the learner made (#1258).
  *
  * The seams are the joins between tokens that do not share a detector group.
