@@ -137,7 +137,9 @@ Zeeguu_API.prototype.fetchAndSortContexts = async function (exerciseBookmark) {
   const byLength = (a, b) => (a.sentence || a.context || "").length
                             - (b.sentence || b.context || "").length;
   const normalize = (text) => (text || "").trim().toLowerCase();
-  const seenTexts = new Set([normalize(exerciseBookmark.context)].filter(Boolean));
+  const seenTexts = new Set();
+  const currentText = normalize(exerciseBookmark.context);
+  if (currentText !== "") seenTexts.add(currentText);
   const currentId = exerciseBookmark.id;
 
   const dedupe = (items) =>
