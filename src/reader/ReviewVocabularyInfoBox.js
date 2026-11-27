@@ -9,7 +9,6 @@ export default function ReviewVocabularyInfoBox({
   articleID,
   clickedOnReviewVocab,
   setClickedOnReviewVocab,
-  reviewWordsButtonRef,
   // openReview is required in the extension
   openReview,
   bookmarks,
@@ -34,7 +33,6 @@ export default function ReviewVocabularyInfoBox({
           <StyledButton
             $primary
             onClick={handleButtonClick}
-            ref={reviewWordsButtonRef}
             style={{ marginLeft: "auto", marginBottom: "5em" }}
           >
             <span>Review Words</span>

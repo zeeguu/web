@@ -44,7 +44,8 @@
   --action-btn-secondary-color-text: #022161;
   --save-button-bg: #2f77ad;
   --save-button-hover-bg: #1f5f91;
-  --onboarding-btn-bg: #f88431;
+  /* --onboarding-btn-bg: #f88431; */
+  --onboarding-btn-bg: #f4b840;
   --onboarding-btn-text-color: white;
   --onboarding-modal-bg: #fff1d4;
 

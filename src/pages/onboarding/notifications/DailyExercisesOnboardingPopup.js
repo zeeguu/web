@@ -17,7 +17,9 @@ export default function DailyExercisesOnboardingPopup({ open, handleCancel }) {
           src="/static/images/dailyExercisesOnboarding.png"
           alt="Daily exercises illustration"
         />
-        <s.CenteredSecondText>P.S. They are based on your translations from the articles.</s.CenteredSecondText>
+        <s.CenteredSecondText>
+          The app starts with the most frequently used words to help you focus on what's most useful.
+        </s.CenteredSecondText>
       </Main>
     </OnboardingModal>
   );

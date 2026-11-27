@@ -22,14 +22,14 @@ const OnboardingImage = styled.img`
 const CenteredText = styled.p`
   && {
     text-align: center;
-    font-weight: 500;
+    font-weight: 600;
   }
 `;
 
 const CenteredSecondText = styled.p`
   && {
     text-align: center;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 14px;
   }
 `;

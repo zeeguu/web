@@ -21,7 +21,6 @@ import ArticleAuthors from "./ArticleAuthors";
 import { isSimplifiedArticle as isSimplifiedArticleFn } from "../utils/misc/articleHelpers";
 import useScrollTracking from "../hooks/useScrollTracking";
 import useReadingSession from "../hooks/useReadingSession";
-import useReviewWordsOnboarding from "../hooks/useReviewWordsOnboarding";
 import strings from "../i18n/definitions";
 import useUserPreferences from "../hooks/useUserPreferences";
 import useReaderFontSize from "../hooks/useReaderFontSize";
@@ -31,7 +30,6 @@ import DevButton from "../components/DevButton";
 import { APIContext } from "../contexts/APIContext";
 import ArticleLanguageModal from "./ArticleLanguageModal";
 import { shouldShowLanguageChoice, getUserCefrLevel, numericToCefr } from "../utils/misc/userCefrLevel";
-import ReviewWordsPopup from "../pages/onboarding/notifications/ReviewWordsPopup";
 import { articleOpenOrigin } from "./articleOrigin";
 
 // UMR stands for historical reasons for: Unified Multilingual Reader
@@ -108,10 +106,6 @@ export default function ArticleReader({ teacherArticleID, articleId: linkArticle
   const history = useHistory();
   const speech = useContext(SpeechContext);
   const [bookmarks, setBookmarks] = useState([]);
-  const [reviewWordsButtonElement, setReviewWordsButtonElement] = useState(null);
-
-  const reviewWordsModal = useReviewWordsOnboarding(api, articleID, readerReady, reviewWordsButtonElement);
-
   // Reading session hook - starts when articleInfo is loaded
   const { getReadingSessionId, sessionDuration, isTimerActive } = useReadingSession(articleID, "web", !!articleInfo);
 
@@ -526,7 +520,6 @@ export default function ArticleReader({ teacherArticleID, articleId: linkArticle
               articleID={articleID}
               clickedOnReviewVocab={clickedOnReviewVocab}
               setClickedOnReviewVocab={setClickedOnReviewVocab}
-              reviewWordsButtonRef={setReviewWordsButtonElement}
               bookmarks={bookmarks}
             />
             <s.CombinedBox>
@@ -539,7 +532,6 @@ export default function ArticleReader({ teacherArticleID, articleId: linkArticle
             </s.CombinedBox>
           </div>
         )}
-        <ReviewWordsPopup open={reviewWordsModal.open} handleCancel={reviewWordsModal.close} />
         <s.ExtraSpaceAtTheBottom />
       </s.ArticleReader>
       <s.BottomFade />
