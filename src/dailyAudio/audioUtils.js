@@ -57,25 +57,6 @@ function calendarDaysAgo(date, now) {
 // this branch is reachable, not theoretical.
 const RELATIVE_DAYS_LIMIT = 6;
 
-// "Today · Fri, May 27" — shown on the episode card, dated by when the lesson
-// was GENERATED, not by when it's being looked at. The Current tab can show an
-// older lesson (a paused one waiting to be finished), so the age is measured
-// from the lesson: Today, Yesterday, then "4 days ago", then just the date.
-export function lessonDateLabel(createdAt) {
-  const date = parseLessonDate(createdAt);
-  if (!date) return "";
-
-  const formatted = formatWeekdayDate(date);
-  const daysAgo = calendarDaysAgo(date, new Date());
-
-  if (daysAgo === 0) return `Today · ${formatted}`;
-  if (daysAgo === 1) return `Yesterday · ${formatted}`;
-  // Negative = a timestamp in the future (clock skew); claiming "-1 days ago"
-  // is worse than showing the bare date.
-  if (daysAgo > 1 && daysAgo <= RELATIVE_DAYS_LIMIT) return `${daysAgo} days ago · ${formatted}`;
-  return formatted;
-}
-
 // Topic and situation lessons are a dialogue; a three-words lesson is not.
 export function lessonHasDialogue(lesson) {
   return lesson?.lesson_type === "topic" || lesson?.lesson_type === "situation";

@@ -15,8 +15,8 @@ import {
 } from "./LessonView.sc";
 import { wordsAsTile } from "./audioUtils";
 import { knownLanguageName } from "../utils/misc/languageCodeToName";
-import ShareLessonButton from "./ShareLessonButton";
-import LessonDialogue from "./LessonDialogue";
+import LessonActionRow from "./LessonActionRow";
+import { useLessonDialogue } from "./LessonDialogue";
 import LessonFeedbackBox, { takesFeedback } from "./LessonFeedbackBox";
 
 export default function LessonPlaybackView({
@@ -31,8 +31,8 @@ export default function LessonPlaybackView({
   setCurrentPlaybackTime,
   header,
   footer,
-  onOpenSettings,
 }) {
+  const dialogue = useLessonDialogue(api, lessonData);
   const [openFeedback, setOpenFeedback] = useState(false);
   // Confetti when the learner reaches the end, once, not on every visit to a
   // finished lesson. It replaced a "Lesson completed!" box that stayed on the
@@ -120,18 +120,13 @@ export default function LessonPlaybackView({
             width: "100%",
             marginBottom: "20px",
             maxWidth: "600px",
-            margin: "0 auto 20px auto",
+            // Close to the dialogue's card when it is open
+            margin: dialogue.shown ? "0 auto" : "0 auto 20px auto",
           }}
         >
-          <ShareLessonButton
-            api={api}
-            lessonId={lessonData.lesson_id}
-            title={lessonData.title}
-            shareUuid={lessonData.share_uuid}
-          />
+          <LessonActionRow api={api} lesson={lessonData} dialogue={dialogue} />
         </CustomAudioPlayer>
-
-        <LessonDialogue key={lessonData.lesson_id} api={api} lesson={lessonData} />
+        {dialogue.content}
 
         {celebrating && (
           <Confetti
@@ -144,12 +139,7 @@ export default function LessonPlaybackView({
         )}
 
         {lessonData.is_completed && takesFeedback(lessonData) && lessonData.lesson_id && (
-          <LessonFeedbackBox
-            lessonData={lessonData}
-            setLessonData={setLessonData}
-            api={api}
-            onOpenSettings={onOpenSettings}
-          />
+          <LessonFeedbackBox lessonData={lessonData} setLessonData={setLessonData} api={api} />
         )}
 
         {words && words.length > 0 && (

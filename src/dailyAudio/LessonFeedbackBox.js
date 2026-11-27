@@ -1,7 +1,7 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import PillSelector from "../components/PillSelector";
-import { zeeguuRed, zeeguuOrange } from "../components/colors";
+import { zeeguuRed } from "../components/colors";
 import { playHappyChime, playDoneChime } from "../utils/chimes";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 import { UserContext } from "../contexts/UserContext";
@@ -10,10 +10,9 @@ import { UserContext } from "../contexts/UserContext";
 // A0 lesson, or one above A0 written with markers): what the learner thought
 // of it. Pace and repetition tune their next lessons (api:
 // audio_lessons/lesson_tuning.py); the situation row moves the daily lessons
-// on, or keeps them where they are. Length is not a question here: for A0
-// lessons it is a setting the learner chooses (lesson settings,
-// LessonLengthSlider), and this box says what it is and links to it.
-// Each tap is saved at once; nothing tapped changes nothing.
+// on, or keeps them where they are. The settings the answers move (time to
+// answer, repetition) are shown and set in Settings > Audio lessons, not here:
+// this box only asks. Each tap is saved at once; nothing tapped changes nothing.
 
 // The answers describe this lesson ("Too slow"), which is what the question
 // asks; the value sent is what the next lesson should do about it ("faster").
@@ -38,39 +37,16 @@ const ROWS = [
   },
 ];
 
-// What the answers do to the next lesson, in words. They move each setting one
-// step (api: lesson_tuning.py), hence "a bit".
-const EFFECTS = {
-  pace: { faster: "a bit faster", slower: "a bit slower" },
-  repetition: { less: "with less repetition", more: "with more repetition" },
-};
-
-export function feedbackSummary(feedback) {
-  const parts = ROWS.map(({ aspect }) => EFFECTS[aspect][feedback[aspect]]).filter(Boolean);
-  if (parts.length === 0) return "Your next lesson will be just like this one.";
-  const list = parts.length === 1 ? parts[0] : `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
-  return `Based on your feedback, your next lesson will be ${list}.`;
-}
-
-// Whether the lesson takes feedback, and whether its length is a setting (A0).
+// Whether the lesson takes feedback.
 // An API from before takes_feedback (api#1000) sends neither: then only A0
 // lessons, as before.
 export const takesFeedback = (lessonData) => lessonData.takes_feedback ?? lessonData.cefr_level === "A0";
-const hasLengthSetting = (lessonData) => lessonData.builds_on_history ?? lessonData.cefr_level === "A0";
 
 const allAnswered = (feedback) => ROWS.every(({ aspect }) => feedback[aspect]);
 
-const ChangeLink = styled.button`
-  align-self: flex-start;
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: ${zeeguuOrange};
-  cursor: pointer;
-`;
+// How long "Thanks!" shows once both questions are answered, and its fade
+const THANKS_MS = 1500;
+const FADE_MS = 400;
 
 const Box = styled.div`
   margin: 20px 0;
@@ -81,6 +57,8 @@ const Box = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
+  opacity: ${({ $fading }) => ($fading ? 0 : 1)};
+  transition: opacity ${FADE_MS}ms ease;
 `;
 
 const Heading = styled.h3`
@@ -117,41 +95,30 @@ const ErrorMsg = styled.p`
   color: ${zeeguuRed};
 `;
 
-// The lesson length the learner chose, with a way to change it: the length is
-// a setting, not a question about this lesson.
-function LessonLength({ onOpenSettings }) {
-  const { userPreferences } = useContext(UserContext);
-  const minutes = userPreferences?.audio_lesson_minutes;
-  if (!minutes) return null;
-  return (
-    <LengthLine>
-      Lessons are about {minutes} minutes.
-      {onOpenSettings && (
-        <>
-          {" "}
-          <ChangeLink type="button" onClick={onOpenSettings} style={{ alignSelf: "auto" }}>
-            Change
-          </ChangeLink>
-        </>
-      )}
-    </LengthLine>
-  );
-}
-
-const LengthLine = styled.p`
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-`;
-
-export default function LessonFeedbackBox({ lessonData, setLessonData, api, onOpenSettings }) {
+export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
+  const { setUserPreferences } = useContext(UserContext);
   const [error, setError] = useState(null);
-  // Once the three are answered the box folds into what they will change;
-  // "Change" opens the questions again.
-  const [editing, setEditing] = useState(false);
   const feedback = lessonData.feedback || {};
   const nextSituations = lessonData.next_situations || [];
   const current = lessonData.canonical_suggestion;
+  // Once both are answered the questions are done with: "Thanks!" for a
+  // moment, then they fade out. What the answers moved is in Settings > Audio
+  // lessons, reached from the lesson settings. A lesson answered before (a
+  // reload) shows no questions at all.
+  const answered = allAnswered(feedback);
+  const [thanking, setThanking] = useState(false);
+  const [fading, setFading] = useState(false);
+  useEffect(() => {
+    if (!thanking) return undefined;
+    const fade = setTimeout(() => setFading(true), THANKS_MS);
+    const done = setTimeout(() => setThanking(false), THANKS_MS + FADE_MS);
+    return () => {
+      clearTimeout(fade);
+      clearTimeout(done);
+    };
+  }, [thanking]);
+  // Next situations stay until one is picked: where the lessons go next.
+  const offersSituations = nextSituations.length > 0 && current && !feedback.situation;
 
   function answer(aspect, value) {
     const previous = feedback[aspect];
@@ -159,29 +126,39 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api, onOp
     setError(null);
     if (aspect !== "situation" && allAnswered(next) && !allAnswered(feedback)) {
       playDoneChime();
-      setEditing(false);
+      setFading(false);
+      setThanking(true);
     } else {
       playHappyChime();
     }
     setLessonData((prev) => ({ ...prev, feedback: { ...(prev.feedback || {}), [aspect]: value } }));
-    api.sendLessonFeedback(lessonData.lesson_id, aspect, value, null, () => {
+    // A pace or repetition answer moves that setting (Settings > Audio lessons shows it).
+    const saved = (response) => {
+      if (response?.answer_time == null) return;
+      setUserPreferences?.((current) =>
+        current
+          ? {
+              ...current,
+              audio_lesson_answer_time: String(response.answer_time),
+              ...(response.repetition != null && { audio_lesson_repetition: String(response.repetition) }),
+            }
+          : current,
+      );
+    };
+    api.sendLessonFeedback(lessonData.lesson_id, aspect, value, saved, () => {
       setLessonData((prev) => ({ ...prev, feedback: { ...(prev.feedback || {}), [aspect]: previous } }));
       setError("Could not save that. Please try again.");
     });
   }
 
+  if (answered && !thanking && !offersSituations) {
+    return error ? <ErrorMsg>{error}</ErrorMsg> : null;
+  }
+
   return (
-    <Box>
-      {allAnswered(feedback) && !editing ? (
-        <>
-          <Heading>Thanks!</Heading>
-          <Note style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-primary)" }}>
-            {feedbackSummary(feedback)}
-          </Note>
-          <ChangeLink type="button" onClick={() => setEditing(true)}>
-            Change
-          </ChangeLink>
-        </>
+    <Box $fading={fading && !offersSituations}>
+      {answered ? (
+        thanking && <Heading>Thanks!</Heading>
       ) : (
         <>
           <Heading>How was this lesson?</Heading>
@@ -232,8 +209,6 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api, onOp
           </SituationPills>
         </div>
       )}
-
-      {hasLengthSetting(lessonData) && <LessonLength onOpenSettings={onOpenSettings} />}
 
       {error && <ErrorMsg>{error}</ErrorMsg>}
     </Box>

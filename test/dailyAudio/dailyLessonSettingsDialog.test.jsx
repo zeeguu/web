@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 
 import { UserContext } from "../../src/contexts/UserContext";
 import DailyLessonSettingsDialog from "../../src/dailyAudio/DailyLessonSettingsDialog";
@@ -9,7 +10,12 @@ import DailyLessonSettingsDialog from "../../src/dailyAudio/DailyLessonSettingsD
  */
 function setup(
   level,
-  { initialType = null, initialSuggestion = "", preferences = { audio_lesson_character: "man" }, saveFails = false } = {},
+  {
+    initialType = null,
+    initialSuggestion = "",
+    preferences = { audio_lesson_character: "man" },
+    saveFails = false,
+  } = {},
 ) {
   const calls = [];
   const api = {
@@ -29,16 +35,18 @@ function setup(
   const onSubmit = vi.fn(() => calls.push("situation"));
   const onDismiss = vi.fn();
   render(
-    <UserContext.Provider value={{ userDetails: { learned_language: "da", da_cefr_level: level } }}>
-      <DailyLessonSettingsDialog
-        api={api}
-        initialType={initialType}
-        initialSuggestion={initialSuggestion}
-        alreadySubscribed={false}
-        onSubmit={onSubmit}
-        onDismiss={onDismiss}
-      />
-    </UserContext.Provider>,
+    <MemoryRouter>
+      <UserContext.Provider value={{ userDetails: { learned_language: "da", da_cefr_level: level } }}>
+        <DailyLessonSettingsDialog
+          api={api}
+          initialType={initialType}
+          initialSuggestion={initialSuggestion}
+          alreadySubscribed={false}
+          onSubmit={onSubmit}
+          onDismiss={onDismiss}
+        />
+      </UserContext.Provider>
+    </MemoryRouter>,
   );
   return { api, onSubmit, onDismiss, calls };
 }
@@ -124,29 +132,18 @@ describe("DailyLessonSettingsDialog", () => {
     expect(onSubmit).toHaveBeenCalledWith("situation", "at the post office", true);
   });
 
-  it("at A0 shows the saved role, and saving only a new role leaves the situation alone", async () => {
-    const { api, onSubmit, onDismiss } = setup(0, {
+  it("at A0 does not ask for the role once it is chosen: that is in Settings > Audio lessons", async () => {
+    const { api } = setup(0, {
       initialType: "situation",
       initialSuggestion: "at a café",
       preferences: { audio_lesson_character: "woman" },
     });
-    await screen.findByText("In the dialogues you speak as");
-    expect(screen.getByRole("radio", { name: "A woman" }).getAttribute("aria-checked")).toBe("true");
-    expect(screen.queryByText("Save settings")).toBeNull();
-
-    fireEvent.click(screen.getByRole("radio", { name: "A man" }));
-    fireEvent.click(screen.getByText("Save settings"));
-    expect(api.saveUserPreferences).toHaveBeenCalledWith(
-      { audio_lesson_character: "man" },
-      expect.any(Function),
-      expect.any(Function),
-    );
-    expect(onSubmit).not.toHaveBeenCalled();
-    expect(onDismiss).toHaveBeenCalled();
+    await waitFor(() => expect(api.getUserPreferences).toHaveBeenCalled());
+    expect(screen.queryByText("In the dialogues you speak as")).toBeNull();
   });
 
   it("offers only A man and A woman", async () => {
-    setup(0);
+    setup(0, { preferences: {} });
     await screen.findByText("In the dialogues you speak as");
     expect(screen.getAllByRole("radio", { name: /^(A man|A woman|Either)$/ }).map((r) => r.textContent)).toEqual([
       "A man",
@@ -196,7 +193,7 @@ describe("DailyLessonSettingsDialog", () => {
   });
 
   it("says so when the role could not be saved, and goes no further", async () => {
-    const { onSubmit, onDismiss } = setup(0, { saveFails: true });
+    const { onSubmit, onDismiss } = setup(0, { preferences: {}, saveFails: true });
     await screen.findByText("In the dialogues you speak as");
     fireEvent.click(screen.getByRole("radio", { name: "A woman" }));
     fireEvent.click(screen.getByText("Save settings"));
@@ -205,26 +202,21 @@ describe("DailyLessonSettingsDialog", () => {
     expect(onDismiss).not.toHaveBeenCalled();
   });
 
-  it("at A0 shows the lesson length and saves a new one", async () => {
-    const { api } = setup(0, {
-      initialType: "situation",
-      initialSuggestion: "ordering at a café",
-      preferences: { audio_lesson_character: "man", audio_lesson_minutes: "10" },
-    });
-    await waitFor(() => expect(screen.getByText("about 10 minutes")).toBeTruthy());
-    const slider = screen.getByRole("slider");
-    fireEvent.change(slider, { target: { value: 15 } });
-    expect(screen.getByText("about 15 minutes")).toBeTruthy();
-    fireEvent.click(screen.getByText("Save settings"));
-    expect(api.saveUserPreferences).toHaveBeenCalledWith(
-      { audio_lesson_minutes: "15" },
-      expect.any(Function),
-      expect.any(Function),
-    );
+  it("links to the audio lesson settings, and closes on the way there", () => {
+    const { onDismiss } = setup(1);
+    fireEvent.click(screen.getByText(/Audio lesson settings/));
+    expect(onDismiss).toHaveBeenCalled();
   });
 
-  it("shows no lesson length above A0", () => {
-    setup(1);
-    expect(screen.queryByRole("slider")).toBeNull();
-  });
+  it.each([0, 1])(
+    "shows no lesson length or time to answer at level %i: they are in Settings > Audio lessons",
+    (level) => {
+      setup(level, {
+        preferences: { audio_lesson_character: "man", audio_lesson_minutes: "10", audio_lesson_answer_time: "0" },
+      });
+      expect(screen.queryByRole("slider")).toBeNull();
+      expect(screen.queryByText(/Lesson length/)).toBeNull();
+    expect(screen.queryByText(/Time to answer: /)).toBeNull(); // only the link to the settings page
+    },
+  );
 });

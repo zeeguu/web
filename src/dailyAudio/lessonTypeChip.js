@@ -29,6 +29,26 @@ export const LessonTypeChip = styled.span`
   }
 `;
 
+// The chip on the current lesson, which opens the lesson settings: the
+// subject, cut short if long, and a gear.
+export const LessonTypeChipButton = styled(LessonTypeChip).attrs({ as: "button", type: "button" })`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 100%;
+  margin-bottom: 0;
+  border: none;
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+`;
+
+export const ChipText = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
 export const chipLabel = (lessonType) => {
   if (lessonType === "situation") return "Situation";
   if (lessonType === "three_words_lesson") return "Vocabulary";

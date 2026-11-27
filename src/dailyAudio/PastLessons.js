@@ -9,8 +9,8 @@ import { SubtleLessonCard, ProgressBarTrack, ProgressBarFill } from "./SharedLes
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
 import { completionChecks, formatShortDate, parseLessonDate } from "./audioUtils";
-import ShareLessonButton from "./ShareLessonButton";
-import LessonDialogue from "./LessonDialogue";
+import LessonActionRow from "./LessonActionRow";
+import { useLessonDialogue } from "./LessonDialogue";
 
 // Filter the back catalogue by lesson type. value=null means "All".
 const TYPE_FILTERS = [
@@ -347,6 +347,7 @@ export function PastLessonRow({
 // useListeningSession's start/pause/end lifecycle is scoped to this
 // component's mount/unmount — i.e. to the expanded state of the card.
 function InlineLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onProgressUpdate }) {
+  const dialogue = useLessonDialogue(api, lesson);
   const listeningSession = useListeningSession(lesson.lesson_id);
 
   return (
@@ -388,9 +389,10 @@ function InlineLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onPro
           }
         }}
         onError={() => {}}
-      />
-      <ShareLessonButton api={api} lessonId={lesson.lesson_id} title={lesson.title} shareUuid={lesson.share_uuid} />
-      <LessonDialogue key={lesson.lesson_id} api={api} lesson={lesson} />
+      >
+        <LessonActionRow api={api} lesson={lesson} dialogue={dialogue} />
+      </CustomAudioPlayer>
+      {dialogue.content}
     </>
   );
 }

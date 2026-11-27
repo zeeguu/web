@@ -1,11 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { SpeechContext } from "../contexts/SpeechContext";
 import InteractiveText from "../reader/InteractiveText";
 import { TranslatableText } from "../reader/TranslatableText";
 import { MainText } from "../reader/ArticleReader.sc";
-import { WhiteRoundButton } from "../components/allButtons.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import useUserPreferences from "../hooks/useUserPreferences";
@@ -16,17 +15,21 @@ import { lessonHasDialogue } from "./audioUtils";
 // The API's ContextType.LESSON_DIALOGUE
 const LESSON_DIALOGUE_CONTEXT = { context_type: "LessonDialogue" };
 
-const DialogueToggle = styled.div`
-  text-align: center;
-  margin: 8px 0 4px;
-`;
-
 // One spoken line per paragraph, each opened with a dash, as dialogue is
 // written in most of the languages learned here. The dash is drawn, not
 // part of the text, so it is never a word to tap, save or hear.
+// Its own card, close under the player's: inside the player card the reading
+// text and the controls competed. The page's color with a thin border, so it
+// reads as a sheet of text next to the player's yellow, not a second player.
 const DialogueLines = styled.div`
-  margin: 12px 0 8px;
+  max-width: 600px;
+  margin: 8px auto 20px;
+  padding: 14px 20px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-primary);
   text-align: left;
+  line-height: 1.4;
 
   .textParagraph {
     margin-bottom: 0.6em;
@@ -41,12 +44,16 @@ const DialogueLines = styled.div`
 // lesson's dialogue, word by word like a short text, to read along or after.
 // Hidden until asked for: the lessons are listening practice, and an A0
 // lesson promises the learner will understand the dialogue by the end.
-// Renders nothing for a lesson without a dialogue.
 //
-// The button stays above the text and says Hide only once the text is on
-// screen, never while it loads. Loaded once: hiding and showing again needs
-// no request. Callers key it by lesson, so another lesson starts afresh.
-export default function LessonDialogue({ api, lesson }) {
+// A hook, not a component: its button sits in the player's row of actions
+// (LessonActionRow, next to Share) and its text in a card under the player, so the two
+// are placed by the caller. Loaded once: hiding and showing again needs no
+// request; another lesson starts afresh.
+//
+// Returns { available, shown, loading, toggle, content }: available is false
+// for a lesson without a dialogue (no button then), content is what goes
+// under the player (loading, an error, or the text).
+export function useLessonDialogue(api, lesson) {
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState(null);
   const [open, setOpen] = useState(false);
@@ -55,7 +62,16 @@ export default function LessonDialogue({ api, lesson }) {
   // The script had no dialogue to read (the API's 404): no button either
   const [noDialogue, setNoDialogue] = useState(false);
 
-  if (!lesson?.lesson_id || !lessonHasDialogue(lesson) || noDialogue) return null;
+  const lessonId = lesson?.lesson_id;
+  useEffect(() => {
+    setInteractiveText(null);
+    setOpen(false);
+    setLoading(false);
+    setFailed(false);
+    setNoDialogue(false);
+  }, [lessonId]);
+
+  const available = !!lessonId && lessonHasDialogue(lesson) && !noDialogue;
 
   function logOpened(sourceId) {
     api.logUserActivity(api.OPEN_LESSON_DIALOGUE, "", lesson.lesson_id, "", sourceId);
@@ -97,21 +113,10 @@ export default function LessonDialogue({ api, lesson }) {
     );
   }
 
-  const shown = open && interactiveText;
+  const shown = !!(open && interactiveText);
 
-  return (
+  const content = available ? (
     <>
-      <DialogueToggle>
-        <WhiteRoundButton
-          as="button"
-          type="button"
-          aria-expanded={!!shown}
-          aria-busy={loading}
-          onClick={shown ? () => setOpen(false) : show}
-        >
-          {shown ? strings.hideTheDialogue : strings.showTheDialogue}
-        </WhiteRoundButton>
-      </DialogueToggle>
       {loading && <LoadingAnimation />}
       {failed && <FullWidthErrorMsg>{strings.couldNotOpenDialogue}</FullWidthErrorMsg>}
       {/* Kept mounted once loaded and only hidden, so showing it again
@@ -122,7 +127,9 @@ export default function LessonDialogue({ api, lesson }) {
         </div>
       )}
     </>
-  );
+  ) : null;
+
+  return { available, shown, loading, toggle: shown ? () => setOpen(false) : show, content };
 }
 
 // The text at the reader's settings (translate, pronounce, text size): the

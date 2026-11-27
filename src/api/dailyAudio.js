@@ -294,3 +294,11 @@ Zeeguu_API.prototype.checkDailyLessonFeasibility = function (callback, onError) 
 Zeeguu_API.prototype.getAudioLessonGenerationProgress = function (callback, onError) {
   this._getJSON("audio_lesson_generation_progress", (data) => callback(data.progress), { onError });
 };
+
+// How the learner's audio lessons are said, for Settings > Audio lessons:
+// {a0, answer_time: {value, choices: [{value, label}]}, repetition: {...}},
+// labeled at the learner's level ("5–10 seconds", "each answer said twice").
+// Saved with saveUserPreferences under the same keys.
+Zeeguu_API.prototype.getAudioLessonSettings = function (callback, onError) {
+  this._getJSON("audio_lesson_settings", callback, { onError });
+};
