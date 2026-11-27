@@ -105,7 +105,6 @@ export default function TodayEpisodeCard({ onChangeTopic, dailySubject, a0, ...p
   return (
     <LessonPlaybackView
       {...playbackProps}
-      onOpenSettings={onChangeTopic}
       header={<EpisodeHeader lessonData={lessonData} currentPlaybackTime={playbackProps.currentPlaybackTime} />}
       footer={footer}
     />

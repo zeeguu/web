@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 
 import LessonFeedbackBox, { feedbackSummary, takesFeedback } from "../../src/dailyAudio/LessonFeedbackBox";
@@ -17,7 +17,7 @@ const LESSON = {
   feedback: {},
 };
 
-function setup({ fails = false, lesson = LESSON, preferences = {}, onOpenSettings, response } = {}) {
+function setup({ fails = false, lesson = LESSON, preferences = {}, response, extra = null } = {}) {
   const api = {
     sendLessonFeedback: vi.fn((id, aspect, value, ok, fail) => (fails ? fail(new Error("500")) : ok && ok(response))),
   };
@@ -26,12 +26,8 @@ function setup({ fails = false, lesson = LESSON, preferences = {}, onOpenSetting
     const [userPreferences, setUserPreferences] = useState(preferences);
     return (
       <UserContext.Provider value={{ userPreferences, setUserPreferences }}>
-        <LessonFeedbackBox
-          lessonData={lessonData}
-          setLessonData={setLessonData}
-          api={api}
-          onOpenSettings={onOpenSettings}
-        />
+        <LessonFeedbackBox lessonData={lessonData} setLessonData={setLessonData} api={api} />
+        {extra}
       </UserContext.Provider>
     );
   }
@@ -103,35 +99,23 @@ describe("LessonFeedbackBox", () => {
     expect(pill("Pace", "Too slow").getAttribute("aria-checked")).toBe("true");
   });
 
-  it("does not ask about length: it says the chosen length and links to the setting", () => {
-    const onOpenSettings = vi.fn();
-    setup({ preferences: { audio_lesson_minutes: "15" }, onOpenSettings });
+  it("only asks: the length and time to answer are in Settings > Audio lessons", () => {
+    setup({ preferences: { audio_lesson_minutes: "15", audio_lesson_answer_time: "1" } });
     expect(screen.queryByRole("radiogroup", { name: "Length" })).toBeNull();
-    expect(screen.getByText(/Lessons are about 15 minutes/)).toBeTruthy();
-
-    fireEvent.click(screen.getByText("Change"));
-    expect(onOpenSettings).toHaveBeenCalled();
-  });
-
-  it("says nothing of length after a lesson above A0, whose length is not a setting", () => {
-    setup({ lesson: { ...LESSON, builds_on_history: false }, preferences: { audio_lesson_minutes: "15" } });
-    expect(screen.queryByText(/Lessons are about/)).toBeNull();
-    expect(screen.getByRole("radiogroup", { name: "Next lesson" })).toBeTruthy();
+    expect(screen.queryByText(/Lessons are about|Time to answer/)).toBeNull();
   });
 });
 
 describe("Time to answer", () => {
-  it("shows the time to answer, and where a pace answer moved it", () => {
-    setup({ preferences: { audio_lesson_answer_time: "0" }, response: { answer_time: 1 } });
-    expect(screen.getByText(/Time to answer: normal/)).toBeTruthy();
-
+  it("keeps the setting a pace answer moved in the context, for Settings > Audio lessons", () => {
+    let preferences;
+    function Spy() {
+      preferences = useContext(UserContext).userPreferences;
+      return null;
+    }
+    setup({ preferences: { audio_lesson_answer_time: "0" }, response: { answer_time: 1 }, extra: <Spy /> });
     fireEvent.click(pill("Pace", "Too fast"));
-    expect(screen.getByText(/Time to answer: more/)).toBeTruthy();
-  });
-
-  it("is not shown by an API from before the setting", () => {
-    setup();
-    expect(screen.queryByText(/Time to answer/)).toBeNull();
+    expect(preferences.audio_lesson_answer_time).toBe("1");
   });
 });
 

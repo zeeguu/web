@@ -5,16 +5,14 @@ import { zeeguuRed, zeeguuOrange } from "../components/colors";
 import { playHappyChime, playDoneChime } from "../utils/chimes";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 import { UserContext } from "../contexts/UserContext";
-import { answerTimeLabel } from "./AnswerTimeSlider";
 
 // After a lesson that can be tuned (api: DailyAudioLesson.takes_feedback: an
 // A0 lesson, or one above A0 written with markers): what the learner thought
 // of it. Pace and repetition tune their next lessons (api:
 // audio_lessons/lesson_tuning.py); the situation row moves the daily lessons
-// on, or keeps them where they are. Length is not a question here: for A0
-// lessons it is a setting the learner chooses (lesson settings,
-// LessonLengthSlider), and this box says what it is and links to it.
-// Each tap is saved at once; nothing tapped changes nothing.
+// on, or keeps them where they are. The settings these answers move (time to
+// answer, A0 length) are shown and set in Settings > Audio lessons, not here:
+// this box only asks. Each tap is saved at once; nothing tapped changes nothing.
 
 // The answers describe this lesson ("Too slow"), which is what the question
 // asks; the value sent is what the next lesson should do about it ("faster").
@@ -53,11 +51,10 @@ export function feedbackSummary(feedback) {
   return `Based on your feedback, your next lesson will be ${list}.`;
 }
 
-// Whether the lesson takes feedback, and whether its length is a setting (A0).
+// Whether the lesson takes feedback.
 // An API from before takes_feedback (api#1000) sends neither: then only A0
 // lessons, as before.
 export const takesFeedback = (lessonData) => lessonData.takes_feedback ?? lessonData.cefr_level === "A0";
-const hasLengthSetting = (lessonData) => lessonData.builds_on_history ?? lessonData.cefr_level === "A0";
 
 const allAnswered = (feedback) => ROWS.every(({ aspect }) => feedback[aspect]);
 
@@ -118,47 +115,7 @@ const ErrorMsg = styled.p`
   color: ${zeeguuRed};
 `;
 
-// A lesson setting, with a way to change it: the length and the time to
-// answer are settings the learner can see and choose, not only answers.
-function SettingLine({ children, onOpenSettings }) {
-  return (
-    <LengthLine>
-      {children}
-      {onOpenSettings && (
-        <>
-          {" "}
-          <ChangeLink type="button" onClick={onOpenSettings} style={{ alignSelf: "auto" }}>
-            Change
-          </ChangeLink>
-        </>
-      )}
-    </LengthLine>
-  );
-}
-
-function LessonLength({ onOpenSettings }) {
-  const { userPreferences } = useContext(UserContext);
-  const minutes = userPreferences?.audio_lesson_minutes;
-  if (!minutes) return null;
-  return <SettingLine onOpenSettings={onOpenSettings}>Lessons are about {minutes} minutes.</SettingLine>;
-}
-
-// Moved a step by the Pace answers (api: _move_answer_time). Not sent by an
-// API from before the setting: then not shown.
-function AnswerTime({ onOpenSettings }) {
-  const { userPreferences } = useContext(UserContext);
-  const label = answerTimeLabel(userPreferences?.audio_lesson_answer_time);
-  if (!label) return null;
-  return <SettingLine onOpenSettings={onOpenSettings}>Time to answer: {label}.</SettingLine>;
-}
-
-const LengthLine = styled.p`
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-`;
-
-export default function LessonFeedbackBox({ lessonData, setLessonData, api, onOpenSettings }) {
+export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
   const { setUserPreferences } = useContext(UserContext);
   const [error, setError] = useState(null);
   // Once the three are answered the box folds into what they will change;
@@ -179,7 +136,7 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api, onOp
       playHappyChime();
     }
     setLessonData((prev) => ({ ...prev, feedback: { ...(prev.feedback || {}), [aspect]: value } }));
-    // A pace answer moves the time to answer: the line below shows where to.
+    // A pace answer moves the time to answer (Settings > Audio lessons shows it).
     const saved = (response) => {
       if (response?.answer_time == null) return;
       setUserPreferences?.((current) =>
@@ -254,9 +211,6 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api, onOp
           </SituationPills>
         </div>
       )}
-
-      {hasLengthSetting(lessonData) && <LessonLength onOpenSettings={onOpenSettings} />}
-      <AnswerTime onOpenSettings={onOpenSettings} />
 
       {error && <ErrorMsg>{error}</ErrorMsg>}
     </Box>

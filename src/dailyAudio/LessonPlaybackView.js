@@ -31,7 +31,6 @@ export default function LessonPlaybackView({
   setCurrentPlaybackTime,
   header,
   footer,
-  onOpenSettings,
 }) {
   const [openFeedback, setOpenFeedback] = useState(false);
   // Confetti when the learner reaches the end, once, not on every visit to a
@@ -144,12 +143,7 @@ export default function LessonPlaybackView({
         )}
 
         {lessonData.is_completed && takesFeedback(lessonData) && lessonData.lesson_id && (
-          <LessonFeedbackBox
-            lessonData={lessonData}
-            setLessonData={setLessonData}
-            api={api}
-            onOpenSettings={onOpenSettings}
-          />
+          <LessonFeedbackBox lessonData={lessonData} setLessonData={setLessonData} api={api} />
         )}
 
         {words && words.length > 0 && (

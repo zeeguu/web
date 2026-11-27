@@ -17,6 +17,7 @@ import Labs from "./Pages/Labs";
 import Developer from "./Pages/Developer";
 import AikiMode from "./Pages/AikiMode";
 import DailyGoal from "./Pages/DailyGoal";
+import AudioLessons from "./Pages/AudioLessons";
 
 export default function SettingsRouter({ setUser }) {
   return (
@@ -54,6 +55,8 @@ export default function SettingsRouter({ setUser }) {
       <PrivateRoute path="/account_settings/aiki" component={AikiMode} />
 
       <PrivateRoute path="/account_settings/daily_goal" component={DailyGoal} />
+
+      <PrivateRoute path="/account_settings/audio_lessons" component={AudioLessons} />
     </Switch>
   );
 }

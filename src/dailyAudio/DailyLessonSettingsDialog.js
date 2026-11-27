@@ -8,15 +8,15 @@ import { zeeguuOrange } from "../components/colors";
 import { UserContext } from "../contexts/UserContext";
 import { isA0Learner } from "../utils/misc/userCefrLevel";
 import A0SituationPicker from "./A0SituationPicker";
-import LessonLengthSlider from "./LessonLengthSlider";
-import AnswerTimeSlider from "./AnswerTimeSlider";
 
 // At A0 the learner drills their own role in the dialogue. Who they speak as is
 // theirs to say, never guessed from their name. There is no "either": in
 // languages where the words depend on the speaker's gender (French, Bulgarian…)
 // it made the learner's gender change from one lesson to the next. Stored as the
 // audio_lesson_character user preference; old app versions may still have
-// stored "either", which counts as not chosen.
+// stored "either", which counts as not chosen. Asked here only until it is
+// chosen, since the first lesson needs it; after that it is changed with the
+// other audio lesson settings (Settings > Audio lessons), as is the length.
 const CHARACTERS = [
   { value: "man", label: "A man" },
   { value: "woman", label: "A woman" },
@@ -66,31 +66,15 @@ export default function DailyLessonSettingsDialog({
   const [savedCharacter, setSavedCharacter] = useState(null);
   const [character, setCharacter] = useState(null);
   const [saveError, setSaveError] = useState(false);
-  // The A0 lesson length, in minutes; the API always sends it (the daily
-  // goal when the learner never set one). Kept as a string, as stored.
-  const [savedMinutes, setSavedMinutes] = useState(null);
-  const [minutes, setMinutes] = useState(null);
-  // The time to answer, at every level ("-2".."2"); the API always sends the
-  // one in effect. Not sent by an API from before the setting: then not shown.
-  const [savedAnswerTime, setSavedAnswerTime] = useState(null);
-  const [answerTime, setAnswerTime] = useState(null);
 
   useEffect(() => {
+    if (!a0) return;
     api
       .getUserPreferences()
       .then((preferences) => {
-        if (preferences.audio_lesson_answer_time != null) {
-          setSavedAnswerTime(preferences.audio_lesson_answer_time);
-          setAnswerTime(preferences.audio_lesson_answer_time);
-        }
-        if (!a0) return;
         const value = isCharacter(preferences.audio_lesson_character) ? preferences.audio_lesson_character : "";
         setSavedCharacter(value);
         setCharacter(value);
-        if (preferences.audio_lesson_minutes) {
-          setSavedMinutes(preferences.audio_lesson_minutes);
-          setMinutes(preferences.audio_lesson_minutes);
-        }
       })
       .catch(() => {});
   }, [api, a0]);
@@ -124,11 +108,7 @@ export default function DailyLessonSettingsDialog({
   const changed =
     pillToBackend(pillType) !== (initialType || null) || (needsSubject ? currentSubject.trim() : "") !== initialSubject;
   const characterChanged = a0 && character !== savedCharacter;
-  const minutesChanged = a0 && minutes !== savedMinutes;
-  // Vocabulary lessons (word by word) have no time to answer to tune yet.
-  const showsAnswerTime = answerTime !== null && (a0 || pillType !== "auto");
-  const answerTimeChanged = showsAnswerTime && answerTime !== savedAnswerTime;
-  const preferencesChanged = characterChanged || minutesChanged || answerTimeChanged;
+  const preferencesChanged = characterChanged;
   const hasChanges = (canSubmit && changed) || preferencesChanged;
   // At A0 nothing saves until the learner says who they speak as.
   const characterMissing = a0 && savedCharacter !== null && !character;
@@ -148,13 +128,10 @@ export default function DailyLessonSettingsDialog({
     setSaveError(false);
     const preferences = {};
     if (characterChanged) preferences.audio_lesson_character = character;
-    if (minutesChanged) preferences.audio_lesson_minutes = minutes;
-    if (answerTimeChanged) preferences.audio_lesson_answer_time = answerTime;
     api.saveUserPreferences(
       preferences,
       () => {
-        // Others read these from the context: the lesson length and time to
-        // answer shown after a lesson (LessonFeedbackBox).
+        // Others read these from the context: Settings > Audio lessons.
         setUserPreferences?.((current) => (current ? { ...current, ...preferences } : current));
         saveSituation();
       },
@@ -231,7 +208,7 @@ export default function DailyLessonSettingsDialog({
         />
       )}
 
-      {a0 && savedCharacter !== null && (
+      {a0 && savedCharacter === "" && (
         <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
           <span id="character-label" style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>
             In the dialogues you speak as
@@ -257,9 +234,6 @@ export default function DailyLessonSettingsDialog({
           </PillRow>
         </div>
       )}
-
-      {a0 && minutes && <LessonLengthSlider minutes={minutes} onChange={setMinutes} />}
-      {showsAnswerTime && <AnswerTimeSlider level={answerTime} onChange={setAnswerTime} />}
 
       <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
         {primaryButton}

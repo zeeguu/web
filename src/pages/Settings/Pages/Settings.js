@@ -27,6 +27,7 @@ import SchedulingIcon from "@mui/icons-material/CalendarMonthOutlined";
 import ShieldIcon from "@mui/icons-material/ShieldOutlined";
 import GoalIcon from "@mui/icons-material/FlagOutlined";
 import TimerIcon from "@mui/icons-material/TimerOutlined";
+import HeadphonesIcon from "@mui/icons-material/HeadphonesOutlined";
 import ScienceIcon from "@mui/icons-material/ScienceOutlined";
 import CodeIcon from "@mui/icons-material/CodeOutlined";
 import InfoIcon from "@mui/icons-material/InfoOutlined";
@@ -118,6 +119,12 @@ export default function Settings() {
           </SettingsItem>
           <SettingsItem path={"/account_settings/exercise_scheduling"} icon={<SchedulingIcon />}>
             Scheduling
+          </SettingsItem>
+        </ListOfSettingsItems>
+
+        <ListOfSettingsItems header={"Listening"}>
+          <SettingsItem path={"/account_settings/audio_lessons"} icon={<HeadphonesIcon />}>
+            Audio lessons
           </SettingsItem>
         </ListOfSettingsItems>
 
