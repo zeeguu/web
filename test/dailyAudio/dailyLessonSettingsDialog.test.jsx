@@ -9,7 +9,12 @@ import DailyLessonSettingsDialog from "../../src/dailyAudio/DailyLessonSettingsD
  */
 function setup(
   level,
-  { initialType = null, initialSuggestion = "", preferences = { audio_lesson_character: "man" }, saveFails = false } = {},
+  {
+    initialType = null,
+    initialSuggestion = "",
+    preferences = { audio_lesson_character: "man" },
+    saveFails = false,
+  } = {},
 ) {
   const calls = [];
   const api = {
@@ -49,7 +54,33 @@ describe("DailyLessonSettingsDialog", () => {
     expect(screen.getAllByRole("radio").map((r) => r.textContent)).toEqual(["Vocabulary", "Topic", "Situation"]);
     expect(screen.getByText("Daily lesson type")).toBeTruthy();
     expect(screen.queryByText("In the dialogues you speak as")).toBeNull();
-    expect(api.getUserPreferences).not.toHaveBeenCalled();
+    // Loaded for the time to answer only: no role, no length above A0
+    expect(api.getUserPreferences).toHaveBeenCalled();
+    expect(screen.queryByText(/Lesson length/)).toBeNull();
+  });
+
+  it("shows the time to answer above A0 and saves a change to it", async () => {
+    const { api } = setup(3, {
+      initialType: "situation",
+      initialSuggestion: "at the doctor",
+      preferences: { audio_lesson_answer_time: "0" },
+    });
+    await waitFor(() => expect(screen.getByText(/Time to answer/)).toBeTruthy());
+    expect(screen.getByText("normal")).toBeTruthy();
+
+    fireEvent.change(screen.getByRole("slider"), { target: { value: 1 } });
+    expect(screen.getByText("more")).toBeTruthy();
+    fireEvent.click(screen.getByText("Save settings"));
+    expect(api.saveUserPreferences).toHaveBeenCalledWith(
+      { audio_lesson_answer_time: "1" },
+      expect.any(Function),
+      expect.any(Function),
+    );
+  });
+
+  it("shows no time to answer for Vocabulary lessons, or with an API that does not send it", async () => {
+    setup(3, { initialType: "auto", preferences: { audio_lesson_answer_time: "0" } });
+    await waitFor(() => expect(screen.queryByText(/Time to answer/)).toBeNull());
   });
 
   it("offers only situations at A0, from a list, even to someone who had chosen a topic", () => {

@@ -17,14 +17,15 @@ const LESSON = {
   feedback: {},
 };
 
-function setup({ fails = false, lesson = LESSON, preferences = {}, onOpenSettings } = {}) {
+function setup({ fails = false, lesson = LESSON, preferences = {}, onOpenSettings, response } = {}) {
   const api = {
-    sendLessonFeedback: vi.fn((id, aspect, value, ok, fail) => (fails ? fail(new Error("500")) : ok && ok())),
+    sendLessonFeedback: vi.fn((id, aspect, value, ok, fail) => (fails ? fail(new Error("500")) : ok && ok(response))),
   };
   function Harness() {
     const [lessonData, setLessonData] = useState(lesson);
+    const [userPreferences, setUserPreferences] = useState(preferences);
     return (
-      <UserContext.Provider value={{ userPreferences: preferences }}>
+      <UserContext.Provider value={{ userPreferences, setUserPreferences }}>
         <LessonFeedbackBox
           lessonData={lessonData}
           setLessonData={setLessonData}
@@ -46,7 +47,13 @@ describe("LessonFeedbackBox", () => {
     const api = setup();
     fireEvent.click(pill("Pace", "Too slow"));
 
-    expect(api.sendLessonFeedback).toHaveBeenCalledWith(7, "pace", "faster", null, expect.any(Function));
+    expect(api.sendLessonFeedback).toHaveBeenCalledWith(
+      7,
+      "pace",
+      "faster",
+      expect.any(Function),
+      expect.any(Function),
+    );
     expect(pill("Pace", "Too slow").getAttribute("aria-checked")).toBe("true");
   });
 
@@ -55,7 +62,13 @@ describe("LessonFeedbackBox", () => {
     expect(screen.getByText(/11 lessons in "grocery shopping"/)).toBeTruthy();
 
     fireEvent.click(pill("Next lesson", 'Try "asking the time"'));
-    expect(api.sendLessonFeedback).toHaveBeenCalledWith(7, "situation", "asking the time", null, expect.any(Function));
+    expect(api.sendLessonFeedback).toHaveBeenCalledWith(
+      7,
+      "situation",
+      "asking the time",
+      expect.any(Function),
+      expect.any(Function),
+    );
     expect(pill("Next lesson", 'Try "asking the time"').getAttribute("aria-checked")).toBe("true");
     expect(pill("Next lesson", 'Stay with "grocery shopping"').getAttribute("aria-checked")).toBe("false");
   });
@@ -104,6 +117,21 @@ describe("LessonFeedbackBox", () => {
     setup({ lesson: { ...LESSON, builds_on_history: false }, preferences: { audio_lesson_minutes: "15" } });
     expect(screen.queryByText(/Lessons are about/)).toBeNull();
     expect(screen.getByRole("radiogroup", { name: "Next lesson" })).toBeTruthy();
+  });
+});
+
+describe("Time to answer", () => {
+  it("shows the time to answer, and where a pace answer moved it", () => {
+    setup({ preferences: { audio_lesson_answer_time: "0" }, response: { answer_time: 1 } });
+    expect(screen.getByText(/Time to answer: normal/)).toBeTruthy();
+
+    fireEvent.click(pill("Pace", "Too fast"));
+    expect(screen.getByText(/Time to answer: more/)).toBeTruthy();
+  });
+
+  it("is not shown by an API from before the setting", () => {
+    setup();
+    expect(screen.queryByText(/Time to answer/)).toBeNull();
   });
 });
 

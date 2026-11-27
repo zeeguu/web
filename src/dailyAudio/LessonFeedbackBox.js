@@ -5,6 +5,7 @@ import { zeeguuRed, zeeguuOrange } from "../components/colors";
 import { playHappyChime, playDoneChime } from "../utils/chimes";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 import { UserContext } from "../contexts/UserContext";
+import { answerTimeLabel } from "./AnswerTimeSlider";
 
 // After a lesson that can be tuned (api: DailyAudioLesson.takes_feedback: an
 // A0 lesson, or one above A0 written with markers): what the learner thought
@@ -117,15 +118,12 @@ const ErrorMsg = styled.p`
   color: ${zeeguuRed};
 `;
 
-// The lesson length the learner chose, with a way to change it: the length is
-// a setting, not a question about this lesson.
-function LessonLength({ onOpenSettings }) {
-  const { userPreferences } = useContext(UserContext);
-  const minutes = userPreferences?.audio_lesson_minutes;
-  if (!minutes) return null;
+// A lesson setting, with a way to change it: the length and the time to
+// answer are settings the learner can see and choose, not only answers.
+function SettingLine({ children, onOpenSettings }) {
   return (
     <LengthLine>
-      Lessons are about {minutes} minutes.
+      {children}
       {onOpenSettings && (
         <>
           {" "}
@@ -138,6 +136,22 @@ function LessonLength({ onOpenSettings }) {
   );
 }
 
+function LessonLength({ onOpenSettings }) {
+  const { userPreferences } = useContext(UserContext);
+  const minutes = userPreferences?.audio_lesson_minutes;
+  if (!minutes) return null;
+  return <SettingLine onOpenSettings={onOpenSettings}>Lessons are about {minutes} minutes.</SettingLine>;
+}
+
+// Moved a step by the Pace answers (api: _move_answer_time). Not sent by an
+// API from before the setting: then not shown.
+function AnswerTime({ onOpenSettings }) {
+  const { userPreferences } = useContext(UserContext);
+  const label = answerTimeLabel(userPreferences?.audio_lesson_answer_time);
+  if (!label) return null;
+  return <SettingLine onOpenSettings={onOpenSettings}>Time to answer: {label}.</SettingLine>;
+}
+
 const LengthLine = styled.p`
   margin: 0;
   font-size: 0.85rem;
@@ -145,6 +159,7 @@ const LengthLine = styled.p`
 `;
 
 export default function LessonFeedbackBox({ lessonData, setLessonData, api, onOpenSettings }) {
+  const { setUserPreferences } = useContext(UserContext);
   const [error, setError] = useState(null);
   // Once the three are answered the box folds into what they will change;
   // "Change" opens the questions again.
@@ -164,7 +179,14 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api, onOp
       playHappyChime();
     }
     setLessonData((prev) => ({ ...prev, feedback: { ...(prev.feedback || {}), [aspect]: value } }));
-    api.sendLessonFeedback(lessonData.lesson_id, aspect, value, null, () => {
+    // A pace answer moves the time to answer: the line below shows where to.
+    const saved = (response) => {
+      if (response?.answer_time == null) return;
+      setUserPreferences?.((current) =>
+        current ? { ...current, audio_lesson_answer_time: String(response.answer_time) } : current,
+      );
+    };
+    api.sendLessonFeedback(lessonData.lesson_id, aspect, value, saved, () => {
       setLessonData((prev) => ({ ...prev, feedback: { ...(prev.feedback || {}), [aspect]: previous } }));
       setError("Could not save that. Please try again.");
     });
@@ -234,6 +256,7 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api, onOp
       )}
 
       {hasLengthSetting(lessonData) && <LessonLength onOpenSettings={onOpenSettings} />}
+      <AnswerTime onOpenSettings={onOpenSettings} />
 
       {error && <ErrorMsg>{error}</ErrorMsg>}
     </Box>
