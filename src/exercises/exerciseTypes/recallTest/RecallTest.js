@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useContext } from "react";
+import { useState, useEffect, useLayoutEffect, useContext, useRef } from "react";
 import styled from "styled-components";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions.js";
@@ -16,6 +16,9 @@ import { useAnswerJudge } from "../../utils/useAnswerJudge.js";
 import AnswerNote from "../../components/AnswerNote.js";
 import { ALTERNATIVE } from "../../ExerciseConstants.js";
 import { zeeguuWarmYellow } from "../../../components/colors.js";
+import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js";
+import AutoPronounceToggle from "../../../components/AutoPronounceToggle.js";
+import { pronounceBookmark } from "../../utils/pronounceBookmark.js";
 
 // A plain test of whether the learner knows a word: one side of the word alone,
 // no context and no Hint button. In typed mode (RecallMeaning / RecallWord),
@@ -32,6 +35,11 @@ const CardStage = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 1.5rem 1rem 0;
+`;
+
+// The L2 prompt word: tapping it says it again.
+const PromptWord = styled(s.FlashcardWord)`
+  cursor: pointer;
 `;
 
 const GradeBlock = styled.div`
@@ -117,6 +125,11 @@ export default function RecallTest({
   const { exerciseType, headlineKey, prompt, answer, isL1Answer, judgeAlternative, selfGradeOnly = false } = direction;
   const [translatedWords, setTranslatedWords] = useState([]);
   const [saysTheyKnowIt, setSaysTheyKnowIt] = useState(false);
+  const [autoPronounce, , toggleAutoPronounce] = useBookmarkAutoPronounce();
+  // When the answer is in L1, the prompt is the L2 word: saying it out loud
+  // gives nothing away, so auto-pronounce speaks it as it appears.
+  const promptIsL2 = isL1Answer;
+  const promptPronouncedFor = useRef(null);
 
   useEffect(() => setSaysTheyKnowIt(false), [reload, exerciseBookmark]);
 
@@ -170,9 +183,25 @@ export default function RecallTest({
     onExerciseLoaded,
   });
 
+  useEffect(() => {
+    if (!promptIsL2 || !autoPronounce || !interactiveText || isExerciseOver) return;
+    // Once per card (and per reload), not on every re-render.
+    const cardKey = `${exerciseBookmark.id}:${reload}`;
+    if (promptPronouncedFor.current === cardKey) return;
+    promptPronouncedFor.current = cardKey;
+    pronounceBookmark(interactiveText, speech, exerciseBookmark);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [promptIsL2, autoPronounce, interactiveText, isExerciseOver, exerciseBookmark, reload]);
+
   if (!interactiveText) {
     return <LoadingAnimation />;
   }
+
+  const pronouncePrompt = promptIsL2 ? () => pronounceBookmark(interactiveText, speech, exerciseBookmark) : undefined;
+  // Shown where the auto-pronouncing happens: on the card, before answering.
+  const promptPronounceToggle = promptIsL2 && (
+    <AutoPronounceToggle enabled={autoPronounce} onToggle={toggleAutoPronounce} label="Auto-pronounce word" />
+  );
 
   const promptText = removePunctuation(prompt(exerciseBookmark));
   const useCenteredFlashcardLayout = !isExerciseOver && (selfGradeOnly || saysTheyKnowIt);
@@ -183,7 +212,7 @@ export default function RecallTest({
         <CardStage className="flashcardStage">
           <s.FlashcardFace>
             <s.FlashcardHeadline>{strings[headlineKey]}</s.FlashcardHeadline>
-            <s.FlashcardWord>{promptText}</s.FlashcardWord>
+            <PromptWord onClick={pronouncePrompt}>{promptText}</PromptWord>
             {saysTheyKnowIt && (
               <>
                 <s.FlashcardDivider />
@@ -216,6 +245,7 @@ export default function RecallTest({
                 {strings.showAnswer}
               </s.PrimaryExerciseButton>
             )}
+            {promptPronounceToggle}
           </GradeBlock>
         </CardStage>
       ) : (
@@ -225,6 +255,7 @@ export default function RecallTest({
             l2Prompt={promptText}
             isExerciseOver={isExerciseOver}
           />
+          {!isExerciseOver && promptPronounceToggle}
 
           {isExerciseOver && (
             <ContextWithExchange

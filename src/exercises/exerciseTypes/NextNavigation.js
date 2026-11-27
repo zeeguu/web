@@ -22,16 +22,7 @@ import useScreenWidth from "../../hooks/useScreenWidth.js";
 import FeedbackModal from "../../components/FeedbackModal.js";
 import { FEEDBACK_OPTIONS } from "../../components/FeedbackConstants.js";
 import AutoPronounceToggle from "../../components/AutoPronounceToggle.js";
-
-function findBookmarkWord(interactiveText, bookmarkId) {
-  if (!interactiveText?.paragraphsAsLinkedWordLists) return null;
-  for (const par of interactiveText.paragraphsAsLinkedWordLists) {
-    for (let w = par.linkedWords.head; w; w = w.next) {
-      if (w.bookmark_id === bookmarkId) return w;
-    }
-  }
-  return null;
-}
+import { pronounceBookmark } from "../utils/pronounceBookmark.js";
 
 export default function NextNavigation({
   bookmarkMessagesToAPI,
@@ -89,16 +80,7 @@ export default function NextNavigation({
 
   function handleSpeak() {
     setIsAutoPronouncing(true);
-    // Route through interactiveText.pronounce so MWE-aware pronunciation
-    // (via word.mweExpression) and SPEAK_TEXT activity logging come for
-    // free — same path TranslatableWord.clickOnWord uses. Fall back to
-    // bookmark.from if we can't locate the linked word.
-    const word = findBookmarkWord(interactiveText, exerciseBookmark.id);
-    if (word) {
-      interactiveText.pronounce(word);
-    } else {
-      speech.speakOut(exerciseBookmark.from);
-    }
+    pronounceBookmark(interactiveText, speech, exerciseBookmark);
     // Delay re-enabling the Next button so a quick Enter-press during
     // auto-pronounce can't double-skip past the spoken solution.
     setTimeout(() => setIsAutoPronouncing(false), 500);

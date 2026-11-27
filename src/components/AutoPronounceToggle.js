@@ -1,13 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { zeeguuOrange } from "./colors";
+import { zeeguuOrange, white } from "./colors";
 
 const ToggleContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
-  color: #666;
   margin-top: 4px;
   cursor: pointer;
 `;
@@ -16,7 +14,7 @@ const ToggleSwitch = styled.div`
   position: relative;
   width: 32px;
   height: 16px;
-  background-color: ${(props) => (props.enabled ? zeeguuOrange : "#ccc")};
+  background-color: ${(props) => (props.$enabled ? zeeguuOrange : "var(--border-color)")};
   border-radius: 16px;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -25,10 +23,10 @@ const ToggleSwitch = styled.div`
     content: "";
     position: absolute;
     top: 2px;
-    left: ${(props) => (props.enabled ? "18px" : "2px")};
+    left: ${(props) => (props.$enabled ? "18px" : "2px")};
     width: 12px;
     height: 12px;
-    background-color: white;
+    background-color: ${white};
     border-radius: 50%;
     transition: left 0.2s ease;
   }
@@ -37,14 +35,14 @@ const ToggleSwitch = styled.div`
 const ToggleLabel = styled.span`
   font-size: 11px;
   font-weight: 500;
-  color: #666;
+  color: var(--text-secondary);
 `;
 
-export default function AutoPronounceToggle({ enabled, onToggle }) {
+export default function AutoPronounceToggle({ enabled, onToggle, label = "Auto-pronounce solution" }) {
   return (
     <ToggleContainer onClick={onToggle}>
-      <ToggleSwitch enabled={enabled} />
-      <ToggleLabel>Auto-pronounce solution</ToggleLabel>
+      <ToggleSwitch $enabled={enabled} />
+      <ToggleLabel>{label}</ToggleLabel>
     </ToggleContainer>
   );
 }

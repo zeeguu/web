@@ -4,7 +4,6 @@
   "src/components/ActivityTimer.js",
   "src/components/ArticleSourceInfo.js",
   "src/components/ArticleStatInfo.js",
-  "src/components/AutoPronounceToggle.js",
   "src/components/Banners.sc.js",
   "src/components/CefrLevelSelector.js",
   "src/components/CenteredContainer.js",
