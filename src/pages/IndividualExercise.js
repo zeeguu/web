@@ -6,6 +6,7 @@ import { useFeedbackContext } from "../contexts/FeedbackContext";
 import { NarrowColumn } from "../components/ColumnWidth.sc";
 import { PrivateRouteWithLayout } from "../PrivateRouteWithLayout";
 import WordProgressBar from "../exercises/progressBars/WordProgressBar";
+import ExerciseLinksContext from "../exercises/ExerciseLinksContext";
 import * as s from "../exercises/Exercises.sc";
 
 // Import all exercise components
@@ -16,6 +17,8 @@ import MultipleChoiceL2toL1 from "../exercises/exerciseTypes/multipleChoiceL2toL
 import ListenChooseMeaning from "../exercises/exerciseTypes/listenChooseMeaning/ListenChooseMeaning";
 import RecallWord from "../exercises/exerciseTypes/recallTest/RecallWord";
 import RecallMeaning from "../exercises/exerciseTypes/recallTest/RecallMeaning";
+import FlashcardWord from "../exercises/exerciseTypes/recallTest/FlashcardWord";
+import FlashcardMeaning from "../exercises/exerciseTypes/recallTest/FlashcardMeaning";
 import FindWordInContextCloze from "../exercises/exerciseTypes/findWordInContextCloze/FindWordInContextCloze";
 import Match from "../exercises/exerciseTypes/match/Match";
 import SpellWhatYouHear from "../exercises/exerciseTypes/spellWhatYouHear/SpellWhatYouHear";
@@ -67,6 +70,8 @@ const EXERCISE_COMPONENTS = {
   FindWordInContext: FindWordInContext,
   RecallWord: RecallWord,
   RecallMeaning: RecallMeaning,
+  FlashcardWord: FlashcardWord,
+  FlashcardMeaning: FlashcardMeaning,
 };
 
 function createBookmarkFromUrl(word, translation, context, lang = "en") {
@@ -104,6 +109,7 @@ export default function IndividualExercise() {
   const [isExerciseOver, setIsExerciseOver] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
   const [isShowSolution, setIsShowSolution] = useState(false);
+  const [linksUnderInput, setLinksUnderInput] = useState(false);
   const [message, setMessage] = useState("");
   const [exerciseLoaded, setExerciseLoaded] = useState(false);
   const [exerciseMessageToAPI, setExerciseMessageToAPI] = useState({});
@@ -340,33 +346,36 @@ export default function IndividualExercise() {
         <NarrowColumn>
           <s.ExercisesColumn>
             <s.ExForm>
-              <ExerciseComponent
-                bookmarksToStudy={bookmarksToUse}
-                selectedExerciseBookmark={bookmark}
-                exerciseMessageToAPI={exerciseMessageToAPI[bookmark?.id] || ""}
-                notifyCorrectAnswer={notifyCorrectAnswer}
-                notifyExerciseCompleted={notifyExerciseCompleted}
-                notifyIncorrectAnswer={notifyIncorrectAnswer}
-                notifyOfUserAttempt={notifyOfUserAttempt}
-                setExerciseType={() => {}}
-                reload={false}
-                setIsCorrect={setIsCorrect}
-                isExerciseOver={isExerciseOver}
-                isShowSolution={isShowSolution}
-                resetSubSessionTimer={() => {}}
-                setSelectedExerciseBookmark={() => {}}
-                moveToNextExercise={() => {}}
-                bookmarkProgressBar={
-                  isExerciseOver ? (
-                    <WordProgressBar bookmark={bookmark} message={message} isGreyedOutBar={false} />
-                  ) : null
-                }
-                onExerciseLoaded={() => setExerciseLoaded(true)}
-                onExampleUpdated={(data) => {
-                  console.log("Example updated:", data);
-                  // Handle the updated example in the individual exercise component
-                }}
-              />
+              <ExerciseLinksContext.Provider value={{ setLinksUnderInput }}>
+                <ExerciseComponent
+                  bookmarksToStudy={bookmarksToUse}
+                  selectedExerciseBookmark={bookmark}
+                  exerciseMessageToAPI={exerciseMessageToAPI[bookmark?.id] || ""}
+                  notifyCorrectAnswer={notifyCorrectAnswer}
+                  notifyExerciseCompleted={notifyExerciseCompleted}
+                  notifyIncorrectAnswer={notifyIncorrectAnswer}
+                  notifyOfUserAttempt={notifyOfUserAttempt}
+                  notifyShowSolution={showSolution}
+                  setExerciseType={() => {}}
+                  reload={false}
+                  setIsCorrect={setIsCorrect}
+                  isExerciseOver={isExerciseOver}
+                  isShowSolution={isShowSolution}
+                  resetSubSessionTimer={() => {}}
+                  setSelectedExerciseBookmark={() => {}}
+                  moveToNextExercise={() => {}}
+                  bookmarkProgressBar={
+                    isExerciseOver ? (
+                      <WordProgressBar bookmark={bookmark} message={message} isGreyedOutBar={false} />
+                    ) : null
+                  }
+                  onExerciseLoaded={() => setExerciseLoaded(true)}
+                  onExampleUpdated={(data) => {
+                    console.log("Example updated:", data);
+                    // Handle the updated example in the individual exercise component
+                  }}
+                />
+              </ExerciseLinksContext.Provider>
               {/* Gate on the exercise having real content — see note in
                   ExerciseSession.js for why. */}
               {exerciseLoaded && bookmark?.context_tokenized && (
@@ -384,6 +393,7 @@ export default function IndividualExercise() {
                 nextButtonText="More"
                 onReportClick={() => setReportDialogOpen(true)}
                 isReported={isReported}
+                linksUnderInput={linksUnderInput}
               />
               )}
             </s.ExForm>

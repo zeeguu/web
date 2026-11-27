@@ -14,6 +14,8 @@ vi.mock("../../../src/exercises/components/ContextWithExchange.js", () => ({
 
 import RecallWord from "../../../src/exercises/exerciseTypes/recallTest/RecallWord";
 import RecallMeaning from "../../../src/exercises/exerciseTypes/recallTest/RecallMeaning";
+import FlashcardWord from "../../../src/exercises/exerciseTypes/recallTest/FlashcardWord";
+import FlashcardMeaning from "../../../src/exercises/exerciseTypes/recallTest/FlashcardMeaning";
 
 // A test of the word itself: what the learner gets is the translation, and
 // nothing that would give the word away.
@@ -76,5 +78,38 @@ describe("RecallWord", () => {
 
     await userEvent.click(screen.getByRole("button", { name: /i know it/i }));
     expect(screen.getByText("thinks.")).toBeTruthy();
+  });
+
+  it("tap-to-flip FlashcardMeaning hides typing, reveals on Show answer or Space, and self-grades", async () => {
+    const notifyCorrectAnswer = vi.fn();
+    const notifyShowSolution = vi.fn();
+    show(false, { notifyCorrectAnswer, notifyShowSolution }, FlashcardMeaning);
+
+    expect(screen.getByRole("heading", { name: "synes" })).toBeTruthy();
+    expect(screen.queryByPlaceholderText(/^type in/i)).toBeNull();
+    expect(screen.queryByText("thinks.")).toBeNull();
+
+    await userEvent.click(screen.getByRole("button", { name: /show answer/i }));
+    expect(screen.getByText("thinks.")).toBeTruthy();
+
+    await userEvent.click(screen.getByRole("button", { name: /yes/i }));
+    expect(notifyCorrectAnswer).toHaveBeenCalledWith(bookmark);
+    expect(notifyShowSolution).not.toHaveBeenCalled();
+  });
+
+  it("tap-to-flip FlashcardWord uses non-typing headline, reveals on Space, and records No", async () => {
+    const notifyShowSolution = vi.fn();
+    show(false, { notifyShowSolution }, FlashcardWord);
+
+    expect(screen.getByText(/how do you say this/i)).toBeTruthy();
+    expect(screen.queryByText(/type the word/i)).toBeNull();
+    expect(screen.getByRole("heading", { name: "thinks" })).toBeTruthy();
+    expect(screen.queryByText("synes")).toBeNull();
+
+    await userEvent.keyboard(" ");
+    expect(screen.getByText("synes")).toBeTruthy();
+
+    await userEvent.click(screen.getByRole("button", { name: /^no$/i }));
+    expect(notifyShowSolution).toHaveBeenCalled();
   });
 });

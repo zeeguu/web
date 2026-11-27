@@ -184,6 +184,48 @@ describe("PracticeStyle", () => {
     const toggle = await screen.findByRole("checkbox", { name: /vary example sentences/i });
     expect(toggle.checked).toBe(true);
   });
+
+  it("toggles exercise families, keeps at least one enabled, and toggles tap-to-flip self-grade", async () => {
+    const user = userEvent.setup();
+    const { api } = renderPage({
+      contextPreferences: {
+        exercise_families: "multiple_choice,flashcards_meaning",
+        flashcard_self_grade: "false",
+      },
+    });
+
+    const mcToggle = await screen.findByRole("checkbox", { name: /multiple choice/i });
+    const meaningToggle = screen.getByRole("checkbox", { name: /word → meaning/i });
+    const selfGradeToggle = screen.getByRole("checkbox", { name: /tap to flip/i });
+    expect(mcToggle.checked).toBe(true);
+    expect(meaningToggle.checked).toBe(true);
+    expect(selfGradeToggle.checked).toBe(false);
+
+    // Turn off multiple choice -> only flashcards_meaning left
+    await user.click(mcToggle);
+    expect(mcToggle.checked).toBe(false);
+    expect(api.saveUserPreferences).toHaveBeenLastCalledWith(
+      { exercise_families: "flashcards_meaning" },
+      expect.any(Function),
+      expect.any(Function),
+    );
+    expect(screen.getByText(/at least one exercise type must stay on/i)).toBeTruthy();
+
+    // Trying to turn off the last remaining family is a no-op
+    const callsBefore = api.saveUserPreferences.mock.calls.length;
+    await user.click(meaningToggle);
+    expect(meaningToggle.checked).toBe(true);
+    expect(api.saveUserPreferences.mock.calls.length).toBe(callsBefore);
+
+    // Enable tap-to-flip self-grading
+    await user.click(selfGradeToggle);
+    expect(selfGradeToggle.checked).toBe(true);
+    expect(api.saveUserPreferences).toHaveBeenLastCalledWith(
+      { flashcard_self_grade: "true" },
+      expect.any(Function),
+      expect.any(Function),
+    );
+  });
 });
 
 describe("fetchAndSortContexts deduplication", () => {

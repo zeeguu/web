@@ -18,7 +18,8 @@ import {
 import NextNavigation from "./exerciseTypes/NextNavigation";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { EXTENDED_SEQUENCE, EXTENDED_SEQUENCE_NO_AUDIO } from "./exerciseSequenceTypes";
-import { fetchDisabledExerciseTypes, withoutDisabledTypes } from "./disabledExerciseTypes";
+import { fetchDisabledExerciseTypes } from "./disabledExerciseTypes";
+import { parseExerciseFamilies, selectExerciseSequence } from "./exerciseFamilies";
 import { isA0Learner } from "../utils/misc/userCefrLevel";
 import { ExercisesCounterContext } from "./ExercisesCounterContext";
 import useShadowRef from "../hooks/useShadowRef";
@@ -172,43 +173,74 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
   }
 
   // The last fetched bookmarks and how the session was built from them, so it
-  // can be built again if the profile arrives after them and says A0.
+  // can be built again if the profile or preferences arrive after them.
+  const audioExercisesPref = userPreferences?.audio_exercises || "";
+  const exerciseFamiliesPref = userPreferences?.exercise_families || "";
+  const flashcardSelfGradePref = userPreferences?.flashcard_self_grade || "";
+  const sessionConfigKey = `${isA0Ref.current}|${audioExercisesPref}|${exerciseFamiliesPref}|${flashcardSelfGradePref}`;
+  const sessionConfigKeyRef = useShadowRef(sessionConfigKey);
+  const userPreferencesRef = useShadowRef(userPreferences);
+  const isExerciseOverRef = useShadowRef(isExerciseOver);
+  const exerciseMessageForAPIRef = useShadowRef(exerciseMessageForAPI);
+  const [sessionBuildId, setSessionBuildId] = useState(0);
   const fetchedRef = useRef(null);
   const disabledTypesRef = useRef([]);
   useEffect(() => {
+    if (SessionStorage.getAudioExercisesEnabled() === undefined && userPreferences) {
+      SessionStorage.setAudioExercisesEnabled(
+        userPreferences["audio_exercises"] === undefined || userPreferences["audio_exercises"] === "true",
+      );
+    }
     const fetched = fetchedRef.current;
-    if (!fetched || fetched.builtAsA0 === isA0Ref.current) return;
-    if (currentIndexRef.current > 0) return; // already practising: leave it
+    if (!fetched || fetched.configKey === sessionConfigKey) return;
+    // Don't rebuild once the learner has started answering or moved past card 0.
+    if (
+      currentIndexRef.current > 0 ||
+      isExerciseOverRef.current ||
+      Object.keys(exerciseMessageForAPIRef.current).length > 0
+    ) {
+      return;
+    }
     initializeExercisesForBookmarks(fetched.bookmarks, fetched.gen);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isA0Ref.current]);
+  }, [sessionConfigKey]);
 
   function initializeExercisesForBookmarks(bookmarks, gen) {
     if (gen !== initGenRef.current) return; // stale: a newer init has superseded this one
-    fetchedRef.current = { bookmarks, gen, builtAsA0: isA0Ref.current };
+    fetchedRef.current = { bookmarks, gen, configKey: sessionConfigKeyRef.current };
     if (bookmarks.length === 0) {
       setIsOutOfWordsToday(true);
       setIsSessionLoading(false); // No exercises to load
       return;
     }
 
+    const prefs = userPreferencesRef.current;
     // A0: they know their words only by ear, so every exercise is listening,
     // and none asks them to type (see assignBookmarksToA0Exercises).
-    let exerciseSession = isA0Ref.current
-      ? assignBookmarksToA0Exercises(bookmarks)
-      : sprinkleRecallTests(
-          assignBookmarksToExercises(
-            bookmarks,
-            withoutDisabledTypes(getExerciseSequenceType(), disabledTypesRef.current),
-          ),
-          Math.random,
-          disabledTypesRef.current,
-        );
+    let exerciseSession;
+    if (isA0Ref.current) {
+      exerciseSession = assignBookmarksToA0Exercises(bookmarks);
+    } else {
+      const { sequence, sprinkleOptions } = selectExerciseSequence({
+        baseSequence: getExerciseSequenceType(),
+        disabledTypes: disabledTypesRef.current,
+        enabledFamilies: parseExerciseFamilies(prefs?.exercise_families),
+        selfGradeFlashcards: prefs?.flashcard_self_grade === "true",
+      });
+      exerciseSession = sprinkleRecallTests(
+        assignBookmarksToExercises(bookmarks, sequence),
+        Math.random,
+        disabledTypesRef.current,
+        sprinkleOptions,
+      );
+    }
     if (exerciseSession.length === 0) {
       setIsOutOfWordsToday(true);
       setIsSessionLoading(false);
       return;
     }
+    setIsOutOfWordsToday(false);
+    setSessionBuildId((id) => id + 1);
     setFullExerciseProgression(exerciseSession);
 
     setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
@@ -556,7 +588,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         <s.ExForm className={isSoftKeyboardOpen ? "softKeyboardOpen" : undefined}>
           <ExerciseLinksContext.Provider value={exerciseLinks}>
           <CurrentExerciseComponent
-            key={currentIndex}
+            key={`${sessionBuildId}-${currentIndex}`}
             bookmarksToStudy={currentBookmarksToStudy}
             selectedExerciseBookmark={selectedExerciseBookmark}
             setSelectedExerciseBookmark={setSelectedExerciseBookmark}
