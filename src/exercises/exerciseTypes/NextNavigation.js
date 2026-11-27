@@ -175,6 +175,7 @@ export default function NextNavigation({
       onReportClick={onReportClick}
       isReported={isReported}
       linksUnderInput={linksUnderInput}
+      wordLearned={!isMatchExercise && Boolean(bookmarkLearned)}
     />
   );
 

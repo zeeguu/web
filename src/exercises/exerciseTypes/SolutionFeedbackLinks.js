@@ -43,6 +43,9 @@ export default function SolutionFeedbackLinks({
   isReported,
   // BottomInput shows Show solution and No audio now itself, under the input.
   linksUnderInput = false,
+  // This answer completed the word: no Explain / Remove for a word that is
+  // done, only Next.
+  wordLearned = false,
 }) {
   const { isMobile } = useScreenWidth();
   const isSoftKeyboardOpen = useSoftKeyboardOpen();
@@ -152,7 +155,7 @@ export default function SolutionFeedbackLinks({
         </s.ExerciseLinksRow>
       )}
 
-      {isExerciseOver && afterExerciseRow}
+      {isExerciseOver && !wordLearned && afterExerciseRow}
       {isExerciseOver && whyRemoveDialog}
     </>
   );
