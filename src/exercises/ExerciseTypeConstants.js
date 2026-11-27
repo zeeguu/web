@@ -13,6 +13,8 @@ export const EXERCISE_TYPES = {
   listenChooseMeaning: "Listen_L2W_choose_L1W",
   recallWord: "Recall_L2W_from_L1W_no_hints",
   recallMeaning: "Recall_L1W_from_L2W_no_hints",
+  flashcardWord: "Flashcard_L2W_from_L1W",
+  flashcardMeaning: "Flashcard_L1W_from_L2W",
 
   isMultiBookmarkExercise: function (exerciseType) {
     return [this.multipleChoice, this.multipleChoiceContext, this.match].includes(exerciseType);

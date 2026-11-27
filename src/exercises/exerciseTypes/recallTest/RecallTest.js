@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useLayoutEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
@@ -6,6 +6,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import BottomInput from "../BottomInput.js";
 import { APIContext } from "../../../contexts/APIContext.js";
+import ExerciseLinksContext from "../../ExerciseLinksContext.js";
 import ContextWithExchange from "../../components/ContextWithExchange.js";
 import ExerciseInstructionHeader from "../../components/ExerciseInstructionHeader.js";
 import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
@@ -13,13 +14,11 @@ import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextFor
 import { useAnswerJudge } from "../../utils/useAnswerJudge.js";
 import AnswerNote from "../../components/AnswerNote.js";
 
-// A plain test of whether the learner knows a word, sprinkled into sessions
-// now and then (see sprinkleRecallTests): one side of the word alone, type
-// the other side. No context and no Hint button. Instead of typing they can
-// say "I know it": the answer is shown and they say whether they were right.
-// No ends it as Show solution does. The context is shown once it is over.
-//
-// RecallMeaning and RecallWord are its two directions.
+// A plain test of whether the learner knows a word: one side of the word alone,
+// no context and no Hint button. In typed mode (RecallMeaning / RecallWord),
+// they type the other side or tap "I know it". In self-grade mode
+// (FlashcardMeaning / FlashcardWord), they tap "Show answer" (or Space) and
+// mark whether they knew it. The context appears once answered.
 
 export default function RecallTest({
   direction,
@@ -40,14 +39,38 @@ export default function RecallTest({
 }) {
   const api = useContext(APIContext);
   const speech = useContext(SpeechContext);
+  const exerciseLinks = useContext(ExerciseLinksContext);
+  const setLinksUnderInput = exerciseLinks?.setLinksUnderInput;
   const exerciseBookmark = bookmarksToStudy[0];
-  const { exerciseType, headlineKey, prompt, answer, isL1Answer, judgeAlternative } = direction;
+  const { exerciseType, headlineKey, prompt, answer, isL1Answer, judgeAlternative, selfGradeOnly = false } = direction;
   const [translatedWords, setTranslatedWords] = useState([]);
   const [saysTheyKnowIt, setSaysTheyKnowIt] = useState(false);
 
   useEffect(() => setSaysTheyKnowIt(false), [reload, exerciseBookmark]);
 
-  // Another word or translation that fits as well, asked about.
+  // In self-grade flashcard mode, hide NextNavigation's duplicate "Show solution"
+  // link while the card is still front-side up or awaiting Yes/No.
+  useLayoutEffect(() => {
+    if (!selfGradeOnly || !setLinksUnderInput) return;
+    setLinksUnderInput(true);
+    return () => setLinksUnderInput(false);
+  }, [selfGradeOnly, setLinksUnderInput]);
+
+  // Space reveals the answer on desktop in self-grade flashcard mode.
+  useEffect(() => {
+    if (!selfGradeOnly || isExerciseOver || saysTheyKnowIt) return;
+    function handleKeyDown(e) {
+      if (e.key !== " ") return;
+      const tag = e.target?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "BUTTON") return;
+      e.preventDefault();
+      setSaysTheyKnowIt(true);
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selfGradeOnly, isExerciseOver, saysTheyKnowIt]);
+
+  // Another word or translation that fits as well, asked about (typed mode only).
   const { isChecking, note: answerNote, judge, clearNote } = useAnswerJudge(
     (typed, signal) => judgeAlternative(api, exerciseBookmark.id, typed, signal),
     isExerciseOver,
@@ -107,7 +130,13 @@ export default function RecallTest({
         </>
       )}
 
-      {!isExerciseOver && !saysTheyKnowIt && (
+      {!isExerciseOver && !saysTheyKnowIt && selfGradeOnly && (
+        <s.BottomRow>
+          <s.RightFeedbackButton onClick={() => setSaysTheyKnowIt(true)}>Show answer</s.RightFeedbackButton>
+        </s.BottomRow>
+      )}
+
+      {!isExerciseOver && !saysTheyKnowIt && !selfGradeOnly && (
         <BottomInput
           handleCorrectAnswer={notifyCorrectAnswer}
           handleIncorrectAnswer={() => notifyIncorrectAnswer(exerciseBookmark)}
@@ -122,13 +151,15 @@ export default function RecallTest({
           isChecking={isChecking}
         />
       )}
-      <AnswerNote
-        isChecking={isChecking}
-        note={answerNote}
-        expected={answer(exerciseBookmark)}
-        isExerciseOver={isExerciseOver}
-        isTranslation={isL1Answer}
-      />
+      {!selfGradeOnly && (
+        <AnswerNote
+          isChecking={isChecking}
+          note={answerNote}
+          expected={answer(exerciseBookmark)}
+          isExerciseOver={isExerciseOver}
+          isTranslation={isL1Answer}
+        />
+      )}
     </s.Exercise>
   );
 }

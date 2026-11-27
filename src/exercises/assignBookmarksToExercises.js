@@ -1,10 +1,8 @@
 import ListenChooseMeaning from "./exerciseTypes/listenChooseMeaning/ListenChooseMeaning";
-import RecallWord from "./exerciseTypes/recallTest/RecallWord";
-import RecallMeaning from "./exerciseTypes/recallTest/RecallMeaning";
 import { removePunctuation } from "../utils/text/preprocessing";
 import { removeAllMatchingItemFromList } from "../utils/basic/arrays";
 import shuffle from "../assorted/fisherYatesShuffle";
-import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
+import { RECALL_MEANING, RECALL_WORD, selectExerciseSequence } from "./exerciseFamilies";
 
 function popNElementsFromList(l, n) {
   let a = [];
@@ -106,6 +104,24 @@ function assignBookmarks(currentBookmarks, currentExercises) {
   return exerciseList;
 }
 
+// When a learner disables some exercise families, a level may have no
+// exercises assigned directly to it. Fall back to the nearest enabled level
+// while preserving receptive (1-2) vs productive (3-4) direction where possible.
+const LEVEL_FALLBACK_ORDER = {
+  1: [1, 2, 3, 4],
+  2: [2, 1, 3, 4],
+  3: [3, 4, 2, 1],
+  4: [4, 3, 2, 1],
+};
+
+function exercisesForLevel(exercisesByLevel, level) {
+  for (const candidateLevel of LEVEL_FALLBACK_ORDER[level] || [level]) {
+    const candidates = exercisesByLevel[candidateLevel];
+    if (candidates && candidates.length > 0) return candidates;
+  }
+  return [];
+}
+
 function assignBookmarksToLevels(bookmarks, exerciseTypesList) {
   let exerciseSequence = [];
 
@@ -114,7 +130,7 @@ function assignBookmarksToLevels(bookmarks, exerciseTypesList) {
 
   for (let level = 1; level <= 4; level++) {
     let currentBookmarks = bookmarksByLevel[level] || [];
-    let currentExercises = exercisesByLevel[level] || [];
+    let currentExercises = exercisesForLevel(exercisesByLevel, level);
 
     while (currentBookmarks.length > 0 && currentExercises.length > 0) {
       let assignedExercises = assignBookmarks(currentBookmarks, currentExercises);
@@ -205,18 +221,59 @@ function assignBookmarksToA0Exercises(bookmarks) {
   turn.
 */
 const RECALL_TEST_CHANCE = 1 / 6;
-const RECALL_MEANING = { type: RecallMeaning, exerciseType: EXERCISE_TYPES.recallMeaning };
-const RECALL_WORD = { type: RecallWord, exerciseType: EXERCISE_TYPES.recallWord };
-const RECALL_TEST_BY_LEVEL = { 2: RECALL_MEANING, 3: RECALL_MEANING, 4: RECALL_WORD };
 
-function sprinkleRecallTests(exercises, random = Math.random, disabledTypes = []) {
+function sprinkleRecallTests(
+  exercises,
+  random = Math.random,
+  disabledTypes = [],
+  {
+    meaningCard = RECALL_MEANING,
+    wordCard = RECALL_WORD,
+    enableMeaning = true,
+    enableWord = true,
+  } = {},
+) {
+  const byLevel = {
+    2: enableMeaning ? meaningCard : null,
+    3: enableMeaning ? meaningCard : null,
+    4: enableWord ? wordCard : null,
+  };
   return exercises.map((exercise) => {
     if (exercise.bookmarks.length !== 1) return exercise;
-    const recallTest = RECALL_TEST_BY_LEVEL[exercise.bookmarks[0].level];
+    const recallTest = byLevel[exercise.bookmarks[0].level];
     if (!recallTest || disabledTypes.includes(recallTest.exerciseType)) return exercise;
     if (random() >= RECALL_TEST_CHANCE) return exercise;
     return { type: recallTest.type, bookmarks: exercise.bookmarks };
   });
 }
 
-export { assignBookmarksToExercises, assignBookmarksToA0Exercises, sprinkleRecallTests };
+function buildExerciseSession(
+  bookmarks,
+  {
+    baseSequence,
+    disabledTypes = [],
+    enabledFamilies = null,
+    selfGradeFlashcards = false,
+    random = Math.random,
+  },
+) {
+  const { sequence, sprinkleOptions } = selectExerciseSequence({
+    baseSequence,
+    disabledTypes,
+    enabledFamilies,
+    selfGradeFlashcards,
+  });
+  return sprinkleRecallTests(
+    assignBookmarksToExercises(bookmarks, sequence),
+    random,
+    disabledTypes,
+    sprinkleOptions,
+  );
+}
+
+export {
+  assignBookmarksToExercises,
+  assignBookmarksToA0Exercises,
+  sprinkleRecallTests,
+  buildExerciseSession,
+};

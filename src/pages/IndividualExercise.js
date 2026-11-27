@@ -16,6 +16,8 @@ import MultipleChoiceL2toL1 from "../exercises/exerciseTypes/multipleChoiceL2toL
 import ListenChooseMeaning from "../exercises/exerciseTypes/listenChooseMeaning/ListenChooseMeaning";
 import RecallWord from "../exercises/exerciseTypes/recallTest/RecallWord";
 import RecallMeaning from "../exercises/exerciseTypes/recallTest/RecallMeaning";
+import FlashcardWord from "../exercises/exerciseTypes/recallTest/FlashcardWord";
+import FlashcardMeaning from "../exercises/exerciseTypes/recallTest/FlashcardMeaning";
 import FindWordInContextCloze from "../exercises/exerciseTypes/findWordInContextCloze/FindWordInContextCloze";
 import Match from "../exercises/exerciseTypes/match/Match";
 import SpellWhatYouHear from "../exercises/exerciseTypes/spellWhatYouHear/SpellWhatYouHear";
@@ -67,6 +69,8 @@ const EXERCISE_COMPONENTS = {
   FindWordInContext: FindWordInContext,
   RecallWord: RecallWord,
   RecallMeaning: RecallMeaning,
+  FlashcardWord: FlashcardWord,
+  FlashcardMeaning: FlashcardMeaning,
 };
 
 function createBookmarkFromUrl(word, translation, context, lang = "en") {

@@ -14,6 +14,8 @@ const exerciseNames = {
   "Listen_L2W_choose_L1W": "ListenChooseMeaning",
   "Recall_L2W_from_L1W_no_hints": "RecallWord",
   "Recall_L1W_from_L2W_no_hints": "RecallMeaning",
+  "Flashcard_L2W_from_L1W": "FlashcardWord",
+  "Flashcard_L1W_from_L2W": "FlashcardMeaning",
 };
 
 // Utility function to convert exercise type constants to file names
