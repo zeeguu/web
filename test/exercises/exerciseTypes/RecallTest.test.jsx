@@ -112,4 +112,13 @@ describe("RecallWord", () => {
     await userEvent.click(screen.getByRole("button", { name: /^no$/i }));
     expect(notifyShowSolution).toHaveBeenCalled();
   });
+
+  it("records Kind of as ALTERNATIVE (A) so it advances without fast-tracking", async () => {
+    const notifyCorrectAnswer = vi.fn();
+    show(false, { notifyCorrectAnswer }, FlashcardMeaning);
+
+    await userEvent.click(screen.getByRole("button", { name: /show answer/i }));
+    await userEvent.click(screen.getByRole("button", { name: /kind of/i }));
+    expect(notifyCorrectAnswer).toHaveBeenCalledWith(bookmark, true, "A");
+  });
 });

@@ -622,6 +622,7 @@ let strings = new LocalizedStrings(
       showAnswer: "Show answer",
       iKnowIt: "I know it",
       wereYouRight: "Were you right?",
+      kindOf: "Kind of",
       clickWordInContextHeadline: "Click on the translation of the word below in the text",
       multipleChoiceContextHeadline: "Choose the context that fits the word",
 
@@ -1078,6 +1079,7 @@ let strings = new LocalizedStrings(
       showAnswer: "Vis svar",
       iKnowIt: "Jeg kan det",
       wereYouRight: "Havde du ret?",
+      kindOf: "Nogenlunde",
       noFeedAtA0Title: "Ingen nyheder på A0",
       noFeedAtA0Message: "Der er ikke noget nyhedsfeed på niveau A0. Vi anbefaler, at du bruger lydlektionerne indtil videre.",
       goToAudioLessons: "Gå til lydlektionerne",
