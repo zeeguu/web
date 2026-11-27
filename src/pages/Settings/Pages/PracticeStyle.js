@@ -1,10 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import QuizOutlinedIcon from "@mui/icons-material/QuizOutlined";
-import KeyboardOutlinedIcon from "@mui/icons-material/KeyboardOutlined";
-import HeadphonesOutlinedIcon from "@mui/icons-material/HeadphonesOutlined";
-import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
-import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
 import { UserContext } from "../../../contexts/UserContext";
 import { APIContext } from "../../../contexts/APIContext";
 import SessionStorage from "../../../assorted/SessionStorage";
@@ -32,34 +27,23 @@ const PREF_EXERCISE_FAMILIES = "exercise_families";
 const PREF_FLASHCARD_SELF_GRADE = "flashcard_self_grade";
 const PRACTICE_CONFIG_KEY = "practice_config";
 
-const LabelRow = styled.span`
-  display: flex;
-  align-items: flex-start;
-  gap: 0.7rem;
-  padding: 0.25rem 0;
-`;
-
-const VisualBadge = styled.span`
+const LabelTitle = styled.span`
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  min-width: ${({ $wide }) => ($wide ? "3.5rem" : "2.1rem")};
-  height: 2.1rem;
-  padding: ${({ $wide }) => ($wide ? "0 0.45rem" : "0")};
-  margin-top: 0.05rem;
-  border-radius: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+`;
+
+const DirectionPill = styled.span`
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  white-space: nowrap;
   background-color: ${({ $active }) => ($active ? "rgba(255, 187, 84, 0.22)" : "var(--bg-tertiary)")};
-  border: 1px solid ${({ $active }) => ($active ? "rgba(255, 187, 84, 0.5)" : "var(--border-light)")};
   color: ${({ $active }) => ($active ? "var(--text-primary)" : "var(--text-muted)")};
-
-  & svg {
-    font-size: 1.15rem;
-  }
 `;
 
 function shortLangCode(code, fallback) {
@@ -368,7 +352,7 @@ export default function PracticeStyle() {
   const learnedCode = shortLangCode(userDetails?.learned_language, "L2");
   const nativeCode = shortLangCode(userDetails?.native_language, "L1");
 
-  function renderToggle({ key, label, description, checked, onToggle, badge, wideBadge = false }) {
+  function renderToggle({ key, label, description, checked, onToggle, tag }) {
     return (
       <s.OptionRow key={key}>
         <ToggleOption
@@ -376,17 +360,19 @@ export default function PracticeStyle() {
           onToggle={onToggle}
           className={checked ? "selected" : ""}
           label={
-            <LabelRow>
-              {badge && (
-                <VisualBadge aria-hidden="true" $active={checked} $wide={wideBadge}>
-                  {badge}
-                </VisualBadge>
-              )}
-              <s.OptionText>
-                <s.OptionLabel>{label}</s.OptionLabel>
-                <s.OptionDescription>{description}</s.OptionDescription>
-              </s.OptionText>
-            </LabelRow>
+            <s.OptionText>
+              <s.OptionLabel>
+                <LabelTitle>
+                  <span>{label}</span>
+                  {tag && (
+                    <DirectionPill aria-hidden="true" $active={checked}>
+                      {tag}
+                    </DirectionPill>
+                  )}
+                </LabelTitle>
+              </s.OptionLabel>
+              <s.OptionDescription>{description}</s.OptionDescription>
+            </s.OptionText>
           }
         />
       </s.OptionRow>
@@ -405,7 +391,6 @@ export default function PracticeStyle() {
                 key: "sentences",
                 label: "In sentences",
                 description: "Practice words inside sentences with multiple choice, matching, and blanks.",
-                badge: <QuizOutlinedIcon />,
                 checked: practiceConfig.sentences,
                 onToggle: (next) => handleUpdatePracticeConfig("sentences", next),
               })}
@@ -413,8 +398,7 @@ export default function PracticeStyle() {
                 key: "flashcards-meaning",
                 label: "Flashcards: word → meaning",
                 description: 'See the word alone and recall its meaning ("What does this mean?").',
-                badge: `${learnedCode} → ${nativeCode}`,
-                wideBadge: true,
+                tag: `${learnedCode} → ${nativeCode}`,
                 checked: practiceConfig.flashcardsMeaning,
                 onToggle: (next) => handleUpdatePracticeConfig("flashcardsMeaning", next),
               })}
@@ -422,8 +406,7 @@ export default function PracticeStyle() {
                 key: "flashcards-word",
                 label: "Flashcards: meaning → word",
                 description: 'See the meaning alone and recall the word ("How do you say this?").',
-                badge: `${nativeCode} → ${learnedCode}`,
-                wideBadge: true,
+                tag: `${nativeCode} → ${learnedCode}`,
                 checked: practiceConfig.flashcardsWord,
                 onToggle: (next) => handleUpdatePracticeConfig("flashcardsWord", next),
               })}
@@ -441,7 +424,6 @@ export default function PracticeStyle() {
                 label: "Typing exercises",
                 description:
                   "Type answers in blanks and flashcards. Turn off for tap-only practice and flip cards.",
-                badge: <KeyboardOutlinedIcon />,
                 checked: practiceConfig.typing,
                 onToggle: (next) => handleUpdatePracticeConfig("typing", next),
               })}
@@ -451,7 +433,6 @@ export default function PracticeStyle() {
                 ? "Include audio exercises (Temporarily disabled)"
                 : "Include audio exercises",
               description: "Include listening and dictation exercises in your practice sessions.",
-              badge: <HeadphonesOutlinedIcon />,
               checked: audioChecked,
               onToggle: handleToggleAudioExercises,
             })}
@@ -465,7 +446,6 @@ export default function PracticeStyle() {
                 label: "Vary example sentences",
                 description:
                   "Show a different example sentence each time you practice a word, so you learn the word itself rather than memorizing one sentence.",
-                badge: <AutoStoriesOutlinedIcon />,
                 checked: varyExerciseContexts,
                 onToggle: handleToggleVaryContexts,
               })}
@@ -478,7 +458,6 @@ export default function PracticeStyle() {
               key: "auto-pronounce",
               label: "Auto-pronounce words",
               description: "Play the pronunciation automatically after you complete an exercise.",
-              badge: <VolumeUpOutlinedIcon />,
               checked: Boolean(autoPronounceBookmark),
               onToggle: toggleAutoPronounceState,
             })}
