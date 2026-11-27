@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
+import Feature from "../features/Feature";
 
 export default function useOnboardingModal(api, messageId) {
   const [open, setOpen] = useState(false);
+  const hideOnboardingMessages = Feature.hide_onboarding_messages();
 
   // Fail-safe default: assume already-shown until the backend says otherwise.
   // This prevents the modal from flashing on initial render before the status
@@ -9,6 +11,8 @@ export default function useOnboardingModal(api, messageId) {
   const [alreadyShown, setAlreadyShown] = useState(true);
 
   useEffect(() => {
+    if (hideOnboardingMessages) return;
+
     // `cancelled` guards against the user logging out (or messageId changing)
     // while this network request is still in flight — see the cleanup below.
     let cancelled = false;
@@ -28,15 +32,15 @@ export default function useOnboardingModal(api, messageId) {
     return () => {
       cancelled = true;
     };
-  }, [api, messageId]);
+  }, [api, messageId, hideOnboardingMessages]);
 
   const show = useCallback(() => {
-    if (alreadyShown) return; // no-op: either unknown or already shown
+    if (hideOnboardingMessages || alreadyShown) return; // no-op: disabled, unknown, or already shown
 
     setAlreadyShown(true);
     setOpen(true);
     api.markOnboardingMessageShown(messageId).catch(() => {});
-  }, [api, messageId, alreadyShown]);
+  }, [api, messageId, alreadyShown, hideOnboardingMessages]);
 
   const close = useCallback(() => setOpen(false), []);
 
