@@ -1,4 +1,6 @@
 import { useContext, useState } from "react";
+import { Link } from "react-router-dom";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import styled from "styled-components";
 import PillSelector from "../components/PillSelector";
 import { zeeguuRed, zeeguuOrange } from "../components/colors";
@@ -37,20 +39,6 @@ const ROWS = [
   },
 ];
 
-// What the answers do to the next lesson, in words. They move each setting one
-// step (api: lesson_tuning.py), hence "a bit".
-const EFFECTS = {
-  pace: { faster: "a bit faster", slower: "a bit slower" },
-  repetition: { less: "with less repetition", more: "with more repetition" },
-};
-
-export function feedbackSummary(feedback) {
-  const parts = ROWS.map(({ aspect }) => EFFECTS[aspect][feedback[aspect]]).filter(Boolean);
-  if (parts.length === 0) return "Your next lesson will be just like this one.";
-  const list = parts.length === 1 ? parts[0] : `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
-  return `Based on your feedback, your next lesson will be ${list}.`;
-}
-
 // Whether the lesson takes feedback.
 // An API from before takes_feedback (api#1000) sends neither: then only A0
 // lessons, as before.
@@ -58,16 +46,22 @@ export const takesFeedback = (lessonData) => lessonData.takes_feedback ?? lesson
 
 const allAnswered = (feedback) => ROWS.every(({ aspect }) => feedback[aspect]);
 
-const ChangeLink = styled.button`
-  align-self: flex-start;
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: inherit;
+// Once answered: "Thanks!" and the way to the settings the answers moved.
+const ThanksLine = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+`;
+
+const SettingsLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   font-size: 0.85rem;
   font-weight: 600;
   color: ${zeeguuOrange};
-  cursor: pointer;
+  text-decoration: none;
 `;
 
 const Box = styled.div`
@@ -118,12 +112,9 @@ const ErrorMsg = styled.p`
 export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
   const { setUserPreferences } = useContext(UserContext);
   const [error, setError] = useState(null);
-  // Once the three are answered the box folds into what they will change;
-  // "Change" opens the questions again.
-  // What the next lesson will be, as the API says it after an answer ("5–10
-  // seconds to answer, each answer said twice"); null with an API from before.
-  const [nextLesson, setNextLesson] = useState(null);
-  const [editing, setEditing] = useState(false);
+  // Once both are answered the box folds into "Thanks!" and a link to the
+  // settings they moved (Settings > Audio lessons), where the seconds and
+  // times are shown and can be set.
   const feedback = lessonData.feedback || {};
   const nextSituations = lessonData.next_situations || [];
   const current = lessonData.canonical_suggestion;
@@ -134,14 +125,12 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
     setError(null);
     if (aspect !== "situation" && allAnswered(next) && !allAnswered(feedback)) {
       playDoneChime();
-      setEditing(false);
     } else {
       playHappyChime();
     }
     setLessonData((prev) => ({ ...prev, feedback: { ...(prev.feedback || {}), [aspect]: value } }));
     // A pace or repetition answer moves that setting (Settings > Audio lessons shows it).
     const saved = (response) => {
-      if (response?.next_lesson) setNextLesson(response.next_lesson);
       if (response?.answer_time == null) return;
       setUserPreferences?.((current) =>
         current
@@ -161,16 +150,14 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
 
   return (
     <Box>
-      {allAnswered(feedback) && !editing ? (
-        <>
+      {allAnswered(feedback) ? (
+        <ThanksLine>
           <Heading>Thanks!</Heading>
-          <Note style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-primary)" }}>
-            {nextLesson ? `Your next lesson: ${nextLesson}.` : feedbackSummary(feedback)}
-          </Note>
-          <ChangeLink type="button" onClick={() => setEditing(true)}>
-            Change
-          </ChangeLink>
-        </>
+          <SettingsLink to="/account_settings/audio_lessons">
+            <SettingsRoundedIcon style={{ fontSize: "1rem" }} />
+            Audio lesson settings
+          </SettingsLink>
+        </ThanksLine>
       ) : (
         <>
           <Heading>How was this lesson?</Heading>

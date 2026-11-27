@@ -1,8 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
 import { useContext, useState } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 
-import LessonFeedbackBox, { feedbackSummary, takesFeedback } from "../../src/dailyAudio/LessonFeedbackBox";
+import LessonFeedbackBox, { takesFeedback } from "../../src/dailyAudio/LessonFeedbackBox";
 import { UserContext } from "../../src/contexts/UserContext";
 
 vi.mock("../../src/utils/chimes", () => ({ playHappyChime: vi.fn(), playDoneChime: vi.fn() }));
@@ -31,7 +32,11 @@ function setup({ fails = false, lesson = LESSON, preferences = {}, response, ext
       </UserContext.Provider>
     );
   }
-  render(<Harness />);
+  render(
+    <MemoryRouter>
+      <Harness />
+    </MemoryRouter>,
+  );
   return api;
 }
 
@@ -82,21 +87,18 @@ describe("LessonFeedbackBox", () => {
     expect(screen.queryByRole("radiogroup", { name: "Next lesson" })).toBeNull();
   });
 
-  it("folds into what the answers change once both are answered, and opens again on Change", () => {
+  it("folds into Thanks and a link to the audio lesson settings once both are answered", () => {
     setup();
     fireEvent.click(pill("Pace", "Too slow"));
     fireEvent.click(pill("Repetition", "Too much"));
 
     expect(screen.getByText("Thanks!")).toBeTruthy();
-    expect(
-      screen.getByText("Based on your feedback, your next lesson will be a bit faster and with less repetition."),
-    ).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Audio lesson settings/ }).getAttribute("href")).toBe(
+      "/account_settings/audio_lessons",
+    );
     expect(screen.queryByRole("radiogroup", { name: "Pace" })).toBeNull();
     // The situation choice stays open.
     expect(screen.getByRole("radiogroup", { name: "Next lesson" })).toBeTruthy();
-
-    fireEvent.click(screen.getByText("Change"));
-    expect(pill("Pace", "Too slow").getAttribute("aria-checked")).toBe("true");
   });
 
   it("only asks: the length and time to answer are in Settings > Audio lessons", () => {
@@ -116,31 +118,6 @@ describe("Time to answer", () => {
     setup({ preferences: { audio_lesson_answer_time: "0" }, response: { answer_time: 1 }, extra: <Spy /> });
     fireEvent.click(pill("Pace", "Too fast"));
     expect(preferences.audio_lesson_answer_time).toBe("1");
-  });
-});
-
-describe("After the answers", () => {
-  it("says the next lesson in seconds and times, as the API says it", () => {
-    setup({
-      lesson: { ...LESSON, feedback: { pace: "just_right" } },
-      response: { answer_time: 0, repetition: 1, next_lesson: "5–10 seconds to answer, each answer said three times" },
-    });
-    fireEvent.click(pill("Repetition", "Too little"));
-    expect(screen.getByText("Your next lesson: 5–10 seconds to answer, each answer said three times.")).toBeTruthy();
-  });
-});
-
-describe("feedbackSummary", () => {
-  it("says what changes", () => {
-    expect(feedbackSummary({ pace: "slower", repetition: "more" })).toBe(
-      "Based on your feedback, your next lesson will be a bit slower and with more repetition.",
-    );
-  });
-
-  it("says nothing changes when everything was just right", () => {
-    expect(feedbackSummary({ pace: "just_right", repetition: "just_right" })).toBe(
-      "Your next lesson will be just like this one.",
-    );
   });
 });
 
