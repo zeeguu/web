@@ -6,7 +6,7 @@ import LanguageSettings from "./Pages/LanguageSettings";
 import FeedPreferences from "./Pages/FeedPreferences";
 import FeedView from "./Pages/FeedView";
 import ReadingSettings from "./Pages/ReadingSettings";
-import ExerciseTypePreferences from "./Pages/AudioAndPronunciation";
+import PracticeStyle from "./Pages/PracticeStyle";
 import MyClassrooms from "./Pages/MyClassrooms/MyClassrooms";
 import DeleteAccount from "./Pages/DeleteAccount";
 import ChangeEmail from "./Pages/ChangeEmail";
@@ -29,7 +29,7 @@ export default function SettingsRouter({ setUser }) {
 
       <PrivateRoute path="/account_settings/language_settings" setUser={setUser} component={LanguageSettings} />
 
-      <PrivateRoute path="/account_settings/exercise_types" component={ExerciseTypePreferences} />
+      <PrivateRoute path="/account_settings/exercise_types" component={PracticeStyle} />
 
       <PrivateRoute path="/account_settings/exercise_scheduling" component={ExerciseSchedulingPreferences} />
 

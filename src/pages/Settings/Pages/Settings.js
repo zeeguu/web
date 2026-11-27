@@ -22,7 +22,7 @@ import { studyReminderAvailable } from "../../../reminder/studyReminder";
 import InterestsIcon from "@mui/icons-material/TuneOutlined";
 import FeedViewIcon from "@mui/icons-material/ViewAgendaOutlined";
 import TextIcon from "@mui/icons-material/TextFieldsOutlined";
-import AudioIcon from "@mui/icons-material/HeadphonesOutlined";
+import PracticeStyleIcon from "@mui/icons-material/StyleOutlined";
 import SchedulingIcon from "@mui/icons-material/CalendarMonthOutlined";
 import ShieldIcon from "@mui/icons-material/ShieldOutlined";
 import GoalIcon from "@mui/icons-material/FlagOutlined";
@@ -113,8 +113,8 @@ export default function Settings() {
         </ListOfSettingsItems>
 
         <ListOfSettingsItems header={strings.exercises}>
-          <SettingsItem path={"/account_settings/exercise_types"} icon={<AudioIcon />}>
-            Audio & Pronunciation
+          <SettingsItem path={"/account_settings/exercise_types"} icon={<PracticeStyleIcon />}>
+            Practice style
           </SettingsItem>
           <SettingsItem path={"/account_settings/exercise_scheduling"} icon={<SchedulingIcon />}>
             Scheduling

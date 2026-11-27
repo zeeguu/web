@@ -729,7 +729,7 @@ let strings = new LocalizedStrings(
       profileDetails: "Profile Details",
       languageSettings: "Language Settings",
       myClassrooms: "My Classrooms",
-      exerciseTypePreferences: "Audio & Pronunciation",
+      exerciseTypePreferences: "Practice style",
 
       deleteAccount: "Delete Account",
 
