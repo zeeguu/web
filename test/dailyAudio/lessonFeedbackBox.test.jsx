@@ -119,6 +119,17 @@ describe("Time to answer", () => {
   });
 });
 
+describe("After the answers", () => {
+  it("says the next lesson in seconds and times, as the API says it", () => {
+    setup({
+      lesson: { ...LESSON, feedback: { pace: "just_right" } },
+      response: { answer_time: 0, repetition: 1, next_lesson: "5–10 seconds to answer, each answer said three times" },
+    });
+    fireEvent.click(pill("Repetition", "Too little"));
+    expect(screen.getByText("Your next lesson: 5–10 seconds to answer, each answer said three times.")).toBeTruthy();
+  });
+});
+
 describe("feedbackSummary", () => {
   it("says what changes", () => {
     expect(feedbackSummary({ pace: "slower", repetition: "more" })).toBe(

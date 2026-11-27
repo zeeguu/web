@@ -120,6 +120,9 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
   const [error, setError] = useState(null);
   // Once the three are answered the box folds into what they will change;
   // "Change" opens the questions again.
+  // What the next lesson will be, as the API says it after an answer ("5–10
+  // seconds to answer, each answer said twice"); null with an API from before.
+  const [nextLesson, setNextLesson] = useState(null);
   const [editing, setEditing] = useState(false);
   const feedback = lessonData.feedback || {};
   const nextSituations = lessonData.next_situations || [];
@@ -136,11 +139,18 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
       playHappyChime();
     }
     setLessonData((prev) => ({ ...prev, feedback: { ...(prev.feedback || {}), [aspect]: value } }));
-    // A pace answer moves the time to answer (Settings > Audio lessons shows it).
+    // A pace or repetition answer moves that setting (Settings > Audio lessons shows it).
     const saved = (response) => {
+      if (response?.next_lesson) setNextLesson(response.next_lesson);
       if (response?.answer_time == null) return;
       setUserPreferences?.((current) =>
-        current ? { ...current, audio_lesson_answer_time: String(response.answer_time) } : current,
+        current
+          ? {
+              ...current,
+              audio_lesson_answer_time: String(response.answer_time),
+              ...(response.repetition != null && { audio_lesson_repetition: String(response.repetition) }),
+            }
+          : current,
       );
     };
     api.sendLessonFeedback(lessonData.lesson_id, aspect, value, saved, () => {
@@ -155,7 +165,7 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
         <>
           <Heading>Thanks!</Heading>
           <Note style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-primary)" }}>
-            {feedbackSummary(feedback)}
+            {nextLesson ? `Your next lesson: ${nextLesson}.` : feedbackSummary(feedback)}
           </Note>
           <ChangeLink type="button" onClick={() => setEditing(true)}>
             Change

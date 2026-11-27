@@ -26,10 +26,26 @@ vi.mock("../../src/components/RadioGroup/RadioGroup", () => ({
 }));
 
 // daily_goal_minutes: savePreferences saves only once the preferences are loaded
-const LOADED = { daily_goal_minutes: "10", audio_lesson_answer_time: "0" };
+const LOADED = { daily_goal_minutes: "10" };
 
-function renderPage({ level = 3, preferences = LOADED } = {}) {
-  const api = { saveUserPreferences: vi.fn((prefs, ok) => ok?.()) };
+// As the API labels them above A0 (GET audio_lesson_settings)
+const B1_SETTINGS = {
+  a0: false,
+  answer_time: {
+    value: "0",
+    choices: ["3–6", "4–8", "5–10", "6–12", "7–14"].map((s, i) => ({ value: String(i - 2), label: `${s} seconds` })),
+  },
+  repetition: {
+    value: "0",
+    choices: ["once", "twice", "three times"].map((t, i) => ({ value: String(i - 1), label: `each answer said ${t}` })),
+  },
+};
+
+function renderPage({ level = 3, preferences = LOADED, settings = B1_SETTINGS } = {}) {
+  const api = {
+    saveUserPreferences: vi.fn((prefs, ok) => ok?.()),
+    getAudioLessonSettings: vi.fn((ok, fail) => (settings ? ok(settings) : fail?.())),
+  };
   render(
     <MemoryRouter>
       <APIContext.Provider value={api}>
@@ -49,15 +65,23 @@ function renderPage({ level = 3, preferences = LOADED } = {}) {
 }
 
 describe("AudioLessons", () => {
-  it("above A0 shows the time to answer only, and saves a choice", () => {
+  it("shows each step as what the learner will hear, and saves a choice", () => {
     const api = renderPage();
-    expect(screen.getByRole("radio", { name: /^Normal/ }).checked).toBe(true);
+    expect(screen.getByRole("radio", { name: "5–10 seconds" }).checked).toBe(true);
+    expect(screen.getByRole("radio", { name: "Each answer said twice" }).checked).toBe(true);
     expect(screen.queryByText("Lesson length")).toBeNull();
-    expect(screen.queryByText("In the dialogues you speak as")).toBeNull();
 
-    fireEvent.click(screen.getByRole("radio", { name: /^More/ }));
+    fireEvent.click(screen.getByRole("radio", { name: "6–12 seconds" }));
     expect(api.saveUserPreferences).toHaveBeenCalledWith(
       { audio_lesson_answer_time: "1" },
+      expect.any(Function),
+      expect.any(Function),
+    );
+    expect(screen.getByRole("radio", { name: "6–12 seconds" }).checked).toBe(true);
+
+    fireEvent.click(screen.getByRole("radio", { name: "Each answer said three times" }));
+    expect(api.saveUserPreferences).toHaveBeenCalledWith(
+      { audio_lesson_repetition: "1" },
       expect.any(Function),
       expect.any(Function),
     );
@@ -72,8 +96,9 @@ describe("AudioLessons", () => {
     expect(screen.getByRole("radio", { name: /A woman/ }).checked).toBe(true);
   });
 
-  it("shows no time to answer when the API does not send it", () => {
-    renderPage({ preferences: { daily_goal_minutes: "10" } });
+  it("shows no time to answer or repetition with an API from before them", () => {
+    renderPage({ settings: null });
     expect(screen.queryByText("Time to answer")).toBeNull();
+    expect(screen.queryByText("Repetition")).toBeNull();
   });
 });

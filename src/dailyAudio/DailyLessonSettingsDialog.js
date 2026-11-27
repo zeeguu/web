@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Dialog } from "../components/DialogWrapper";
 import SuggestionSelector, { pillToBackend, backendToPill } from "./SuggestionSelector";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
@@ -250,6 +251,14 @@ export default function DailyLessonSettingsDialog({
             Applies from your next lesson.
           </p>
         )}
+        {/* How lessons are said is not about the next lesson: it has its own
+            page. Linked here, where the learner looks for lesson settings. */}
+        <p style={{ margin: "8px 0 0", fontSize: "0.8rem", color: "var(--text-secondary)", textAlign: "center" }}>
+          Time to answer, repetition:{" "}
+          <Link to="/account_settings/audio_lessons" onClick={onDismiss} style={{ color: "var(--text-secondary)" }}>
+            Audio lesson settings ›
+          </Link>
+        </p>
         {onTurnOff && (
           <SubtleTextButton onClick={onTurnOff} style={{ marginTop: "8px" }}>
             Turn off daily lessons

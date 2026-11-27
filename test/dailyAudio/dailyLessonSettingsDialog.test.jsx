@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 
 import { UserContext } from "../../src/contexts/UserContext";
 import DailyLessonSettingsDialog from "../../src/dailyAudio/DailyLessonSettingsDialog";
@@ -34,16 +35,18 @@ function setup(
   const onSubmit = vi.fn(() => calls.push("situation"));
   const onDismiss = vi.fn();
   render(
-    <UserContext.Provider value={{ userDetails: { learned_language: "da", da_cefr_level: level } }}>
-      <DailyLessonSettingsDialog
-        api={api}
-        initialType={initialType}
-        initialSuggestion={initialSuggestion}
-        alreadySubscribed={false}
-        onSubmit={onSubmit}
-        onDismiss={onDismiss}
-      />
-    </UserContext.Provider>,
+    <MemoryRouter>
+      <UserContext.Provider value={{ userDetails: { learned_language: "da", da_cefr_level: level } }}>
+        <DailyLessonSettingsDialog
+          api={api}
+          initialType={initialType}
+          initialSuggestion={initialSuggestion}
+          alreadySubscribed={false}
+          onSubmit={onSubmit}
+          onDismiss={onDismiss}
+        />
+      </UserContext.Provider>
+    </MemoryRouter>,
   );
   return { api, onSubmit, onDismiss, calls };
 }
@@ -199,6 +202,12 @@ describe("DailyLessonSettingsDialog", () => {
     expect(onDismiss).not.toHaveBeenCalled();
   });
 
+  it("links to the audio lesson settings, and closes on the way there", () => {
+    const { onDismiss } = setup(1);
+    fireEvent.click(screen.getByText(/Audio lesson settings/));
+    expect(onDismiss).toHaveBeenCalled();
+  });
+
   it.each([0, 1])(
     "shows no lesson length or time to answer at level %i: they are in Settings > Audio lessons",
     (level) => {
@@ -206,7 +215,8 @@ describe("DailyLessonSettingsDialog", () => {
         preferences: { audio_lesson_character: "man", audio_lesson_minutes: "10", audio_lesson_answer_time: "0" },
       });
       expect(screen.queryByRole("slider")).toBeNull();
-      expect(screen.queryByText(/Time to answer|Lesson length/)).toBeNull();
+      expect(screen.queryByText(/Lesson length/)).toBeNull();
+    expect(screen.queryByText(/Time to answer: /)).toBeNull(); // only the link to the settings page
     },
   );
 });
