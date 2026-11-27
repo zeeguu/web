@@ -1,4 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useContext } from "react";
+import styled from "styled-components";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
@@ -13,12 +14,109 @@ import { useExerciseLifecycle } from "../../utils/useExerciseLifecycle.js";
 import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextForBookmark.js";
 import { useAnswerJudge } from "../../utils/useAnswerJudge.js";
 import AnswerNote from "../../components/AnswerNote.js";
+import { ALTERNATIVE } from "../../ExerciseConstants.js";
+import { zeeguuOrange, zeeguuWarmYellow } from "../../../components/colors.js";
 
 // A plain test of whether the learner knows a word: one side of the word alone,
 // no context and no Hint button. In typed mode (RecallMeaning / RecallWord),
 // they type the other side or tap "I know it". In self-grade mode
 // (FlashcardMeaning / FlashcardWord), they tap "Show answer" (or Space) and
-// mark whether they knew it. The context appears once answered.
+// mark No / Kind of / Yes. The context appears once answered.
+
+const CardStage = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem 1rem 1rem;
+  gap: 0.75rem;
+`;
+
+const CardHeadline = styled.div`
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+`;
+
+const CardPrompt = styled.h1`
+  margin: 0.2rem 0 0;
+  font-size: clamp(1.75rem, 6.5vw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-primary);
+`;
+
+const CardAnswer = styled.p`
+  margin: 0.25rem 0 0;
+  font-size: clamp(1.55rem, 5.8vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.25;
+  color: ${zeeguuOrange};
+`;
+
+const GradeBlock = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+`;
+
+const GradePrompt = styled.div`
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+`;
+
+const GradeRow = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 0.65rem;
+  width: 100%;
+  max-width: 22rem;
+`;
+
+const GradeButton = styled.button`
+  flex: 1;
+  cursor: pointer;
+  padding: 0.75rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  user-select: none;
+  transition: filter 0.15s ease;
+
+  &:active {
+    filter: brightness(0.95);
+  }
+`;
+
+const NoButton = styled(GradeButton)`
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+`;
+
+const KindOfButton = styled(GradeButton)`
+  background-color: rgba(255, 187, 84, 0.22);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 187, 84, 0.65);
+`;
+
+const YesButton = styled(GradeButton)`
+  background-color: ${zeeguuWarmYellow};
+  color: var(--orange-btn-text);
+  border: 1px solid transparent;
+`;
+
+const RevealButton = styled(YesButton)`
+  flex: 0 1 auto;
+  min-width: 11.5rem;
+  padding: 0.8rem 1.75rem;
+`;
 
 export default function RecallTest({
   direction,
@@ -49,7 +147,7 @@ export default function RecallTest({
   useEffect(() => setSaysTheyKnowIt(false), [reload, exerciseBookmark]);
 
   // In self-grade flashcard mode, hide NextNavigation's duplicate "Show solution"
-  // link while the card is still front-side up or awaiting Yes/No.
+  // link while the card is still front-side up or awaiting self-grade.
   useLayoutEffect(() => {
     if (!selfGradeOnly || !setLinksUnderInput) return;
     setLinksUnderInput(true);
@@ -102,72 +200,92 @@ export default function RecallTest({
     return <LoadingAnimation />;
   }
 
+  const promptText = removePunctuation(prompt(exerciseBookmark));
+  const useCenteredFlashcardLayout = !isExerciseOver && (selfGradeOnly || saysTheyKnowIt);
+
   return (
     <s.Exercise className="recallTest">
-      <ExerciseInstructionHeader
-        headline={strings[headlineKey]}
-        l2Prompt={removePunctuation(prompt(exerciseBookmark))}
-        isExerciseOver={isExerciseOver}
-      />
+      {useCenteredFlashcardLayout ? (
+        <CardStage>
+          <CardHeadline>{strings[headlineKey]}</CardHeadline>
+          <CardPrompt>{promptText}</CardPrompt>
+          {saysTheyKnowIt && <CardAnswer>{answer(exerciseBookmark)}</CardAnswer>}
 
-      {isExerciseOver && (
-        <ContextWithExchange
-          exerciseBookmark={exerciseBookmark}
-          interactiveText={interactiveText}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
-          isExerciseOver={isExerciseOver}
-          onExampleUpdated={onExampleUpdated}
-          highlightExpression={exerciseBookmark.from}
-        />
-      )}
-
-      {isExerciseOver && bookmarkProgressBar && (
-        <s.RevealedProgressBar>{bookmarkProgressBar}</s.RevealedProgressBar>
-      )}
-
-      {!isExerciseOver && saysTheyKnowIt && (
+          <GradeBlock>
+            {saysTheyKnowIt ? (
+              <>
+                <GradePrompt>{strings.wereYouRight}</GradePrompt>
+                <GradeRow>
+                  <NoButton type="button" onClick={() => notifyShowSolution()}>
+                    {strings.no}
+                  </NoButton>
+                  <KindOfButton
+                    type="button"
+                    onClick={() => notifyCorrectAnswer(exerciseBookmark, true, ALTERNATIVE)}
+                  >
+                    {strings.kindOf}
+                  </KindOfButton>
+                  <YesButton type="button" onClick={() => notifyCorrectAnswer(exerciseBookmark)}>
+                    {strings.yes}
+                  </YesButton>
+                </GradeRow>
+              </>
+            ) : (
+              <RevealButton type="button" onClick={() => setSaysTheyKnowIt(true)}>
+                {strings.showAnswer}
+              </RevealButton>
+            )}
+          </GradeBlock>
+        </CardStage>
+      ) : (
         <>
-          <p className="wordInContextHeadline highlightedWord">{answer(exerciseBookmark)}</p>
-          <div className="headlineWithMoreSpace">{strings.wereYouRight}</div>
-          <s.BottomRow>
-            <s.LeftFeedbackButton onClick={() => notifyShowSolution()}>{strings.no}</s.LeftFeedbackButton>
-            <s.RightFeedbackButton onClick={() => notifyCorrectAnswer(exerciseBookmark)}>
-              {strings.yes}
-            </s.RightFeedbackButton>
-          </s.BottomRow>
+          <ExerciseInstructionHeader
+            headline={strings[headlineKey]}
+            l2Prompt={promptText}
+            isExerciseOver={isExerciseOver}
+          />
+
+          {isExerciseOver && (
+            <ContextWithExchange
+              exerciseBookmark={exerciseBookmark}
+              interactiveText={interactiveText}
+              translatedWords={translatedWords}
+              setTranslatedWords={setTranslatedWords}
+              isExerciseOver={isExerciseOver}
+              onExampleUpdated={onExampleUpdated}
+              highlightExpression={exerciseBookmark.from}
+            />
+          )}
+
+          {isExerciseOver && bookmarkProgressBar && (
+            <s.RevealedProgressBar>{bookmarkProgressBar}</s.RevealedProgressBar>
+          )}
+
+          {!isExerciseOver && (
+            <BottomInput
+              handleCorrectAnswer={notifyCorrectAnswer}
+              handleIncorrectAnswer={() => notifyIncorrectAnswer(exerciseBookmark)}
+              handleExerciseCompleted={notifyExerciseCompleted}
+              setIsCorrect={setIsCorrect}
+              exerciseBookmark={exerciseBookmark}
+              notifyOfUserAttempt={notifyOfUserAttempt}
+              isL1Answer={isL1Answer}
+              onIKnowIt={() => setSaysTheyKnowIt(true)}
+              judgeAnswer={judge}
+              clearAnswerNote={clearNote}
+              isChecking={isChecking}
+            />
+          )}
+          {!selfGradeOnly && (
+            <AnswerNote
+              isChecking={isChecking}
+              note={answerNote}
+              expected={answer(exerciseBookmark)}
+              isExerciseOver={isExerciseOver}
+              isTranslation={isL1Answer}
+            />
+          )}
         </>
-      )}
-
-      {!isExerciseOver && !saysTheyKnowIt && selfGradeOnly && (
-        <s.BottomRow>
-          <s.RightFeedbackButton onClick={() => setSaysTheyKnowIt(true)}>{strings.showAnswer}</s.RightFeedbackButton>
-        </s.BottomRow>
-      )}
-
-      {!isExerciseOver && !saysTheyKnowIt && !selfGradeOnly && (
-        <BottomInput
-          handleCorrectAnswer={notifyCorrectAnswer}
-          handleIncorrectAnswer={() => notifyIncorrectAnswer(exerciseBookmark)}
-          handleExerciseCompleted={notifyExerciseCompleted}
-          setIsCorrect={setIsCorrect}
-          exerciseBookmark={exerciseBookmark}
-          notifyOfUserAttempt={notifyOfUserAttempt}
-          isL1Answer={isL1Answer}
-          onIKnowIt={() => setSaysTheyKnowIt(true)}
-          judgeAnswer={judge}
-          clearAnswerNote={clearNote}
-          isChecking={isChecking}
-        />
-      )}
-      {!selfGradeOnly && (
-        <AnswerNote
-          isChecking={isChecking}
-          note={answerNote}
-          expected={answer(exerciseBookmark)}
-          isExerciseOver={isExerciseOver}
-          isTranslation={isL1Answer}
-        />
       )}
     </s.Exercise>
   );

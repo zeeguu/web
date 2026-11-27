@@ -14,6 +14,7 @@ describe("PracticeStyle", () => {
   });
 
   function renderPage({
+    userDetails = { learned_language: "da", native_language: "en" },
     contextPreferences = {},
     apiPreferences = contextPreferences,
     getUserPreferencesImpl,
@@ -34,6 +35,7 @@ describe("PracticeStyle", () => {
           <UserContext.Provider
             value={{
               session: "test-session",
+              userDetails,
               userPreferences: contextPreferences,
               setUserPreferences,
             }}
@@ -185,46 +187,48 @@ describe("PracticeStyle", () => {
     expect(toggle.checked).toBe(true);
   });
 
-  it("toggles exercise families, keeps at least one enabled, and toggles tap-to-flip self-grade", async () => {
+  it("toggles practice formats, keeps at least one on, and uses Typing exercises for both sentences and flashcards", async () => {
     const user = userEvent.setup();
     const { api } = renderPage({
       contextPreferences: {
-        exercise_families: "multiple_choice,flashcards_meaning",
+        exercise_families: "multiple_choice,typing,flashcards_meaning",
         flashcard_self_grade: "false",
       },
     });
 
-    const mcToggle = await screen.findByRole("checkbox", { name: /multiple choice/i });
+    const sentencesToggle = await screen.findByRole("checkbox", { name: /in sentences/i });
     const meaningToggle = screen.getByRole("checkbox", { name: /word → meaning/i });
-    const selfGradeToggle = screen.getByRole("checkbox", { name: /tap to flip/i });
-    expect(mcToggle.checked).toBe(true);
+    const typingToggle = screen.getByRole("checkbox", { name: /typing exercises/i });
+    expect(screen.getByText("DA → EN")).toBeTruthy();
+    expect(screen.getByText("EN → DA")).toBeTruthy();
+    expect(sentencesToggle.checked).toBe(true);
     expect(meaningToggle.checked).toBe(true);
-    expect(selfGradeToggle.checked).toBe(false);
+    expect(typingToggle.checked).toBe(true);
 
-    // Turn off multiple choice -> only flashcards_meaning left
-    await user.click(mcToggle);
-    expect(mcToggle.checked).toBe(false);
+    // Turning off Typing disables sentence typing AND turns on flip flashcards in one save
+    await user.click(typingToggle);
+    expect(typingToggle.checked).toBe(false);
     expect(api.saveUserPreferences).toHaveBeenLastCalledWith(
-      { exercise_families: "flashcards_meaning" },
+      { exercise_families: "multiple_choice,flashcards_meaning", flashcard_self_grade: "true" },
       expect.any(Function),
       expect.any(Function),
     );
-    expect(screen.getByText(/at least one exercise type must stay on/i)).toBeTruthy();
 
-    // Trying to turn off the last remaining family is a no-op
+    // Turn off In sentences -> only flashcards_meaning left (still tap-to-flip)
+    await user.click(sentencesToggle);
+    expect(sentencesToggle.checked).toBe(false);
+    expect(api.saveUserPreferences).toHaveBeenLastCalledWith(
+      { exercise_families: "flashcards_meaning", flashcard_self_grade: "true" },
+      expect.any(Function),
+      expect.any(Function),
+    );
+    expect(screen.getByText(/at least one practice format must stay on/i)).toBeTruthy();
+
+    // Trying to turn off the last remaining format is a no-op
     const callsBefore = api.saveUserPreferences.mock.calls.length;
     await user.click(meaningToggle);
     expect(meaningToggle.checked).toBe(true);
     expect(api.saveUserPreferences.mock.calls.length).toBe(callsBefore);
-
-    // Enable tap-to-flip self-grading
-    await user.click(selfGradeToggle);
-    expect(selfGradeToggle.checked).toBe(true);
-    expect(api.saveUserPreferences).toHaveBeenLastCalledWith(
-      { flashcard_self_grade: "true" },
-      expect.any(Function),
-      expect.any(Function),
-    );
   });
 });
 
