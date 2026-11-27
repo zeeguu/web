@@ -42,6 +42,10 @@ const Feature = {
     return this.is_enabled("always_open_externally");
   },
 
+  hide_onboarding_messages: function () {
+    return this.is_enabled("hide_onboarding_messages");
+  },
+
   // The student's class asked that they see only the texts their teacher
   // shares: no recommendation feed, no search, no shared inbox. The server
   // owns the decision (Cohort.only_classroom_texts).
