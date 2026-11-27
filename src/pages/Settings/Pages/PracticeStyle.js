@@ -1,4 +1,11 @@
 import { useContext, useEffect, useRef, useState } from "react";
+import styled from "styled-components";
+import QuizOutlinedIcon from "@mui/icons-material/QuizOutlined";
+import KeyboardOutlinedIcon from "@mui/icons-material/KeyboardOutlined";
+import HeadphonesOutlinedIcon from "@mui/icons-material/HeadphonesOutlined";
+import TouchAppOutlinedIcon from "@mui/icons-material/TouchAppOutlined";
+import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
+import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
 import { UserContext } from "../../../contexts/UserContext";
 import { APIContext } from "../../../contexts/APIContext";
 import SessionStorage from "../../../assorted/SessionStorage";
@@ -25,28 +32,63 @@ const PREF_VARY_EXERCISE_CONTEXTS = "vary_exercise_contexts";
 const PREF_EXERCISE_FAMILIES = "exercise_families";
 const PREF_FLASHCARD_SELF_GRADE = "flashcard_self_grade";
 
-const FAMILY_OPTIONS = [
+const LabelRow = styled.span`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.25rem 0;
+`;
+
+const VisualBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: ${({ $wide }) => ($wide ? "3.5rem" : "2.1rem")};
+  height: 2.1rem;
+  padding: ${({ $wide }) => ($wide ? "0 0.45rem" : "0")};
+  margin-top: 0.05rem;
+  border-radius: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  background-color: ${({ $active }) => ($active ? "rgba(255, 187, 84, 0.22)" : "var(--bg-tertiary)")};
+  border: 1px solid ${({ $active }) => ($active ? "rgba(255, 187, 84, 0.5)" : "var(--border-light)")};
+  color: ${({ $active }) => ($active ? "var(--text-primary)" : "var(--text-muted)")};
+
+  & svg {
+    font-size: 1.15rem;
+  }
+`;
+
+const SubOptionBox = styled.div`
+  margin: 0.4rem 0 0.4rem 1rem;
+  padding: 0.4rem 0.75rem 0.2rem 0.9rem;
+  border-left: 3px solid rgba(255, 187, 84, 0.65);
+  border-radius: 0 0.5rem 0.5rem 0;
+  background-color: var(--bg-secondary);
+`;
+
+const IN_SENTENCE_FAMILIES = [
   {
     key: FAMILY_MULTIPLE_CHOICE,
     label: "Multiple choice & matching",
     description: "Pick the right word or meaning in context.",
+    icon: <QuizOutlinedIcon />,
   },
   {
     key: FAMILY_TYPING,
     label: "Typing in context",
     description: "Fill in the blank or translate a word using its sentence.",
-  },
-  {
-    key: FAMILY_FLASHCARDS_MEANING,
-    label: "Flashcards: word → meaning",
-    description: 'See the word alone and recall its meaning ("What does this mean?").',
-  },
-  {
-    key: FAMILY_FLASHCARDS_WORD,
-    label: "Flashcards: meaning → word",
-    description: 'See the meaning alone and recall the word ("How do you say this?").',
+    icon: <KeyboardOutlinedIcon />,
   },
 ];
+
+function shortLangCode(code, fallback) {
+  const base = (code || "").split("-")[0].trim().toUpperCase();
+  return base || fallback;
+}
 
 function parseStrictBool(value) {
   if (value === "true") return true;
@@ -73,7 +115,7 @@ function restoreSessionAudioIfMatching(expectedSerialized, previousRaw) {
 
 export default function PracticeStyle() {
   const api = useContext(APIContext);
-  const { session, userPreferences, setUserPreferences } = useContext(UserContext);
+  const { session, userDetails, userPreferences, setUserPreferences } = useContext(UserContext);
 
   const [serverAudioOn, setServerAudioOn] = useState(() => isServerAudioEnabled(userPreferences));
   const [sessionAudioDisabled, setSessionAudioDisabled] = useState(() => isSessionAudioExplicitlyDisabled());
@@ -326,7 +368,26 @@ export default function PracticeStyle() {
     exerciseFamilies !== null &&
     (exerciseFamilies.has(FAMILY_FLASHCARDS_MEANING) || exerciseFamilies.has(FAMILY_FLASHCARDS_WORD));
 
-  function renderToggle({ key, label, description, checked, onToggle }) {
+  const learnedCode = shortLangCode(userDetails?.learned_language, "L2");
+  const nativeCode = shortLangCode(userDetails?.native_language, "L1");
+  const flashcardFamilies = [
+    {
+      key: FAMILY_FLASHCARDS_MEANING,
+      label: "Word → meaning",
+      description: 'See the word alone and recall its meaning ("What does this mean?").',
+      badge: `${learnedCode} → ${nativeCode}`,
+      wideBadge: true,
+    },
+    {
+      key: FAMILY_FLASHCARDS_WORD,
+      label: "Meaning → word",
+      description: 'See the meaning alone and recall the word ("How do you say this?").',
+      badge: `${nativeCode} → ${learnedCode}`,
+      wideBadge: true,
+    },
+  ];
+
+  function renderToggle({ key, label, description, checked, onToggle, badge, wideBadge = false }) {
     return (
       <s.OptionRow key={key}>
         <ToggleOption
@@ -334,10 +395,17 @@ export default function PracticeStyle() {
           onToggle={onToggle}
           className={checked ? "selected" : ""}
           label={
-            <s.OptionText>
-              <s.OptionLabel>{label}</s.OptionLabel>
-              <s.OptionDescription>{description}</s.OptionDescription>
-            </s.OptionText>
+            <LabelRow>
+              {badge && (
+                <VisualBadge aria-hidden="true" $active={checked} $wide={wideBadge}>
+                  {badge}
+                </VisualBadge>
+              )}
+              <s.OptionText>
+                <s.OptionLabel>{label}</s.OptionLabel>
+                <s.OptionDescription>{description}</s.OptionDescription>
+              </s.OptionText>
+            </LabelRow>
           }
         />
       </s.OptionRow>
@@ -350,44 +418,68 @@ export default function PracticeStyle() {
       <Main>
         <s.PageBody>
           <s.Section>
-            <s.SectionHeader>Exercise types</s.SectionHeader>
-            {exerciseFamilies !== null && (
-              <>
-                {FAMILY_OPTIONS.map((option) =>
-                  renderToggle({
-                    key: option.key,
-                    label: option.label,
-                    description: option.description,
-                    checked: exerciseFamilies.has(option.key),
-                    onToggle: (next) => handleToggleFamily(option.key, next),
-                  }),
-                )}
-                {exerciseFamilies.size === 1 && (
-                  <s.SizeDescription>At least one exercise type must stay on.</s.SizeDescription>
-                )}
-                {anyFlashcardsEnabled &&
-                  flashcardSelfGrade !== null &&
-                  renderToggle({
-                    key: "flashcard-self-grade",
-                    label: "Tap to flip & self-grade flashcards",
-                    description:
-                      "Reveal the answer with a tap and mark whether you knew it, instead of typing.",
-                    checked: flashcardSelfGrade,
-                    onToggle: (next) =>
-                      handleToggleBoolPref(PREF_FLASHCARD_SELF_GRADE, setFlashcardSelfGrade, next),
-                  })}
-              </>
-            )}
+            <s.SectionHeader>In sentences</s.SectionHeader>
+            {exerciseFamilies !== null &&
+              IN_SENTENCE_FAMILIES.map((option) =>
+                renderToggle({
+                  key: option.key,
+                  label: option.label,
+                  description: option.description,
+                  badge: option.icon,
+                  checked: exerciseFamilies.has(option.key),
+                  onToggle: (next) => handleToggleFamily(option.key, next),
+                }),
+              )}
             {renderToggle({
               key: "audio-exercises",
               label: audioTemporarilyDisabled
                 ? "Include audio exercises (Temporarily disabled)"
                 : "Include audio exercises",
               description: "Include listening and dictation exercises in your practice sessions.",
+              badge: <HeadphonesOutlinedIcon />,
               checked: audioChecked,
               onToggle: handleToggleAudioExercises,
             })}
+            {exerciseFamilies !== null &&
+              exerciseFamilies.size === 1 &&
+              !anyFlashcardsEnabled && (
+                <s.SizeDescription>At least one exercise type must stay on.</s.SizeDescription>
+              )}
           </s.Section>
+
+          {exerciseFamilies !== null && (
+            <s.Section>
+              <s.SectionHeader>Flashcards (word alone)</s.SectionHeader>
+              {flashcardFamilies.map((option) =>
+                renderToggle({
+                  key: option.key,
+                  label: option.label,
+                  description: option.description,
+                  badge: option.badge,
+                  wideBadge: option.wideBadge,
+                  checked: exerciseFamilies.has(option.key),
+                  onToggle: (next) => handleToggleFamily(option.key, next),
+                }),
+              )}
+              {exerciseFamilies.size === 1 && anyFlashcardsEnabled && (
+                <s.SizeDescription>At least one exercise type must stay on.</s.SizeDescription>
+              )}
+              {anyFlashcardsEnabled && flashcardSelfGrade !== null && (
+                <SubOptionBox>
+                  {renderToggle({
+                    key: "flashcard-self-grade",
+                    label: "Tap to flip & self-grade",
+                    description:
+                      "Reveal the answer with a tap and mark whether you knew it, instead of typing.",
+                    badge: <TouchAppOutlinedIcon />,
+                    checked: flashcardSelfGrade,
+                    onToggle: (next) =>
+                      handleToggleBoolPref(PREF_FLASHCARD_SELF_GRADE, setFlashcardSelfGrade, next),
+                  })}
+                </SubOptionBox>
+              )}
+            </s.Section>
+          )}
 
           {varyExerciseContexts !== null && (
             <s.Section>
@@ -397,6 +489,7 @@ export default function PracticeStyle() {
                 label: "Vary example sentences",
                 description:
                   "Show a different example sentence each time you practice a word, so you learn the word itself rather than memorizing one sentence.",
+                badge: <AutoStoriesOutlinedIcon />,
                 checked: varyExerciseContexts,
                 onToggle: (next) =>
                   handleToggleBoolPref(PREF_VARY_EXERCISE_CONTEXTS, setVaryExerciseContexts, next),
@@ -410,6 +503,7 @@ export default function PracticeStyle() {
               key: "auto-pronounce",
               label: "Auto-pronounce words",
               description: "Play the pronunciation automatically after you complete an exercise.",
+              badge: <VolumeUpOutlinedIcon />,
               checked: Boolean(autoPronounceBookmark),
               onToggle: toggleAutoPronounceState,
             })}

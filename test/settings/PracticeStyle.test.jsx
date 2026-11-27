@@ -14,6 +14,7 @@ describe("PracticeStyle", () => {
   });
 
   function renderPage({
+    userDetails = { learned_language: "da", native_language: "en" },
     contextPreferences = {},
     apiPreferences = contextPreferences,
     getUserPreferencesImpl,
@@ -34,6 +35,7 @@ describe("PracticeStyle", () => {
           <UserContext.Provider
             value={{
               session: "test-session",
+              userDetails,
               userPreferences: contextPreferences,
               setUserPreferences,
             }}
@@ -197,6 +199,8 @@ describe("PracticeStyle", () => {
     const mcToggle = await screen.findByRole("checkbox", { name: /multiple choice/i });
     const meaningToggle = screen.getByRole("checkbox", { name: /word → meaning/i });
     const selfGradeToggle = screen.getByRole("checkbox", { name: /tap to flip/i });
+    expect(screen.getByText("DA → EN")).toBeTruthy();
+    expect(screen.getByText("EN → DA")).toBeTruthy();
     expect(mcToggle.checked).toBe(true);
     expect(meaningToggle.checked).toBe(true);
     expect(selfGradeToggle.checked).toBe(false);
