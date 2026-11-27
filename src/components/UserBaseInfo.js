@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { AvatarImage } from "../profile/UserProfile.sc";
+import React from "react";
+import AvatarArtwork from "../profile/AvatarArtwork";
 import {
-  AVATAR_IMAGE_MAP,
   validatedAvatarBackgroundColor,
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
@@ -12,22 +11,14 @@ import * as s from "./UserBaseInfo.sc";
 // friend search, where the auto-generated username and the display name are on
 // their own not enough to tell two people apart.
 export default function UserBaseInfo({ user, subtitle }) {
-  const [selectedAvatarCharacterId, setSelectedAvatarCharacterId] = useState();
-  const [selectedAvatarCharacterColor, setSelectedAvatarCharacterColor] = useState();
-  const [selectedAvatarBackgroundColor, setSelectedAvatarBackgroundColor] = useState();
-
-  useEffect(() => {
-    if (user) {
-      setSelectedAvatarCharacterId(validatedAvatarCharacterId(user.avatar?.image_name));
-      setSelectedAvatarCharacterColor(validatedAvatarCharacterColor(user.avatar?.character_color));
-      setSelectedAvatarBackgroundColor(validatedAvatarBackgroundColor(user.avatar?.background_color));
-    }
-  }, [user]);
+  const selectedAvatarCharacterId = validatedAvatarCharacterId(user?.avatar?.image_name);
+  const selectedAvatarCharacterColor = validatedAvatarCharacterColor(user?.avatar?.character_color);
+  const selectedAvatarBackgroundColor = validatedAvatarBackgroundColor(user?.avatar?.background_color);
 
   return (
     <>
       <s.Avatar $backgroundColor={selectedAvatarBackgroundColor}>
-        <AvatarImage $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]} $color={selectedAvatarCharacterColor} />
+        <AvatarArtwork imageName={selectedAvatarCharacterId} color={selectedAvatarCharacterColor} decorative />
       </s.Avatar>
       <s.UserIdentity>
         <s.UserNameWrapper>

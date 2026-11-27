@@ -10,15 +10,15 @@ import PageTitle from "../pages/_pages_shared/PageTitle.sc";
 import Main from "../pages/_pages_shared/Main.sc";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import {
-  AVATAR_BACKGROUND_COLORS,
-  AVATAR_CHARACTER_COLORS,
-  AVATAR_CHARACTER_IDS,
-  AVATAR_IMAGE_MAP,
+  AVATAR_PALETTES,
+  AVATAR_TABS,
+  findMatchingPalette,
+  getAvatarTabForId,
   validatedAvatarBackgroundColor,
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
 } from "./avatarOptions";
-import { AvatarImage } from "./UserProfile.sc";
+import AvatarArtwork from "./AvatarArtwork";
 import * as s from "./AvatarPickerModal.sc";
 
 // Opened by tapping your own avatar on the profile page. Every pick is saved
@@ -26,40 +26,59 @@ import * as s from "./AvatarPickerModal.sc";
 export default function AvatarPickerModal({ open, onClose }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
-  const [characterId, setCharacterId] = useState();
-  const [characterColor, setCharacterColor] = useState();
-  const [backgroundColor, setBackgroundColor] = useState();
+  const initialId = validatedAvatarCharacterId(userDetails?.user_avatar?.image_name);
+  const initialCharacterColor = validatedAvatarCharacterColor(userDetails?.user_avatar?.character_color);
+  const initialBackgroundColor = validatedAvatarBackgroundColor(userDetails?.user_avatar?.background_color);
+
+  const [activeTabId, setActiveTabId] = useState(() => getAvatarTabForId(initialId));
+  const [characterId, setCharacterId] = useState(initialId);
+  const [characterColor, setCharacterColor] = useState(initialCharacterColor);
+  const [backgroundColor, setBackgroundColor] = useState(initialBackgroundColor);
   const [errorMessage, setErrorMessage] = useState("");
-  // The latest pick. It reaches UserContext only when the modal closes:
-  // updating it on every pick makes the profile page reload underneath, which
-  // would close the modal. Taken from the pick, not from a save's response, so
-  // a save still in flight at close, or responses arriving out of order, do
-  // not leave the old avatar showing.
-  const lastPick = useRef(null);
+  // Latest local selection (so rapid taps merge cleanly) and latest confirmed
+  // server save (so failed requests are never written to UserContext on close).
+  const currentPick = useRef({
+    image_name: initialId,
+    character_color: initialCharacterColor,
+    background_color: initialBackgroundColor,
+  });
+  const lastConfirmedPick = useRef(null);
+  const latestRequestId = useRef(0);
 
   // Start from the user's current avatar each time the modal opens -- only
   // then, so a UserContext update while it is open cannot undo the picks.
   useEffect(() => {
     if (!open) return;
-    setCharacterId(validatedAvatarCharacterId(userDetails.user_avatar?.image_name));
-    setCharacterColor(validatedAvatarCharacterColor(userDetails.user_avatar?.character_color));
-    setBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
+    const currentId = validatedAvatarCharacterId(userDetails?.user_avatar?.image_name);
+    const currentFg = validatedAvatarCharacterColor(userDetails?.user_avatar?.character_color);
+    const currentBg = validatedAvatarBackgroundColor(userDetails?.user_avatar?.background_color);
+    setCharacterId(currentId);
+    setActiveTabId(getAvatarTabForId(currentId));
+    setCharacterColor(currentFg);
+    setBackgroundColor(currentBg);
     setErrorMessage("");
-    lastPick.current = null;
+    currentPick.current = {
+      image_name: currentId,
+      character_color: currentFg,
+      background_color: currentBg,
+    };
+    lastConfirmedPick.current = null;
+    latestRequestId.current += 1;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   function pick(change) {
     const userAvatar = {
-      image_name: change.image_name ?? characterId,
-      character_color: change.character_color ?? characterColor,
-      background_color: change.background_color ?? backgroundColor,
+      image_name: change.image_name ?? currentPick.current.image_name,
+      character_color: change.character_color ?? currentPick.current.character_color,
+      background_color: change.background_color ?? currentPick.current.background_color,
     };
+    currentPick.current = userAvatar;
     setCharacterId(userAvatar.image_name);
     setCharacterColor(userAvatar.character_color);
     setBackgroundColor(userAvatar.background_color);
     setErrorMessage("");
-    lastPick.current = userAvatar;
+    const requestId = ++latestRequestId.current;
     // Only the avatar: /user_settings writes every field it is sent, so the
     // whole userDetails would also re-save languages and levels on each tap,
     // reverting any changed elsewhere since this page loaded.
@@ -69,20 +88,34 @@ export default function AvatarPickerModal({ open, onClose }) {
         avatar_character_color: userAvatar.character_color,
         avatar_background_color: userAvatar.background_color,
       },
-      (error) => setErrorMessage(error ?? "Unable to save your avatar. Please try again."),
-      () => {},
+      (error) => {
+        if (requestId !== latestRequestId.current) return;
+        const message = typeof error === "string" && error.trim() ? error : "Unable to save your avatar. Please try again.";
+        setErrorMessage(message);
+      },
+      () => {
+        if (requestId === latestRequestId.current) {
+          lastConfirmedPick.current = userAvatar;
+        }
+      },
     );
   }
 
   function handleClose() {
-    if (lastPick.current) {
-      const newUserDetails = { ...userDetails, user_avatar: lastPick.current };
-      setUserDetails(newUserDetails);
-      LocalStorage.setUserInfo(newUserDetails);
-      saveSharedUserInfo(newUserDetails);
+    if (lastConfirmedPick.current) {
+      const savedAvatar = lastConfirmedPick.current;
+      setUserDetails((prev) => {
+        const newUserDetails = { ...prev, user_avatar: savedAvatar };
+        LocalStorage.setUserInfo(newUserDetails);
+        saveSharedUserInfo(newUserDetails);
+        return newUserDetails;
+      });
     }
     onClose();
   }
+
+  const activeTab = AVATAR_TABS.find((t) => t.id === activeTabId) ?? AVATAR_TABS[0];
+  const matchedPalette = findMatchingPalette(characterColor, backgroundColor);
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -90,19 +123,40 @@ export default function AvatarPickerModal({ open, onClose }) {
         <PageTitle>Choose Your Avatar</PageTitle>
       </Header>
       <Main>
-        {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
-        <s.PickerSection>
-          <span className="picker-label">Character</span>
+        {errorMessage && <FullWidthErrorMsg role="alert">{errorMessage}</FullWidthErrorMsg>}
+
+        <s.TabBar role="tablist" aria-label="Avatar styles">
+          {AVATAR_TABS.map((tab) => (
+            <s.TabButton
+              key={tab.id}
+              id={`avatar-tab-${tab.id}`}
+              type="button"
+              role="tab"
+              aria-selected={tab.id === activeTab.id}
+              aria-controls="avatar-picker-panel"
+              $active={tab.id === activeTab.id}
+              onClick={() => setActiveTabId(tab.id)}
+            >
+              {tab.label}
+            </s.TabButton>
+          ))}
+        </s.TabBar>
+
+        <s.PickerSection id="avatar-picker-panel" role="tabpanel" aria-labelledby={`avatar-tab-${activeTab.id}`}>
           <s.PickerGrid>
-            {AVATAR_CHARACTER_IDS.map((id) => (
+            {activeTab.items.map((item) => (
               <s.AvatarOption
-                key={id}
-                $selected={characterId === id}
+                key={item.id}
+                type="button"
+                aria-label={item.label}
+                aria-pressed={characterId === item.id}
+                title={item.label}
+                $selected={characterId === item.id}
                 $backgroundColor={backgroundColor}
-                onClick={() => pick({ image_name: id })}
+                onClick={() => pick({ image_name: item.id })}
               >
-                <AvatarImage $imageSource={AVATAR_IMAGE_MAP[id]} $color={characterColor} />
-                {characterId === id && (
+                <AvatarArtwork imageName={item.id} color={characterColor} decorative />
+                {characterId === item.id && (
                   <s.SelectionCheckmark $mini={false}>
                     <CheckIcon sx={{ fontSize: "inherit" }} />
                   </s.SelectionCheckmark>
@@ -112,45 +166,41 @@ export default function AvatarPickerModal({ open, onClose }) {
           </s.PickerGrid>
         </s.PickerSection>
 
-        <s.PickerSection>
-          <span className="picker-label">Character Color</span>
+        <s.PaletteSection>
+          <span className="picker-label">
+            {activeTab.usesDualToneSwatch ? "Color Theme" : "Background"}
+          </span>
           <s.PickerGrid>
-            {AVATAR_CHARACTER_COLORS.map((color) => (
-              <s.ColorOption
-                key={color}
-                $backgroundColor={color}
-                $selected={characterColor === color}
-                onClick={() => pick({ character_color: color })}
-              >
-                {characterColor === color && (
-                  <s.SelectionCheckmark $mini={true}>
-                    <CheckIcon sx={{ fontSize: "inherit" }} />
-                  </s.SelectionCheckmark>
-                )}
-              </s.ColorOption>
-            ))}
+            {AVATAR_PALETTES.map((palette) => {
+              const isSelected = matchedPalette?.id === palette.id;
+              return (
+                <s.PaletteOption
+                  key={palette.id}
+                  type="button"
+                  aria-label={palette.label}
+                  aria-pressed={isSelected}
+                  title={palette.label}
+                  $dualTone={activeTab.usesDualToneSwatch}
+                  $backgroundColor={palette.backgroundColor}
+                  $characterColor={palette.characterColor}
+                  $selected={isSelected}
+                  onClick={() =>
+                    pick({
+                      character_color: palette.characterColor,
+                      background_color: palette.backgroundColor,
+                    })
+                  }
+                >
+                  {isSelected && (
+                    <s.SelectionCheckmark $mini={true}>
+                      <CheckIcon sx={{ fontSize: "inherit" }} />
+                    </s.SelectionCheckmark>
+                  )}
+                </s.PaletteOption>
+              );
+            })}
           </s.PickerGrid>
-        </s.PickerSection>
-
-        <s.PickerSection>
-          <span className="picker-label">Background Color</span>
-          <s.PickerGrid>
-            {AVATAR_BACKGROUND_COLORS.map((color) => (
-              <s.ColorOption
-                key={color}
-                $backgroundColor={color}
-                $selected={backgroundColor === color}
-                onClick={() => pick({ background_color: color })}
-              >
-                {backgroundColor === color && (
-                  <s.SelectionCheckmark $mini={true}>
-                    <CheckIcon sx={{ fontSize: "inherit" }} />
-                  </s.SelectionCheckmark>
-                )}
-              </s.ColorOption>
-            ))}
-          </s.PickerGrid>
-        </s.PickerSection>
+        </s.PaletteSection>
       </Main>
     </Modal>
   );

@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
+import LocalStorage from "../assorted/LocalStorage";
+import { saveSharedUserInfo } from "../utils/cookies/userInfo";
 import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
@@ -25,7 +27,7 @@ export default function UserProfile() {
   const api = useContext(APIContext);
   const history = useHistory();
   const [profileData, setProfileData] = useState(null);
-  const { userDetails } = useContext(UserContext);
+  const { userDetails, setUserDetails } = useContext(UserContext);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [languagesModalOpen, setLanguagesModalOpen] = useState(false);
   const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
@@ -45,7 +47,16 @@ export default function UserProfile() {
 
   useEffect(() => {
     loadProfile();
-  }, [api, userDetails, friendUsername]);
+    // Only reload/fetch when the route target or API changes — syncing own
+    // userDetails updates happens in the effect below without unmounting the card.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api, friendUsername]);
+
+  useEffect(() => {
+    if (!friendUsername && userDetails) {
+      setProfileData(userDetails);
+    }
+  }, [friendUsername, userDetails]);
 
   const loadProfile = () => {
     resetProfileState();
@@ -186,6 +197,26 @@ export default function UserProfile() {
     return null;
   };
 
+  const handleSaveUsername = (newUsername, onSuccess, onError) => {
+    api.saveUserDetails(
+      { username: newUsername },
+      (error) => {
+        const message =
+          typeof error === "string" && error.trim() ? error : "Unable to update username. Please try again.";
+        onError(message);
+      },
+      () => {
+        setUserDetails((prev) => {
+          const updated = { ...prev, username: newUsername };
+          LocalStorage.setUserInfo(updated);
+          saveSharedUserInfo(updated);
+          return updated;
+        });
+        onSuccess();
+      },
+    );
+  };
+
   // The tabs navigate on their own; opening any of them counts as having seen
   // the new badges.
   const handleTabClick = () => {
@@ -221,6 +252,7 @@ export default function UserProfile() {
               activeLanguages={activeLanguages}
               onOpenLanguagesModal={() => setLanguagesModalOpen(true)}
               onEditAvatar={() => setAvatarPickerOpen(true)}
+              onSaveUsername={handleSaveUsername}
               friendActionHandlers={friendActionHandlers}
               isPendingFriendAction={isPendingFriendAction}
             />

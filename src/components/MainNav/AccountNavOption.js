@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
@@ -8,9 +8,9 @@ import NavigationOptions, { isNavOptionActive } from "./navigationOptions";
 import strings from "../../i18n/definitions";
 import { isMobileScreenWidth } from "./screenSize";
 
-import { AvatarBackground, AvatarImage } from "../../profile/UserProfile.sc";
+import { AvatarBackground } from "../../profile/UserProfile.sc";
+import AvatarArtwork from "../../profile/AvatarArtwork";
 import {
-  AVATAR_IMAGE_MAP,
   validatedAvatarBackgroundColor,
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
@@ -20,9 +20,9 @@ import NotificationIcon from "../NotificationIcon";
 import { FriendRequestContext } from "../../contexts/FriendRequestContext";
 
 const NavAvatar = styled(AvatarBackground)`
-  width: 2rem;
-  height: 2rem;
-  padding: 3px;
+  width: 2.15rem;
+  height: 2.15rem;
+  padding: 0;
 `;
 
 const Username = styled.div`
@@ -40,9 +40,9 @@ export default function AccountNavOption({ screenWidth, onNavigate = () => {} })
   const path = useLocation().pathname;
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
   const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
-  const [avatarCharacterId, setAvatarCharacterId] = useState();
-  const [avatarCharacterColor, setAvatarCharacterColor] = useState();
-  const [avatarBackgroundColor, setAvatarBackgroundColor] = useState();
+  const avatarCharacterId = validatedAvatarCharacterId(userDetails?.user_avatar?.image_name);
+  const avatarCharacterColor = validatedAvatarCharacterColor(userDetails?.user_avatar?.character_color);
+  const avatarBackgroundColor = validatedAvatarBackgroundColor(userDetails?.user_avatar?.background_color);
 
   // A guest has no profile yet, and the Settings page is where they can
   // create the account, so their avatar leads there.
@@ -56,12 +56,6 @@ export default function AccountNavOption({ screenWidth, onNavigate = () => {} })
   // not for guests, whose avatar row already leads to Settings.
   const showSettingsRow = screenWidth !== undefined && !isMobileScreenWidth(screenWidth) && !isAnonymous;
 
-  useEffect(() => {
-    setAvatarCharacterId(validatedAvatarCharacterId(userDetails.user_avatar?.image_name));
-    setAvatarCharacterColor(validatedAvatarCharacterColor(userDetails.user_avatar?.character_color));
-    setAvatarBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
-  }, [userDetails]);
-
   return (
     <>
       {showSettingsRow && <NavOption {...NavigationOptions.settings} currentPath={path} screenWidth={screenWidth} />}
@@ -71,8 +65,8 @@ export default function AccountNavOption({ screenWidth, onNavigate = () => {} })
         isActive={isActive}
         onClick={onNavigate}
         icon={
-          <NavAvatar $backgroundColor={avatarBackgroundColor} $isActive={isActive}>
-            <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+          <NavAvatar $backgroundColor={avatarBackgroundColor}>
+            <AvatarArtwork imageName={avatarCharacterId} color={avatarCharacterColor} decorative />
           </NavAvatar>
         }
         text={
