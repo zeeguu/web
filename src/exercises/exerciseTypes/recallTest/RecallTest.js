@@ -61,8 +61,17 @@ export default function RecallTest({
     if (!selfGradeOnly || isExerciseOver || saysTheyKnowIt) return;
     function handleKeyDown(e) {
       if (e.key !== " ") return;
-      const tag = e.target?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "BUTTON") return;
+      const target = e.target;
+      const tag = target?.tagName;
+      if (
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        tag === "BUTTON" ||
+        target?.isContentEditable ||
+        target?.closest?.('[role="dialog"], [role="button"], a')
+      ) {
+        return;
+      }
       e.preventDefault();
       setSaysTheyKnowIt(true);
     }
@@ -72,7 +81,7 @@ export default function RecallTest({
 
   // Another word or translation that fits as well, asked about (typed mode only).
   const { isChecking, note: answerNote, judge, clearNote } = useAnswerJudge(
-    (typed, signal) => judgeAlternative(api, exerciseBookmark.id, typed, signal),
+    (typed, signal) => judgeAlternative?.(api, exerciseBookmark.id, typed, signal),
     isExerciseOver,
     [reload, exerciseBookmark],
   );
@@ -132,7 +141,7 @@ export default function RecallTest({
 
       {!isExerciseOver && !saysTheyKnowIt && selfGradeOnly && (
         <s.BottomRow>
-          <s.RightFeedbackButton onClick={() => setSaysTheyKnowIt(true)}>Show answer</s.RightFeedbackButton>
+          <s.RightFeedbackButton onClick={() => setSaysTheyKnowIt(true)}>{strings.showAnswer}</s.RightFeedbackButton>
         </s.BottomRow>
       )}
 

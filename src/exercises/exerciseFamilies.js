@@ -105,10 +105,19 @@ export function selectExerciseSequence({
     disabledTypes,
   );
 
-  const meaningCard = selfGradeFlashcards ? FLASHCARD_MEANING : RECALL_MEANING;
-  const wordCard = selfGradeFlashcards ? FLASHCARD_WORD : RECALL_WORD;
-  const enableMeaning = families.has(FAMILY_FLASHCARDS_MEANING) && !disabledTypes.includes(meaningCard.exerciseType);
-  const enableWord = families.has(FAMILY_FLASHCARDS_WORD) && !disabledTypes.includes(wordCard.exerciseType);
+  const pickCard = (preferred, fallback) => {
+    if (!disabledTypes.includes(preferred.exerciseType)) return preferred;
+    if (!disabledTypes.includes(fallback.exerciseType)) return fallback;
+    return null;
+  };
+  const meaningCard = selfGradeFlashcards
+    ? pickCard(FLASHCARD_MEANING, RECALL_MEANING)
+    : pickCard(RECALL_MEANING, FLASHCARD_MEANING);
+  const wordCard = selfGradeFlashcards
+    ? pickCard(FLASHCARD_WORD, RECALL_WORD)
+    : pickCard(RECALL_WORD, FLASHCARD_WORD);
+  const enableMeaning = families.has(FAMILY_FLASHCARDS_MEANING) && meaningCard !== null;
+  const enableWord = families.has(FAMILY_FLASHCARDS_WORD) && wordCard !== null;
 
   const enabledFlashcards = [
     ...(enableMeaning ? [meaningCard] : []),

@@ -97,10 +97,12 @@ describe("RecallWord", () => {
     expect(notifyShowSolution).not.toHaveBeenCalled();
   });
 
-  it("tap-to-flip FlashcardWord reveals the word on Space and records No as show solution", async () => {
+  it("tap-to-flip FlashcardWord uses non-typing headline, reveals on Space, and records No", async () => {
     const notifyShowSolution = vi.fn();
     show(false, { notifyShowSolution }, FlashcardWord);
 
+    expect(screen.getByText(/how do you say this/i)).toBeTruthy();
+    expect(screen.queryByText(/type the word/i)).toBeNull();
     expect(screen.getByRole("heading", { name: "thinks" })).toBeTruthy();
     expect(screen.queryByText("synes")).toBeNull();
 

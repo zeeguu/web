@@ -2,7 +2,13 @@ import ListenChooseMeaning from "./exerciseTypes/listenChooseMeaning/ListenChoos
 import { removePunctuation } from "../utils/text/preprocessing";
 import { removeAllMatchingItemFromList } from "../utils/basic/arrays";
 import shuffle from "../assorted/fisherYatesShuffle";
-import { RECALL_MEANING, RECALL_WORD, selectExerciseSequence } from "./exerciseFamilies";
+import {
+  FLASHCARD_MEANING,
+  FLASHCARD_WORD,
+  RECALL_MEANING,
+  RECALL_WORD,
+  selectExerciseSequence,
+} from "./exerciseFamilies";
 
 function popNElementsFromList(l, n) {
   let a = [];
@@ -221,6 +227,12 @@ function assignBookmarksToA0Exercises(bookmarks) {
   turn.
 */
 const RECALL_TEST_CHANCE = 1 / 6;
+const RECALL_OR_FLASHCARD_TYPES = new Set([
+  RECALL_MEANING.type,
+  RECALL_WORD.type,
+  FLASHCARD_MEANING.type,
+  FLASHCARD_WORD.type,
+]);
 
 function sprinkleRecallTests(
   exercises,
@@ -240,6 +252,7 @@ function sprinkleRecallTests(
   };
   return exercises.map((exercise) => {
     if (exercise.bookmarks.length !== 1) return exercise;
+    if (RECALL_OR_FLASHCARD_TYPES.has(exercise.type)) return exercise;
     const recallTest = byLevel[exercise.bookmarks[0].level];
     if (!recallTest || disabledTypes.includes(recallTest.exerciseType)) return exercise;
     if (random() >= RECALL_TEST_CHANCE) return exercise;

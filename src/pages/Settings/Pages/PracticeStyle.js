@@ -99,6 +99,12 @@ export default function PracticeStyle() {
     [PREF_EXERCISE_FAMILIES]: 0,
     [PREF_FLASHCARD_SELF_GRADE]: 0,
   });
+  const confirmedSeqRef = useRef({
+    [PREF_AUDIO_EXERCISES]: 0,
+    [PREF_VARY_EXERCISE_CONTEXTS]: 0,
+    [PREF_EXERCISE_FAMILIES]: 0,
+    [PREF_FLASHCARD_SELF_GRADE]: 0,
+  });
   // Last server-confirmed snapshot per key, so rapid toggles while offline
   // revert to what the server actually holds rather than an unconfirmed click.
   const confirmedRef = useRef({
@@ -223,7 +229,8 @@ export default function PracticeStyle() {
     api.saveUserPreferences(
       { [key]: serialized },
       () => {
-        if (saveSeqRef.current[key] === seq) {
+        if (seq > confirmedSeqRef.current[key]) {
+          confirmedSeqRef.current[key] = seq;
           confirmedRef.current[key] = { value: nextValue, cached: serialized };
         }
       },
@@ -260,7 +267,8 @@ export default function PracticeStyle() {
     api.saveUserPreferences(
       { [PREF_EXERCISE_FAMILIES]: serialized },
       () => {
-        if (saveSeqRef.current[PREF_EXERCISE_FAMILIES] === seq) {
+        if (seq > confirmedSeqRef.current[PREF_EXERCISE_FAMILIES]) {
+          confirmedSeqRef.current[PREF_EXERCISE_FAMILIES] = seq;
           confirmedRef.current[PREF_EXERCISE_FAMILIES] = { value: nextFamilies, cached: serialized };
         }
       },
@@ -289,7 +297,8 @@ export default function PracticeStyle() {
     api.saveUserPreferences(
       { [PREF_AUDIO_EXERCISES]: serialized },
       () => {
-        if (saveSeqRef.current[PREF_AUDIO_EXERCISES] === seq) {
+        if (seq > confirmedSeqRef.current[PREF_AUDIO_EXERCISES]) {
+          confirmedSeqRef.current[PREF_AUDIO_EXERCISES] = seq;
           confirmedRef.current[PREF_AUDIO_EXERCISES] = {
             serverOn: nextValue,
             sessionDisabled: !nextValue,
@@ -340,34 +349,45 @@ export default function PracticeStyle() {
       <SettingsPageHeader title={PAGE_TITLE} />
       <Main>
         <s.PageBody>
-          {exerciseFamilies !== null && (
-            <s.Section>
-              <s.SectionHeader>Exercise types</s.SectionHeader>
-              {FAMILY_OPTIONS.map((option) =>
-                renderToggle({
-                  key: option.key,
-                  label: option.label,
-                  description: option.description,
-                  checked: exerciseFamilies.has(option.key),
-                  onToggle: (next) => handleToggleFamily(option.key, next),
-                }),
-              )}
-              {exerciseFamilies.size === 1 && (
-                <s.SizeDescription>At least one exercise type must stay on.</s.SizeDescription>
-              )}
-              {anyFlashcardsEnabled &&
-                flashcardSelfGrade !== null &&
-                renderToggle({
-                  key: "flashcard-self-grade",
-                  label: "Tap to flip & self-grade flashcards",
-                  description:
-                    "Reveal the answer with a tap and mark whether you knew it, instead of typing.",
-                  checked: flashcardSelfGrade,
-                  onToggle: (next) =>
-                    handleToggleBoolPref(PREF_FLASHCARD_SELF_GRADE, setFlashcardSelfGrade, next),
-                })}
-            </s.Section>
-          )}
+          <s.Section>
+            <s.SectionHeader>Exercise types</s.SectionHeader>
+            {exerciseFamilies !== null && (
+              <>
+                {FAMILY_OPTIONS.map((option) =>
+                  renderToggle({
+                    key: option.key,
+                    label: option.label,
+                    description: option.description,
+                    checked: exerciseFamilies.has(option.key),
+                    onToggle: (next) => handleToggleFamily(option.key, next),
+                  }),
+                )}
+                {exerciseFamilies.size === 1 && (
+                  <s.SizeDescription>At least one exercise type must stay on.</s.SizeDescription>
+                )}
+                {anyFlashcardsEnabled &&
+                  flashcardSelfGrade !== null &&
+                  renderToggle({
+                    key: "flashcard-self-grade",
+                    label: "Tap to flip & self-grade flashcards",
+                    description:
+                      "Reveal the answer with a tap and mark whether you knew it, instead of typing.",
+                    checked: flashcardSelfGrade,
+                    onToggle: (next) =>
+                      handleToggleBoolPref(PREF_FLASHCARD_SELF_GRADE, setFlashcardSelfGrade, next),
+                  })}
+              </>
+            )}
+            {renderToggle({
+              key: "audio-exercises",
+              label: audioTemporarilyDisabled
+                ? "Include audio exercises (Temporarily disabled)"
+                : "Include audio exercises",
+              description: "Include listening and dictation exercises in your practice sessions.",
+              checked: audioChecked,
+              onToggle: handleToggleAudioExercises,
+            })}
+          </s.Section>
 
           {varyExerciseContexts !== null && (
             <s.Section>
@@ -385,16 +405,7 @@ export default function PracticeStyle() {
           )}
 
           <s.Section>
-            <s.SectionHeader>Audio &amp; pronunciation</s.SectionHeader>
-            {renderToggle({
-              key: "audio-exercises",
-              label: audioTemporarilyDisabled
-                ? "Include audio exercises (Temporarily disabled)"
-                : "Include audio exercises",
-              description: "Include listening and dictation exercises in your practice sessions.",
-              checked: audioChecked,
-              onToggle: handleToggleAudioExercises,
-            })}
+            <s.SectionHeader>Pronunciation</s.SectionHeader>
             {renderToggle({
               key: "auto-pronounce",
               label: "Auto-pronounce words",

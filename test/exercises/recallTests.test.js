@@ -105,4 +105,25 @@ describe("buildExerciseSession with exercise families", () => {
     expect(session.map((e) => e.type)).toContain(FlashcardMeaning);
     expect(session.map((e) => e.type)).toContain(FlashcardWord);
   });
+
+  it("falls back to typed RecallMeaning if server disables FlashcardMeaning in flashcards-only mode", () => {
+    const session = buildExerciseSession(bookmarks, {
+      baseSequence: EXTENDED_SEQUENCE_NO_AUDIO,
+      disabledTypes: ["Flashcard_L1W_from_L2W"],
+      enabledFamilies: new Set([FAMILY_FLASHCARDS_MEANING]),
+      selfGradeFlashcards: true,
+    });
+    expect(session.map((e) => e.type)).toEqual([RecallMeaning, RecallMeaning, RecallMeaning, RecallMeaning]);
+  });
+
+  it("does not cross-swap gap-filled level-3 word flashcards into meaning cards", () => {
+    const session = buildExerciseSession(bookmarks, {
+      baseSequence: EXTENDED_SEQUENCE_NO_AUDIO,
+      enabledFamilies: new Set([FAMILY_MULTIPLE_CHOICE, FAMILY_FLASHCARDS_MEANING, FAMILY_FLASHCARDS_WORD]),
+      selfGradeFlashcards: true,
+      random: () => 0,
+    });
+    const level3 = session.find((e) => e.bookmarks[0].level === 3);
+    expect(level3.type).toBe(FlashcardWord);
+  });
 });

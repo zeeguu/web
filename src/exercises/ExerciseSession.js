@@ -174,17 +174,33 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
 
   // The last fetched bookmarks and how the session was built from them, so it
   // can be built again if the profile or preferences arrive after them.
+  const audioExercisesPref = userPreferences?.audio_exercises || "";
   const exerciseFamiliesPref = userPreferences?.exercise_families || "";
   const flashcardSelfGradePref = userPreferences?.flashcard_self_grade || "";
-  const sessionConfigKey = `${isA0Ref.current}|${exerciseFamiliesPref}|${flashcardSelfGradePref}`;
+  const sessionConfigKey = `${isA0Ref.current}|${audioExercisesPref}|${exerciseFamiliesPref}|${flashcardSelfGradePref}`;
   const sessionConfigKeyRef = useShadowRef(sessionConfigKey);
   const userPreferencesRef = useShadowRef(userPreferences);
+  const isExerciseOverRef = useShadowRef(isExerciseOver);
+  const exerciseMessageForAPIRef = useShadowRef(exerciseMessageForAPI);
+  const [sessionBuildId, setSessionBuildId] = useState(0);
   const fetchedRef = useRef(null);
   const disabledTypesRef = useRef([]);
   useEffect(() => {
+    if (SessionStorage.getAudioExercisesEnabled() === undefined && userPreferences) {
+      SessionStorage.setAudioExercisesEnabled(
+        userPreferences["audio_exercises"] === undefined || userPreferences["audio_exercises"] === "true",
+      );
+    }
     const fetched = fetchedRef.current;
     if (!fetched || fetched.configKey === sessionConfigKey) return;
-    if (currentIndexRef.current > 0) return; // already practising: leave it
+    // Don't rebuild once the learner has started answering or moved past card 0.
+    if (
+      currentIndexRef.current > 0 ||
+      isExerciseOverRef.current ||
+      Object.keys(exerciseMessageForAPIRef.current).length > 0
+    ) {
+      return;
+    }
     initializeExercisesForBookmarks(fetched.bookmarks, fetched.gen);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionConfigKey]);
@@ -223,6 +239,8 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       setIsSessionLoading(false);
       return;
     }
+    setIsOutOfWordsToday(false);
+    setSessionBuildId((id) => id + 1);
     setFullExerciseProgression(exerciseSession);
 
     setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
@@ -570,7 +588,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
         <s.ExForm className={isSoftKeyboardOpen ? "softKeyboardOpen" : undefined}>
           <ExerciseLinksContext.Provider value={exerciseLinks}>
           <CurrentExerciseComponent
-            key={currentIndex}
+            key={`${sessionBuildId}-${currentIndex}`}
             bookmarksToStudy={currentBookmarksToStudy}
             selectedExerciseBookmark={selectedExerciseBookmark}
             setSelectedExerciseBookmark={setSelectedExerciseBookmark}
