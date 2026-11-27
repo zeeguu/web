@@ -48,13 +48,6 @@ export const DateLineWrapper = styled.span`
 `;
 
 // Date text styling
-export const DateText = styled.span`
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--text-secondary);
-`;
-
 // Footer container for engagement hints and settings button
 export const FooterWrapper = styled.div`
   margin-top: 24px;

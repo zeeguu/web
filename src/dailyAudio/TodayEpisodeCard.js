@@ -2,7 +2,7 @@ import React from "react";
 import LessonPlaybackView from "./LessonPlaybackView";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import { LessonTitle, LessonMetadata, CompletionCheck } from "./LessonView.sc";
-import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
+import { LessonTypeChipButton, ChipText, chipLabel } from "./lessonTypeChip";
 import { completionChecks } from "./audioUtils";
 import { NewPill, DateLineWrapper, FooterWrapper, FooterMessage, LessonTitleWrapper } from "./TodayEpisodeCard.sc";
 
@@ -21,6 +21,8 @@ function EpisodeHeader({ lessonData, currentPlaybackTime, onOpenSettings }) {
     lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0;
   const playedSeconds = Math.max(storedSeconds, currentPlaybackTime || 0);
   const showNew = !lessonData.paused && !lessonData.is_completed && playedSeconds === 0;
+  const subject =
+    chipLabel(lessonData.lesson_type) + (lessonData.canonical_suggestion ? `: ${lessonData.canonical_suggestion}` : "");
   return (
     <>
       {showNew && (
@@ -42,30 +44,14 @@ function EpisodeHeader({ lessonData, currentPlaybackTime, onOpenSettings }) {
       </LessonTitleWrapper>
 
       <LessonMetadata>
-        <LessonTypeChip
-          as="button"
-          type="button"
+        <LessonTypeChipButton
           onClick={onOpenSettings}
-          aria-label="Lesson settings"
+          aria-label={`Lesson settings: ${subject}`}
           $type={lessonData.lesson_type}
-          style={{
-            marginBottom: 0,
-            border: "none",
-            font: "inherit",
-            fontSize: "0.75rem",
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.35rem",
-            maxWidth: "100%",
-          }}
         >
-          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            {chipLabel(lessonData.lesson_type)}
-            {lessonData.canonical_suggestion ? `: ${lessonData.canonical_suggestion}` : ""}
-          </span>
+          <ChipText>{subject}</ChipText>
           <SettingsRoundedIcon style={{ fontSize: "0.9rem", flexShrink: 0 }} />
-        </LessonTypeChip>
+        </LessonTypeChipButton>
       </LessonMetadata>
     </>
   );

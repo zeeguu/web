@@ -20,7 +20,7 @@ import { isA0Learner } from "../../../utils/misc/userCefrLevel";
 
 // api: lesson_tuning.LESSON_MINUTES_CHOICES. A setting of A0 lessons only:
 // above A0 the lesson's length follows from its dialogue.
-export const LESSON_MINUTES = ["5", "10", "15", "20", "25"];
+const LESSON_MINUTES = ["5", "10", "15", "20", "25"];
 
 // At A0 the learner says their own role in the dialogues, and in many
 // languages the words depend on who speaks.
@@ -62,7 +62,7 @@ export default function AudioLessons() {
 
   useEffect(() => {
     setTitle("Audio lessons");
-    api.getAudioLessonSettings?.(setSettings, () => {});
+    api.getAudioLessonSettings(setSettings, () => {});
   }, [api]);
 
   // A step of a setting from the endpoint: shown at once, then saved

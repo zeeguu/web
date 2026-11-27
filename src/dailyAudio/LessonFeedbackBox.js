@@ -10,8 +10,8 @@ import { UserContext } from "../contexts/UserContext";
 // A0 lesson, or one above A0 written with markers): what the learner thought
 // of it. Pace and repetition tune their next lessons (api:
 // audio_lessons/lesson_tuning.py); the situation row moves the daily lessons
-// on, or keeps them where they are. The settings these answers move (time to
-// answer, A0 length) are shown and set in Settings > Audio lessons, not here:
+// on, or keeps them where they are. The settings the answers move (time to
+// answer, repetition) are shown and set in Settings > Audio lessons, not here:
 // this box only asks. Each tap is saved at once; nothing tapped changes nothing.
 
 // The answers describe this lesson ("Too slow"), which is what the question

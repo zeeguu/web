@@ -109,8 +109,7 @@ export default function DailyLessonSettingsDialog({
   const changed =
     pillToBackend(pillType) !== (initialType || null) || (needsSubject ? currentSubject.trim() : "") !== initialSubject;
   const characterChanged = a0 && character !== savedCharacter;
-  const preferencesChanged = characterChanged;
-  const hasChanges = (canSubmit && changed) || preferencesChanged;
+  const hasChanges = (canSubmit && changed) || characterChanged;
   // At A0 nothing saves until the learner says who they speak as.
   const characterMissing = a0 && savedCharacter !== null && !character;
   const canSave = hasChanges && !characterMissing;
@@ -124,11 +123,10 @@ export default function DailyLessonSettingsDialog({
       if (canSubmit && changed) submit(!alreadySubscribed);
       else onDismiss();
     };
-    if (!preferencesChanged) return saveSituation();
+    if (!characterChanged) return saveSituation();
     // The preferences first: a lesson generated right after must already use them.
     setSaveError(false);
-    const preferences = {};
-    if (characterChanged) preferences.audio_lesson_character = character;
+    const preferences = { audio_lesson_character: character };
     api.saveUserPreferences(
       preferences,
       () => {

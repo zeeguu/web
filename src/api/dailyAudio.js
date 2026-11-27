@@ -100,7 +100,7 @@ Zeeguu_API.prototype.generateDailyLesson = function (callback, onError, suggesti
   })
     .then((response) => {
       if (!response.ok) {
-        return response.json().then((data) => {
+        return response.json().then(data => {
           throw new Error(data.error || "Network response was not ok");
         });
       }
@@ -168,7 +168,7 @@ Zeeguu_API.prototype.deleteTodaysLesson = function (callback, onError, lessonId)
         throw error;
       }
       if (!response.ok) {
-        return response.json().then((data) => {
+        return response.json().then(data => {
           throw new Error(data.error || "Network response was not ok");
         });
       }
@@ -218,14 +218,14 @@ Zeeguu_API.prototype.getPastDailyLessons = function (limit, offset, callback, on
 
 Zeeguu_API.prototype.updateLessonState = function (lessonId, action, positionSeconds, callback, onError) {
   this.apiLog(`POST update_lesson_state/${lessonId}`);
-
+  
   const payload = { action };
-
+  
   // Add position_seconds for pause action
-  if (action === "pause" && positionSeconds !== undefined) {
+  if (action === 'pause' && positionSeconds !== undefined) {
     payload.position_seconds = Math.floor(positionSeconds);
   }
-
+  
   fetch(this._appendSessionToUrl(`update_lesson_state/${lessonId}`), {
     method: "POST",
     headers: {
@@ -235,7 +235,7 @@ Zeeguu_API.prototype.updateLessonState = function (lessonId, action, positionSec
   })
     .then((response) => {
       if (!response.ok) {
-        return response.json().then((data) => {
+        return response.json().then(data => {
           throw new Error(data.error || "Network response was not ok");
         });
       }
@@ -294,6 +294,7 @@ Zeeguu_API.prototype.checkDailyLessonFeasibility = function (callback, onError) 
 Zeeguu_API.prototype.getAudioLessonGenerationProgress = function (callback, onError) {
   this._getJSON("audio_lesson_generation_progress", (data) => callback(data.progress), { onError });
 };
+
 // How the learner's audio lessons are said, for Settings > Audio lessons:
 // {a0, answer_time: {value, choices: [{value, label}]}, repetition: {...}},
 // labeled at the learner's level ("5–10 seconds", "each answer said twice").
