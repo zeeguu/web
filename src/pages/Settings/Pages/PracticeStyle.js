@@ -9,7 +9,7 @@ import ToggleOption from "../../../components/Toggles/ToggleOption";
 import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg.sc";
 import { setTitle } from "../../../assorted/setTitle";
 import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce";
-import * as s from "./PracticeStyle.sc";
+import * as s from "./ReadingSettings.sc";
 
 const PAGE_TITLE = "Practice style";
 const PREF_AUDIO_EXERCISES = "audio_exercises";

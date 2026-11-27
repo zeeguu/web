@@ -137,26 +137,17 @@ Zeeguu_API.prototype.fetchAndSortContexts = async function (exerciseBookmark) {
   const byLength = (a, b) => (a.sentence || a.context || "").length
                             - (b.sentence || b.context || "").length;
   const normalize = (text) => (text || "").trim().toLowerCase();
-  const seenTexts = new Set();
   const currentText = normalize(exerciseBookmark.context);
-  if (currentText !== "") seenTexts.add(currentText);
   const currentId = exerciseBookmark.id;
 
-  const dedupe = (items) =>
-    items.filter((item) => {
-      if (currentId != null && (item.bookmark_id === currentId || item.bookmark?.id === currentId)) {
-        return false;
-      }
-      const key = normalize(item.sentence || item.context);
-      if (key && seenTexts.has(key)) return false;
-      if (key) seenTexts.add(key);
-      return true;
-    });
+  const isCurrent = (item) =>
+    (currentId != null && (item.bookmark_id === currentId || item.bookmark?.id === currentId)) ||
+    (currentText !== "" && normalize(item.sentence || item.context) === currentText);
 
   return [
     { isCurrent: true, bookmark: exerciseBookmark },
-    ...dedupe((pastData?.past_contexts || []).sort(byLength)),
-    ...dedupe((altData?.examples || []).sort(byLength)),
+    ...(pastData?.past_contexts || []).filter((item) => !isCurrent(item)).sort(byLength),
+    ...(altData?.examples || []).filter((item) => !isCurrent(item)).sort(byLength),
   ];
 };
 
