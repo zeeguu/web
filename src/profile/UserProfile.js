@@ -47,7 +47,16 @@ export default function UserProfile() {
 
   useEffect(() => {
     loadProfile();
-  }, [api, userDetails, friendUsername]);
+    // Only reload/fetch when the route target or API changes — syncing own
+    // userDetails updates happens in the effect below without unmounting the card.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api, friendUsername]);
+
+  useEffect(() => {
+    if (!friendUsername && userDetails) {
+      setProfileData(userDetails);
+    }
+  }, [friendUsername, userDetails]);
 
   const loadProfile = () => {
     resetProfileState();
@@ -191,12 +200,18 @@ export default function UserProfile() {
   const handleSaveUsername = (newUsername, onSuccess, onError) => {
     api.saveUserDetails(
       { username: newUsername },
-      (error) => onError(error ?? "Unable to update username. Please try again."),
+      (error) => {
+        const message =
+          typeof error === "string" && error.trim() ? error : "Unable to update username. Please try again.";
+        onError(message);
+      },
       () => {
-        const updated = { ...userDetails, username: newUsername };
-        setUserDetails(updated);
-        LocalStorage.setUserInfo(updated);
-        saveSharedUserInfo(updated);
+        setUserDetails((prev) => {
+          const updated = { ...prev, username: newUsername };
+          LocalStorage.setUserInfo(updated);
+          saveSharedUserInfo(updated);
+          return updated;
+        });
         onSuccess();
       },
     );

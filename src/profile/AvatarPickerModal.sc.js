@@ -1,57 +1,69 @@
 import styled from "styled-components";
-import { orange500, streakFireOrange } from "../components/colors";
+import { orange400, orange700, streakFireOrange } from "../components/colors";
 
 export const TabBar = styled.div`
+  width: 100%;
+  box-sizing: border-box;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.25rem;
   background: var(--bg-secondary);
   padding: 0.25rem;
   border-radius: 0.75rem;
-  margin-bottom: 1rem;
 `;
 
 export const TabButton = styled.button`
+  min-width: 0;
   border: none;
   background: ${({ $active }) => ($active ? "var(--bg-primary)" : "transparent")};
-  color: ${({ $active }) => ($active ? orange500 : "var(--text-secondary)")};
+  color: ${({ $active }) => ($active ? orange700 : "var(--text-secondary)")};
   font-size: 0.85rem;
   font-weight: 600;
-  padding: 0.5rem 0.35rem;
+  padding: 0.5rem 0.25rem;
   border-radius: 0.55rem;
   cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   box-shadow: ${({ $active }) => ($active ? "0 1px 4px rgba(0, 0, 0, 0.08)" : "none")};
   transition:
     background 0.15s,
     color 0.15s;
 
+  [data-theme="dark"] & {
+    color: ${({ $active }) => ($active ? orange400 : "var(--text-secondary)")};
+  }
+
   &:hover {
-    color: ${({ $active }) => ($active ? orange500 : "var(--text-primary)")};
+    color: ${({ $active }) => ($active ? orange700 : "var(--text-primary)")};
+
+    [data-theme="dark"] & {
+      color: ${({ $active }) => ($active ? orange400 : "var(--text-primary)")};
+    }
   }
 
   @media (max-width: 480px) {
-    font-size: 0.75rem;
-    padding: 0.45rem 0.2rem;
+    font-size: 0.72rem;
+    padding: 0.45rem 0.15rem;
   }
 `;
 
 export const PickerSection = styled.div`
-  margin-bottom: 1rem;
+  width: 100%;
 
   .picker-label {
     display: block;
     font-weight: 600;
     font-size: 0.85rem;
     color: var(--text-secondary);
-    margin-bottom: 0.55rem;
+    margin-bottom: 0.6rem;
     text-align: center;
   }
 `;
 
 export const PaletteSection = styled(PickerSection)`
   border-top: 1px solid var(--border-light);
-  padding-top: 0.85rem;
-  margin-bottom: 0.25rem;
+  padding-top: 0.9rem;
 `;
 
 export const PickerGrid = styled.div`

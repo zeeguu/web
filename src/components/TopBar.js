@@ -24,9 +24,9 @@ export default function TopBar() {
   const { pathname } = useLocation();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [hasStreakBar, setHasStreakBar] = useState(null);
-  const [avatarCharacterId, setAvatarCharacterId] = useState();
-  const [avatarCharacterColor, setAvatarCharacterColor] = useState();
-  const [avatarBackgroundColor, setAvatarBackgroundColor] = useState();
+  const avatarCharacterId = validatedAvatarCharacterId(userDetails?.user_avatar?.image_name);
+  const avatarCharacterColor = validatedAvatarCharacterColor(userDetails?.user_avatar?.character_color);
+  const avatarBackgroundColor = validatedAvatarBackgroundColor(userDetails?.user_avatar?.background_color);
   const { hasBadgeNotification, totalNumberOfBadges } = useContext(BadgeCounterContext);
   const { hasFriendRequestNotification, friendRequestCount } = useContext(FriendRequestContext);
 
@@ -59,12 +59,6 @@ export default function TopBar() {
     };
   }, []);
 
-  useEffect(() => {
-    setAvatarCharacterId(validatedAvatarCharacterId(userDetails?.user_avatar?.image_name));
-    setAvatarCharacterColor(validatedAvatarCharacterColor(userDetails?.user_avatar?.character_color));
-    setAvatarBackgroundColor(validatedAvatarBackgroundColor(userDetails?.user_avatar?.background_color));
-  }, [userDetails]);
-
   const closeLanguageModal = useCallback(() => setShowLanguageModal(false), []);
   const openLanguageModal = useCallback(() => setShowLanguageModal(true), []);
 
@@ -91,7 +85,7 @@ export default function TopBar() {
           {Feature.has_gamification() && (
             <s.ProfileAvatarButton onClick={handleProfileClick} aria-label="Go to profile">
               <s.TopBarNavAvatar $backgroundColor={avatarBackgroundColor}>
-                <AvatarArtwork imageName={avatarCharacterId} color={avatarCharacterColor} />
+                <AvatarArtwork imageName={avatarCharacterId} color={avatarCharacterColor} decorative />
               </s.TopBarNavAvatar>
               {(hasBadgeNotification || hasFriendRequestNotification) && (
                 <NotificationIcon

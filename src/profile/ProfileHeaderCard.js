@@ -113,7 +113,7 @@ export function ProfileHeaderCard({
         )}
       </AvatarBackground>
 
-      <div>
+      <div style={{ minWidth: 0, maxWidth: "100%" }}>
         <div className="name-wrapper">
           {isEditingUsername ? (
             <s.UsernameEditForm onSubmit={submitUsername}>
@@ -125,7 +125,12 @@ export function ProfileHeaderCard({
                   maxLength={50}
                   disabled={isSavingUsername}
                   aria-label="Username"
-                  onChange={(e) => setUsernameDraft(e.target.value)}
+                  aria-invalid={Boolean(usernameError)}
+                  aria-describedby={usernameError ? "profile-username-error" : undefined}
+                  onChange={(e) => {
+                    setUsernameDraft(e.target.value);
+                    if (usernameError) setUsernameError("");
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === "Escape") cancelEditingUsername();
                   }}
@@ -142,7 +147,11 @@ export function ProfileHeaderCard({
                   <CloseIcon sx={{ fontSize: "1rem" }} />
                 </s.InlineEditButton>
               </div>
-              {usernameError && <s.UsernameError>{usernameError}</s.UsernameError>}
+              {usernameError && (
+                <s.UsernameError id="profile-username-error" role="alert">
+                  {usernameError}
+                </s.UsernameError>
+              )}
             </s.UsernameEditForm>
           ) : (
             <div className="username-row">

@@ -57,6 +57,7 @@ export const HeaderCard = styled.div`
 
   .username {
     color: var(--text-primary);
+    overflow-wrap: anywhere;
 
     &.editable {
       cursor: pointer;
@@ -164,6 +165,8 @@ export const UsernameEditForm = styled.form`
   flex-direction: column;
   gap: 0.3rem;
   align-items: flex-start;
+  max-width: 100%;
+  min-width: 0;
 
   @media (max-width: 768px) {
     align-items: center;
@@ -173,10 +176,13 @@ export const UsernameEditForm = styled.form`
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
+    max-width: 100%;
+    min-width: 0;
   }
 `;
 
 export const UsernameInput = styled.input`
+  box-sizing: border-box;
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--text-primary);
@@ -185,8 +191,13 @@ export const UsernameInput = styled.input`
   border-radius: 6px;
   padding: 0.2rem 0.5rem;
   width: 13rem;
+  min-width: 0;
   max-width: 100%;
   outline: none;
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px rgba(240, 144, 0, 0.35);
+  }
 
   &:disabled {
     opacity: 0.6;
@@ -194,7 +205,11 @@ export const UsernameInput = styled.input`
 `;
 
 export const UsernameError = styled.span`
-  color: #dc2626;
+  color: #b91c1c;
   font-size: 0.8rem;
   font-weight: 500;
+
+  [data-theme="dark"] & {
+    color: #fca5a5;
+  }
 `;

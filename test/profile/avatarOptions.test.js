@@ -32,6 +32,8 @@ describe("avatarOptions", () => {
     expect(validatedAvatarCharacterId("watercolor-hippo")).toBe("watercolor-hippo");
     expect(validatedAvatarCharacterId("otter")).toBe("otter");
     expect(validatedAvatarCharacterId("unknown-avatar")).toBe(DEFAULT_AVATAR_CHARACTER_ID);
+    expect(validatedAvatarCharacterId("toString")).toBe(DEFAULT_AVATAR_CHARACTER_ID);
+    expect(validatedAvatarCharacterId("constructor")).toBe(DEFAULT_AVATAR_CHARACTER_ID);
     expect(validatedAvatarCharacterId(null)).toBe(DEFAULT_AVATAR_CHARACTER_ID);
   });
 

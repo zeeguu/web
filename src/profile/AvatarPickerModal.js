@@ -26,43 +26,59 @@ import * as s from "./AvatarPickerModal.sc";
 export default function AvatarPickerModal({ open, onClose }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
-  const [activeTabId, setActiveTabId] = useState(AVATAR_TABS[0].id);
-  const [characterId, setCharacterId] = useState();
-  const [characterColor, setCharacterColor] = useState();
-  const [backgroundColor, setBackgroundColor] = useState();
+  const initialId = validatedAvatarCharacterId(userDetails?.user_avatar?.image_name);
+  const initialCharacterColor = validatedAvatarCharacterColor(userDetails?.user_avatar?.character_color);
+  const initialBackgroundColor = validatedAvatarBackgroundColor(userDetails?.user_avatar?.background_color);
+
+  const [activeTabId, setActiveTabId] = useState(() => getAvatarTabForId(initialId));
+  const [characterId, setCharacterId] = useState(initialId);
+  const [characterColor, setCharacterColor] = useState(initialCharacterColor);
+  const [backgroundColor, setBackgroundColor] = useState(initialBackgroundColor);
   const [errorMessage, setErrorMessage] = useState("");
-  // The latest pick. It reaches UserContext only when the modal closes:
-  // updating it on every pick makes the profile page reload underneath, which
-  // would close the modal. Taken from the pick, not from a save's response, so
-  // a save still in flight at close, or responses arriving out of order, do
-  // not leave the old avatar showing.
-  const lastPick = useRef(null);
+  // Latest local selection (so rapid taps merge cleanly) and latest confirmed
+  // server save (so failed requests are never written to UserContext on close).
+  const currentPick = useRef({
+    image_name: initialId,
+    character_color: initialCharacterColor,
+    background_color: initialBackgroundColor,
+  });
+  const lastConfirmedPick = useRef(null);
+  const latestRequestId = useRef(0);
 
   // Start from the user's current avatar each time the modal opens -- only
   // then, so a UserContext update while it is open cannot undo the picks.
   useEffect(() => {
     if (!open) return;
-    const currentId = validatedAvatarCharacterId(userDetails.user_avatar?.image_name);
+    const currentId = validatedAvatarCharacterId(userDetails?.user_avatar?.image_name);
+    const currentFg = validatedAvatarCharacterColor(userDetails?.user_avatar?.character_color);
+    const currentBg = validatedAvatarBackgroundColor(userDetails?.user_avatar?.background_color);
     setCharacterId(currentId);
     setActiveTabId(getAvatarTabForId(currentId));
-    setCharacterColor(validatedAvatarCharacterColor(userDetails.user_avatar?.character_color));
-    setBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
+    setCharacterColor(currentFg);
+    setBackgroundColor(currentBg);
     setErrorMessage("");
-    lastPick.current = null;
+    currentPick.current = {
+      image_name: currentId,
+      character_color: currentFg,
+      background_color: currentBg,
+    };
+    lastConfirmedPick.current = null;
+    latestRequestId.current += 1;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   function pick(change) {
     const userAvatar = {
-      image_name: change.image_name ?? characterId,
-      character_color: change.character_color ?? characterColor,
-      background_color: change.background_color ?? backgroundColor,
+      image_name: change.image_name ?? currentPick.current.image_name,
+      character_color: change.character_color ?? currentPick.current.character_color,
+      background_color: change.background_color ?? currentPick.current.background_color,
     };
+    currentPick.current = userAvatar;
     setCharacterId(userAvatar.image_name);
     setCharacterColor(userAvatar.character_color);
     setBackgroundColor(userAvatar.background_color);
     setErrorMessage("");
-    lastPick.current = userAvatar;
+    const requestId = ++latestRequestId.current;
     // Only the avatar: /user_settings writes every field it is sent, so the
     // whole userDetails would also re-save languages and levels on each tap,
     // reverting any changed elsewhere since this page loaded.
@@ -72,17 +88,28 @@ export default function AvatarPickerModal({ open, onClose }) {
         avatar_character_color: userAvatar.character_color,
         avatar_background_color: userAvatar.background_color,
       },
-      (error) => setErrorMessage(error ?? "Unable to save your avatar. Please try again."),
-      () => {},
+      (error) => {
+        if (requestId !== latestRequestId.current) return;
+        const message = typeof error === "string" && error.trim() ? error : "Unable to save your avatar. Please try again.";
+        setErrorMessage(message);
+      },
+      () => {
+        if (requestId === latestRequestId.current) {
+          lastConfirmedPick.current = userAvatar;
+        }
+      },
     );
   }
 
   function handleClose() {
-    if (lastPick.current) {
-      const newUserDetails = { ...userDetails, user_avatar: lastPick.current };
-      setUserDetails(newUserDetails);
-      LocalStorage.setUserInfo(newUserDetails);
-      saveSharedUserInfo(newUserDetails);
+    if (lastConfirmedPick.current) {
+      const savedAvatar = lastConfirmedPick.current;
+      setUserDetails((prev) => {
+        const newUserDetails = { ...prev, user_avatar: savedAvatar };
+        LocalStorage.setUserInfo(newUserDetails);
+        saveSharedUserInfo(newUserDetails);
+        return newUserDetails;
+      });
     }
     onClose();
   }
@@ -96,15 +123,17 @@ export default function AvatarPickerModal({ open, onClose }) {
         <PageTitle>Choose Your Avatar</PageTitle>
       </Header>
       <Main>
-        {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
+        {errorMessage && <FullWidthErrorMsg role="alert">{errorMessage}</FullWidthErrorMsg>}
 
         <s.TabBar role="tablist" aria-label="Avatar styles">
           {AVATAR_TABS.map((tab) => (
             <s.TabButton
               key={tab.id}
+              id={`avatar-tab-${tab.id}`}
               type="button"
               role="tab"
               aria-selected={tab.id === activeTab.id}
+              aria-controls="avatar-picker-panel"
               $active={tab.id === activeTab.id}
               onClick={() => setActiveTabId(tab.id)}
             >
@@ -113,19 +142,20 @@ export default function AvatarPickerModal({ open, onClose }) {
           ))}
         </s.TabBar>
 
-        <s.PickerSection>
+        <s.PickerSection id="avatar-picker-panel" role="tabpanel" aria-labelledby={`avatar-tab-${activeTab.id}`}>
           <s.PickerGrid>
             {activeTab.items.map((item) => (
               <s.AvatarOption
                 key={item.id}
                 type="button"
                 aria-label={item.label}
+                aria-pressed={characterId === item.id}
                 title={item.label}
                 $selected={characterId === item.id}
                 $backgroundColor={backgroundColor}
                 onClick={() => pick({ image_name: item.id })}
               >
-                <AvatarArtwork imageName={item.id} color={characterColor} />
+                <AvatarArtwork imageName={item.id} color={characterColor} decorative />
                 {characterId === item.id && (
                   <s.SelectionCheckmark $mini={false}>
                     <CheckIcon sx={{ fontSize: "inherit" }} />
@@ -148,6 +178,7 @@ export default function AvatarPickerModal({ open, onClose }) {
                   key={palette.id}
                   type="button"
                   aria-label={palette.label}
+                  aria-pressed={isSelected}
                   title={palette.label}
                   $dualTone={activeTab.usesDualToneSwatch}
                   $backgroundColor={palette.backgroundColor}

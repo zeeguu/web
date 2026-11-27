@@ -82,15 +82,16 @@ const ACCESSORY_LAYERS = {
   ),
 };
 
-export default function ZeeguuLogoAvatar({ layers = [], color, label = "Zeeguu avatar" }) {
+export default function ZeeguuLogoAvatar({ layers = [], color, label = "Zeeguu avatar", decorative = false }) {
   const clipId = useId();
   return (
     <svg
       viewBox="0 0 100 100"
       width="100%"
       height="100%"
-      role="img"
-      aria-label={label}
+      role={decorative ? undefined : "img"}
+      aria-label={decorative ? undefined : label}
+      aria-hidden={decorative || undefined}
       style={{ display: "block", pointerEvents: "none" }}
     >
       <defs>

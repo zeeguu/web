@@ -92,7 +92,7 @@ export const ALL_AVATARS = [
   ...CLASSIC_AVATARS,
 ];
 
-const AVATAR_BY_ID = Object.fromEntries(ALL_AVATARS.map((item) => [item.id, item]));
+const AVATAR_BY_ID = new Map(ALL_AVATARS.map((item) => [item.id, item]));
 
 export const AVATAR_CHARACTER_IDS = ALL_AVATARS.map((item) => item.id);
 
@@ -145,10 +145,10 @@ export const AVATAR_BACKGROUND_COLORS = [
   ...LEGACY_AVATAR_BACKGROUND_COLORS,
 ];
 
-const VALID_CHARACTER_COLOR_MAP = Object.fromEntries(
+const VALID_CHARACTER_COLOR_MAP = new Map(
   AVATAR_CHARACTER_COLORS.map((c) => [c.toLowerCase(), c]),
 );
-const VALID_BACKGROUND_COLOR_MAP = Object.fromEntries(
+const VALID_BACKGROUND_COLOR_MAP = new Map(
   AVATAR_BACKGROUND_COLORS.map((c) => [c.toLowerCase(), c]),
 );
 
@@ -157,21 +157,21 @@ export const DEFAULT_AVATAR_CHARACTER_COLOR = AVATAR_PALETTES[0].characterColor;
 export const DEFAULT_AVATAR_BACKGROUND_COLOR = AVATAR_PALETTES[0].backgroundColor;
 
 export function validatedAvatarCharacterId(id) {
-  return id && AVATAR_BY_ID[id] ? id : DEFAULT_AVATAR_CHARACTER_ID;
+  return typeof id === "string" && AVATAR_BY_ID.has(id) ? id : DEFAULT_AVATAR_CHARACTER_ID;
 }
 
 export function validatedAvatarCharacterColor(color) {
-  if (!color) return DEFAULT_AVATAR_CHARACTER_COLOR;
-  return VALID_CHARACTER_COLOR_MAP[color.toLowerCase()] ?? DEFAULT_AVATAR_CHARACTER_COLOR;
+  if (typeof color !== "string") return DEFAULT_AVATAR_CHARACTER_COLOR;
+  return VALID_CHARACTER_COLOR_MAP.get(color.toLowerCase()) ?? DEFAULT_AVATAR_CHARACTER_COLOR;
 }
 
 export function validatedAvatarBackgroundColor(color) {
-  if (!color) return DEFAULT_AVATAR_BACKGROUND_COLOR;
-  return VALID_BACKGROUND_COLOR_MAP[color.toLowerCase()] ?? DEFAULT_AVATAR_BACKGROUND_COLOR;
+  if (typeof color !== "string") return DEFAULT_AVATAR_BACKGROUND_COLOR;
+  return VALID_BACKGROUND_COLOR_MAP.get(color.toLowerCase()) ?? DEFAULT_AVATAR_BACKGROUND_COLOR;
 }
 
 export function getAvatarOption(id) {
-  return AVATAR_BY_ID[validatedAvatarCharacterId(id)];
+  return AVATAR_BY_ID.get(validatedAvatarCharacterId(id));
 }
 
 export function getAvatarTabForId(id) {
@@ -179,8 +179,9 @@ export function getAvatarTabForId(id) {
 }
 
 export function findMatchingPalette(characterColor, backgroundColor) {
-  const fg = characterColor?.toLowerCase();
-  const bg = backgroundColor?.toLowerCase();
+  if (typeof characterColor !== "string" || typeof backgroundColor !== "string") return null;
+  const fg = characterColor.toLowerCase();
+  const bg = backgroundColor.toLowerCase();
   return (
     AVATAR_PALETTES.find(
       (p) => p.characterColor.toLowerCase() === fg && p.backgroundColor.toLowerCase() === bg,
