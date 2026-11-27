@@ -17,7 +17,7 @@ import { wordsAsTile } from "./audioUtils";
 import { knownLanguageName } from "../utils/misc/languageCodeToName";
 import ShareLessonButton from "./ShareLessonButton";
 import LessonDialogue from "./LessonDialogue";
-import LessonFeedbackBox from "./LessonFeedbackBox";
+import LessonFeedbackBox, { takesFeedback } from "./LessonFeedbackBox";
 
 export default function LessonPlaybackView({
   lessonData,
@@ -143,9 +143,7 @@ export default function LessonPlaybackView({
           />
         )}
 
-        {/* Only A0 lessons can be tuned: the other levels' prompts have no
-            pace or repetition to change. */}
-        {lessonData.is_completed && lessonData.cefr_level === "A0" && lessonData.lesson_id && (
+        {lessonData.is_completed && takesFeedback(lessonData) && lessonData.lesson_id && (
           <LessonFeedbackBox
             lessonData={lessonData}
             setLessonData={setLessonData}

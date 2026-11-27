@@ -9,6 +9,8 @@ vi.mock("../../src/utils/chimes", () => ({ playHappyChime: vi.fn(), playDoneChim
 
 const LESSON = {
   lesson_id: 7,
+  takes_feedback: true,
+  builds_on_history: true, // an A0 lesson: its length is a setting
   canonical_suggestion: "grocery shopping",
   situation_lesson_count: 11,
   next_situations: ["at the bakery", "asking the time", "taking the bus"],
@@ -96,6 +98,12 @@ describe("LessonFeedbackBox", () => {
 
     fireEvent.click(screen.getByText("Change"));
     expect(onOpenSettings).toHaveBeenCalled();
+  });
+
+  it("says nothing of length after a lesson above A0, whose length is not a setting", () => {
+    setup({ lesson: { ...LESSON, builds_on_history: false }, preferences: { audio_lesson_minutes: "15" } });
+    expect(screen.queryByText(/Lessons are about/)).toBeNull();
+    expect(screen.getByRole("radiogroup", { name: "Next lesson" })).toBeTruthy();
   });
 });
 
