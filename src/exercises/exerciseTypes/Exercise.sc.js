@@ -623,6 +623,47 @@ let MultipleChoiceContext = styled.div`
 // the sentence. The $tight variant is used by MultipleChoiceContext
 // where the wrapper sits directly below the chosen option (already-airy
 // layout) and doesn't need the bigger top margin.
+// A word shown on its own, as on a flashcard: big, centered, and its
+// translation under a thin divider. The flashcard exercises use it, and so
+// does the screen after an answer that learned the word (LearnedWordCard).
+let FlashcardFace = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+`;
+
+let FlashcardHeadline = styled.div`
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+`;
+
+let FlashcardWord = styled.h1`
+  margin: 0.2rem 0 0;
+  font-size: clamp(1.75rem, 6.5vw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-primary);
+`;
+
+let FlashcardDivider = styled.hr`
+  width: 3rem;
+  margin: 0.25rem 0 0;
+  border: none;
+  border-top: 2px solid var(--border-color);
+`;
+
+let FlashcardAnswer = styled.p`
+  margin: 0.25rem 0 0;
+  font-size: clamp(1.4rem, 5.2vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--title-color);
+`;
+
 // The one main action at the bottom of the card: the flashcard's
 // Show answer, and Next once an exercise is answered. Same look and the same
 // spot, so the thumb goes to one place all session.
@@ -787,6 +828,11 @@ export {
   CornerIcons,
   CornerIconButton,
   AfterAnswerFooter,
+  FlashcardFace,
+  FlashcardHeadline,
+  FlashcardWord,
+  FlashcardDivider,
+  FlashcardAnswer,
   WordActions,
   PrimaryExerciseButton,
   CenteredRevealedSlot,

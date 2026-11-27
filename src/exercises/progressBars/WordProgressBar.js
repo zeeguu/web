@@ -4,7 +4,7 @@ import { correctnessBasedOnTries } from "../CorrectnessBasedOnTries.js";
 import LevelIndicator from "./levelIndicator/LevelIndicator.js";
 import { WordProgressWrapper } from "./levelIndicator/LevelIndicator.sc.js";
 
-export default function WordProgressBar({ bookmark, message, isGreyedOutBar }) {
+export default function WordProgressBar({ bookmark, message, isGreyedOutBar, canLearn = true }) {
   // The level indicator predicts the new level from the message itself;
   // userIsWrong is only for the blinking. Both stay unset while the learner
   // is still in the middle of an answer.
@@ -23,6 +23,7 @@ export default function WordProgressBar({ bookmark, message, isGreyedOutBar }) {
           message={message}
           userIsWrong={userIsWrong}
           isGreyedOutBar={isGreyedOutBar}
+          canLearn={canLearn}
         />
       </WordProgressWrapper>
     </>

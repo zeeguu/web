@@ -20,9 +20,6 @@ const bookmark = {
 export const AfterAnswer = {
   args: {
     exerciseType: "TranslateL2toL1",
-    bookmark: { ...bookmark, is_about_to_be_learned: false },
-    message: "C",
-    isCorrect: true,
     progressBar: <WordProgressBar bookmark={{ ...bookmark, is_about_to_be_learned: false, level: 2 }} message="C" />,
   },
 };
@@ -31,9 +28,7 @@ export const AfterAnswer = {
 export const WordLearned = {
   args: {
     exerciseType: "TranslateL2toL1",
-    bookmark,
-    message: "C",
-    isCorrect: true,
+    learned: true,
     progressBar: <WordProgressBar bookmark={bookmark} message="C" />,
   },
 };

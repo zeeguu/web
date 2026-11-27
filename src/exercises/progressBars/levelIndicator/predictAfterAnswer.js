@@ -6,9 +6,15 @@ export const COOLING_INTERVALS_PER_LEVEL = 3; // cooling intervals 0, 1, and 2
 // so the bar can show it before the next fetch. Mirrors the api scheduler
 // (four_levels_per_word.py): three correct answers per level; while the word is
 // on the fast track (the api's per-word `fast_track`), a clean answer (first
-// try, no hint) moves it up a level at once.
-export function predictAfterAnswer({ level, cooling_interval, message, fastTrack = false }) {
+// try, no hint) moves it up a level at once. `canLearn` is false when this
+// answer cannot learn the word (it needs a production answer, see
+// canLearnWithThisExercise): a right answer then leaves a level-4 word as it is.
+export function predictAfterAnswer({ level, cooling_interval, message, fastTrack = false, canLearn = true }) {
   const [userIsCorrect, userIsWrong] = correctnessBasedOnTries(message);
+
+  if (userIsCorrect && level >= 4 && !canLearn) {
+    return { level, cooling_interval };
+  }
 
   if (userIsCorrect && fastTrack && isCleanAnswer(message)) {
     return { level: level + 1, cooling_interval: 0 };
@@ -30,9 +36,9 @@ export function predictAfterAnswer({ level, cooling_interval, message, fastTrack
 // is_about_to_be_learned for every level-4 word on the fast track, but only a
 // clean answer, or any correct one at the longest interval (is_last_in_cycle),
 // actually learns it.
-export function isWordLearned({ message, is_about_to_be_learned, is_last_in_cycle }) {
+export function isWordLearned({ message, is_about_to_be_learned, is_last_in_cycle, canLearn = true }) {
   const [userIsCorrect] = correctnessBasedOnTries(message);
   return Boolean(
-    userIsCorrect && is_about_to_be_learned && (is_last_in_cycle || isCleanAnswer(message)),
+    canLearn && userIsCorrect && is_about_to_be_learned && (is_last_in_cycle || isCleanAnswer(message)),
   );
 }

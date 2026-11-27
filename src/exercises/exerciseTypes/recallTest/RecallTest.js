@@ -34,44 +34,6 @@ const CardStage = styled.div`
   padding: 1.5rem 1rem 0;
 `;
 
-const CardFace = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-`;
-
-const CardHeadline = styled.div`
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-`;
-
-const CardPrompt = styled.h1`
-  margin: 0.2rem 0 0;
-  font-size: clamp(1.75rem, 6.5vw, 2.35rem);
-  font-weight: 700;
-  line-height: 1.25;
-  color: var(--text-primary);
-`;
-
-const CardDivider = styled.hr`
-  width: 3rem;
-  margin: 0.25rem 0 0;
-  border: none;
-  border-top: 2px solid var(--border-color);
-`;
-
-const CardAnswer = styled.p`
-  margin: 0.25rem 0 0;
-  font-size: clamp(1.4rem, 5.2vw, 1.9rem);
-  font-weight: 700;
-  line-height: 1.25;
-  color: var(--title-color);
-`;
-
 const GradeBlock = styled.div`
   width: 100%;
   display: flex;
@@ -219,16 +181,16 @@ export default function RecallTest({
     <s.Exercise className="recallTest">
       {useCenteredFlashcardLayout ? (
         <CardStage className="flashcardStage">
-          <CardFace>
-            <CardHeadline>{strings[headlineKey]}</CardHeadline>
-            <CardPrompt>{promptText}</CardPrompt>
+          <s.FlashcardFace>
+            <s.FlashcardHeadline>{strings[headlineKey]}</s.FlashcardHeadline>
+            <s.FlashcardWord>{promptText}</s.FlashcardWord>
             {saysTheyKnowIt && (
               <>
-                <CardDivider />
-                <CardAnswer>{answer(exerciseBookmark)}</CardAnswer>
+                <s.FlashcardDivider />
+                <s.FlashcardAnswer>{answer(exerciseBookmark)}</s.FlashcardAnswer>
               </>
             )}
-          </CardFace>
+          </s.FlashcardFace>
 
           <GradeBlock>
             {saysTheyKnowIt ? (

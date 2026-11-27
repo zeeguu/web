@@ -68,6 +68,12 @@ const ExForm = styled.div`
     flex: 0 0 auto;
   }
 
+  /* The answer learned the word: LearnedWordCard shows the word itself, so
+     the exercise (still mounted, for its sounds and state) is hidden. */
+  &.wordLearned > ${Exercise} {
+    display: none;
+  }
+
   box-sizing: border-box; // to ensure that padding does not expand width!
 
   .bottomInput {

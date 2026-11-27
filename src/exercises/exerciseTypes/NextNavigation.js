@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import SessionStorage from "../../assorted/SessionStorage.js";
 import { SpeechContext } from "../../contexts/SpeechContext.js";
-import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
+import { EXERCISE_TYPES, canLearnWithThisExercise } from "../ExerciseTypeConstants";
 import { WEB_URL } from "../../config";
 
 import CelebrationModal from "../CelebrationModal";
@@ -84,6 +84,7 @@ export default function NextNavigation({
       message: messageForAPI,
       is_about_to_be_learned: exerciseBookmark.is_about_to_be_learned,
       is_last_in_cycle: exerciseBookmark.is_last_in_cycle,
+      canLearn: canLearnWithThisExercise(exerciseBookmark, exerciseType),
     });
 
   function handleSpeak() {

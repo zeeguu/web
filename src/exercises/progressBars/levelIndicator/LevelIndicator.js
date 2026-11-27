@@ -69,6 +69,7 @@ export default function LevelIndicator({
   message,
   userIsWrong,
   isGreyedOutBar,
+  canLearn = true,
 }) {
   if (bookmark === undefined || bookmark === null) {
     return GrayedOutIndicator;
@@ -90,6 +91,7 @@ export default function LevelIndicator({
     cooling_interval: before.cooling_interval,
     message,
     fastTrack: bookmark.fast_track === true,
+    canLearn,
   });
   const levelCompleted = level > before.level;
 
