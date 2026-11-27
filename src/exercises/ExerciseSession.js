@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import TopWordProgress from "./components/TopWordProgress";
+import TopWordProgress, { learnedByThisAnswer } from "./components/TopWordProgress";
+import LearnedWordCard from "./components/LearnedWordCard";
 import { useHistory } from "react-router-dom";
 import ExerciseSessionProgressBar from "./ExerciseSessionProgressBar";
 import * as s from "./Exercises.sc";
@@ -553,6 +554,14 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
     setLinksUnderInput,
   };
 
+  const wordLearned = learnedByThisAnswer({
+    exerciseType: currentExerciseType,
+    bookmark: selectedExerciseBookmark,
+    message: currentMessageToAPI,
+    isCorrect,
+    isExerciseOver,
+  });
+
   const wordProgressBar = isExerciseOver ? (
     <WordProgressBar
       bookmark={selectedExerciseBookmark}
@@ -586,14 +595,17 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             />
           </div>
         )}
-        <s.ExForm className={isSoftKeyboardOpen ? "softKeyboardOpen" : undefined}>
+        <s.ExForm
+          className={[isSoftKeyboardOpen && "softKeyboardOpen", wordLearned && "wordLearned"]
+            .filter(Boolean)
+            .join(" ") || undefined}
+        >
           <TopWordProgress
             exerciseType={currentExerciseType}
             progressBar={wordProgressBar}
-            bookmark={selectedExerciseBookmark}
-            message={currentMessageToAPI}
-            isCorrect={isCorrect}
+            learned={wordLearned}
           />
+          {wordLearned && <LearnedWordCard bookmark={selectedExerciseBookmark} />}
           <ExerciseLinksContext.Provider value={exerciseLinks}>
           <CurrentExerciseComponent
             key={`${sessionBuildId}-${currentIndex}`}

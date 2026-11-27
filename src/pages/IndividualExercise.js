@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useContext } from "react";
-import TopWordProgress from "../exercises/components/TopWordProgress";
+import TopWordProgress, { learnedByThisAnswer } from "../exercises/components/TopWordProgress";
+import LearnedWordCard from "../exercises/components/LearnedWordCard";
 import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 import { useParams } from "react-router-dom";
 import { SpeechContext } from "../contexts/SpeechContext";
@@ -342,24 +343,32 @@ export default function IndividualExercise() {
       ? multipleBookmarks
       : [bookmark];
 
+  // The URL names the type ("Match"), not the internal constant
+  const internalExerciseType = exerciseType === "Match" ? EXERCISE_TYPES.match : exerciseType;
+  const wordLearned = learnedByThisAnswer({
+    exerciseType: internalExerciseType,
+    bookmark,
+    message,
+    isCorrect,
+    isExerciseOver,
+  });
+
   return (
     <APIContext.Provider value={api}>
       <SpeechContext.Provider value={mockSpeech}>
         <NarrowColumn>
           <s.ExercisesColumn>
-            <s.ExForm>
+            <s.ExForm className={wordLearned ? "wordLearned" : undefined}>
               <TopWordProgress
-                // The URL names the type ("Match"), not the internal constant
-                exerciseType={exerciseType === "Match" ? EXERCISE_TYPES.match : exerciseType}
+                exerciseType={internalExerciseType}
                 progressBar={
                   isExerciseOver ? (
                     <WordProgressBar bookmark={bookmark} message={message} isGreyedOutBar={false} />
                   ) : null
                 }
-                bookmark={bookmark}
-                message={message}
-                isCorrect={isCorrect}
+                learned={wordLearned}
               />
+              {wordLearned && <LearnedWordCard bookmark={bookmark} />}
               <ExerciseLinksContext.Provider value={{ setLinksUnderInput }}>
                 <ExerciseComponent
                   bookmarksToStudy={bookmarksToUse}
