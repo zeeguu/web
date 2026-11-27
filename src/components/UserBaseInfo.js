@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { AvatarImage } from "../profile/UserProfile.sc";
+import AvatarArtwork from "../profile/AvatarArtwork";
 import {
-  AVATAR_IMAGE_MAP,
   validatedAvatarBackgroundColor,
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
@@ -27,7 +26,7 @@ export default function UserBaseInfo({ user, subtitle }) {
   return (
     <>
       <s.Avatar $backgroundColor={selectedAvatarBackgroundColor}>
-        <AvatarImage $imageSource={AVATAR_IMAGE_MAP[selectedAvatarCharacterId]} $color={selectedAvatarCharacterColor} />
+        <AvatarArtwork imageName={selectedAvatarCharacterId} color={selectedAvatarCharacterColor} />
       </s.Avatar>
       <s.UserIdentity>
         <s.UserNameWrapper>

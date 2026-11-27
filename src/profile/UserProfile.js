@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
+import LocalStorage from "../assorted/LocalStorage";
+import { saveSharedUserInfo } from "../utils/cookies/userInfo";
 import { UserContext } from "../contexts/UserContext";
 import strings from "../i18n/definitions";
 import { APIContext } from "../contexts/APIContext";
@@ -25,7 +27,7 @@ export default function UserProfile() {
   const api = useContext(APIContext);
   const history = useHistory();
   const [profileData, setProfileData] = useState(null);
-  const { userDetails } = useContext(UserContext);
+  const { userDetails, setUserDetails } = useContext(UserContext);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [languagesModalOpen, setLanguagesModalOpen] = useState(false);
   const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
@@ -186,6 +188,20 @@ export default function UserProfile() {
     return null;
   };
 
+  const handleSaveUsername = (newUsername, onSuccess, onError) => {
+    api.saveUserDetails(
+      { username: newUsername },
+      (error) => onError(error ?? "Unable to update username. Please try again."),
+      () => {
+        const updated = { ...userDetails, username: newUsername };
+        setUserDetails(updated);
+        LocalStorage.setUserInfo(updated);
+        saveSharedUserInfo(updated);
+        onSuccess();
+      },
+    );
+  };
+
   // The tabs navigate on their own; opening any of them counts as having seen
   // the new badges.
   const handleTabClick = () => {
@@ -221,6 +237,7 @@ export default function UserProfile() {
               activeLanguages={activeLanguages}
               onOpenLanguagesModal={() => setLanguagesModalOpen(true)}
               onEditAvatar={() => setAvatarPickerOpen(true)}
+              onSaveUsername={handleSaveUsername}
               friendActionHandlers={friendActionHandlers}
               isPendingFriendAction={isPendingFriendAction}
             />

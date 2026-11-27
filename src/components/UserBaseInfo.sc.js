@@ -4,7 +4,7 @@ import { AvatarBackground} from "../profile/UserProfile.sc";
 export const Avatar = styled(AvatarBackground)`
   width: 2.5rem;
   height: 2.5rem;
-  padding: 3px;
+  padding: 0;
 `;
 
 export const UserIdentity = styled.div`

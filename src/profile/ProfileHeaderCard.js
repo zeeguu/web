@@ -1,6 +1,8 @@
+import { useEffect, useRef, useState } from "react";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import {
-  AVATAR_IMAGE_MAP,
   validatedAvatarBackgroundColor,
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
@@ -10,7 +12,8 @@ import DynamicFlagImage from "../components/DynamicFlagImage";
 import * as s from "./ProfileHeaderCard.sc";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import { streakFireOrange } from "../components/colors";
-import { AvatarBackground, AvatarImage, EditAvatarButton, LanguageOverflowBubble } from "./UserProfile.sc";
+import { AvatarBackground, EditAvatarButton, LanguageOverflowBubble } from "./UserProfile.sc";
+import AvatarArtwork from "./AvatarArtwork";
 import { FriendActionButtons } from "./FriendActionButtons";
 
 function formatDate(date) {
@@ -23,6 +26,7 @@ export function ProfileHeaderCard({
   activeLanguages,
   onOpenLanguagesModal,
   onEditAvatar,
+  onSaveUsername,
   friendActionHandlers,
   isPendingFriendAction,
 }) {
@@ -36,6 +40,64 @@ export function ProfileHeaderCard({
   const isFriendAccepted = friendship?.is_accepted === true;
   const friendStreakValue = friendship?.friend_streak ?? 0;
 
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const [usernameDraft, setUsernameDraft] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [isSavingUsername, setIsSavingUsername] = useState(false);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (isEditingUsername && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditingUsername]);
+
+  useEffect(() => {
+    setIsEditingUsername(false);
+    setUsernameError("");
+    setIsSavingUsername(false);
+  }, [isOwnProfile, profileData?.username]);
+
+  const startEditingUsername = () => {
+    if (!isOwnProfile || !onSaveUsername) return;
+    setUsernameDraft(profileData?.username ?? "");
+    setUsernameError("");
+    setIsEditingUsername(true);
+  };
+
+  const cancelEditingUsername = () => {
+    setIsEditingUsername(false);
+    setUsernameError("");
+  };
+
+  const submitUsername = (e) => {
+    e.preventDefault();
+    const trimmed = usernameDraft.trim();
+    if (!trimmed) {
+      setUsernameError("Please provide a username.");
+      return;
+    }
+    if (trimmed === profileData?.username) {
+      setIsEditingUsername(false);
+      setUsernameError("");
+      return;
+    }
+    setIsSavingUsername(true);
+    setUsernameError("");
+    onSaveUsername(
+      trimmed,
+      () => {
+        setIsSavingUsername(false);
+        setIsEditingUsername(false);
+      },
+      (error) => {
+        setIsSavingUsername(false);
+        setUsernameError(error || "Unable to update username.");
+      },
+    );
+  };
+
   return (
     <s.HeaderCard>
       <AvatarBackground
@@ -43,7 +105,7 @@ export function ProfileHeaderCard({
         onClick={isOwnProfile ? onEditAvatar : undefined}
         $backgroundColor={avatarBackgroundColor}
       >
-        <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+        <AvatarArtwork imageName={avatarCharacterId} color={avatarCharacterColor} />
         {isOwnProfile && (
           <EditAvatarButton type="button" aria-label="Change avatar">
             <EditIcon sx={{ fontSize: "1rem" }} />
@@ -53,7 +115,50 @@ export function ProfileHeaderCard({
 
       <div>
         <div className="name-wrapper">
-          <h2 className="username">{profileData?.username ?? "-"}</h2>
+          {isEditingUsername ? (
+            <s.UsernameEditForm onSubmit={submitUsername}>
+              <div className="edit-row">
+                <s.UsernameInput
+                  ref={inputRef}
+                  type="text"
+                  value={usernameDraft}
+                  maxLength={50}
+                  disabled={isSavingUsername}
+                  aria-label="Username"
+                  onChange={(e) => setUsernameDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") cancelEditingUsername();
+                  }}
+                />
+                <s.InlineEditButton type="submit" aria-label="Save username" disabled={isSavingUsername}>
+                  <CheckIcon sx={{ fontSize: "1rem" }} />
+                </s.InlineEditButton>
+                <s.InlineEditButton
+                  type="button"
+                  aria-label="Cancel editing username"
+                  disabled={isSavingUsername}
+                  onClick={cancelEditingUsername}
+                >
+                  <CloseIcon sx={{ fontSize: "1rem" }} />
+                </s.InlineEditButton>
+              </div>
+              {usernameError && <s.UsernameError>{usernameError}</s.UsernameError>}
+            </s.UsernameEditForm>
+          ) : (
+            <div className="username-row">
+              <h2
+                className={isOwnProfile && onSaveUsername ? "username editable" : "username"}
+                onClick={isOwnProfile && onSaveUsername ? startEditingUsername : undefined}
+              >
+                {profileData?.username ?? "-"}
+              </h2>
+              {isOwnProfile && onSaveUsername && (
+                <s.InlineEditButton type="button" aria-label="Change username" onClick={startEditingUsername}>
+                  <EditIcon sx={{ fontSize: "0.95rem" }} />
+                </s.InlineEditButton>
+              )}
+            </div>
+          )}
           {profileData?.name && <h2 className="display-name">({profileData.name})</h2>}
         </div>
 

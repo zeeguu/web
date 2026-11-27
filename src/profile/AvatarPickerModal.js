@@ -10,15 +10,15 @@ import PageTitle from "../pages/_pages_shared/PageTitle.sc";
 import Main from "../pages/_pages_shared/Main.sc";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import {
-  AVATAR_BACKGROUND_COLORS,
-  AVATAR_CHARACTER_COLORS,
-  AVATAR_CHARACTER_IDS,
-  AVATAR_IMAGE_MAP,
+  AVATAR_PALETTES,
+  AVATAR_TABS,
+  findMatchingPalette,
+  getAvatarTabForId,
   validatedAvatarBackgroundColor,
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
 } from "./avatarOptions";
-import { AvatarImage } from "./UserProfile.sc";
+import AvatarArtwork from "./AvatarArtwork";
 import * as s from "./AvatarPickerModal.sc";
 
 // Opened by tapping your own avatar on the profile page. Every pick is saved
@@ -26,6 +26,7 @@ import * as s from "./AvatarPickerModal.sc";
 export default function AvatarPickerModal({ open, onClose }) {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails } = useContext(UserContext);
+  const [activeTabId, setActiveTabId] = useState(AVATAR_TABS[0].id);
   const [characterId, setCharacterId] = useState();
   const [characterColor, setCharacterColor] = useState();
   const [backgroundColor, setBackgroundColor] = useState();
@@ -41,7 +42,9 @@ export default function AvatarPickerModal({ open, onClose }) {
   // then, so a UserContext update while it is open cannot undo the picks.
   useEffect(() => {
     if (!open) return;
-    setCharacterId(validatedAvatarCharacterId(userDetails.user_avatar?.image_name));
+    const currentId = validatedAvatarCharacterId(userDetails.user_avatar?.image_name);
+    setCharacterId(currentId);
+    setActiveTabId(getAvatarTabForId(currentId));
     setCharacterColor(validatedAvatarCharacterColor(userDetails.user_avatar?.character_color));
     setBackgroundColor(validatedAvatarBackgroundColor(userDetails.user_avatar?.background_color));
     setErrorMessage("");
@@ -84,6 +87,9 @@ export default function AvatarPickerModal({ open, onClose }) {
     onClose();
   }
 
+  const activeTab = AVATAR_TABS.find((t) => t.id === activeTabId) ?? AVATAR_TABS[0];
+  const matchedPalette = findMatchingPalette(characterColor, backgroundColor);
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Header withoutLogo>
@@ -91,18 +97,36 @@ export default function AvatarPickerModal({ open, onClose }) {
       </Header>
       <Main>
         {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
+
+        <s.TabBar role="tablist" aria-label="Avatar styles">
+          {AVATAR_TABS.map((tab) => (
+            <s.TabButton
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={tab.id === activeTab.id}
+              $active={tab.id === activeTab.id}
+              onClick={() => setActiveTabId(tab.id)}
+            >
+              {tab.label}
+            </s.TabButton>
+          ))}
+        </s.TabBar>
+
         <s.PickerSection>
-          <span className="picker-label">Character</span>
           <s.PickerGrid>
-            {AVATAR_CHARACTER_IDS.map((id) => (
+            {activeTab.items.map((item) => (
               <s.AvatarOption
-                key={id}
-                $selected={characterId === id}
+                key={item.id}
+                type="button"
+                aria-label={item.label}
+                title={item.label}
+                $selected={characterId === item.id}
                 $backgroundColor={backgroundColor}
-                onClick={() => pick({ image_name: id })}
+                onClick={() => pick({ image_name: item.id })}
               >
-                <AvatarImage $imageSource={AVATAR_IMAGE_MAP[id]} $color={characterColor} />
-                {characterId === id && (
+                <AvatarArtwork imageName={item.id} color={characterColor} />
+                {characterId === item.id && (
                   <s.SelectionCheckmark $mini={false}>
                     <CheckIcon sx={{ fontSize: "inherit" }} />
                   </s.SelectionCheckmark>
@@ -112,45 +136,40 @@ export default function AvatarPickerModal({ open, onClose }) {
           </s.PickerGrid>
         </s.PickerSection>
 
-        <s.PickerSection>
-          <span className="picker-label">Character Color</span>
+        <s.PaletteSection>
+          <span className="picker-label">
+            {activeTab.usesDualToneSwatch ? "Color Theme" : "Background"}
+          </span>
           <s.PickerGrid>
-            {AVATAR_CHARACTER_COLORS.map((color) => (
-              <s.ColorOption
-                key={color}
-                $backgroundColor={color}
-                $selected={characterColor === color}
-                onClick={() => pick({ character_color: color })}
-              >
-                {characterColor === color && (
-                  <s.SelectionCheckmark $mini={true}>
-                    <CheckIcon sx={{ fontSize: "inherit" }} />
-                  </s.SelectionCheckmark>
-                )}
-              </s.ColorOption>
-            ))}
+            {AVATAR_PALETTES.map((palette) => {
+              const isSelected = matchedPalette?.id === palette.id;
+              return (
+                <s.PaletteOption
+                  key={palette.id}
+                  type="button"
+                  aria-label={palette.label}
+                  title={palette.label}
+                  $dualTone={activeTab.usesDualToneSwatch}
+                  $backgroundColor={palette.backgroundColor}
+                  $characterColor={palette.characterColor}
+                  $selected={isSelected}
+                  onClick={() =>
+                    pick({
+                      character_color: palette.characterColor,
+                      background_color: palette.backgroundColor,
+                    })
+                  }
+                >
+                  {isSelected && (
+                    <s.SelectionCheckmark $mini={true}>
+                      <CheckIcon sx={{ fontSize: "inherit" }} />
+                    </s.SelectionCheckmark>
+                  )}
+                </s.PaletteOption>
+              );
+            })}
           </s.PickerGrid>
-        </s.PickerSection>
-
-        <s.PickerSection>
-          <span className="picker-label">Background Color</span>
-          <s.PickerGrid>
-            {AVATAR_BACKGROUND_COLORS.map((color) => (
-              <s.ColorOption
-                key={color}
-                $backgroundColor={color}
-                $selected={backgroundColor === color}
-                onClick={() => pick({ background_color: color })}
-              >
-                {backgroundColor === color && (
-                  <s.SelectionCheckmark $mini={true}>
-                    <CheckIcon sx={{ fontSize: "inherit" }} />
-                  </s.SelectionCheckmark>
-                )}
-              </s.ColorOption>
-            ))}
-          </s.PickerGrid>
-        </s.PickerSection>
+        </s.PaletteSection>
       </Main>
     </Modal>
   );

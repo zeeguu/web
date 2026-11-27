@@ -110,9 +110,9 @@ const TopBarActions = styled.div`
 `;
 
 const TopBarNavAvatar = styled(AvatarBackground)`
-  width: 1.8rem;
-  height: 1.8rem;
-  padding: 2px;
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
 `;
 
 export { TopBarContainer, StreakValue, StreakLabel, FlagImage, FlagButton, StreakInfo, DailyFeedbackBannerContainer, DailyFeedbackLink, ProfileAvatarButton, TopBarNavAvatar, TopBarActions };

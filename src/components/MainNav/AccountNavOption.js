@@ -8,9 +8,9 @@ import NavigationOptions, { isNavOptionActive } from "./navigationOptions";
 import strings from "../../i18n/definitions";
 import { isMobileScreenWidth } from "./screenSize";
 
-import { AvatarBackground, AvatarImage } from "../../profile/UserProfile.sc";
+import { AvatarBackground } from "../../profile/UserProfile.sc";
+import AvatarArtwork from "../../profile/AvatarArtwork";
 import {
-  AVATAR_IMAGE_MAP,
   validatedAvatarBackgroundColor,
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
@@ -20,9 +20,9 @@ import NotificationIcon from "../NotificationIcon";
 import { FriendRequestContext } from "../../contexts/FriendRequestContext";
 
 const NavAvatar = styled(AvatarBackground)`
-  width: 2rem;
-  height: 2rem;
-  padding: 3px;
+  width: 2.15rem;
+  height: 2.15rem;
+  padding: 0;
 `;
 
 const Username = styled.div`
@@ -72,7 +72,7 @@ export default function AccountNavOption({ screenWidth, onNavigate = () => {} })
         onClick={onNavigate}
         icon={
           <NavAvatar $backgroundColor={avatarBackgroundColor} $isActive={isActive}>
-            <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+            <AvatarArtwork imageName={avatarCharacterId} color={avatarCharacterColor} />
           </NavAvatar>
         }
         text={

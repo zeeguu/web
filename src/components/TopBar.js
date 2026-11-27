@@ -5,9 +5,8 @@ import useScrollDirection from "../hooks/useScrollDirection";
 import LanguageModal from "./MainNav/LanguageModal";
 import LanguageStreakBar from "./LanguageStreakBar";
 import * as s from "./Banners.sc";
-import { AvatarBackground, AvatarImage } from "../profile/UserProfile.sc";
+import AvatarArtwork from "../profile/AvatarArtwork";
 import {
-  AVATAR_IMAGE_MAP,
   validatedAvatarBackgroundColor,
   validatedAvatarCharacterColor,
   validatedAvatarCharacterId,
@@ -92,7 +91,7 @@ export default function TopBar() {
           {Feature.has_gamification() && (
             <s.ProfileAvatarButton onClick={handleProfileClick} aria-label="Go to profile">
               <s.TopBarNavAvatar $backgroundColor={avatarBackgroundColor}>
-                <AvatarImage $imageSource={AVATAR_IMAGE_MAP[avatarCharacterId]} $color={avatarCharacterColor} />
+                <AvatarArtwork imageName={avatarCharacterId} color={avatarCharacterColor} />
               </s.TopBarNavAvatar>
               {(hasBadgeNotification || hasFriendRequestNotification) && (
                 <NotificationIcon

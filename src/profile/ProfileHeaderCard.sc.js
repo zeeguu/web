@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { streakFireOrange } from "../components/colors";
+import { orange500, streakFireOrange } from "../components/colors";
 
 export const HeaderCard = styled.div`
   position: relative;
@@ -22,18 +22,25 @@ export const HeaderCard = styled.div`
 
   .name-wrapper {
     display: flex;
-    column-gap: 1rem;
+    align-items: center;
+    column-gap: 0.75rem;
+    row-gap: 0.25rem;
     flex-wrap: wrap;
     margin-bottom: 1rem;
     padding-right: 2rem;
 
     @media (max-width: 768px) {
-      flex-direction: column;
-      gap: 0.25rem;
+      justify-content: center;
       margin-top: 0;
       padding-right: 0;
       margin-bottom: 0.5rem;
     }
+  }
+
+  .username-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
   }
 
   .username,
@@ -50,6 +57,10 @@ export const HeaderCard = styled.div`
 
   .username {
     color: var(--text-primary);
+
+    &.editable {
+      cursor: pointer;
+    }
 
     @media (max-width: 768px) {
       margin-bottom: 0;
@@ -122,4 +133,68 @@ export const StatsRow = styled.div`
     font-size: 1rem;
     font-weight: 600;
   }
+`;
+
+export const InlineEditButton = styled.button`
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  border: none;
+  background: var(--streak-banner-border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background: var(--streak-banner-hover);
+    color: ${orange500};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+`;
+
+export const UsernameEditForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: flex-start;
+
+  @media (max-width: 768px) {
+    align-items: center;
+  }
+
+  .edit-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+`;
+
+export const UsernameInput = styled.input`
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1.5px solid ${orange500};
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  width: 13rem;
+  max-width: 100%;
+  outline: none;
+
+  &:disabled {
+    opacity: 0.6;
+  }
+`;
+
+export const UsernameError = styled.span`
+  color: #dc2626;
+  font-size: 0.8rem;
+  font-weight: 500;
 `;
