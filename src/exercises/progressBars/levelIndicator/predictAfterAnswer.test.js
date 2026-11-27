@@ -68,3 +68,24 @@ describe("isWordLearned", () => {
     expect(isWordLearned({ message: "W", is_about_to_be_learned: true, is_last_in_cycle: true })).toBe(false);
   });
 });
+
+describe("an answer that cannot learn the word (needs production)", () => {
+  it("leaves a level-4 word as it is in the bar", () => {
+    expect(predictAfterAnswer({ level: 4, cooling_interval: 2, message: "C", fastTrack: true, canLearn: false })).toEqual({
+      level: 4,
+      cooling_interval: 2,
+    });
+  });
+
+  it("does not count as learning it", () => {
+    expect(isWordLearned({ message: "C", is_about_to_be_learned: true, is_last_in_cycle: true, canLearn: false })).toBe(false);
+  });
+
+  it("still moves a word up below level 4", () => {
+    expect(predictAfterAnswer({ level: 2, cooling_interval: 0, message: "C", fastTrack: true, canLearn: false })).toEqual({
+      level: 3,
+      cooling_interval: 0,
+    });
+  });
+});
+

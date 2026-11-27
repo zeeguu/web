@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useEffect, useContext } from "react";
 import TopWordProgress, { learnedByThisAnswer } from "../exercises/components/TopWordProgress";
 import LearnedWordCard from "../exercises/components/LearnedWordCard";
-import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
+import { canLearnWithThisExercise } from "../exercises/ExerciseTypeConstants";
+import { getExerciseTypeConstant } from "../exercises/exerciseTypes/exerciseTypeNames";
 import { useParams } from "react-router-dom";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { APIContext } from "../contexts/APIContext";
@@ -343,8 +344,8 @@ export default function IndividualExercise() {
       ? multipleBookmarks
       : [bookmark];
 
-  // The URL names the type ("Match"), not the internal constant
-  const internalExerciseType = exerciseType === "Match" ? EXERCISE_TYPES.match : exerciseType;
+  // The URL names the component ("Match", "FlashcardWord"), not the type constant
+  const internalExerciseType = getExerciseTypeConstant(exerciseType);
   const wordLearned = learnedByThisAnswer({
     exerciseType: internalExerciseType,
     bookmark,
@@ -363,7 +364,12 @@ export default function IndividualExercise() {
                 exerciseType={internalExerciseType}
                 progressBar={
                   isExerciseOver ? (
-                    <WordProgressBar bookmark={bookmark} message={message} isGreyedOutBar={false} />
+                    <WordProgressBar
+                      bookmark={bookmark}
+                      message={message}
+                      isGreyedOutBar={false}
+                      canLearn={canLearnWithThisExercise(bookmark, internalExerciseType)}
+                    />
                   ) : null
                 }
                 learned={wordLearned}

@@ -1,7 +1,7 @@
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import * as s from "../exerciseTypes/Exercise.sc";
 import strings from "../../i18n/definitions";
-import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
+import { EXERCISE_TYPES, canLearnWithThisExercise } from "../ExerciseTypeConstants";
 import { isWordLearned } from "../progressBars/levelIndicator/predictAfterAnswer";
 
 // Whether the answer just given completed the word. Match practices several
@@ -12,6 +12,7 @@ export function learnedByThisAnswer({ exerciseType, bookmark, message, isCorrect
     message,
     is_about_to_be_learned: bookmark.is_about_to_be_learned,
     is_last_in_cycle: bookmark.is_last_in_cycle,
+    canLearn: canLearnWithThisExercise(bookmark, exerciseType),
   });
 }
 

@@ -9,7 +9,7 @@ import { setTitle } from "../assorted/setTitle";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
 import { CORRECT, SOLUTION, WRONG } from "./ExerciseConstants";
-import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
+import { EXERCISE_TYPES, canLearnWithThisExercise } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { pushDrillVocab } from "../assorted/drillCache";
 import {
@@ -567,6 +567,7 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
       bookmark={selectedExerciseBookmark}
       message={currentMessageToAPI}
       isGreyedOutBar={selectedExerciseBookmark === undefined}
+      canLearn={canLearnWithThisExercise(selectedExerciseBookmark, currentExerciseType)}
     />
   ) : null;
 

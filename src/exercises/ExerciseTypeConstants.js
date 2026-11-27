@@ -25,6 +25,25 @@ export const EXERCISE_TYPES = {
   },
 };
 
+// The exercises where the learner produces the word in the language they learn
+// (the level-4 types). For a learner who practices production, only an answer
+// in one of these can mark a word learned. The api keeps the same list
+// (ExerciseSource.PRODUCTION); test/exercises/productionExerciseTypes.test.js
+// fails if the two drift apart.
+export const PRODUCTION_EXERCISE_TYPES = Object.freeze([
+  EXERCISE_TYPES.findWordInContextCloze,
+  EXERCISE_TYPES.spellWhatYouHear,
+  EXERCISE_TYPES.recallWord,
+  EXERCISE_TYPES.flashcardWord,
+]);
+
+// Whether an answer in this exercise can mark the word learned. The api sets
+// learning_needs_production on a word that only a production answer can learn.
+export function canLearnWithThisExercise(bookmark, exerciseType) {
+  if (!bookmark?.learning_needs_production) return true;
+  return PRODUCTION_EXERCISE_TYPES.includes(exerciseType);
+}
+
 export const MEMORY_TASK = Object.freeze({
   RECALL: "recall",
   RECOGNITION: "recognition",

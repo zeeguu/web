@@ -29,6 +29,14 @@ describe("learnedByThisAnswer", () => {
     expect(learnedByThisAnswer({ ...answered, bookmark: { ...aboutToBeLearned, is_about_to_be_learned: false } })).toBe(false);
   });
 
+  it("is false when the word needs a production answer and this one is not", () => {
+    const needsProduction = { ...aboutToBeLearned, learning_needs_production: true };
+    expect(learnedByThisAnswer({ ...answered, bookmark: needsProduction })).toBe(false);
+    expect(
+      learnedByThisAnswer({ ...answered, bookmark: needsProduction, exerciseType: EXERCISE_TYPES.flashcardWord }),
+    ).toBe(true);
+  });
+
   it("is never true for Match, which practices several words at once", () => {
     expect(learnedByThisAnswer({ ...answered, exerciseType: EXERCISE_TYPES.match })).toBe(false);
   });
