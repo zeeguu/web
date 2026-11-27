@@ -30,7 +30,6 @@ export default function SpellWhatYouHear({
   reload,
   isExerciseOver,
   resetSubSessionTimer,
-  bookmarkProgressBar,
   onExampleUpdated,
   onExerciseLoaded,
 }) {
@@ -130,12 +129,10 @@ export default function SpellWhatYouHear({
         canTypeInline={true}
       />
 
-      {/* Fixed-height slot below the cloze so the sentence above doesn't
-          shift between exercise and reveal. Post-reveal the L1 chip
-          surfaces above the highlighted word, so only the progress bar
-          lives here. */}
-      <s.CenteredRevealedSlot $marginTop="2em" $minHeight="120px">
-        {!isExerciseOver ? (
+      {/* The speak button sits below the cloze until the reveal. The word's
+          progress bar is drawn at the top of the card, by the session. */}
+      {!isExerciseOver && (
+        <s.CenteredRevealedSlot $marginTop="2em" $minHeight="120px">
           <s.CenteredRowTall>
             <SpeakButton
               bookmarkToStudy={exerciseBookmark}
@@ -143,10 +140,8 @@ export default function SpellWhatYouHear({
               parentIsSpeakingControl={isButtonSpeaking}
             />
           </s.CenteredRowTall>
-        ) : (
-          bookmarkProgressBar
-        )}
-      </s.CenteredRevealedSlot>
+        </s.CenteredRevealedSlot>
+      )}
     </s.Exercise>
   );
 }

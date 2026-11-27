@@ -29,7 +29,6 @@ export default function MultipleChoiceL2toL1({
   setIsCorrect,
   isExerciseOver,
   resetSubSessionTimer,
-  bookmarkProgressBar,
   onExampleUpdated,
   onExerciseLoaded,
 }) {
@@ -112,9 +111,6 @@ export default function MultipleChoiceL2toL1({
         highlightExpression={exerciseBookmark.from}
       />
 
-      {isExerciseOver && bookmarkProgressBar && (
-        <s.RevealedProgressBar>{bookmarkProgressBar}</s.RevealedProgressBar>
-      )}
 
       {!isExerciseOver && (
         <MultipleChoicesInput

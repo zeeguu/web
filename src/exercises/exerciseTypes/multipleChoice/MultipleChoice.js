@@ -27,7 +27,6 @@ export default function MultipleChoice({
   isExerciseOver,
   setIsCorrect,
   resetSubSessionTimer,
-  bookmarkProgressBar,
   onExampleUpdated,
   onExerciseLoaded,
 }) {
@@ -115,9 +114,6 @@ export default function MultipleChoice({
         canTypeInline={false}
       />
 
-      {isExerciseOver && bookmarkProgressBar && (
-        <s.RevealedProgressBar>{bookmarkProgressBar}</s.RevealedProgressBar>
-      )}
 
       {!isExerciseOver && (
         <MultipleChoicesInput

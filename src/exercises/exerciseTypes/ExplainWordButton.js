@@ -2,8 +2,9 @@ import LocalStorage from "../../assorted/LocalStorage";
 import { useContext, useRef, useState } from "react";
 import { APIContext } from "../../contexts/APIContext";
 import ExplanationModal from "../../reader/ExplanationModal";
-import * as s from "./Exercise.sc";
 import { explanationCefr } from "../../utils/misc/userCefrLevel";
+import Tag from "../../pages/_pages_shared/Tag.sc";
+import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 
 /**
  * Explain for the word being practiced, the same Explain the reader offers.
@@ -67,9 +68,10 @@ export default function ExplainWordButton({ bookmark }) {
 
   return (
     <>
-      <s.StyledGreyButton className="styledGreyButton" onClick={explain}>
+      <Tag className="small" onClick={explain}>
+        <LightbulbOutlinedIcon fontSize="inherit" />
         Explain
-      </s.StyledGreyButton>
+      </Tag>
       {explanation && (
         <ExplanationModal
           open={true}

@@ -98,7 +98,6 @@
   "src/components/modal_shared/AddToSavesButton.sc.js",
   "src/components/modal_shared/ButtonContainer.sc.js",
   "src/components/modal_shared/Checkbox.js",
-  "src/components/modal_shared/ChoiceModal.js",
   "src/components/modal_shared/Footer.sc.js",
   "src/components/modal_shared/Header.sc.js",
   "src/components/modal_shared/Icon.sc.js",

@@ -32,7 +32,6 @@ export default function FindWordInContextCloze({
   setIsCorrect,
   reload,
   resetSubSessionTimer,
-  bookmarkProgressBar,
   onExampleUpdated,
   onExerciseLoaded,
 }) {
@@ -127,9 +126,6 @@ export default function FindWordInContextCloze({
         l2Prompt={removePunctuation(exerciseBookmark.to)}
         isExerciseOver={isExerciseOver}
       />
-      <s.ProgressBarReserve $visible={isExerciseOver}>
-        {bookmarkProgressBar || <s.ProgressBarPlaceholder />}
-      </s.ProgressBarReserve>
       <ClozeContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}

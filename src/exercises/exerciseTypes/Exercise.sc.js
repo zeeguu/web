@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 
-import { zeeguuTransparentLightOrange, zeeguuOrange } from "../../components/colors";
+import { zeeguuTransparentLightOrange, zeeguuOrange, zeeguuWarmYellow } from "../../components/colors";
 
 const Exercise = styled.div`
   display: flex;
@@ -623,13 +623,64 @@ let MultipleChoiceContext = styled.div`
 // the sentence. The $tight variant is used by MultipleChoiceContext
 // where the wrapper sits directly below the chosen option (already-airy
 // layout) and doesn't need the bigger top margin.
-let RevealedProgressBar = styled.div`
-  margin-top: ${(props) => (props.$tight ? "1em" : "3em")};
+// The one main action at the bottom of the card: the flashcard's
+// Show answer, and Next once an exercise is answered. Same look and the same
+// spot, so the thumb goes to one place all session.
+let PrimaryExerciseButton = styled.button`
+  min-width: 11.5rem;
+  min-height: 3.5rem;
+  padding: 0.8rem 1.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  background-color: ${zeeguuWarmYellow};
+  color: var(--orange-btn-text);
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: filter 0.15s ease;
+
+  &:active {
+    filter: brightness(0.95);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px var(--exercise-btn-focus, rgba(0, 0, 0, 0.3));
+  }
 `;
 
-// Audio exercises (SpellWhatYouHear, TranslateWhatYouHear) center the
-// progress bar in a fixed slot below the cloze so the sentence above
-// doesn't shift between the typing and revealed states.
+// After answering: Explain / Remove / Share as small pills, right under the
+// exercise, since they act on the word; far from Next, so a thumb going for
+// Next does not hit them.
+let WordActions = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+
+  svg {
+    font-size: 1.1em;
+  }
+`;
+
+// After answering: Next, then the Auto-pronounce setting, pinned to the
+// bottom of the card. Its bottom padding is set so Next lines up with the
+// flashcard's Show answer.
+let AfterAnswerFooter = styled.div`
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1rem 3.5rem;
+`;
+
+// A fixed-height slot below the cloze (SpellWhatYouHear's speak button), so
+// the sentence above doesn't shift.
 let CenteredRevealedSlot = styled.div`
   display: flex;
   flex-direction: column;
@@ -639,42 +690,64 @@ let CenteredRevealedSlot = styled.div`
   min-height: ${(props) => props.$minHeight || "auto"};
 `;
 
-// Used by click-word exercises (WordInContext, FindWordInContextCloze) to
-// reserve the progress-bar's vertical space pre-reveal so the sentence
-// below doesn't jump when the bar appears.
-let ProgressBarReserve = styled.div`
+// The word's progress bar at the top of the exercise card: below the
+// corner icons, with its height kept before the answer so nothing jumps.
+let TopProgressSlot = styled.div`
   visibility: ${(props) => (props.$visible ? "visible" : "hidden")};
-  min-height: 60px;
+  height: 2.5rem;
+  margin-top: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
-// Empty filler shown inside ProgressBarReserve when no progress bar has
-// been wired in yet — keeps the reserved slot's vertical rhythm.
-let ProgressBarPlaceholder = styled.div`
-  height: 60px;
-  width: 30%;
-  margin: 0.1em auto 0.5em auto;
+// "You've learned a new word!" under the top progress bar: one slim line,
+// not a box between the sentence and Next.
+let WordLearnedLine = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: fit-content;
+  margin: 0.25rem auto 0;
+  padding: 0.2rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--success-border);
+  background-color: var(--success-bg);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
 `;
 
-let ReportButton = styled.button`
+// Report and Share: small gray icons in the card's top-right corner, out of
+// the way of the exercise and of Next.
+let CornerIcons = styled.div`
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  display: flex;
+  gap: 0.25rem;
+`;
+
+let CornerIconButton = styled.button`
   background: none;
   border: none;
   padding: 0.25rem;
   cursor: pointer;
-  color: #ccc;
+  color: var(--text-faint);
   display: flex;
   align-items: center;
 
-  &:hover {
-    color: #999;
+  &:disabled {
+    cursor: default;
   }
-`;
 
-let ReportedBadge = styled.span`
-  color: #999;
-  font-size: 0.8rem;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      color: var(--text-muted);
+    }
+  }
 `;
 
 export {
@@ -711,12 +784,14 @@ export {
   EditSpeakButtonHolder,
   OrangeButtonMessage,
   MultipleChoiceContext,
-  ReportButton,
-  ReportedBadge,
-  RevealedProgressBar,
+  CornerIcons,
+  CornerIconButton,
+  AfterAnswerFooter,
+  WordActions,
+  PrimaryExerciseButton,
   CenteredRevealedSlot,
-  ProgressBarReserve,
-  ProgressBarPlaceholder,
+  TopProgressSlot,
+  WordLearnedLine,
 };
 
 export default StyledButton;

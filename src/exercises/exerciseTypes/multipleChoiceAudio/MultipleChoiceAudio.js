@@ -29,7 +29,6 @@ export default function MultipleChoiceAudio({
   resetSubSessionTimer,
   moveToNextExercise,
   reload,
-  bookmarkProgressBar,
   onExampleUpdated,
   onExerciseLoaded,
 }) {
@@ -128,9 +127,6 @@ export default function MultipleChoiceAudio({
         </div>
       )}
 
-      {isExerciseOver && bookmarkProgressBar && (
-        <s.RevealedProgressBar>{bookmarkProgressBar}</s.RevealedProgressBar>
-      )}
 
       {!isExerciseOver && (
         <MultipleChoiceAudioBottomInput

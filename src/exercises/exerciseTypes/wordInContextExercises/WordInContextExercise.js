@@ -29,7 +29,6 @@ export default function WordInContextExercise({
   resetSubSessionTimer,
   exerciseMessageToAPI,
   notifyOfUserAttempt,
-  bookmarkProgressBar,
   onExampleUpdated,
   onExerciseLoaded,
 }) {
@@ -85,9 +84,6 @@ export default function WordInContextExercise({
         l2Prompt={removePunctuation(exerciseBookmark.to)}
         isExerciseOver={isExerciseOver}
       />
-      <s.ProgressBarReserve $visible={isExerciseOver}>
-        {bookmarkProgressBar || <s.ProgressBarPlaceholder />}
-      </s.ProgressBarReserve>
       <ContextWithExchange
         exerciseBookmark={exerciseBookmark}
         interactiveText={interactiveText}

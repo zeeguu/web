@@ -125,6 +125,9 @@ export default function ChoiceModal({
   slimHero = false,
   secondaryAsLink = false,
   onCancel,
+  // More answers after the secondary one, each [{ label, onClick }], drawn
+  // like the secondary button: for questions with more than two answers.
+  moreOptions = [],
 }) {
   // Dismissing the dialog — close button, backdrop, Esc — must not stand in
   // for either answer. On the share flow the secondary action *saves* the
@@ -158,6 +161,11 @@ export default function ChoiceModal({
             {isLoading ? loadingLabel : primaryLabel}
           </ActionButton>
           {secondary}
+          {moreOptions.map(({ label, onClick }) => (
+            <ActionButton key={label} $primary={false} onClick={onClick}>
+              {label}
+            </ActionButton>
+          ))}
         </ButtonStack>
       </Content>
     </Modal>

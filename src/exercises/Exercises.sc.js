@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
+import { Exercise } from "./exerciseTypes/Exercise.sc";
 
 const ExercisesColumn = styled.div`
   /* background-color: lightcoral; */
@@ -31,6 +33,7 @@ const ExercisesColumn = styled.div`
 `;
 
 const ExForm = styled.div`
+  position: relative; /* anchors the Report flag in the top-right corner */
   display: flex;
   flex-direction: column;
   border-radius: 10px;
@@ -45,6 +48,24 @@ const ExForm = styled.div`
      the card would push the sentence above the fold. */
   &.softKeyboardOpen {
     min-height: 0;
+  }
+
+  /* A self-graded flashcard, and any exercise once answered, fills the phone
+     screen down to the bottom nav, so its grade buttons / Next sit in the
+     thumb zone instead of mid-screen. TopBar and BottomNav publish their
+     measured heights; 0px when one is not mounted. */
+  @media (max-width: ${MOBILE_WIDTH}px) {
+    &:has(.flashcardStage, .afterAnswerFooter):not(.softKeyboardOpen) {
+      min-height: calc(
+        100dvh - env(safe-area-inset-top) - var(--top-bar-height, 0px) - var(--bottom-nav-height, 0px) - 1.5rem
+      );
+    }
+  }
+
+  /* Once answered, the exercise takes only its own height, so the word
+     actions sit right under it and the free space goes above Next. */
+  &:has(.afterAnswerFooter) > ${Exercise} {
+    flex: 0 0 auto;
   }
 
   box-sizing: border-box; // to ensure that padding does not expand width!
