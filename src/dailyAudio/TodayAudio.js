@@ -641,8 +641,6 @@ export default function TodayAudio() {
           currentPlaybackTime={currentPlaybackTime}
           setCurrentPlaybackTime={setCurrentPlaybackTime}
           onChangeTopic={() => setSettingsOpen(true)}
-          dailySubject={pillSubject}
-          a0={a0}
         />
         {settingsDialog}
       </>

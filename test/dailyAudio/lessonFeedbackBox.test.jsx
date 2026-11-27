@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { useContext, useState } from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 import LessonFeedbackBox, { takesFeedback } from "../../src/dailyAudio/LessonFeedbackBox";
@@ -87,18 +87,27 @@ describe("LessonFeedbackBox", () => {
     expect(screen.queryByRole("radiogroup", { name: "Next lesson" })).toBeNull();
   });
 
-  it("folds into Thanks and a link to the audio lesson settings once both are answered", () => {
+  it("says Thanks once both are answered, then leaves only the situations to choose from", () => {
+    vi.useFakeTimers();
     setup();
     fireEvent.click(pill("Pace", "Too slow"));
     fireEvent.click(pill("Repetition", "Too much"));
 
     expect(screen.getByText("Thanks!")).toBeTruthy();
-    expect(screen.getByRole("link", { name: /Audio lesson settings/ }).getAttribute("href")).toBe(
-      "/account_settings/audio_lessons",
-    );
     expect(screen.queryByRole("radiogroup", { name: "Pace" })).toBeNull();
-    // The situation choice stays open.
+    act(() => vi.advanceTimersByTime(3000));
+    expect(screen.queryByText("Thanks!")).toBeNull();
+    // The situation choice stays until one is made, then the box is gone
     expect(screen.getByRole("radiogroup", { name: "Next lesson" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("radio", { name: 'Try "asking the time"' }));
+    expect(screen.queryByRole("radiogroup", { name: "Next lesson" })).toBeNull();
+    vi.useRealTimers();
+  });
+
+  it("shows nothing for a lesson answered before, without situations to choose", () => {
+    setup({ lesson: { ...LESSON, next_situations: [], feedback: { pace: "just_right", repetition: "less" } } });
+    expect(screen.queryByText("How was this lesson?")).toBeNull();
+    expect(screen.queryByText("Thanks!")).toBeNull();
   });
 
   it("only asks: the length and time to answer are in Settings > Audio lessons", () => {

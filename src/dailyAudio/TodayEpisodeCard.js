@@ -1,22 +1,17 @@
 import React from "react";
 import LessonPlaybackView from "./LessonPlaybackView";
-import DailyLessonSettingsPill from "./DailyLessonSettingsPill";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import { LessonTitle, LessonMetadata, CompletionCheck } from "./LessonView.sc";
 import { LessonTypeChip, chipLabel } from "./lessonTypeChip";
-import { lessonDateLabel, completionChecks } from "./audioUtils";
-import {
-  NewPill,
-  DateLineWrapper,
-  DateText,
-  FooterWrapper,
-  FooterMessage,
-  LessonTitleWrapper,
-} from "./TodayEpisodeCard.sc";
+import { completionChecks } from "./audioUtils";
+import { NewPill, DateLineWrapper, FooterWrapper, FooterMessage, LessonTitleWrapper } from "./TodayEpisodeCard.sc";
 
-// Design-B "episode card" header: a date line, the title (with one ✓ per
-// listen), then a single category chip — "Type: subject" — exactly like the
-// past-lessons list, so the subject lives inside the pill (no wrap-under).
-function EpisodeHeader({ lessonData, currentPlaybackTime }) {
+// Design-B "episode card" header: the title (with one ✓ per listen), then a
+// single category chip — "Type: subject ⚙" — like the past-lessons list. The
+// chip opens the lesson settings: it already names what they change, so it
+// stands in for a separate settings button. No date: the current lesson is
+// the one to finish, whether it came today or yesterday.
+function EpisodeHeader({ lessonData, currentPlaybackTime, onOpenSettings }) {
   // "NEW" only while today's lesson is untouched — it answers "have I started
   // this?" and disappears the moment they begin playing. Two signals: the live
   // playback time hides it instantly on first play this session; the stored
@@ -26,13 +21,13 @@ function EpisodeHeader({ lessonData, currentPlaybackTime }) {
     lessonData.pause_position_seconds || lessonData.position_seconds || lessonData.progress_seconds || 0;
   const playedSeconds = Math.max(storedSeconds, currentPlaybackTime || 0);
   const showNew = !lessonData.paused && !lessonData.is_completed && playedSeconds === 0;
-  const dateLabel = lessonDateLabel(lessonData.created_at);
   return (
     <>
-      <DateLineWrapper>
-        {dateLabel && <DateText>{dateLabel}</DateText>}
-        {showNew && <NewPill>New</NewPill>}
-      </DateLineWrapper>
+      {showNew && (
+        <DateLineWrapper>
+          <NewPill>New</NewPill>
+        </DateLineWrapper>
+      )}
 
       <LessonTitleWrapper>
         <LessonTitle>
@@ -47,9 +42,29 @@ function EpisodeHeader({ lessonData, currentPlaybackTime }) {
       </LessonTitleWrapper>
 
       <LessonMetadata>
-        <LessonTypeChip $type={lessonData.lesson_type} style={{ marginBottom: 0 }}>
-          {chipLabel(lessonData.lesson_type)}
-          {lessonData.canonical_suggestion ? `: ${lessonData.canonical_suggestion}` : ""}
+        <LessonTypeChip
+          as="button"
+          type="button"
+          onClick={onOpenSettings}
+          aria-label="Lesson settings"
+          $type={lessonData.lesson_type}
+          style={{
+            marginBottom: 0,
+            border: "none",
+            font: "inherit",
+            fontSize: "0.75rem",
+            cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.35rem",
+            maxWidth: "100%",
+          }}
+        >
+          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {chipLabel(lessonData.lesson_type)}
+            {lessonData.canonical_suggestion ? `: ${lessonData.canonical_suggestion}` : ""}
+          </span>
+          <SettingsRoundedIcon style={{ fontSize: "0.9rem", flexShrink: 0 }} />
         </LessonTypeChip>
       </LessonMetadata>
     </>
@@ -61,7 +76,7 @@ function EpisodeHeader({ lessonData, currentPlaybackTime }) {
  * Reuses LessonPlaybackView for all the player/words/feedback plumbing and
  * injects the Design-B header + footer.
  */
-export default function TodayEpisodeCard({ onChangeTopic, dailySubject, a0, ...playbackProps }) {
+export default function TodayEpisodeCard({ onChangeTopic, ...playbackProps }) {
   const { lessonData } = playbackProps;
 
   // "Listen halfway to keep daily lessons coming automatically." — shown only
@@ -88,7 +103,7 @@ export default function TodayEpisodeCard({ onChangeTopic, dailySubject, a0, ...p
   // lesson: tomorrow" line is tautological (it's daily, of course it's
   // tomorrow), so we don't render it. `paused` is the API's engagement gate: a
   // waiting lesson the learner hasn't engaged with, so new ones are held.
-  // The gear opens lesson-TYPE config (frequency config is future work).
+  // The settings open from the chip in the header.
   const footer = (
     <FooterWrapper>
       {/* Not once it is finished: that is exactly what it asked for. */}
@@ -98,14 +113,19 @@ export default function TodayEpisodeCard({ onChangeTopic, dailySubject, a0, ...p
       {showEngagementHint && (
         <FooterMessage $small>Listen halfway to keep daily lessons coming automatically.</FooterMessage>
       )}
-      <DailyLessonSettingsPill onClick={onChangeTopic} subject={dailySubject} a0={a0} />
     </FooterWrapper>
   );
 
   return (
     <LessonPlaybackView
       {...playbackProps}
-      header={<EpisodeHeader lessonData={lessonData} currentPlaybackTime={playbackProps.currentPlaybackTime} />}
+      header={
+        <EpisodeHeader
+          lessonData={lessonData}
+          currentPlaybackTime={playbackProps.currentPlaybackTime}
+          onOpenSettings={onChangeTopic}
+        />
+      }
       footer={footer}
     />
   );

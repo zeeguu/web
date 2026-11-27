@@ -1,9 +1,7 @@
-import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import PillSelector from "../components/PillSelector";
-import { zeeguuRed, zeeguuOrange } from "../components/colors";
+import { zeeguuRed } from "../components/colors";
 import { playHappyChime, playDoneChime } from "../utils/chimes";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 import { UserContext } from "../contexts/UserContext";
@@ -46,23 +44,9 @@ export const takesFeedback = (lessonData) => lessonData.takes_feedback ?? lesson
 
 const allAnswered = (feedback) => ROWS.every(({ aspect }) => feedback[aspect]);
 
-// Once answered: "Thanks!" and the way to the settings the answers moved.
-const ThanksLine = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-`;
-
-const SettingsLink = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: ${zeeguuOrange};
-  text-decoration: none;
-`;
+// How long "Thanks!" shows once both questions are answered, and its fade
+const THANKS_MS = 1500;
+const FADE_MS = 400;
 
 const Box = styled.div`
   margin: 20px 0;
@@ -73,6 +57,8 @@ const Box = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
+  opacity: ${({ $fading }) => ($fading ? 0 : 1)};
+  transition: opacity ${FADE_MS}ms ease;
 `;
 
 const Heading = styled.h3`
@@ -112,12 +98,27 @@ const ErrorMsg = styled.p`
 export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
   const { setUserPreferences } = useContext(UserContext);
   const [error, setError] = useState(null);
-  // Once both are answered the box folds into "Thanks!" and a link to the
-  // settings they moved (Settings > Audio lessons), where the seconds and
-  // times are shown and can be set.
   const feedback = lessonData.feedback || {};
   const nextSituations = lessonData.next_situations || [];
   const current = lessonData.canonical_suggestion;
+  // Once both are answered the questions are done with: "Thanks!" for a
+  // moment, then they fade out. What the answers moved is in Settings > Audio
+  // lessons, reached from the lesson settings. A lesson answered before (a
+  // reload) shows no questions at all.
+  const answered = allAnswered(feedback);
+  const [thanking, setThanking] = useState(false);
+  const [fading, setFading] = useState(false);
+  useEffect(() => {
+    if (!thanking) return undefined;
+    const fade = setTimeout(() => setFading(true), THANKS_MS);
+    const done = setTimeout(() => setThanking(false), THANKS_MS + FADE_MS);
+    return () => {
+      clearTimeout(fade);
+      clearTimeout(done);
+    };
+  }, [thanking]);
+  // Next situations stay until one is picked: where the lessons go next.
+  const offersSituations = nextSituations.length > 0 && current && !feedback.situation;
 
   function answer(aspect, value) {
     const previous = feedback[aspect];
@@ -125,6 +126,8 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
     setError(null);
     if (aspect !== "situation" && allAnswered(next) && !allAnswered(feedback)) {
       playDoneChime();
+      setFading(false);
+      setThanking(true);
     } else {
       playHappyChime();
     }
@@ -148,16 +151,14 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api }) {
     });
   }
 
+  if (answered && !thanking && !offersSituations) {
+    return error ? <ErrorMsg>{error}</ErrorMsg> : null;
+  }
+
   return (
-    <Box>
-      {allAnswered(feedback) ? (
-        <ThanksLine>
-          <Heading>Thanks!</Heading>
-          <SettingsLink to="/account_settings/audio_lessons">
-            <SettingsRoundedIcon style={{ fontSize: "1rem" }} />
-            Audio lesson settings
-          </SettingsLink>
-        </ThanksLine>
+    <Box $fading={fading && !offersSituations}>
+      {answered ? (
+        thanking && <Heading>Thanks!</Heading>
       ) : (
         <>
           <Heading>How was this lesson?</Heading>

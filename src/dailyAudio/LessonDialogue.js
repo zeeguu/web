@@ -1,11 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { SpeechContext } from "../contexts/SpeechContext";
 import InteractiveText from "../reader/InteractiveText";
 import { TranslatableText } from "../reader/TranslatableText";
 import { MainText } from "../reader/ArticleReader.sc";
-import { WhiteRoundButton } from "../components/allButtons.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import useUserPreferences from "../hooks/useUserPreferences";
@@ -15,11 +14,6 @@ import { lessonHasDialogue } from "./audioUtils";
 
 // The API's ContextType.LESSON_DIALOGUE
 const LESSON_DIALOGUE_CONTEXT = { context_type: "LessonDialogue" };
-
-const DialogueToggle = styled.div`
-  text-align: center;
-  margin: 8px 0 4px;
-`;
 
 // One spoken line per paragraph, each opened with a dash, as dialogue is
 // written in most of the languages learned here. The dash is drawn, not
@@ -41,12 +35,16 @@ const DialogueLines = styled.div`
 // lesson's dialogue, word by word like a short text, to read along or after.
 // Hidden until asked for: the lessons are listening practice, and an A0
 // lesson promises the learner will understand the dialogue by the end.
-// Renders nothing for a lesson without a dialogue.
 //
-// The button stays above the text and says Hide only once the text is on
-// screen, never while it loads. Loaded once: hiding and showing again needs
-// no request. Callers key it by lesson, so another lesson starts afresh.
-export default function LessonDialogue({ api, lesson }) {
+// A hook, not a component: its button sits in the player's row of actions
+// (LessonActionRow, next to Share) and its text under the player, so the two
+// are placed by the caller. Loaded once: hiding and showing again needs no
+// request; another lesson starts afresh.
+//
+// Returns { available, shown, loading, toggle, content }: available is false
+// for a lesson without a dialogue (no button then), content is what goes
+// under the player (loading, an error, or the text).
+export function useLessonDialogue(api, lesson) {
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState(null);
   const [open, setOpen] = useState(false);
@@ -55,7 +53,16 @@ export default function LessonDialogue({ api, lesson }) {
   // The script had no dialogue to read (the API's 404): no button either
   const [noDialogue, setNoDialogue] = useState(false);
 
-  if (!lesson?.lesson_id || !lessonHasDialogue(lesson) || noDialogue) return null;
+  const lessonId = lesson?.lesson_id;
+  useEffect(() => {
+    setInteractiveText(null);
+    setOpen(false);
+    setLoading(false);
+    setFailed(false);
+    setNoDialogue(false);
+  }, [lessonId]);
+
+  const available = !!lessonId && lessonHasDialogue(lesson) && !noDialogue;
 
   function logOpened(sourceId) {
     api.logUserActivity(api.OPEN_LESSON_DIALOGUE, "", lesson.lesson_id, "", sourceId);
@@ -97,21 +104,10 @@ export default function LessonDialogue({ api, lesson }) {
     );
   }
 
-  const shown = open && interactiveText;
+  const shown = !!(open && interactiveText);
 
-  return (
+  const content = available ? (
     <>
-      <DialogueToggle>
-        <WhiteRoundButton
-          as="button"
-          type="button"
-          aria-expanded={!!shown}
-          aria-busy={loading}
-          onClick={shown ? () => setOpen(false) : show}
-        >
-          {shown ? strings.hideTheDialogue : strings.showTheDialogue}
-        </WhiteRoundButton>
-      </DialogueToggle>
       {loading && <LoadingAnimation />}
       {failed && <FullWidthErrorMsg>{strings.couldNotOpenDialogue}</FullWidthErrorMsg>}
       {/* Kept mounted once loaded and only hidden, so showing it again
@@ -122,7 +118,9 @@ export default function LessonDialogue({ api, lesson }) {
         </div>
       )}
     </>
-  );
+  ) : null;
+
+  return { available, shown, loading, toggle: shown ? () => setOpen(false) : show, content };
 }
 
 // The text at the reader's settings (translate, pronounce, text size): the
