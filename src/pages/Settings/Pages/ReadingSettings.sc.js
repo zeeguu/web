@@ -26,6 +26,10 @@ const SectionHeader = styled.h2`
 
 const OptionRow = styled.div`
   margin-bottom: 0.6em;
+
+  & .MuiFormControlLabel-root {
+    align-items: flex-start;
+  }
 `;
 
 // Label and description are passed to ToggleOption as ONE label node, so the
