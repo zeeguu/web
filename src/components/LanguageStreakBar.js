@@ -11,7 +11,7 @@ import styled, { keyframes } from "styled-components";
 import { playStreakChime } from "../utils/chimes";
 import { noteStreaks } from "../reminder/useStudyReminder";
 import useReminderOffer from "../reminder/useReminderOffer";
-import { isCountingDown, streakCountdownHint, studiedPercent } from "../utils/streakCountdown";
+import { isCountingDown, showsStreakCount, streakCountdownHint, studiedPercent } from "../utils/streakCountdown";
 
 const POLL_FAST_MS = 5_000;
 const POLL_SLOW_MS = 60_000;
@@ -119,7 +119,7 @@ const FlameRing = styled.span`
 const ringSx = { position: "absolute", inset: 0, color: streakFireOrange };
 const ringTrackSx = { ...ringSx, color: "var(--streak-banner-border)" };
 
-function StreakFlame({ lang, goalMinutes, countingDown, animating }) {
+function StreakFlame({ lang, goalMinutes, countingDown, animating, showStreakCount }) {
   const practiced = lang.practiced_today;
   const icon = <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />;
   const percent = studiedPercent(lang.ms_to_streak, goalMinutes);
@@ -135,9 +135,11 @@ function StreakFlame({ lang, goalMinutes, countingDown, animating }) {
   return (
     <>
       {flame}
-      <StreakNumber $practiced={practiced} $justPracticed={animating}>
-        {lang.daily_streak}
-      </StreakNumber>
+      {showStreakCount && (
+        <StreakNumber $practiced={practiced} $justPracticed={animating}>
+          {lang.daily_streak}
+        </StreakNumber>
+      )}
     </>
   );
 }
@@ -204,6 +206,9 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
   const { offer, offerModal } = useReminderOffer();
   const offerRef = useRef(offer);
   offerRef.current = offer;
+  const showStreakCount = showsStreakCount(userPreferences);
+  const showCountRef = useRef(showStreakCount);
+  showCountRef.current = showStreakCount;
 
   const updateSlots = useCallback(() => {
     setMaxSlots(computeMaxSlots(wrapperRef.current));
@@ -243,7 +248,8 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
           playStreakChime();
           const lang = data.find((l) => newJustPracticed[l.code]);
           if (lang) {
-            toast(`🔥 ${lang.daily_streak} day streak!`, { autoClose: 3000 });
+            const message = showCountRef.current ? `🔥 ${lang.daily_streak} day streak!` : "🔥 Today's goal reached!";
+            toast(message, { autoClose: 3000 });
             offerRef.current(lang.daily_streak);
           }
         }
@@ -337,6 +343,7 @@ export default function LanguageStreakBar({ onMultipleLanguages, onOpenModal }) 
                   goalMinutes={userPreferences?.daily_goal_minutes}
                   countingDown={countingDown}
                   animating={animating}
+                  showStreakCount={showStreakCount}
                 />
               )}
             </LanguageItem>

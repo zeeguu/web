@@ -14,6 +14,8 @@ import { GRANDFATHERED_GOAL, nativeShieldAvailable } from "../../../components/n
 import { languageName } from "../../../utils/misc/languageCodeToName";
 import { refreshStudyReminders } from "../../../reminder/useStudyReminder";
 import { savePreferences } from "../../../utils/preferences/savePreferences";
+import ToggleOption from "../../../components/Toggles/ToggleOption";
+import { showsStreakCount } from "../../../utils/streakCountdown";
 
 // The learner's daily goal (ADR 046): the minutes a day that count the day for
 // the streak, and on the phone the minutes after which Aiki leaves the paused
@@ -45,6 +47,19 @@ export default function DailyGoal() {
   }, []);
 
   const current = userPreferences?.daily_goal_minutes;
+  const showCount = showsStreakCount(userPreferences);
+  const [countError, setCountError] = useState(false);
+
+  function handleShowCount(show) {
+    setCountError(false);
+    savePreferences({
+      api,
+      preferences: userPreferences,
+      setUserPreferences,
+      changes: { show_streak_count: String(show) },
+      onFailed: () => setCountError(true),
+    });
+  }
 
   const language = languageName(userDetails?.learned_language);
   const options = GOALS.map((goal) => ({
@@ -112,6 +127,10 @@ export default function DailyGoal() {
         />
 
         {error && <FullWidthErrorMsg>Couldn't save your goal. Please try again.</FullWidthErrorMsg>}
+
+        <ToggleOption checked={showCount} onToggle={handleShowCount} label="Show the number of days in my streak" />
+        <SectionDescription>Off: the flame and today's ring stay, without the number.</SectionDescription>
+        {countError && <FullWidthErrorMsg>Couldn't save this. Please try again.</FullWidthErrorMsg>}
       </Main>
     </CardPage>
   );

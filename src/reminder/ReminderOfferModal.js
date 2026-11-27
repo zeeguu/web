@@ -12,13 +12,14 @@ import TimeInput from "./TimeInput.sc";
 // reminderOffer.js). The time starts at the learner's setting and can be
 // changed here; "Remind me" reports the chosen one. The phone's own permission
 // prompt only follows "Remind me".
-export default function ReminderOfferModal({ open, streak, time, onAccept, onDecline }) {
+export default function ReminderOfferModal({ open, streak, showStreakCount = true, time, onAccept, onDecline }) {
   const [chosenTime, setChosenTime] = useState(time);
   useEffect(() => {
     if (open) setChosenTime(time);
   }, [open, time]);
 
-  const title = streak === 1 ? "🔥 Day 1 of your streak" : `🔥 ${streak} day streak`;
+  let title = streak === 1 ? "🔥 Day 1 of your streak" : `🔥 ${streak} day streak`;
+  if (!showStreakCount) title = "🔥 Today's goal reached";
   return (
     <Modal open={open} onClose={onDecline}>
       <Header>

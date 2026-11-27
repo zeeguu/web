@@ -76,6 +76,7 @@ export default function LanguageOptionLabel({
   msToStreak,
   cefrLevelValue,
   onCefrLevelChange,
+  showStreakCount = true,
 }) {
   const hint = isCountingDown(practiced, msToStreak) ? streakCountdownHint(msToStreak, streak) : null;
   return (
@@ -86,7 +87,7 @@ export default function LanguageOptionLabel({
           {streak >= 1 && (
             <StreakBadge $practiced={practiced}>
               <LocalFireDepartmentIcon sx={practiced ? fireIconSx : fireIconGraySx} />
-              {streak}
+              {showStreakCount && streak}
             </StreakBadge>
           )}
         </LanguageNameLine>

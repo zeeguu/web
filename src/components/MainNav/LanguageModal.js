@@ -15,6 +15,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CircularProgress from "@mui/material/CircularProgress";
 import DynamicFlagImage from "../DynamicFlagImage.js";
 import LanguageOptionLabel from "./LanguageOptionLabel.js";
+import { showsStreakCount } from "../../utils/streakCountdown.js";
 import { orderModalLanguages } from "./orderModalLanguages.js";
 import LocalStorage from "../../assorted/LocalStorage.js";
 import { getUserCefrLevel } from "../../utils/misc/userCefrLevel.js";
@@ -24,8 +25,9 @@ const spinnerSx = { color: "var(--streak-banner-text)" };
 
 export default function LanguageModal({ open, setOpen }) {
   const api = useContext(APIContext);
-  const { userDetails, setUserDetails, session } = useContext(UserContext);
+  const { userDetails, setUserDetails, session, userPreferences } = useContext(UserContext);
   const { requestSwitch, confirmModal, willConfirm } = useGuardedLanguageSwitch();
+  const showCount = showsStreakCount(userPreferences);
   const [, setErrorMessage] = useState("");
 
   const [learnedLanguageCode, setLearnedLanguageCode] = useState(null);
@@ -147,6 +149,7 @@ export default function LanguageModal({ open, setOpen }) {
             <LanguageOptionLabel
               languageName={e.language}
               streak={streaksByCode[e.code] || 0}
+              showStreakCount={showCount}
               practiced={practicedByCode[e.code]}
               msToStreak={msToStreakByCode[e.code]}
               cefrLevelValue={getCefrLevelValueForLanguage(e.code)}
