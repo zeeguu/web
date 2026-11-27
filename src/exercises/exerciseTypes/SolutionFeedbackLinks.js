@@ -9,6 +9,7 @@ import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 import SessionStorage from "../../assorted/SessionStorage";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import ExplainWordButton from "./ExplainWordButton";
+import ChoiceModal from "../../components/modal_shared/ChoiceModal";
 
 // The ways out of an exercise before answering it.
 export function EscapeLinks({ onShowSolution, exerciseType, disableAudio, setIsExerciseOver }) {
@@ -57,66 +58,46 @@ export default function SolutionFeedbackLinks({
   }
 
   const reportControl = onReportClick && (
-    isReported ? (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          color: "var(--text-muted)",
-          fontSize: "0.75rem",
-          gap: "0.25rem",
-        }}
-      >
-        <FlagOutlinedIcon fontSize="small" />
-        Reported
-      </div>
-    ) : (
-      <button
-        onClick={onReportClick}
-        title="Report issue with this exercise"
-        aria-label="Report issue with this exercise"
-        style={{
-          background: "none",
-          border: "none",
-          padding: "0.25rem",
-          cursor: "pointer",
-          color: "var(--text-muted)",
-          display: "flex",
-          alignItems: "center",
-          gap: "0.25rem",
-          fontSize: "0.75rem",
-          opacity: 0.7,
-        }}
-      >
-        <FlagOutlinedIcon fontSize="small" />
-        Report
-      </button>
-    )
+    <s.ReportCorner>
+      {isReported ? (
+        <s.ReportedBadge>
+          <FlagOutlinedIcon fontSize="small" />
+          Reported
+        </s.ReportedBadge>
+      ) : (
+        <s.ReportButton
+          onClick={onReportClick}
+          title="Report issue with this exercise"
+          aria-label="Report issue with this exercise"
+        >
+          <FlagOutlinedIcon fontSize="small" />
+        </s.ReportButton>
+      )}
+    </s.ReportCorner>
   );
 
   // While typing, these links sit under the keyboard and only push the
   // sentence off screen. They come back as soon as the keyboard closes.
   if (isSoftKeyboardOpen && !isExerciseOver) return null;
 
-  const afterExerciseRowStyle = { gap: "1em", flexWrap: "wrap", marginBottom: isMobile ? "2rem" : "1rem" };
+  const afterExerciseRowStyle = { gap: "1em", flexWrap: "wrap" };
 
-  const whyRemoveRow = (
-    <s.CenteredWordRow style={afterExerciseRowStyle}>
-      <span style={{ color: "var(--text-muted)", fontSize: "small", marginTop: "1em" }}>{strings.whyRemoveFromPractice}</span>
-      <s.StyledGreyButton className="styledGreyButton" onClick={() => removeFromPractice("i_know_this")}>
-        {strings.iAlreadyKnowIt}
-      </s.StyledGreyButton>
-      <s.StyledGreyButton className="styledGreyButton" onClick={() => removeFromPractice("not_worth_learning")}>
-        {strings.notWorthLearning}
-      </s.StyledGreyButton>
-      <s.StyledGreyButton className="styledGreyButton" onClick={() => setAskingWhyRemove(false)}>
-        {strings.cancel}
-      </s.StyledGreyButton>
-    </s.CenteredWordRow>
+  // Asked in a dialog: swapping the links row for the answers moved the
+  // footer around under the learner's thumb.
+  const whyRemoveDialog = askingWhyRemove && exerciseBookmark && (
+    <ChoiceModal
+      title={`${strings.removeFromPractice}: "${exerciseBookmark.from}"`}
+      message={strings.whyRemoveFromPractice}
+      primaryLabel={strings.iAlreadyKnowIt}
+      secondaryLabel={strings.notWorthLearning}
+      onPrimary={() => removeFromPractice("i_know_this")}
+      onSecondary={() => removeFromPractice("not_worth_learning")}
+      onCancel={() => setAskingWhyRemove(false)}
+    />
   );
 
   const afterExerciseRow = (
-    <s.CenteredWordRow style={afterExerciseRowStyle}>
+    <s.ExerciseLinksRow style={afterExerciseRowStyle}>
       {/* Hide "Remove from practice" only for Match, where multiple words are practiced at once */}
       {exerciseType !== EXERCISE_TYPES.match && (
         <s.StyledGreyButton className="styledGreyButton" onClick={() => setAskingWhyRemove(true)}>
@@ -141,41 +122,30 @@ export default function SolutionFeedbackLinks({
           Share exercise
         </s.StyledGreyButton>
       )}
-    </s.CenteredWordRow>
+    </s.ExerciseLinksRow>
   );
 
   return (
     <>
-      {/* Before the answer: the escape hatches and Report share one line. */}
-      <s.ExerciseLinksRow
-        className={!isExerciseOver ? "margin-top-auto" : ""}
-        style={{
-          marginTop: !isExerciseOver ? "1rem" : "0",
-          marginBottom: isMobile ? "1.5rem" : "1rem",
-        }}
-      >
-        {!isExerciseOver && (
-          <>
-            {!linksUnderInput && (
-              <EscapeLinks
-                onShowSolution={handleShowSolution}
-                exerciseType={exerciseType}
-                disableAudio={disableAudio}
-                setIsExerciseOver={setIsExerciseOver}
-              />
-            )}
-            {reportControl}
-          </>
-        )}
-      </s.ExerciseLinksRow>
+      {reportControl}
 
-      {isExerciseOver && (askingWhyRemove ? whyRemoveRow : afterExerciseRow)}
-
-      {isExerciseOver && reportControl && (
-        <s.CenteredWordRow style={{ marginBottom: isMobile ? "1rem" : "0.5rem" }}>
-          {reportControl}
-        </s.CenteredWordRow>
+      {/* Before the answer: the escape hatches, unless the exercise shows them itself. */}
+      {!isExerciseOver && !linksUnderInput && (
+        <s.ExerciseLinksRow
+          className="margin-top-auto"
+          style={{ marginTop: "1rem", marginBottom: isMobile ? "1.5rem" : "1rem" }}
+        >
+          <EscapeLinks
+            onShowSolution={handleShowSolution}
+            exerciseType={exerciseType}
+            disableAudio={disableAudio}
+            setIsExerciseOver={setIsExerciseOver}
+          />
+        </s.ExerciseLinksRow>
       )}
+
+      {isExerciseOver && afterExerciseRow}
+      {isExerciseOver && whyRemoveDialog}
     </>
   );
 }

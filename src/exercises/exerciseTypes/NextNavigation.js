@@ -162,6 +162,23 @@ export default function NextNavigation({
     }
   }
 
+  const solutionFeedbackLinks = (
+    <SolutionFeedbackLinks
+      exerciseBookmarks={exerciseBookmarks}
+      exerciseBookmark={exerciseBookmark}
+      handleShowSolution={handleShowSolution}
+      isExerciseOver={isExerciseOver}
+      shareableUrl={createShareableUrl()}
+      exerciseType={exerciseType}
+      disableAudio={disableAudio}
+      setIsExerciseOver={setIsExerciseOver}
+      onWordRemovedFromExercises={onWordRemovedFromExercises}
+      onReportClick={onReportClick}
+      isReported={isReported}
+      linksUnderInput={linksUnderInput}
+    />
+  );
+
   return (
     <>
       <CelebrationModal open={showCelebrationModal} onClose={() => setShowCelebrationModal(false)} />
@@ -189,46 +206,30 @@ export default function NextNavigation({
         </>
       )}
 
-      {isExerciseOver && (
-        <>
+      {isExerciseOver ? (
+        <s.AfterAnswerFooter className="afterAnswerFooter">
+          {solutionFeedbackLinks}
           {/* Speaker button removed — tap-to-pronounce on the highlighted
               bookmark word (via reading-view's TranslatableWord handler)
-              covers the same need without a dedicated button. Next sits
-              alone here so the BottomRow's space-around centers it. */}
-          <s.BottomRowSmallTopMargin className="bottomRow">
-            <s.FeedbackButton
-              className="next-btn"
-              onClick={(e) => !isAutoPronouncing && moveToNextExercise()}
-              autoFocus
-              style={{
-                opacity: isAutoPronouncing ? 0.4 : undefined,
-                cursor: isAutoPronouncing ? "default" : "pointer",
-              }}
-            >
-              {nextButtonText || strings.next}
-            </s.FeedbackButton>
-          </s.BottomRowSmallTopMargin>
+              covers the same need without a dedicated button. */}
+          <s.PrimaryExerciseButton
+            // No autoFocus: Enter is handled by the keydown listener above,
+            // and a focused button draws a ring around the only action.
+            onClick={(e) => !isAutoPronouncing && moveToNextExercise()}
+            style={{
+              opacity: isAutoPronouncing ? 0.4 : undefined,
+              cursor: isAutoPronouncing ? "default" : "pointer",
+            }}
+          >
+            {nextButtonText || strings.next}
+          </s.PrimaryExerciseButton>
           {!isMatchExercise && (
-            <div style={{ display: "flex", justifyContent: "center", marginTop: "8px" }}>
-              <AutoPronounceToggle enabled={autoPronounceBookmark} onToggle={toggleAutoPronounceState} />
-            </div>
+            <AutoPronounceToggle enabled={autoPronounceBookmark} onToggle={toggleAutoPronounceState} />
           )}
-        </>
+        </s.AfterAnswerFooter>
+      ) : (
+        solutionFeedbackLinks
       )}
-      <SolutionFeedbackLinks
-        exerciseBookmarks={exerciseBookmarks}
-        exerciseBookmark={exerciseBookmark}
-        handleShowSolution={handleShowSolution}
-        isExerciseOver={isExerciseOver}
-        shareableUrl={createShareableUrl()}
-        exerciseType={exerciseType}
-        disableAudio={disableAudio}
-        setIsExerciseOver={setIsExerciseOver}
-        onWordRemovedFromExercises={onWordRemovedFromExercises}
-        onReportClick={onReportClick}
-        isReported={isReported}
-        linksUnderInput={linksUnderInput}
-      />
       <FeedbackModal
         open={showFeedbackModal}
         setOpen={setShowFeedbackModal}

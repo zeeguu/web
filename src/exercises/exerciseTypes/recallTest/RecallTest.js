@@ -79,7 +79,7 @@ const GradeBlock = styled.div`
   align-items: center;
   gap: 0.9rem;
   margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
 `;
 
 const GradePrompt = styled.div`
@@ -130,11 +130,6 @@ const YesButton = styled(GradeButton)`
   border: 1px solid transparent;
 `;
 
-const RevealButton = styled(YesButton)`
-  flex: 0 1 auto;
-  min-width: 11.5rem;
-  padding: 0.8rem 1.75rem;
-`;
 
 export default function RecallTest({
   direction,
@@ -256,9 +251,9 @@ export default function RecallTest({
                 </GradeRow>
               </>
             ) : (
-              <RevealButton type="button" onClick={() => setSaysTheyKnowIt(true)}>
+              <s.PrimaryExerciseButton type="button" onClick={() => setSaysTheyKnowIt(true)}>
                 {strings.showAnswer}
-              </RevealButton>
+              </s.PrimaryExerciseButton>
             )}
           </GradeBlock>
         </CardStage>

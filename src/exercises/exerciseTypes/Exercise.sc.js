@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 
-import { zeeguuTransparentLightOrange, zeeguuOrange } from "../../components/colors";
+import { zeeguuTransparentLightOrange, zeeguuOrange, zeeguuWarmYellow } from "../../components/colors";
 
 const Exercise = styled.div`
   display: flex;
@@ -623,6 +623,47 @@ let MultipleChoiceContext = styled.div`
 // the sentence. The $tight variant is used by MultipleChoiceContext
 // where the wrapper sits directly below the chosen option (already-airy
 // layout) and doesn't need the bigger top margin.
+// The one main action at the bottom of the card: the flashcard's
+// Show answer, and Next once an exercise is answered. Same look and the same
+// spot, so the thumb goes to one place all session.
+let PrimaryExerciseButton = styled.button`
+  min-width: 11.5rem;
+  min-height: 3.5rem;
+  padding: 0.8rem 1.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  background-color: ${zeeguuWarmYellow};
+  color: var(--orange-btn-text);
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: filter 0.15s ease;
+
+  &:active {
+    filter: brightness(0.95);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px var(--exercise-btn-focus, rgba(0, 0, 0, 0.3));
+  }
+`;
+
+// After answering: the secondary links (and Report), then Next, then the
+// Auto-pronounce setting, pinned to the bottom of the card. The setting
+// under Next mirrors Report under Show answer, so the two buttons line up.
+let AfterAnswerFooter = styled.div`
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1rem 0.75rem;
+`;
+
 let RevealedProgressBar = styled.div`
   margin-top: ${(props) => (props.$tight ? "1em" : "3em")};
 `;
@@ -655,26 +696,38 @@ let ProgressBarPlaceholder = styled.div`
   margin: 0.1em auto 0.5em auto;
 `;
 
+// Report sits as a small flag in the card's top-right corner, out of the
+// way of the exercise and of the links at the bottom.
+let ReportCorner = styled.div`
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+`;
+
 let ReportButton = styled.button`
   background: none;
   border: none;
   padding: 0.25rem;
   cursor: pointer;
-  color: #ccc;
+  color: var(--text-faint);
   display: flex;
   align-items: center;
 
-  &:hover {
-    color: #999;
+  @media (hover: hover) {
+    &:hover {
+      color: var(--text-muted);
+    }
   }
 `;
 
 let ReportedBadge = styled.span`
-  color: #999;
-  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  padding: 0.25rem;
 `;
 
 export {
@@ -711,9 +764,12 @@ export {
   EditSpeakButtonHolder,
   OrangeButtonMessage,
   MultipleChoiceContext,
+  ReportCorner,
   ReportButton,
   ReportedBadge,
   RevealedProgressBar,
+  AfterAnswerFooter,
+  PrimaryExerciseButton,
   CenteredRevealedSlot,
   ProgressBarReserve,
   ProgressBarPlaceholder,

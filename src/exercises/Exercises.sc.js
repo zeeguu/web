@@ -32,6 +32,7 @@ const ExercisesColumn = styled.div`
 `;
 
 const ExForm = styled.div`
+  position: relative; /* anchors the Report flag in the top-right corner */
   display: flex;
   flex-direction: column;
   border-radius: 10px;
@@ -48,11 +49,12 @@ const ExForm = styled.div`
     min-height: 0;
   }
 
-  /* A self-graded flashcard fills the phone screen down to the bottom nav, so
-     its grade buttons sit in the thumb zone instead of mid-screen. TopBar and
-     BottomNav publish their measured heights; 0px when one is not mounted. */
+  /* A self-graded flashcard, and any exercise once answered, fills the phone
+     screen down to the bottom nav, so its grade buttons / Next sit in the
+     thumb zone instead of mid-screen. TopBar and BottomNav publish their
+     measured heights; 0px when one is not mounted. */
   @media (max-width: ${MOBILE_WIDTH}px) {
-    &:has(.flashcardStage):not(.softKeyboardOpen) {
+    &:has(.flashcardStage, .afterAnswerFooter):not(.softKeyboardOpen) {
       min-height: calc(
         100dvh - env(safe-area-inset-top) - var(--top-bar-height, 0px) - var(--bottom-nav-height, 0px) - 1.5rem
       );
