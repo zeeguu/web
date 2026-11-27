@@ -1,8 +1,13 @@
-Vælg, hvor lange dine begynderlektioner med lyd er, og søg lige der, hvor du læser.
+Vælg, hvordan du øver, indsæt en hvilken som helst tekst i Oversæt, og se hvert ord, du lærer.
 
-- Begynderlektioner med lyd: en skyder i lektionsindstillingerne bestemmer, hvor lang din daglige lektion er, fra 5 til 25 minutter. Siger du, at en lektion var for kort eller for lang, flytter den sig, og opsummeringen fortæller dig den nye længde.
-- Søgning ligger nu inde i Nyheder og Evergreen, ved siden af tandhjulet, og hvert resultat viser, hvor din søgning passede.
-- På telefonen er Indstillinger tilbage i Mere-panelet.
-- Beskeder vises nu øverst, lige under topbjælken; fortryd-beskeder bliver nederst, over fanebjælken.
-- Tilbage-pilen er nemmere at trykke på.
-- Rettelser: sprogvælgeren står pænt på små skærme, og dialogen til at erstatte et eksempel ser rigtig ud i mørk tilstand.
+- Øvestil: vælg hvilke slags øvelser du får, slå flashcards til, der vendes med et tryk, med den nye vurdering "Sådan da", og varier de eksempelsætninger, du øver med.
+- Vælg, hvordan ord planlægges, for eksempel de hyppigste ord først.
+- Når et svar lærer dig et ord, vises ordet som et flashcard. Løsningsskærmen er roligere, og Næste sidder lige under tommelfingeren.
+- Øvelser kan udtale opgaven, når den vises; slå det til og fra på kortet.
+- Lydlektioner: dialogens tekst vises nu under afspilleren, lektionsindstillingerne er flyttet til Indstillinger, Lydlektioner, og en skyder bestemmer, hvor lang tid du har til at svare. Du kan give feedback efter hver lektion.
+- Oversæt: indsæt en hvilken som helst tekst, lange tekster læses som en artikel med tryk-for-at-oversætte, og dine tekster gemmes i Historik med de oversatte ord fremhævet. Swipe mellem fanerne hvor som helst på skærmen.
+- Appen åbner igen på Oversæt eller Ord, hvis det var der, du slap.
+- Dagligt mål: du kan skjule antallet af dage i din stime, og når du når dit mål, tilbydes du en påmindelse om at øve.
+- Nye illustrerede avatarer, og du kan rette dit brugernavn direkte, hvor det står.
+- En opdateret introduktion, og introduktionens tips kan slås fra.
+- Rettelser: en oversættelse, der aldrig kommer, holder op med at pulsere, et tryk ved siden af det øvede ord smelter ikke længere sammen med det, og hvis noget går ned, får du en vej hjem i stedet for en tom side.

@@ -1,8 +1,13 @@
-Scegli quanto durano le tue lezioni audio per principianti, e cerca proprio dove leggi.
+Scegli come esercitarti, incolla qualsiasi testo in Traduci e vedi ogni parola che impari.
 
-- Lezioni audio per principianti: un cursore nelle impostazioni della lezione stabilisce quanto dura la tua lezione quotidiana, da 5 a 25 minuti. Se dici che una lezione era troppo corta o troppo lunga, il cursore si sposta, e il riepilogo ti dice la nuova durata.
-- La ricerca ora si trova dentro Notizie ed Evergreen, accanto all'ingranaggio, e ogni risultato mostra dove la tua ricerca ha trovato corrispondenza.
-- Sul telefono, le Impostazioni sono di nuovo nel pannello Altro.
-- I messaggi ora compaiono in alto, subito sotto la barra superiore; i messaggi per annullare restano in basso, sopra la barra delle schede.
-- La freccia per tornare indietro è più facile da toccare.
-- Correzioni: la scelta della lingua è allineata bene sugli schermi piccoli, e la finestra per sostituire un esempio si vede correttamente in modalità scura.
+- Stile di pratica: scegli quali tipi di esercizi ricevere, attiva le flashcard che si girano con un tocco con il nuovo voto "Più o meno", e varia le frasi di esempio con cui ti eserciti.
+- Scegli come vengono programmate le parole, per esempio prima le parole più frequenti.
+- Quando una risposta ti fa imparare una parola, la parola appare come una flashcard. La schermata della soluzione è più tranquilla, e Avanti è a portata di pollice.
+- Gli esercizi possono pronunciare la consegna appena appare; attivalo o disattivalo sulla scheda.
+- Lezioni audio: il testo del dialogo ora appare sotto il lettore, le impostazioni delle lezioni sono passate in Impostazioni, Lezioni audio, e un cursore stabilisce quanto tempo hai per rispondere. Puoi lasciare un commento dopo ogni lezione.
+- Traduci: incolla qualsiasi testo, i testi lunghi si leggono come un articolo con traduzione al tocco, e i tuoi testi restano nella Cronologia con le parole tradotte evidenziate. Scorri tra le schede in qualsiasi punto dello schermo.
+- L'app si riapre su Traduci o Parole se è lì che l'avevi lasciata.
+- Obiettivo giornaliero: puoi nascondere il numero di giorni della tua serie, e quando raggiungi l'obiettivo ti viene proposto un promemoria di studio.
+- Nuovi avatar illustrati, e puoi modificare il tuo nome utente direttamente sul posto.
+- Un'introduzione aggiornata, e i suoi suggerimenti si possono disattivare.
+- Correzioni: una traduzione che non arriva mai smette di pulsare, un tocco accanto alla parola esercitata non si fonde più con essa, e se qualcosa va in crash trovi una via per tornare alla home invece di una pagina vuota.

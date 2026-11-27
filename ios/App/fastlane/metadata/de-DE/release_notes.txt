@@ -1,8 +1,13 @@
-Wähle, wie lang deine Audio-Lektionen für Anfänger sind, und suche direkt dort, wo du liest.
+Wähle, wie du übst, füge beliebigen Text in Übersetzen ein und sieh jedes Wort, das du lernst.
 
-- Audio-Lektionen für Anfänger: Ein Schieberegler in den Lektionseinstellungen legt fest, wie lang deine tägliche Lektion ist, von 5 bis 25 Minuten. Sagst du, dass eine Lektion zu kurz oder zu lang war, verschiebt er sich, und die Zusammenfassung nennt dir die neue Länge.
-- Die Suche ist jetzt in News und Evergreen, neben dem Zahnrad, und jedes Ergebnis zeigt, wo deine Suche getroffen hat.
-- Auf dem Handy sind die Einstellungen wieder im Mehr-Bereich.
-- Meldungen erscheinen jetzt oben, direkt unter der oberen Leiste; Rückgängig-Meldungen bleiben unten, über der Tab-Leiste.
-- Der Zurück-Pfeil ist leichter zu tippen.
-- Korrekturen: Die Sprachauswahl ist auf kleinen Bildschirmen sauber ausgerichtet, und der Dialog zum Ersetzen eines Beispiels sieht im Dunkelmodus richtig aus.
+- Übungsstil: Wähle, welche Arten von Übungen du bekommst, schalte Karteikarten ein, die sich per Tippen umdrehen, mit der neuen Bewertung "So halb", und variiere die Beispielsätze, mit denen du übst.
+- Wähle, wie Wörter geplant werden, zum Beispiel die häufigsten Wörter zuerst.
+- Wenn du durch eine Antwort ein Wort gelernt hast, wird es wie eine Karteikarte gezeigt. Der Lösungsbildschirm ist ruhiger, und Weiter liegt bequem unter dem Daumen.
+- Übungen können die Aufgabe vorlesen, sobald sie erscheint; schalte es auf der Karte ein oder aus.
+- Audio-Lektionen: Der Text des Dialogs steht jetzt unter dem Player, die Lektionseinstellungen sind nach Einstellungen, Audio-Lektionen umgezogen, und ein Schieberegler legt fest, wie viel Zeit du zum Antworten hast. Du kannst nach jeder Lektion Feedback geben.
+- Übersetzen: Füge beliebigen Text ein, lange Texte liest du wie einen Artikel mit Antippen zum Übersetzen, und deine Texte bleiben im Verlauf, mit den übersetzten Wörtern hervorgehoben. Wische überall auf dem Bildschirm zwischen den Tabs.
+- Die App öffnet wieder bei Übersetzen oder Wörter, wenn du dort aufgehört hast.
+- Tagesziel: Du kannst die Anzahl der Tage deiner Serie ausblenden, und wenn du dein Ziel erreichst, bekommst du eine Lernerinnerung angeboten.
+- Neue illustrierte Avatare, und du kannst deinen Benutzernamen direkt an Ort und Stelle ändern.
+- Eine überarbeitete Einführung, und ihre Hinweise lassen sich ausschalten.
+- Fehlerbehebungen: Eine Übersetzung, die nie ankommt, hört auf zu pulsieren, ein Tippen neben das geübte Wort verschmilzt nicht mehr mit ihm, und wenn etwas abstürzt, führt dich ein Weg zurück zur Startseite statt einer leeren Seite.

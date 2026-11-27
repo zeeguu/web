@@ -1,8 +1,13 @@
-Choose how long your beginner audio lessons are, and search right where you read.
+Choose how you practice, paste any text into Translate, and see each word you learn.
 
-- Beginner audio lessons: a slider in the lesson settings sets how long your daily lesson is, from 5 to 25 minutes. Saying a lesson was too short or too long moves it, and the summary tells you the new length.
-- Search now lives inside News and Evergreen, next to the settings gear, and each result shows where your search matched.
-- On the phone, Settings is back in the More panel.
-- Messages now appear at the top, just under the top bar; undo messages stay at the bottom, above the tab bar.
-- The back arrow is easier to tap.
-- Fixes: the language picker lines up on small screens, and the replace-example dialog looks right in dark mode.
+- Practice style: pick which kinds of exercises you get, turn on tap-to-flip flashcards with a new "Kind of" grade, and vary the example sentences you practice with.
+- Choose how words are scheduled, for example the most frequent words first.
+- When an answer teaches you a word, the word is shown like a flashcard. The solution screen is calmer, and Next sits in easy reach of your thumb.
+- Exercises can pronounce the prompt as it appears; toggle it on the card.
+- Audio lessons: the dialogue text now shows under the player, lesson settings moved to Settings, Audio lessons, and a slider sets how much time you get to answer. You can give feedback after every lesson.
+- Translate: paste any text, long texts read like an article with tap-to-translate, and your texts are kept in History with the translated words highlighted. Swipe between tabs anywhere on the screen.
+- The app reopens on Translate or Words if that is where you left it.
+- Daily goal: you can hide the streak's day count, and reaching your goal offers to set a study reminder.
+- New illustrated avatars, and you can edit your username right in place.
+- An updated onboarding, and onboarding hints can be turned off.
+- Fixes: a translation that never arrives stops pulsing, a tap next to the practiced word no longer joins it, and if something crashes you get a way back home instead of an empty page.

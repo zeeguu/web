@@ -1,8 +1,13 @@
-Choisis la durée de tes leçons audio pour débutants, et cherche là où tu lis.
+Choisis ta façon de t'entraîner, colle n'importe quel texte dans Traduire, et vois chaque mot que tu apprends.
 
-- Leçons audio pour débutants : un curseur dans les réglages de la leçon fixe la durée de ta leçon du jour, de 5 à 25 minutes. Quand tu dis qu'une leçon était trop courte ou trop longue, il se déplace, et le résumé t'indique la nouvelle durée.
-- La recherche se trouve maintenant dans Actualités et Evergreen, à côté de la roue dentée, et chaque résultat montre où ta recherche a trouvé une correspondance.
-- Sur téléphone, les Réglages sont de retour dans le panneau Plus.
-- Les messages apparaissent maintenant en haut, juste sous la barre supérieure ; les messages d'annulation restent en bas, au-dessus de la barre d'onglets.
-- La flèche de retour est plus facile à toucher.
-- Corrections : le choix de la langue s'aligne bien sur les petits écrans, et la fenêtre pour remplacer un exemple s'affiche correctement en mode sombre.
+- Style d'entraînement : choisis les types d'exercices que tu reçois, active les cartes qui se retournent d'un toucher avec la nouvelle note "Plus ou moins", et varie les phrases d'exemple avec lesquelles tu t'entraînes.
+- Choisis comment les mots sont planifiés, par exemple les mots les plus fréquents d'abord.
+- Quand une réponse t'apprend un mot, le mot s'affiche comme une carte. L'écran de solution est plus calme, et Suivant est à portée de pouce.
+- Les exercices peuvent prononcer la consigne dès qu'elle apparaît ; active-le ou désactive-le sur la carte.
+- Leçons audio : le texte du dialogue s'affiche maintenant sous le lecteur, les réglages des leçons sont passés dans Réglages, Leçons audio, et un curseur fixe le temps dont tu disposes pour répondre. Tu peux donner ton avis après chaque leçon.
+- Traduire : colle n'importe quel texte, les textes longs se lisent comme un article avec traduction d'un toucher, et tes textes restent dans l'Historique avec les mots traduits surlignés. Balaye entre les onglets n'importe où sur l'écran.
+- L'application se rouvre sur Traduire ou Mots si c'est là que tu l'as quittée.
+- Objectif du jour : tu peux masquer le nombre de jours de ta série, et atteindre ton objectif te propose un rappel d'étude.
+- De nouveaux avatars illustrés, et tu peux modifier ton nom d'utilisateur directement sur place.
+- Une prise en main mise à jour, dont les conseils peuvent être désactivés.
+- Corrections : une traduction qui n'arrive jamais arrête de clignoter, toucher à côté du mot travaillé ne le fusionne plus avec lui, et en cas de plantage tu as un chemin vers l'accueil au lieu d'une page vide.
