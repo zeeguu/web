@@ -79,7 +79,7 @@ const GradeBlock = styled.div`
   align-items: center;
   gap: 0.9rem;
   margin-top: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 4.75rem;
 `;
 
 const GradePrompt = styled.div`
@@ -144,7 +144,6 @@ export default function RecallTest({
   setIsCorrect,
   isExerciseOver,
   resetSubSessionTimer,
-  bookmarkProgressBar,
   onExampleUpdated,
   onExerciseLoaded,
 }) {
@@ -277,9 +276,6 @@ export default function RecallTest({
             />
           )}
 
-          {isExerciseOver && bookmarkProgressBar && (
-            <s.RevealedProgressBar>{bookmarkProgressBar}</s.RevealedProgressBar>
-          )}
 
           {!isExerciseOver && (
             <BottomInput

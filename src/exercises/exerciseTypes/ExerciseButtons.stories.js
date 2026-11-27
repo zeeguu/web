@@ -1,4 +1,6 @@
 import * as s from "./Exercise.sc";
+import IosShareIcon from "@mui/icons-material/IosShare";
+import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 
 export default {
   title: "Buttons/ExerciseButtons",
@@ -59,18 +61,25 @@ export const RightFeedbackButton = {
   ),
 };
 
-export const ReportButton = {
+// Share and Report, as gray icons in the exercise card's top-right corner.
+export const CornerIconButton = {
   render: () => (
-    <div>
-      <s.ReportButton>Report</s.ReportButton>
+    <div style={{ display: "flex", gap: "0.25rem" }}>
+      <s.CornerIconButton aria-label="Share exercise">
+        <IosShareIcon fontSize="small" />
+      </s.CornerIconButton>
+      <s.CornerIconButton aria-label="Report a problem with this exercise">
+        <FlagOutlinedIcon fontSize="small" />
+      </s.CornerIconButton>
     </div>
   ),
 };
 
-export const ReportedBadge = {
+// The one main action at the bottom of the card: Show answer, Next.
+export const PrimaryExerciseButton = {
   render: () => (
     <div>
-      <s.ReportedBadge>Reported</s.ReportedBadge>
+      <s.PrimaryExerciseButton>Next</s.PrimaryExerciseButton>
     </div>
   ),
 };

@@ -26,7 +26,6 @@ export default function MultipleChoiceContext({
   isExerciseOver,
   reload,
   resetSubSessionTimer,
-  bookmarkProgressBar,
   onExerciseLoaded,
 }) {
   const api = useContext(APIContext);
@@ -148,9 +147,6 @@ export default function MultipleChoiceContext({
             </s.MultipleChoiceContext>
           );
         })}
-      {isExerciseOver && bookmarkProgressBar && (
-        <s.RevealedProgressBar $tight>{bookmarkProgressBar}</s.RevealedProgressBar>
-      )}
     </s.Exercise>
   );
 }

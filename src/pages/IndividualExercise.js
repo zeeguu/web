@@ -1,4 +1,6 @@
 import React, { useState, useMemo, useEffect, useContext } from "react";
+import TopWordProgress from "../exercises/components/TopWordProgress";
+import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 import { useParams } from "react-router-dom";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { APIContext } from "../contexts/APIContext";
@@ -346,6 +348,18 @@ export default function IndividualExercise() {
         <NarrowColumn>
           <s.ExercisesColumn>
             <s.ExForm>
+              <TopWordProgress
+                // The URL names the type ("Match"), not the internal constant
+                exerciseType={exerciseType === "Match" ? EXERCISE_TYPES.match : exerciseType}
+                progressBar={
+                  isExerciseOver ? (
+                    <WordProgressBar bookmark={bookmark} message={message} isGreyedOutBar={false} />
+                  ) : null
+                }
+                bookmark={bookmark}
+                message={message}
+                isCorrect={isCorrect}
+              />
               <ExerciseLinksContext.Provider value={{ setLinksUnderInput }}>
                 <ExerciseComponent
                   bookmarksToStudy={bookmarksToUse}
@@ -364,11 +378,6 @@ export default function IndividualExercise() {
                   resetSubSessionTimer={() => {}}
                   setSelectedExerciseBookmark={() => {}}
                   moveToNextExercise={() => {}}
-                  bookmarkProgressBar={
-                    isExerciseOver ? (
-                      <WordProgressBar bookmark={bookmark} message={message} isGreyedOutBar={false} />
-                    ) : null
-                  }
                   onExerciseLoaded={() => setExerciseLoaded(true)}
                   onExampleUpdated={(data) => {
                     console.log("Example updated:", data);

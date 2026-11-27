@@ -16,7 +16,6 @@ import { isWordLearned } from "../progressBars/levelIndicator/predictAfterAnswer
 import LocalStorage from "../../assorted/LocalStorage.js";
 import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce.js";
 import Pluralize from "../../utils/text/pluralize.js";
-import CorrectMessage from "./CorrectMessage";
 import { APIContext } from "../../contexts/APIContext.js";
 import isEmptyDictionary from "../../utils/misc/isEmptyDictionary.js";
 import useScreenWidth from "../../hooks/useScreenWidth.js";
@@ -198,17 +197,12 @@ export default function NextNavigation({
           </div>
         </>
       )}
-      {!isMatchExercise && (
-        <>
-          {isCorrect && bookmarkLearned && (
-            <CorrectMessage className={"next-nav-learning-cycle"} info={strings.wordLearned} />
-          )}
-        </>
-      )}
+      {/* "You've learned a new word!" is drawn under the word's progress bar
+          at the top of the card (TopWordProgress). */}
 
+      {isExerciseOver && solutionFeedbackLinks}
       {isExerciseOver ? (
         <s.AfterAnswerFooter className="afterAnswerFooter">
-          {solutionFeedbackLinks}
           {/* Speaker button removed — tap-to-pronounce on the highlighted
               bookmark word (via reading-view's TranslatableWord handler)
               covers the same need without a dedicated button. */}

@@ -36,7 +36,6 @@ export default function ListenChooseMeaning({
   setIsCorrect,
   isExerciseOver,
   resetSubSessionTimer,
-  bookmarkProgressBar,
   onExampleUpdated,
   onExerciseLoaded,
 }) {
@@ -108,7 +107,6 @@ export default function ListenChooseMeaning({
         />
       )}
 
-      {isExerciseOver && bookmarkProgressBar && <s.RevealedProgressBar>{bookmarkProgressBar}</s.RevealedProgressBar>}
 
       {!isExerciseOver && (
         <MultipleChoicesInput

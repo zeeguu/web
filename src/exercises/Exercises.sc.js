@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
+import { Exercise } from "./exerciseTypes/Exercise.sc";
 
 const ExercisesColumn = styled.div`
   /* background-color: lightcoral; */
@@ -59,6 +60,12 @@ const ExForm = styled.div`
         100dvh - env(safe-area-inset-top) - var(--top-bar-height, 0px) - var(--bottom-nav-height, 0px) - 1.5rem
       );
     }
+  }
+
+  /* Once answered, the exercise takes only its own height, so the word
+     actions sit right under it and the free space goes above Next. */
+  &:has(.afterAnswerFooter) > ${Exercise} {
+    flex: 0 0 auto;
   }
 
   box-sizing: border-box; // to ensure that padding does not expand width!

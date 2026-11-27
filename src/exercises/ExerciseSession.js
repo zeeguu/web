@@ -1,4 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
+import TopWordProgress from "./components/TopWordProgress";
 import { useHistory } from "react-router-dom";
 import ExerciseSessionProgressBar from "./ExerciseSessionProgressBar";
 import * as s from "./Exercises.sc";
@@ -586,6 +587,13 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
           </div>
         )}
         <s.ExForm className={isSoftKeyboardOpen ? "softKeyboardOpen" : undefined}>
+          <TopWordProgress
+            exerciseType={currentExerciseType}
+            progressBar={wordProgressBar}
+            bookmark={selectedExerciseBookmark}
+            message={currentMessageToAPI}
+            isCorrect={isCorrect}
+          />
           <ExerciseLinksContext.Provider value={exerciseLinks}>
           <CurrentExerciseComponent
             key={`${sessionBuildId}-${currentIndex}`}
@@ -611,7 +619,6 @@ export default function ExerciseSession({ articleID, backButtonAction, toSchedul
             exerciseSessionId={exerciseSessionId}
             activeSessionDuration={sessionDuration}
             resetSubSessionTimer={resetSubSessionTimer}
-            bookmarkProgressBar={wordProgressBar}
             onExampleUpdated={handleExampleUpdate}
             onExerciseLoaded={handleExerciseLoaded}
           />

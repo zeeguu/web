@@ -32,7 +32,6 @@ export default function TranslateWhatYouHear({
   reload,
   isExerciseOver,
   resetSubSessionTimer,
-  bookmarkProgressBar,
   onExampleUpdated,
   onExerciseLoaded,
 }) {
@@ -99,9 +98,6 @@ export default function TranslateWhatYouHear({
         canTypeInline={false}
       />
 
-      {isExerciseOver && bookmarkProgressBar && (
-        <s.CenteredRevealedSlot>{bookmarkProgressBar}</s.CenteredRevealedSlot>
-      )}
 
       {!isExerciseOver && (
         <BottomInput

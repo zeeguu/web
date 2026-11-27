@@ -8,6 +8,10 @@ import DisableAudioSession from "./DisableAudioSession";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 import SessionStorage from "../../assorted/SessionStorage";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
+import FlagIcon from "@mui/icons-material/Flag";
+import IosShareIcon from "@mui/icons-material/IosShare";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import Tag from "../../pages/_pages_shared/Tag.sc";
 import ExplainWordButton from "./ExplainWordButton";
 import ChoiceModal from "../../components/modal_shared/ChoiceModal";
 
@@ -57,30 +61,46 @@ export default function SolutionFeedbackLinks({
     }
   }
 
-  const reportControl = onReportClick && (
-    <s.ReportCorner>
-      {isReported ? (
-        <s.ReportedBadge>
-          <FlagOutlinedIcon fontSize="small" />
-          Reported
-        </s.ReportedBadge>
-      ) : (
-        <s.ReportButton
-          onClick={onReportClick}
-          title="Report issue with this exercise"
-          aria-label="Report issue with this exercise"
+  function shareExercise() {
+    navigator.clipboard
+      .writeText(shareableUrl)
+      .then(() => toast.success("Exercise link copied to clipboard!"))
+      .catch(() => toast.error("Failed to copy link to clipboard"));
+  }
+
+  const canShare = isExerciseOver && Boolean(shareableUrl);
+
+  // Report and Share are rare, so they are two small gray icons in the
+  // card's top-right corner, out of the way of the exercise and of Next.
+  const cornerIcons = (onReportClick || canShare) && (
+    <s.CornerIcons>
+      {canShare && (
+        <s.CornerIconButton
+          type="button"
+          aria-label="Share exercise"
+          title="Share exercise"
+          onClick={shareExercise}
         >
-          <FlagOutlinedIcon fontSize="small" />
-        </s.ReportButton>
+          <IosShareIcon fontSize="small" />
+        </s.CornerIconButton>
       )}
-    </s.ReportCorner>
+      {onReportClick && (
+        <s.CornerIconButton
+          type="button"
+          aria-label={isReported ? "Reported" : "Report a problem with this exercise"}
+          title={isReported ? "Reported" : "Report a problem with this exercise"}
+          disabled={isReported}
+          onClick={onReportClick}
+        >
+          {isReported ? <FlagIcon fontSize="small" /> : <FlagOutlinedIcon fontSize="small" />}
+        </s.CornerIconButton>
+      )}
+    </s.CornerIcons>
   );
 
   // While typing, these links sit under the keyboard and only push the
   // sentence off screen. They come back as soon as the keyboard closes.
   if (isSoftKeyboardOpen && !isExerciseOver) return null;
-
-  const afterExerciseRowStyle = { gap: "1em", flexWrap: "wrap" };
 
   // Asked in a dialog: swapping the links row for the answers moved the
   // footer around under the learner's thumb.
@@ -92,42 +112,30 @@ export default function SolutionFeedbackLinks({
       secondaryLabel={strings.notWorthLearning}
       onPrimary={() => removeFromPractice("i_know_this")}
       onSecondary={() => removeFromPractice("not_worth_learning")}
+      moreOptions={[
+        { label: strings.translationIsWrong, onClick: () => removeFromPractice("bad_translation") },
+        { label: strings.other, onClick: () => removeFromPractice("other") },
+      ]}
       onCancel={() => setAskingWhyRemove(false)}
     />
   );
 
   const afterExerciseRow = (
-    <s.ExerciseLinksRow style={afterExerciseRowStyle}>
-      {/* Hide "Remove from practice" only for Match, where multiple words are practiced at once */}
-      {exerciseType !== EXERCISE_TYPES.match && (
-        <s.StyledGreyButton className="styledGreyButton" onClick={() => setAskingWhyRemove(true)}>
-          {strings.removeFromPractice}
-        </s.StyledGreyButton>
-      )}
+    <s.WordActions>
       {exerciseType !== EXERCISE_TYPES.match && <ExplainWordButton bookmark={exerciseBookmark} />}
-      {shareableUrl && (
-        <s.StyledGreyButton
-          className="styledGreyButton"
-          onClick={() => {
-            navigator.clipboard
-              .writeText(shareableUrl)
-              .then(() => {
-                toast.success("Exercise link copied to clipboard!");
-              })
-              .catch((err) => {
-                toast.error("Failed to copy link to clipboard");
-              });
-          }}
-        >
-          Share exercise
-        </s.StyledGreyButton>
+      {/* Hide "Remove" only for Match, where multiple words are practiced at once */}
+      {exerciseType !== EXERCISE_TYPES.match && (
+        <Tag className="small" onClick={() => setAskingWhyRemove(true)}>
+          <RemoveCircleOutlineIcon fontSize="inherit" />
+          {strings.remove}
+        </Tag>
       )}
-    </s.ExerciseLinksRow>
+    </s.WordActions>
   );
 
   return (
     <>
-      {reportControl}
+      {cornerIcons}
 
       {/* Before the answer: the escape hatches, unless the exercise shows them itself. */}
       {!isExerciseOver && !linksUnderInput && (
