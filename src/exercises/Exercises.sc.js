@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 
 const ExercisesColumn = styled.div`
   /* background-color: lightcoral; */
@@ -45,6 +46,17 @@ const ExForm = styled.div`
      the card would push the sentence above the fold. */
   &.softKeyboardOpen {
     min-height: 0;
+  }
+
+  /* A self-graded flashcard fills the phone screen down to the bottom nav, so
+     its grade buttons sit in the thumb zone instead of mid-screen. TopBar and
+     BottomNav publish their measured heights; 0px when one is not mounted. */
+  @media (max-width: ${MOBILE_WIDTH}px) {
+    &:has(.flashcardStage):not(.softKeyboardOpen) {
+      min-height: calc(
+        100dvh - env(safe-area-inset-top) - var(--top-bar-height, 0px) - var(--bottom-nav-height, 0px) - 1.5rem
+      );
+    }
   }
 
   box-sizing: border-box; // to ensure that padding does not expand width!

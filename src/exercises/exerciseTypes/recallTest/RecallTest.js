@@ -15,7 +15,7 @@ import { useInteractiveTextForBookmark } from "../../utils/useInteractiveTextFor
 import { useAnswerJudge } from "../../utils/useAnswerJudge.js";
 import AnswerNote from "../../components/AnswerNote.js";
 import { ALTERNATIVE } from "../../ExerciseConstants.js";
-import { zeeguuOrange, zeeguuWarmYellow } from "../../../components/colors.js";
+import { zeeguuWarmYellow } from "../../../components/colors.js";
 
 // A plain test of whether the learner knows a word: one side of the word alone,
 // no context and no Hint button. In typed mode (RecallMeaning / RecallWord),
@@ -23,13 +23,23 @@ import { zeeguuOrange, zeeguuWarmYellow } from "../../../components/colors.js";
 // (FlashcardMeaning / FlashcardWord), they tap "Show answer" (or Space) and
 // mark No / Kind of / Yes. The context appears once answered.
 
+// The word (and, once revealed, its answer) centered in the space above;
+// the grade buttons pinned to the bottom, where the thumb rests, so they
+// stay put when the answer appears.
 const CardStage = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 0;
+`;
+
+const CardFace = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1.5rem 1rem 1rem;
   gap: 0.75rem;
 `;
 
@@ -47,12 +57,19 @@ const CardPrompt = styled.h1`
   color: var(--text-primary);
 `;
 
+const CardDivider = styled.hr`
+  width: 3rem;
+  margin: 0.25rem 0 0;
+  border: none;
+  border-top: 2px solid var(--border-color);
+`;
+
 const CardAnswer = styled.p`
   margin: 0.25rem 0 0;
-  font-size: clamp(1.55rem, 5.8vw, 2.1rem);
-  font-weight: 800;
+  font-size: clamp(1.4rem, 5.2vw, 1.9rem);
+  font-weight: 700;
   line-height: 1.25;
-  color: ${zeeguuOrange};
+  color: var(--title-color);
 `;
 
 const GradeBlock = styled.div`
@@ -61,8 +78,8 @@ const GradeBlock = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 0.9rem;
-  margin-top: 1.75rem;
-  margin-bottom: 0.75rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
 `;
 
 const GradePrompt = styled.div`
@@ -74,15 +91,16 @@ const GradePrompt = styled.div`
 const GradeRow = styled.div`
   display: flex;
   justify-content: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
   width: 100%;
-  max-width: 22rem;
+  max-width: 24rem;
 `;
 
 const GradeButton = styled.button`
   flex: 1;
   cursor: pointer;
-  padding: 0.75rem 0.75rem;
+  min-height: 3.5rem;
+  padding: 0.75rem;
   border-radius: 0.75rem;
   font-size: 1rem;
   font-weight: 600;
@@ -206,10 +224,17 @@ export default function RecallTest({
   return (
     <s.Exercise className="recallTest">
       {useCenteredFlashcardLayout ? (
-        <CardStage>
-          <CardHeadline>{strings[headlineKey]}</CardHeadline>
-          <CardPrompt>{promptText}</CardPrompt>
-          {saysTheyKnowIt && <CardAnswer>{answer(exerciseBookmark)}</CardAnswer>}
+        <CardStage className="flashcardStage">
+          <CardFace>
+            <CardHeadline>{strings[headlineKey]}</CardHeadline>
+            <CardPrompt>{promptText}</CardPrompt>
+            {saysTheyKnowIt && (
+              <>
+                <CardDivider />
+                <CardAnswer>{answer(exerciseBookmark)}</CardAnswer>
+              </>
+            )}
+          </CardFace>
 
           <GradeBlock>
             {saysTheyKnowIt ? (
