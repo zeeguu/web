@@ -28,7 +28,7 @@ describe("PracticeStyle", () => {
       cachedPrefs = typeof updater === "function" ? updater(cachedPrefs) : updater;
     });
 
-    render(
+    const utils = render(
       <MemoryRouter>
         <APIContext.Provider value={api}>
           <UserContext.Provider
@@ -44,7 +44,7 @@ describe("PracticeStyle", () => {
       </MemoryRouter>,
     );
 
-    return { api, setUserPreferences, getCachedPrefs: () => cachedPrefs };
+    return { api, setUserPreferences, getCachedPrefs: () => cachedPrefs, unmount: utils.unmount };
   }
 
   it("hides Example sentences when the API does not return vary_exercise_contexts", async () => {
@@ -149,10 +149,30 @@ describe("PracticeStyle", () => {
     expect(toggle.checked).toBe(true);
     expect(screen.queryByText(/couldn't save/i)).toBeNull();
 
-    // Failure of latest (#3) reverts and shows error
+    // Failure of latest (#3) reverts to server-confirmed "false" and shows error
     callbacks[2].onError();
     await waitFor(() => expect(toggle.checked).toBe(false));
     expect(screen.getByText(/couldn't save/i)).toBeTruthy();
+  });
+
+  it("double-toggling while offline reverts to the server-confirmed value, even after unmount", async () => {
+    const user = userEvent.setup();
+    const callbacks = [];
+    const { getCachedPrefs, unmount } = renderPage({
+      contextPreferences: { vary_exercise_contexts: "false" },
+      saveImpl: (_prefs, onSuccess, onError) => {
+        callbacks.push({ onSuccess, onError });
+      },
+    });
+
+    const toggle = await screen.findByRole("checkbox", { name: /vary example sentences/i });
+    await user.click(toggle); // #1: true (unconfirmed)
+    await user.click(toggle); // #2: false (unconfirmed)
+    unmount();
+
+    callbacks[0].onError();
+    callbacks[1].onError();
+    expect(getCachedPrefs().vary_exercise_contexts).toBe("false");
   });
 
   it("handles initial getUserPreferences rejection gracefully", async () => {
@@ -167,18 +187,20 @@ describe("PracticeStyle", () => {
 });
 
 describe("fetchAndSortContexts deduplication", () => {
-  it("omits the current exercise sentence even if returned by the server", async () => {
+  it("omits the current sentence by bookmark_id/text without colliding on ExampleSentence.id", async () => {
     const api = new Zeeguu_API("http://test");
     api.getPastContexts = vi.fn().mockResolvedValue({
       past_contexts: [
-        { id: 10, context: "Der Hund bellt." },
-        { id: 11, context: "Der Hund spielt im Park." },
+        { bookmark_id: 10, context: "Der Hund bellt.", bookmark: { id: 10 } },
+        { bookmark_id: 11, context: "Der Hund spielt im Park.", bookmark: { id: 11 } },
       ],
     });
     api.getAlternativeSentences = vi.fn().mockResolvedValue({
       examples: [
+        // Same text as current: dropped
         { id: 20, sentence: "der hund bellt." },
-        { id: 21, sentence: "Der Hund schläft." },
+        // ExampleSentence.id === exerciseBookmark.id (10), different sentence: MUST stay
+        { id: 10, sentence: "Der Hund schläft.", bookmark: { id: 999 } },
       ],
     });
 

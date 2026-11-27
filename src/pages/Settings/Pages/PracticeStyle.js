@@ -29,7 +29,8 @@ function isSessionAudioExplicitlyDisabled() {
   return SessionStorage.getAudioExercisesEnabled() === "false";
 }
 
-function restoreSessionAudioValue(previousRaw) {
+function restoreSessionAudioIfMatching(expectedSerialized, previousRaw) {
+  if (SessionStorage.getAudioExercisesEnabled() !== expectedSerialized) return;
   if (previousRaw === undefined || previousRaw === null) {
     sessionStorage.removeItem(SessionStorage.Keys.AudioExercisesEnabled);
   } else {
@@ -55,6 +56,20 @@ export default function PracticeStyle() {
   const mountedRef = useRef(true);
   const touchedKeysRef = useRef(new Set());
   const saveSeqRef = useRef({ [PREF_AUDIO_EXERCISES]: 0, [PREF_VARY_EXERCISE_CONTEXTS]: 0 });
+  // Last server-confirmed snapshot per key, so rapid toggles while offline
+  // revert to what the server actually holds rather than an unconfirmed click.
+  const confirmedRef = useRef({
+    [PREF_VARY_EXERCISE_CONTEXTS]: {
+      value: parseStrictBool(userPreferences?.[PREF_VARY_EXERCISE_CONTEXTS]),
+      cached: userPreferences?.[PREF_VARY_EXERCISE_CONTEXTS],
+    },
+    [PREF_AUDIO_EXERCISES]: {
+      serverOn: isServerAudioEnabled(userPreferences),
+      sessionDisabled: isSessionAudioExplicitlyDisabled(),
+      sessionRaw: SessionStorage.getAudioExercisesEnabled(),
+      cached: userPreferences?.[PREF_AUDIO_EXERCISES],
+    },
+  });
 
   useEffect(() => {
     mountedRef.current = true;
@@ -75,13 +90,25 @@ export default function PracticeStyle() {
         if (cancelled || !preferences) return;
         const updates = {};
         if (!touchedKeysRef.current.has(PREF_AUDIO_EXERCISES)) {
-          setServerAudioOn(isServerAudioEnabled(preferences));
+          const audioOn = isServerAudioEnabled(preferences);
+          setServerAudioOn(audioOn);
+          confirmedRef.current[PREF_AUDIO_EXERCISES] = {
+            serverOn: audioOn,
+            sessionDisabled: isSessionAudioExplicitlyDisabled(),
+            sessionRaw: SessionStorage.getAudioExercisesEnabled(),
+            cached: preferences[PREF_AUDIO_EXERCISES],
+          };
           if (preferences[PREF_AUDIO_EXERCISES] !== undefined) {
             updates[PREF_AUDIO_EXERCISES] = preferences[PREF_AUDIO_EXERCISES];
           }
         }
         if (!touchedKeysRef.current.has(PREF_VARY_EXERCISE_CONTEXTS)) {
-          setVaryExerciseContexts(parseStrictBool(preferences[PREF_VARY_EXERCISE_CONTEXTS]));
+          const vary = parseStrictBool(preferences[PREF_VARY_EXERCISE_CONTEXTS]);
+          setVaryExerciseContexts(vary);
+          confirmedRef.current[PREF_VARY_EXERCISE_CONTEXTS] = {
+            value: vary,
+            cached: preferences[PREF_VARY_EXERCISE_CONTEXTS],
+          };
           if (preferences[PREF_VARY_EXERCISE_CONTEXTS] !== undefined) {
             updates[PREF_VARY_EXERCISE_CONTEXTS] = preferences[PREF_VARY_EXERCISE_CONTEXTS];
           }
@@ -97,10 +124,11 @@ export default function PracticeStyle() {
     };
   }, [session, api, setUserPreferences]);
 
-  function updateCachedPreference(key, value) {
+  function updateCachedPreference(key, value, onlyIfCurrent) {
     if (!setUserPreferences) return;
     setUserPreferences((prev) => {
       if (!prev || Object.keys(prev).length === 0) return prev;
+      if (onlyIfCurrent !== undefined && prev[key] !== onlyIfCurrent) return prev;
       if (value === undefined) {
         const next = { ...prev };
         delete next[key];
@@ -111,8 +139,6 @@ export default function PracticeStyle() {
   }
 
   function handleToggleVaryContexts(nextValue) {
-    const previousValue = varyExerciseContexts;
-    const previousCached = userPreferences?.[PREF_VARY_EXERCISE_CONTEXTS];
     const serialized = nextValue ? "true" : "false";
     const seq = ++saveSeqRef.current[PREF_VARY_EXERCISE_CONTEXTS];
 
@@ -123,21 +149,24 @@ export default function PracticeStyle() {
 
     api.saveUserPreferences(
       { [PREF_VARY_EXERCISE_CONTEXTS]: serialized },
-      () => {},
       () => {
-        if (!mountedRef.current || saveSeqRef.current[PREF_VARY_EXERCISE_CONTEXTS] !== seq) return;
-        setVaryExerciseContexts(previousValue);
-        updateCachedPreference(PREF_VARY_EXERCISE_CONTEXTS, previousCached);
+        if (saveSeqRef.current[PREF_VARY_EXERCISE_CONTEXTS] === seq) {
+          confirmedRef.current[PREF_VARY_EXERCISE_CONTEXTS] = { value: nextValue, cached: serialized };
+        }
+      },
+      () => {
+        if (saveSeqRef.current[PREF_VARY_EXERCISE_CONTEXTS] !== seq) return;
+        const confirmed = confirmedRef.current[PREF_VARY_EXERCISE_CONTEXTS];
+        // Revert shared cache even if unmounted (e.g. user tapped toggle then Back).
+        updateCachedPreference(PREF_VARY_EXERCISE_CONTEXTS, confirmed.cached, serialized);
+        if (!mountedRef.current) return;
+        setVaryExerciseContexts(confirmed.value);
         setSaveError(true);
       },
     );
   }
 
   function handleToggleAudioExercises(nextValue) {
-    const previousServerAudioOn = serverAudioOn;
-    const previousSessionRaw = SessionStorage.getAudioExercisesEnabled();
-    const previousSessionDisabled = sessionAudioDisabled;
-    const previousCached = userPreferences?.[PREF_AUDIO_EXERCISES];
     const serialized = nextValue ? "true" : "false";
     const seq = ++saveSeqRef.current[PREF_AUDIO_EXERCISES];
 
@@ -150,13 +179,24 @@ export default function PracticeStyle() {
 
     api.saveUserPreferences(
       { [PREF_AUDIO_EXERCISES]: serialized },
-      () => {},
       () => {
-        if (!mountedRef.current || saveSeqRef.current[PREF_AUDIO_EXERCISES] !== seq) return;
-        setServerAudioOn(previousServerAudioOn);
-        setSessionAudioDisabled(previousSessionDisabled);
-        restoreSessionAudioValue(previousSessionRaw);
-        updateCachedPreference(PREF_AUDIO_EXERCISES, previousCached);
+        if (saveSeqRef.current[PREF_AUDIO_EXERCISES] === seq) {
+          confirmedRef.current[PREF_AUDIO_EXERCISES] = {
+            serverOn: nextValue,
+            sessionDisabled: !nextValue,
+            sessionRaw: serialized,
+            cached: serialized,
+          };
+        }
+      },
+      () => {
+        if (saveSeqRef.current[PREF_AUDIO_EXERCISES] !== seq) return;
+        const confirmed = confirmedRef.current[PREF_AUDIO_EXERCISES];
+        restoreSessionAudioIfMatching(serialized, confirmed.sessionRaw);
+        updateCachedPreference(PREF_AUDIO_EXERCISES, confirmed.cached, serialized);
+        if (!mountedRef.current) return;
+        setServerAudioOn(confirmed.serverOn);
+        setSessionAudioDisabled(confirmed.sessionDisabled);
         setSaveError(true);
       },
     );

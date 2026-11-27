@@ -142,7 +142,7 @@ Zeeguu_API.prototype.fetchAndSortContexts = async function (exerciseBookmark) {
 
   const dedupe = (items) =>
     items.filter((item) => {
-      if (currentId != null && (item.id === currentId || item.bookmark_id === currentId)) {
+      if (currentId != null && (item.bookmark_id === currentId || item.bookmark?.id === currentId)) {
         return false;
       }
       const key = normalize(item.sentence || item.context);
