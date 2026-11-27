@@ -120,12 +120,13 @@ export default function LessonPlaybackView({
             width: "100%",
             marginBottom: "20px",
             maxWidth: "600px",
-            margin: "0 auto 20px auto",
+            // Close to the dialogue's card when it is open
+            margin: dialogue.shown ? "0 auto" : "0 auto 20px auto",
           }}
         >
           <LessonActionRow api={api} lesson={lessonData} dialogue={dialogue} />
-          {dialogue.content}
         </CustomAudioPlayer>
+        {dialogue.content}
 
         {celebrating && (
           <Confetti
