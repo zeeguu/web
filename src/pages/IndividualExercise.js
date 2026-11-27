@@ -404,7 +404,7 @@ export default function IndividualExercise() {
                   ExerciseSession.js for why. */}
               {exerciseLoaded && bookmark?.context_tokenized && (
               <NextNavigation
-                exerciseType={exerciseType}
+                exerciseType={internalExerciseType}
                 bookmarkMessagesToAPI={exerciseMessageToAPI}
                 exerciseBookmarks={bookmarksToUse}
                 exerciseBookmark={bookmark}
