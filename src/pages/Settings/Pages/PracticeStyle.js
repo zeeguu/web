@@ -3,7 +3,6 @@ import styled from "styled-components";
 import QuizOutlinedIcon from "@mui/icons-material/QuizOutlined";
 import KeyboardOutlinedIcon from "@mui/icons-material/KeyboardOutlined";
 import HeadphonesOutlinedIcon from "@mui/icons-material/HeadphonesOutlined";
-import TouchAppOutlinedIcon from "@mui/icons-material/TouchAppOutlined";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
 import { UserContext } from "../../../contexts/UserContext";
@@ -31,6 +30,7 @@ const PREF_AUDIO_EXERCISES = "audio_exercises";
 const PREF_VARY_EXERCISE_CONTEXTS = "vary_exercise_contexts";
 const PREF_EXERCISE_FAMILIES = "exercise_families";
 const PREF_FLASHCARD_SELF_GRADE = "flashcard_self_grade";
+const PRACTICE_CONFIG_KEY = "practice_config";
 
 const LabelRow = styled.span`
   display: flex;
@@ -62,29 +62,6 @@ const VisualBadge = styled.span`
   }
 `;
 
-const SubOptionBox = styled.div`
-  margin: 0.4rem 0 0.4rem 1rem;
-  padding: 0.4rem 0.75rem 0.2rem 0.9rem;
-  border-left: 3px solid rgba(255, 187, 84, 0.65);
-  border-radius: 0 0.5rem 0.5rem 0;
-  background-color: var(--bg-secondary);
-`;
-
-const IN_SENTENCE_FAMILIES = [
-  {
-    key: FAMILY_MULTIPLE_CHOICE,
-    label: "Multiple choice & matching",
-    description: "Pick the right word or meaning in context.",
-    icon: <QuizOutlinedIcon />,
-  },
-  {
-    key: FAMILY_TYPING,
-    label: "Typing in context",
-    description: "Fill in the blank or translate a word using its sentence.",
-    icon: <KeyboardOutlinedIcon />,
-  },
-];
-
 function shortLangCode(code, fallback) {
   const base = (code || "").split("-")[0].trim().toUpperCase();
   return base || fallback;
@@ -94,6 +71,38 @@ function parseStrictBool(value) {
   if (value === "true") return true;
   if (value === "false") return false;
   return null;
+}
+
+// Derive the 4 UI switches (3 practice formats + 1 cross-cutting typing switch)
+// from the stored `exercise_families` + `flashcard_self_grade` preferences.
+// Returns null until the API has sent valid `exercise_families`.
+function parsePracticeConfig(preferences) {
+  const families = parseExerciseFamilies(preferences?.[PREF_EXERCISE_FAMILIES]);
+  if (!families) return null;
+  const sentences = families.has(FAMILY_MULTIPLE_CHOICE) || families.has(FAMILY_TYPING);
+  const flashcardsMeaning = families.has(FAMILY_FLASHCARDS_MEANING);
+  const flashcardsWord = families.has(FAMILY_FLASHCARDS_WORD);
+  const selfGrade = parseStrictBool(preferences?.[PREF_FLASHCARD_SELF_GRADE]) === true;
+  const typing = !selfGrade && (!sentences || families.has(FAMILY_TYPING));
+  return { sentences, flashcardsMeaning, flashcardsWord, typing };
+}
+
+function serializePracticeConfig(config) {
+  const families = new Set();
+  if (config.sentences) {
+    families.add(FAMILY_MULTIPLE_CHOICE);
+    if (config.typing) families.add(FAMILY_TYPING);
+  }
+  if (config.flashcardsMeaning) families.add(FAMILY_FLASHCARDS_MEANING);
+  if (config.flashcardsWord) families.add(FAMILY_FLASHCARDS_WORD);
+  return {
+    [PREF_EXERCISE_FAMILIES]: serializeExerciseFamilies(families),
+    [PREF_FLASHCARD_SELF_GRADE]: config.typing ? "false" : "true",
+  };
+}
+
+function enabledFormatCount(config) {
+  return Number(config.sentences) + Number(config.flashcardsMeaning) + Number(config.flashcardsWord);
 }
 
 function isServerAudioEnabled(preferences) {
@@ -124,12 +133,7 @@ export default function PracticeStyle() {
   const [varyExerciseContexts, setVaryExerciseContexts] = useState(() =>
     parseStrictBool(userPreferences?.[PREF_VARY_EXERCISE_CONTEXTS]),
   );
-  const [exerciseFamilies, setExerciseFamilies] = useState(() =>
-    parseExerciseFamilies(userPreferences?.[PREF_EXERCISE_FAMILIES]),
-  );
-  const [flashcardSelfGrade, setFlashcardSelfGrade] = useState(() =>
-    parseStrictBool(userPreferences?.[PREF_FLASHCARD_SELF_GRADE]),
-  );
+  const [practiceConfig, setPracticeConfig] = useState(() => parsePracticeConfig(userPreferences));
   const [saveError, setSaveError] = useState(false);
   const [autoPronounceBookmark, , toggleAutoPronounceState] = useBookmarkAutoPronounce();
 
@@ -138,14 +142,12 @@ export default function PracticeStyle() {
   const saveSeqRef = useRef({
     [PREF_AUDIO_EXERCISES]: 0,
     [PREF_VARY_EXERCISE_CONTEXTS]: 0,
-    [PREF_EXERCISE_FAMILIES]: 0,
-    [PREF_FLASHCARD_SELF_GRADE]: 0,
+    [PRACTICE_CONFIG_KEY]: 0,
   });
   const confirmedSeqRef = useRef({
     [PREF_AUDIO_EXERCISES]: 0,
     [PREF_VARY_EXERCISE_CONTEXTS]: 0,
-    [PREF_EXERCISE_FAMILIES]: 0,
-    [PREF_FLASHCARD_SELF_GRADE]: 0,
+    [PRACTICE_CONFIG_KEY]: 0,
   });
   // Last server-confirmed snapshot per key, so rapid toggles while offline
   // revert to what the server actually holds rather than an unconfirmed click.
@@ -154,13 +156,12 @@ export default function PracticeStyle() {
       value: parseStrictBool(userPreferences?.[PREF_VARY_EXERCISE_CONTEXTS]),
       cached: userPreferences?.[PREF_VARY_EXERCISE_CONTEXTS],
     },
-    [PREF_EXERCISE_FAMILIES]: {
-      value: parseExerciseFamilies(userPreferences?.[PREF_EXERCISE_FAMILIES]),
-      cached: userPreferences?.[PREF_EXERCISE_FAMILIES],
-    },
-    [PREF_FLASHCARD_SELF_GRADE]: {
-      value: parseStrictBool(userPreferences?.[PREF_FLASHCARD_SELF_GRADE]),
-      cached: userPreferences?.[PREF_FLASHCARD_SELF_GRADE],
+    [PRACTICE_CONFIG_KEY]: {
+      value: parsePracticeConfig(userPreferences),
+      cached: {
+        [PREF_EXERCISE_FAMILIES]: userPreferences?.[PREF_EXERCISE_FAMILIES],
+        [PREF_FLASHCARD_SELF_GRADE]: userPreferences?.[PREF_FLASHCARD_SELF_GRADE],
+      },
     },
     [PREF_AUDIO_EXERCISES]: {
       serverOn: isServerAudioEnabled(userPreferences),
@@ -212,24 +213,19 @@ export default function PracticeStyle() {
             updates[PREF_VARY_EXERCISE_CONTEXTS] = preferences[PREF_VARY_EXERCISE_CONTEXTS];
           }
         }
-        if (!touchedKeysRef.current.has(PREF_EXERCISE_FAMILIES)) {
-          const families = parseExerciseFamilies(preferences[PREF_EXERCISE_FAMILIES]);
-          setExerciseFamilies(families);
-          confirmedRef.current[PREF_EXERCISE_FAMILIES] = {
-            value: families,
-            cached: preferences[PREF_EXERCISE_FAMILIES],
+        if (!touchedKeysRef.current.has(PRACTICE_CONFIG_KEY)) {
+          const config = parsePracticeConfig(preferences);
+          setPracticeConfig(config);
+          confirmedRef.current[PRACTICE_CONFIG_KEY] = {
+            value: config,
+            cached: {
+              [PREF_EXERCISE_FAMILIES]: preferences[PREF_EXERCISE_FAMILIES],
+              [PREF_FLASHCARD_SELF_GRADE]: preferences[PREF_FLASHCARD_SELF_GRADE],
+            },
           };
           if (preferences[PREF_EXERCISE_FAMILIES] !== undefined) {
             updates[PREF_EXERCISE_FAMILIES] = preferences[PREF_EXERCISE_FAMILIES];
           }
-        }
-        if (!touchedKeysRef.current.has(PREF_FLASHCARD_SELF_GRADE)) {
-          const selfGrade = parseStrictBool(preferences[PREF_FLASHCARD_SELF_GRADE]);
-          setFlashcardSelfGrade(selfGrade);
-          confirmedRef.current[PREF_FLASHCARD_SELF_GRADE] = {
-            value: selfGrade,
-            cached: preferences[PREF_FLASHCARD_SELF_GRADE],
-          };
           if (preferences[PREF_FLASHCARD_SELF_GRADE] !== undefined) {
             updates[PREF_FLASHCARD_SELF_GRADE] = preferences[PREF_FLASHCARD_SELF_GRADE];
           }
@@ -245,81 +241,83 @@ export default function PracticeStyle() {
     };
   }, [session, api, setUserPreferences]);
 
-  function updateCachedPreference(key, value, onlyIfCurrent) {
+  function updateCachedPreferences(entries, expectedCurrent) {
     if (!setUserPreferences) return;
     setUserPreferences((prev) => {
       if (!prev || Object.keys(prev).length === 0) return prev;
-      if (onlyIfCurrent !== undefined && prev[key] !== onlyIfCurrent) return prev;
-      if (value === undefined) {
-        const next = { ...prev };
-        delete next[key];
-        return next;
+      if (expectedCurrent) {
+        for (const [key, expectedVal] of Object.entries(expectedCurrent)) {
+          if (prev[key] !== expectedVal) return prev;
+        }
       }
-      return { ...prev, [key]: value };
+      const next = { ...prev };
+      for (const [key, value] of Object.entries(entries)) {
+        if (value === undefined) delete next[key];
+        else next[key] = value;
+      }
+      return next;
     });
   }
 
-  function handleToggleBoolPref(key, setter, nextValue) {
+  function handleToggleVaryContexts(nextValue) {
     const serialized = nextValue ? "true" : "false";
-    const seq = ++saveSeqRef.current[key];
+    const seq = ++saveSeqRef.current[PREF_VARY_EXERCISE_CONTEXTS];
 
-    touchedKeysRef.current.add(key);
+    touchedKeysRef.current.add(PREF_VARY_EXERCISE_CONTEXTS);
     setSaveError(false);
-    setter(nextValue);
-    updateCachedPreference(key, serialized);
+    setVaryExerciseContexts(nextValue);
+    updateCachedPreferences({ [PREF_VARY_EXERCISE_CONTEXTS]: serialized });
 
     api.saveUserPreferences(
-      { [key]: serialized },
+      { [PREF_VARY_EXERCISE_CONTEXTS]: serialized },
       () => {
-        if (seq > confirmedSeqRef.current[key]) {
-          confirmedSeqRef.current[key] = seq;
-          confirmedRef.current[key] = { value: nextValue, cached: serialized };
+        if (seq > confirmedSeqRef.current[PREF_VARY_EXERCISE_CONTEXTS]) {
+          confirmedSeqRef.current[PREF_VARY_EXERCISE_CONTEXTS] = seq;
+          confirmedRef.current[PREF_VARY_EXERCISE_CONTEXTS] = { value: nextValue, cached: serialized };
         }
       },
       () => {
-        if (saveSeqRef.current[key] !== seq) return;
-        const confirmed = confirmedRef.current[key];
-        updateCachedPreference(key, confirmed.cached, serialized);
+        if (saveSeqRef.current[PREF_VARY_EXERCISE_CONTEXTS] !== seq) return;
+        const confirmed = confirmedRef.current[PREF_VARY_EXERCISE_CONTEXTS];
+        updateCachedPreferences(
+          { [PREF_VARY_EXERCISE_CONTEXTS]: confirmed.cached },
+          { [PREF_VARY_EXERCISE_CONTEXTS]: serialized },
+        );
         if (!mountedRef.current) return;
-        setter(confirmed.value);
+        setVaryExerciseContexts(confirmed.value);
         setSaveError(true);
       },
     );
   }
 
-  function handleToggleFamily(familyKey, nextChecked) {
-    if (!exerciseFamilies) return;
-    // Always keep at least one exercise family enabled so practice is never empty.
-    if (!nextChecked && exerciseFamilies.size <= 1 && exerciseFamilies.has(familyKey)) {
-      return;
-    }
+  function handleUpdatePracticeConfig(field, nextValue) {
+    if (!practiceConfig) return;
+    const nextConfig = { ...practiceConfig, [field]: nextValue };
+    // Always keep at least one practice format enabled so sessions are never empty.
+    if (enabledFormatCount(nextConfig) === 0) return;
 
-    const nextFamilies = new Set(exerciseFamilies);
-    if (nextChecked) nextFamilies.add(familyKey);
-    else nextFamilies.delete(familyKey);
+    const payload = serializePracticeConfig(nextConfig);
+    const seq = ++saveSeqRef.current[PRACTICE_CONFIG_KEY];
 
-    const serialized = serializeExerciseFamilies(nextFamilies);
-    const seq = ++saveSeqRef.current[PREF_EXERCISE_FAMILIES];
-
-    touchedKeysRef.current.add(PREF_EXERCISE_FAMILIES);
+    touchedKeysRef.current.add(PRACTICE_CONFIG_KEY);
     setSaveError(false);
-    setExerciseFamilies(nextFamilies);
-    updateCachedPreference(PREF_EXERCISE_FAMILIES, serialized);
+    setPracticeConfig(nextConfig);
+    updateCachedPreferences(payload);
 
     api.saveUserPreferences(
-      { [PREF_EXERCISE_FAMILIES]: serialized },
+      payload,
       () => {
-        if (seq > confirmedSeqRef.current[PREF_EXERCISE_FAMILIES]) {
-          confirmedSeqRef.current[PREF_EXERCISE_FAMILIES] = seq;
-          confirmedRef.current[PREF_EXERCISE_FAMILIES] = { value: nextFamilies, cached: serialized };
+        if (seq > confirmedSeqRef.current[PRACTICE_CONFIG_KEY]) {
+          confirmedSeqRef.current[PRACTICE_CONFIG_KEY] = seq;
+          confirmedRef.current[PRACTICE_CONFIG_KEY] = { value: nextConfig, cached: payload };
         }
       },
       () => {
-        if (saveSeqRef.current[PREF_EXERCISE_FAMILIES] !== seq) return;
-        const confirmed = confirmedRef.current[PREF_EXERCISE_FAMILIES];
-        updateCachedPreference(PREF_EXERCISE_FAMILIES, confirmed.cached, serialized);
+        if (saveSeqRef.current[PRACTICE_CONFIG_KEY] !== seq) return;
+        const confirmed = confirmedRef.current[PRACTICE_CONFIG_KEY];
+        updateCachedPreferences(confirmed.cached, payload);
         if (!mountedRef.current) return;
-        setExerciseFamilies(confirmed.value);
+        setPracticeConfig(confirmed.value);
         setSaveError(true);
       },
     );
@@ -334,7 +332,7 @@ export default function PracticeStyle() {
     setServerAudioOn(nextValue);
     setSessionAudioDisabled(!nextValue);
     SessionStorage.setAudioExercisesEnabled(nextValue);
-    updateCachedPreference(PREF_AUDIO_EXERCISES, serialized);
+    updateCachedPreferences({ [PREF_AUDIO_EXERCISES]: serialized });
 
     api.saveUserPreferences(
       { [PREF_AUDIO_EXERCISES]: serialized },
@@ -353,7 +351,10 @@ export default function PracticeStyle() {
         if (saveSeqRef.current[PREF_AUDIO_EXERCISES] !== seq) return;
         const confirmed = confirmedRef.current[PREF_AUDIO_EXERCISES];
         restoreSessionAudioIfMatching(serialized, confirmed.sessionRaw);
-        updateCachedPreference(PREF_AUDIO_EXERCISES, confirmed.cached, serialized);
+        updateCachedPreferences(
+          { [PREF_AUDIO_EXERCISES]: confirmed.cached },
+          { [PREF_AUDIO_EXERCISES]: serialized },
+        );
         if (!mountedRef.current) return;
         setServerAudioOn(confirmed.serverOn);
         setSessionAudioDisabled(confirmed.sessionDisabled);
@@ -364,28 +365,8 @@ export default function PracticeStyle() {
 
   const audioChecked = serverAudioOn && !sessionAudioDisabled;
   const audioTemporarilyDisabled = serverAudioOn && sessionAudioDisabled;
-  const anyFlashcardsEnabled =
-    exerciseFamilies !== null &&
-    (exerciseFamilies.has(FAMILY_FLASHCARDS_MEANING) || exerciseFamilies.has(FAMILY_FLASHCARDS_WORD));
-
   const learnedCode = shortLangCode(userDetails?.learned_language, "L2");
   const nativeCode = shortLangCode(userDetails?.native_language, "L1");
-  const flashcardFamilies = [
-    {
-      key: FAMILY_FLASHCARDS_MEANING,
-      label: "Word → meaning",
-      description: 'See the word alone and recall its meaning ("What does this mean?").',
-      badge: `${learnedCode} → ${nativeCode}`,
-      wideBadge: true,
-    },
-    {
-      key: FAMILY_FLASHCARDS_WORD,
-      label: "Meaning → word",
-      description: 'See the meaning alone and recall the word ("How do you say this?").',
-      badge: `${nativeCode} → ${learnedCode}`,
-      wideBadge: true,
-    },
-  ];
 
   function renderToggle({ key, label, description, checked, onToggle, badge, wideBadge = false }) {
     return (
@@ -417,19 +398,53 @@ export default function PracticeStyle() {
       <SettingsPageHeader title={PAGE_TITLE} />
       <Main>
         <s.PageBody>
-          <s.Section>
-            <s.SectionHeader>In sentences</s.SectionHeader>
-            {exerciseFamilies !== null &&
-              IN_SENTENCE_FAMILIES.map((option) =>
-                renderToggle({
-                  key: option.key,
-                  label: option.label,
-                  description: option.description,
-                  badge: option.icon,
-                  checked: exerciseFamilies.has(option.key),
-                  onToggle: (next) => handleToggleFamily(option.key, next),
-                }),
+          {practiceConfig !== null && (
+            <s.Section>
+              <s.SectionHeader>What to practice</s.SectionHeader>
+              {renderToggle({
+                key: "sentences",
+                label: "In sentences",
+                description: "Practice words inside sentences with multiple choice, matching, and blanks.",
+                badge: <QuizOutlinedIcon />,
+                checked: practiceConfig.sentences,
+                onToggle: (next) => handleUpdatePracticeConfig("sentences", next),
+              })}
+              {renderToggle({
+                key: "flashcards-meaning",
+                label: "Flashcards: word → meaning",
+                description: 'See the word alone and recall its meaning ("What does this mean?").',
+                badge: `${learnedCode} → ${nativeCode}`,
+                wideBadge: true,
+                checked: practiceConfig.flashcardsMeaning,
+                onToggle: (next) => handleUpdatePracticeConfig("flashcardsMeaning", next),
+              })}
+              {renderToggle({
+                key: "flashcards-word",
+                label: "Flashcards: meaning → word",
+                description: 'See the meaning alone and recall the word ("How do you say this?").',
+                badge: `${nativeCode} → ${learnedCode}`,
+                wideBadge: true,
+                checked: practiceConfig.flashcardsWord,
+                onToggle: (next) => handleUpdatePracticeConfig("flashcardsWord", next),
+              })}
+              {enabledFormatCount(practiceConfig) === 1 && (
+                <s.SizeDescription>At least one practice format must stay on.</s.SizeDescription>
               )}
+            </s.Section>
+          )}
+
+          <s.Section>
+            <s.SectionHeader>Input &amp; audio</s.SectionHeader>
+            {practiceConfig !== null &&
+              renderToggle({
+                key: "typing-exercises",
+                label: "Typing exercises",
+                description:
+                  "Type answers in blanks and flashcards. Turn off for tap-only practice and flip cards.",
+                badge: <KeyboardOutlinedIcon />,
+                checked: practiceConfig.typing,
+                onToggle: (next) => handleUpdatePracticeConfig("typing", next),
+              })}
             {renderToggle({
               key: "audio-exercises",
               label: audioTemporarilyDisabled
@@ -440,46 +455,7 @@ export default function PracticeStyle() {
               checked: audioChecked,
               onToggle: handleToggleAudioExercises,
             })}
-            {exerciseFamilies !== null &&
-              exerciseFamilies.size === 1 &&
-              !anyFlashcardsEnabled && (
-                <s.SizeDescription>At least one exercise type must stay on.</s.SizeDescription>
-              )}
           </s.Section>
-
-          {exerciseFamilies !== null && (
-            <s.Section>
-              <s.SectionHeader>Flashcards (word alone)</s.SectionHeader>
-              {flashcardFamilies.map((option) =>
-                renderToggle({
-                  key: option.key,
-                  label: option.label,
-                  description: option.description,
-                  badge: option.badge,
-                  wideBadge: option.wideBadge,
-                  checked: exerciseFamilies.has(option.key),
-                  onToggle: (next) => handleToggleFamily(option.key, next),
-                }),
-              )}
-              {exerciseFamilies.size === 1 && anyFlashcardsEnabled && (
-                <s.SizeDescription>At least one exercise type must stay on.</s.SizeDescription>
-              )}
-              {anyFlashcardsEnabled && flashcardSelfGrade !== null && (
-                <SubOptionBox>
-                  {renderToggle({
-                    key: "flashcard-self-grade",
-                    label: "Tap to flip & self-grade",
-                    description:
-                      "Reveal the answer with a tap and mark whether you knew it, instead of typing.",
-                    badge: <TouchAppOutlinedIcon />,
-                    checked: flashcardSelfGrade,
-                    onToggle: (next) =>
-                      handleToggleBoolPref(PREF_FLASHCARD_SELF_GRADE, setFlashcardSelfGrade, next),
-                  })}
-                </SubOptionBox>
-              )}
-            </s.Section>
-          )}
 
           {varyExerciseContexts !== null && (
             <s.Section>
@@ -491,8 +467,7 @@ export default function PracticeStyle() {
                   "Show a different example sentence each time you practice a word, so you learn the word itself rather than memorizing one sentence.",
                 badge: <AutoStoriesOutlinedIcon />,
                 checked: varyExerciseContexts,
-                onToggle: (next) =>
-                  handleToggleBoolPref(PREF_VARY_EXERCISE_CONTEXTS, setVaryExerciseContexts, next),
+                onToggle: handleToggleVaryContexts,
               })}
             </s.Section>
           )}
