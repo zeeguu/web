@@ -124,9 +124,8 @@ export default function LessonPlaybackView({
           }}
         >
           <LessonActionRow api={api} lesson={lessonData} dialogue={dialogue} />
+          {dialogue.content}
         </CustomAudioPlayer>
-
-        {dialogue.content}
 
         {celebrating && (
           <Confetti

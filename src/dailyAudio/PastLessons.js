@@ -391,8 +391,8 @@ function InlineLessonPlayer({ lesson, api, userDetails, onLessonCompleted, onPro
         onError={() => {}}
       >
         <LessonActionRow api={api} lesson={lesson} dialogue={dialogue} />
+        {dialogue.content}
       </CustomAudioPlayer>
-      {dialogue.content}
     </>
   );
 }

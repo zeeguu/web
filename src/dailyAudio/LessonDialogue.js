@@ -18,8 +18,12 @@ const LESSON_DIALOGUE_CONTEXT = { context_type: "LessonDialogue" };
 // One spoken line per paragraph, each opened with a dash, as dialogue is
 // written in most of the languages learned here. The dash is drawn, not
 // part of the text, so it is never a word to tap, save or hear.
+// Inside the player card, under its row of actions: a thin line keeps the
+// controls apart from the text.
 const DialogueLines = styled.div`
-  margin: 12px 0 8px;
+  margin: 12px 0 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
   text-align: left;
 
   .textParagraph {
@@ -31,19 +35,19 @@ const DialogueLines = styled.div`
   }
 `;
 
-// Under the player, on today's lesson and on an opened past lesson: the
+// Inside the player, on today's lesson and on an opened past lesson: the
 // lesson's dialogue, word by word like a short text, to read along or after.
 // Hidden until asked for: the lessons are listening practice, and an A0
 // lesson promises the learner will understand the dialogue by the end.
 //
 // A hook, not a component: its button sits in the player's row of actions
-// (LessonActionRow, next to Share) and its text under the player, so the two
+// (LessonActionRow, next to Share) and its text under that row, so the two
 // are placed by the caller. Loaded once: hiding and showing again needs no
 // request; another lesson starts afresh.
 //
 // Returns { available, shown, loading, toggle, content }: available is false
 // for a lesson without a dialogue (no button then), content is what goes
-// under the player (loading, an error, or the text).
+// under the row of actions (loading, an error, or the text).
 export function useLessonDialogue(api, lesson) {
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState(null);
