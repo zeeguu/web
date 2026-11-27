@@ -15,14 +15,19 @@ Zeeguu_API.prototype.addShortText = function (text, { language = null, insteadOf
   this._post(`/short_texts`, qs.stringify(payload), onSuccess, onError, true);
 };
 
-// The learner's texts, most recently opened first: [{ id, preview, language, last_opened_at }]
-Zeeguu_API.prototype.getShortTexts = function (onSuccess, onError) {
-  this._getJSON(`short_texts`, onSuccess, { onError });
+// The learner's texts, most recently opened first.
+Zeeguu_API.prototype.getShortTexts = function (onSuccess, onError, { limit = 20, offset = 0 } = {}) {
+  this._getJSON(`short_texts?limit=${limit}&offset=${offset}`, onSuccess, { onError });
 };
 
 // For the reader: { id, text, language, source_id, tokenized_paragraphs, past_bookmarks }
 Zeeguu_API.prototype.getShortText = function (id, onSuccess, onError) {
   this._getJSON(`short_texts/${id}`, onSuccess, { onError });
+};
+
+// Record reopening a text already loaded in the client (bumps last_opened_at and logs open).
+Zeeguu_API.prototype.touchShortText = function (id) {
+  this._post(`/short_texts/${id}/touch`, "", () => {}, () => {});
 };
 
 // Off the learner's list; words learned from it stay.

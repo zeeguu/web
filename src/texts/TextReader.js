@@ -119,30 +119,46 @@ export default function TextReader() {
   useEffect(() => setTitle(strings.readTextTitle), []);
 
   useEffect(() => {
-    setShortText(null);
-    setInteractiveText(null);
     setError("");
     if (!id) {
       history.replace("/translate/history");
       return;
     }
+
+    function openLoaded(loaded) {
+      setShortText(loaded);
+      setInteractiveText(
+        new InteractiveText({
+          tokenizedParagraphs: loaded.tokenized_paragraphs,
+          sourceId: loaded.source_id,
+          previousBookmarks: loaded.past_bookmarks || [],
+          api,
+          language: loaded.language,
+          source: "short_text",
+          zeeguuSpeech: speech,
+          contextIdentifier: SHORT_TEXT_CONTEXT,
+        }),
+      );
+    }
+
+    // Already loaded by Translate > History: render immediately and just touch
+    // on the server so last_opened_at and open logging stay up to date. Clear
+    // shortText from history state so a reload fetches fresh bookmarks.
+    const preloaded = location.state?.shortText;
+    if (preloaded && preloaded.id === id && preloaded.tokenized_paragraphs) {
+      openLoaded(preloaded);
+      api.touchShortText(id);
+      history.replace(location.pathname + location.search, { backTo });
+      return;
+    }
+
+    setShortText(null);
+    setInteractiveText(null);
     api.getShortText(
       id,
       (loaded) => {
         if (loaded.id !== shownId.current) return;
-        setShortText(loaded);
-        setInteractiveText(
-          new InteractiveText({
-            tokenizedParagraphs: loaded.tokenized_paragraphs,
-            sourceId: loaded.source_id,
-            previousBookmarks: loaded.past_bookmarks,
-            api,
-            language: loaded.language,
-            source: "short_text",
-            zeeguuSpeech: speech,
-            contextIdentifier: SHORT_TEXT_CONTEXT,
-          }),
-        );
+        openLoaded(loaded);
       },
       () => {
         if (id === shownId.current) setError(strings.couldNotOpenText);
@@ -156,7 +172,7 @@ export default function TextReader() {
     api.addShortText(
       shortText.text,
       { language, insteadOf: shortText.id },
-      (added) => history.replace(`/texts/read?id=${added.id}`, location.state),
+      (added) => history.replace(`/texts/read?id=${added.id}`, { backTo }),
       (errorMessage) => setError(readableApiError(errorMessage, strings.couldNotReadText)),
     );
   }
