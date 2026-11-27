@@ -6,10 +6,12 @@ import { playHappyChime, playDoneChime } from "../utils/chimes";
 import { PillRow, SelectablePill } from "./SuggestionSelector.sc";
 import { UserContext } from "../contexts/UserContext";
 
-// After an A0 lesson: what the learner thought of it. Pace and repetition
-// tune their next lessons (api: audio_lessons/lesson_tuning.py); the situation
-// row moves the daily lessons on, or keeps them where they are. Length is not
-// a question here: it is a setting the learner chooses (lesson settings,
+// After a lesson that can be tuned (api: DailyAudioLesson.takes_feedback: an
+// A0 lesson, or one above A0 written with markers): what the learner thought
+// of it. Pace and repetition tune their next lessons (api:
+// audio_lessons/lesson_tuning.py); the situation row moves the daily lessons
+// on, or keeps them where they are. Length is not a question here: for A0
+// lessons it is a setting the learner chooses (lesson settings,
 // LessonLengthSlider), and this box says what it is and links to it.
 // Each tap is saved at once; nothing tapped changes nothing.
 
@@ -49,6 +51,12 @@ export function feedbackSummary(feedback) {
   const list = parts.length === 1 ? parts[0] : `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
   return `Based on your feedback, your next lesson will be ${list}.`;
 }
+
+// Whether the lesson takes feedback, and whether its length is a setting (A0).
+// An API from before takes_feedback (api#1000) sends neither: then only A0
+// lessons, as before.
+export const takesFeedback = (lessonData) => lessonData.takes_feedback ?? lessonData.cefr_level === "A0";
+const hasLengthSetting = (lessonData) => lessonData.builds_on_history ?? lessonData.cefr_level === "A0";
 
 const allAnswered = (feedback) => ROWS.every(({ aspect }) => feedback[aspect]);
 
@@ -225,7 +233,7 @@ export default function LessonFeedbackBox({ lessonData, setLessonData, api, onOp
         </div>
       )}
 
-      <LessonLength onOpenSettings={onOpenSettings} />
+      {hasLengthSetting(lessonData) && <LessonLength onOpenSettings={onOpenSettings} />}
 
       {error && <ErrorMsg>{error}</ErrorMsg>}
     </Box>

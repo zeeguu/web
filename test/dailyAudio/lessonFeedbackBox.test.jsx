@@ -2,13 +2,15 @@ import { describe, it, expect, vi } from "vitest";
 import { useState } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 
-import LessonFeedbackBox, { feedbackSummary } from "../../src/dailyAudio/LessonFeedbackBox";
+import LessonFeedbackBox, { feedbackSummary, takesFeedback } from "../../src/dailyAudio/LessonFeedbackBox";
 import { UserContext } from "../../src/contexts/UserContext";
 
 vi.mock("../../src/utils/chimes", () => ({ playHappyChime: vi.fn(), playDoneChime: vi.fn() }));
 
 const LESSON = {
   lesson_id: 7,
+  takes_feedback: true,
+  builds_on_history: true, // an A0 lesson: its length is a setting
   canonical_suggestion: "grocery shopping",
   situation_lesson_count: 11,
   next_situations: ["at the bakery", "asking the time", "taking the bus"],
@@ -97,6 +99,12 @@ describe("LessonFeedbackBox", () => {
     fireEvent.click(screen.getByText("Change"));
     expect(onOpenSettings).toHaveBeenCalled();
   });
+
+  it("says nothing of length after a lesson above A0, whose length is not a setting", () => {
+    setup({ lesson: { ...LESSON, builds_on_history: false }, preferences: { audio_lesson_minutes: "15" } });
+    expect(screen.queryByText(/Lessons are about/)).toBeNull();
+    expect(screen.getByRole("radiogroup", { name: "Next lesson" })).toBeTruthy();
+  });
 });
 
 describe("feedbackSummary", () => {
@@ -110,5 +118,17 @@ describe("feedbackSummary", () => {
     expect(feedbackSummary({ pace: "just_right", repetition: "just_right" })).toBe(
       "Your next lesson will be just like this one.",
     );
+  });
+});
+
+describe("takesFeedback", () => {
+  it("follows the API's takes_feedback, at any level", () => {
+    expect(takesFeedback({ takes_feedback: true, cefr_level: "B1" })).toBe(true);
+    expect(takesFeedback({ takes_feedback: false, cefr_level: "A0" })).toBe(false);
+  });
+
+  it("falls back to A0 only when the API does not send it (before api#1000)", () => {
+    expect(takesFeedback({ cefr_level: "A0" })).toBe(true);
+    expect(takesFeedback({ cefr_level: "B1" })).toBe(false);
   });
 });
