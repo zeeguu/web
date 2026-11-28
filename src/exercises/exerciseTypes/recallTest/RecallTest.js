@@ -42,6 +42,11 @@ const PromptWord = styled(s.FlashcardWord)`
   cursor: pointer;
 `;
 
+// The revealed answer: when it is the L2 word, tapping it says it again.
+const AnswerWord = styled(s.FlashcardAnswer)`
+  cursor: ${(props) => (props.$tappable ? "pointer" : "default")};
+`;
+
 const GradeBlock = styled.div`
   width: 100%;
   display: flex;
@@ -128,7 +133,9 @@ export default function RecallTest({
   const [autoPronounce, , toggleAutoPronounce] = useBookmarkAutoPronounce();
   // When the answer is in L1, the prompt is the L2 word: saying it out loud
   // gives nothing away, so auto-pronounce speaks it as it appears.
+  // When the answer is the L2 word, it is spoken as it is revealed.
   const promptIsL2 = isL1Answer;
+  const l2WordShown = promptIsL2 || saysTheyKnowIt;
   const promptPronouncedFor = useRef(null);
 
   useEffect(() => setSaysTheyKnowIt(false), [reload, exerciseBookmark]);
@@ -140,29 +147,6 @@ export default function RecallTest({
     setLinksUnderInput(true);
     return () => setLinksUnderInput(false);
   }, [selfGradeOnly, setLinksUnderInput]);
-
-  // Space reveals the answer on desktop in self-grade flashcard mode.
-  useEffect(() => {
-    if (!selfGradeOnly || isExerciseOver || saysTheyKnowIt) return;
-    function handleKeyDown(e) {
-      if (e.key !== " ") return;
-      const target = e.target;
-      const tag = target?.tagName;
-      if (
-        tag === "INPUT" ||
-        tag === "TEXTAREA" ||
-        tag === "BUTTON" ||
-        target?.isContentEditable ||
-        target?.closest?.('[role="dialog"], [role="button"], a')
-      ) {
-        return;
-      }
-      e.preventDefault();
-      setSaysTheyKnowIt(true);
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selfGradeOnly, isExerciseOver, saysTheyKnowIt]);
 
   // Another word or translation that fits as well, asked about (typed mode only).
   const { isChecking, note: answerNote, judge, clearNote } = useAnswerJudge(
@@ -193,15 +177,53 @@ export default function RecallTest({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [promptIsL2, autoPronounce, interactiveText, isExerciseOver, exerciseBookmark, reload]);
 
+  // Pronounced from the reveal itself, not from an effect on saysTheyKnowIt:
+  // that state still holds the previous card's value for one render when the
+  // next card arrives, which would say the new answer before it is shown.
+  function revealAnswer() {
+    setSaysTheyKnowIt(true);
+    if (!promptIsL2 && autoPronounce && interactiveText) {
+      pronounceBookmark(interactiveText, speech, exerciseBookmark);
+    }
+  }
+
+  // Space reveals the answer on desktop in self-grade flashcard mode.
+  useEffect(() => {
+    if (!selfGradeOnly || isExerciseOver || saysTheyKnowIt) return;
+    function handleKeyDown(e) {
+      if (e.key !== " ") return;
+      const target = e.target;
+      const tag = target?.tagName;
+      if (
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        tag === "BUTTON" ||
+        target?.isContentEditable ||
+        target?.closest?.('[role="dialog"], [role="button"], a')
+      ) {
+        return;
+      }
+      e.preventDefault();
+      revealAnswer();
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selfGradeOnly, isExerciseOver, saysTheyKnowIt]);
+
   if (!interactiveText) {
     return <LoadingAnimation />;
   }
 
-  const pronouncePrompt = promptIsL2 ? () => pronounceBookmark(interactiveText, speech, exerciseBookmark) : undefined;
-  // Shown where the auto-pronouncing happens: on the card, before answering.
-  const promptPronounceToggle = promptIsL2 && (
+  const pronounceWord = () => pronounceBookmark(interactiveText, speech, exerciseBookmark);
+  const pronouncePrompt = promptIsL2 ? pronounceWord : undefined;
+  const pronounceAnswer = promptIsL2 ? undefined : pronounceWord;
+  // Shown where the auto-pronouncing happens: with the prompt when it is the
+  // L2 word, otherwise only once the L2 answer is revealed.
+  const cardPronounceToggle = (
     <AutoPronounceToggle enabled={autoPronounce} onToggle={toggleAutoPronounce} label="Auto-pronounce word" />
   );
+  const promptPronounceToggle = promptIsL2 && cardPronounceToggle;
 
   const promptText = removePunctuation(prompt(exerciseBookmark));
   const useCenteredFlashcardLayout = !isExerciseOver && (selfGradeOnly || saysTheyKnowIt);
@@ -216,7 +238,9 @@ export default function RecallTest({
             {saysTheyKnowIt && (
               <>
                 <s.FlashcardDivider />
-                <s.FlashcardAnswer>{answer(exerciseBookmark)}</s.FlashcardAnswer>
+                <AnswerWord onClick={pronounceAnswer} $tappable={!!pronounceAnswer}>
+                  {answer(exerciseBookmark)}
+                </AnswerWord>
               </>
             )}
           </s.FlashcardFace>
@@ -241,11 +265,11 @@ export default function RecallTest({
                 </GradeRow>
               </>
             ) : (
-              <s.PrimaryExerciseButton type="button" onClick={() => setSaysTheyKnowIt(true)}>
+              <s.PrimaryExerciseButton type="button" onClick={revealAnswer}>
                 {strings.showAnswer}
               </s.PrimaryExerciseButton>
             )}
-            {promptPronounceToggle}
+            {l2WordShown && cardPronounceToggle}
           </GradeBlock>
         </CardStage>
       ) : (
@@ -279,7 +303,7 @@ export default function RecallTest({
               exerciseBookmark={exerciseBookmark}
               notifyOfUserAttempt={notifyOfUserAttempt}
               isL1Answer={isL1Answer}
-              onIKnowIt={() => setSaysTheyKnowIt(true)}
+              onIKnowIt={revealAnswer}
               judgeAnswer={judge}
               clearAnswerNote={clearNote}
               isChecking={isChecking}
